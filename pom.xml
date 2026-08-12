@@ -61,10 +61,10 @@
             <artifactId>langchain4j-vertex-ai-gemini</artifactId>
         </dependency>
 
-        <!-- Azure AI Foundry (Azure OpenAI endpoints) -->
+        <!-- Azure AI Foundry: the /openai/v1 endpoint is OpenAI-compatible -->
         <dependency>
             <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-azure-open-ai</artifactId>
+            <artifactId>langchain4j-open-ai</artifactId>
         </dependency>
 
         <dependency>
