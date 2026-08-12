@@ -1,21 +1,21 @@
 package com.example.aiworkshop.config;
 
-import com.example.aiworkshop.ai.Assistant;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiChatModel;
-import dev.langchain4j.service.AiServices;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/** Active when {@code aiworkshop.model.provider=vertex} (the default). */
 @Configuration
 @EnableConfigurationProperties(VertexAiProperties.class)
-class LangChain4jConfig {
+@ConditionalOnProperty(name = "aiworkshop.model.provider", havingValue = "vertex", matchIfMissing = true)
+class VertexAiConfig {
 
     /**
-     * Exposed as {@link ChatModel} rather than the concrete type so swapping providers later is a
-     * change to this method only. The model implements {@link java.io.Closeable}; Spring calls
-     * {@code close()} on shutdown.
+     * Exposed as {@link ChatModel} so nothing downstream binds to a provider. The model implements
+     * {@link java.io.Closeable}; Spring calls {@code close()} on shutdown.
      */
     @Bean(destroyMethod = "close")
     ChatModel chatModel(VertexAiProperties properties) {
@@ -29,10 +29,5 @@ class LangChain4jConfig {
                 .logRequests(properties.logRequests())
                 .logResponses(properties.logResponses())
                 .build();
-    }
-
-    @Bean
-    Assistant assistant(ChatModel chatModel) {
-        return AiServices.create(Assistant.class, chatModel);
     }
 }
