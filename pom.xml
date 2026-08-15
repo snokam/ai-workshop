@@ -44,9 +44,10 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Serves the JSON API the React frontend talks to. Also brings multipart upload. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <!-- LangChain4j core: AI services, document loaders/parsers/splitters, embeddings -->
