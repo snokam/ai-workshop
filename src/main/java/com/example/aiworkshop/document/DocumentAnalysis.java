@@ -7,21 +7,21 @@ import java.util.List;
  * What the intake agent returns after looking at one uploaded file.
  *
  * <p>This record is the output schema. LangChain4j derives the JSON contract from it and parses the
- * model's reply back into it — there is no prompt anywhere saying "reply with JSON", and no parsing
- * code to write.
+ * model's reply back into it — there is no prompt anywhere saying "reply with JSON". Add a component
+ * here and the agent starts returning it; the {@link Description} annotations are the only place
+ * each field is explained to the model.
  *
- * <h2>Your job</h2>
- *
- * The components are fixed, because the screen renders them. What is missing is the {@link
- * Description} on each one — the only place a field is explained to the model. Add them and watch
- * the answers sharpen without touching the system message.
- *
- * <p>The shape of this record is itself part of the prompt: adding a component here is how you ask
- * the agent for something new.
+ * @param category what kind of document this is, as free text — the four fixed types are not decided
+ *     yet, so the agent is left to name it
+ * @param summary one or two sentences a case handler could read instead of opening the file
+ * @param fields the facts worth lifting out, chosen by the agent to suit the document
+ * @param quality the verdict on the file as an artefact: legible, complete, the right document
  */
 public record DocumentAnalysis(
-        // TODO: describe each component to the model.
-        @Description("TODO") String category,
-        @Description("TODO") String summary,
-        @Description("TODO") List<ExtractedField> fields,
-        @Description("TODO") QualityAssessment quality) {}
+        @Description("The kind of document, as a short noun phrase, e.g. 'invoice' or 'medical report'.")
+                String category,
+        @Description("One or two sentences describing what this document is and what it says.")
+                String summary,
+        @Description("The handful of facts a case handler would care about, as name/value pairs.")
+                List<ExtractedField> fields,
+        @Description("How usable the uploaded file is as an artefact.") QualityAssessment quality) {}
