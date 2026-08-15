@@ -37,13 +37,16 @@ class DocumentController {
      * stream them back instead of going quiet until the last one finishes.
      */
     @PostMapping
-    ResponseEntity<UploadedDocument> upload(@RequestParam("file") MultipartFile file) throws IOException {
-        UploadedDocument document = intake.accept(file);
+    ResponseEntity<UploadedDocument> upload(
+            @RequestParam("caseId") String caseId, @RequestParam("file") MultipartFile file) throws IOException {
+        UploadedDocument document = intake.accept(caseId, file);
         log.info(
-                "Analysed {} ({}): category={}, quality={}",
+                "Analysed {} ({}) for case {}: category={}, matched={}, quality={}",
                 document.filename(),
                 document.contentType(),
+                document.caseId(),
                 document.analysis().category(),
+                document.analysis().matchedRequiredDocument(),
                 document.analysis().quality().verdict());
         return ResponseEntity.status(HttpStatus.CREATED).body(document);
     }
@@ -61,6 +64,11 @@ class DocumentController {
     @ExceptionHandler(DocumentIntake.UnsupportedDocumentException.class)
     ResponseEntity<Map<String, String>> unsupported(DocumentIntake.UnsupportedDocumentException e) {
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(Map.of("message", e.getMessage()));
+    }
+
+    @ExceptionHandler(DocumentIntake.UnknownCaseException.class)
+    ResponseEntity<Map<String, String>> unknownCase(DocumentIntake.UnknownCaseException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
     }
 
     /**

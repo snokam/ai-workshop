@@ -1,5 +1,7 @@
 package com.example.aiworkshop.document;
 
+import com.example.aiworkshop.cases.Case;
+import com.example.aiworkshop.cases.CaseStore;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;
@@ -24,21 +26,27 @@ public class DocumentIntake {
 
     private final DocumentAnalyzer analyzer;
     private final DocumentStore store;
+    private final CaseStore cases;
 
-    DocumentIntake(DocumentAnalyzer analyzer, DocumentStore store) {
+    DocumentIntake(DocumentAnalyzer analyzer, DocumentStore store, CaseStore cases) {
         this.analyzer = analyzer;
         this.store = store;
+        this.cases = cases;
     }
 
-    public UploadedDocument accept(MultipartFile file) throws IOException {
+    public UploadedDocument accept(String caseId, MultipartFile file) throws IOException {
+        Case theCase =
+                cases.findById(caseId).orElseThrow(() -> new UnknownCaseException("No such case: " + caseId));
         String mimeType = resolveMimeType(file);
         UploadedDocument document = new UploadedDocument(
                 UUID.randomUUID().toString(),
+                caseId,
                 file.getOriginalFilename(),
                 mimeType,
                 file.getSize(),
                 Instant.now(),
-                analyzer.analyse(promptFor(file, mimeType)));
+                analyzer.analyse(promptFor(file, mimeType), theCase.requiredDocuments()),
+                false);
         store.save(document);
         return document;
     }
@@ -86,6 +94,18 @@ public class DocumentIntake {
     /** Thrown for a file the agent cannot look at. Mapped to 415 by the controller. */
     public static class UnsupportedDocumentException extends RuntimeException {
         UnsupportedDocumentException(String message) {
+            super(message);
+        }
+    }
+
+    /**
+     * Thrown when the upload names a Case that does not exist. Mapped to 404 by the controller.
+     *
+     * <p>The only refusal on the Case side. A poor document is still accepted — this is a broken
+     * client, not a judgement about the file.
+     */
+    public static class UnknownCaseException extends RuntimeException {
+        UnknownCaseException(String message) {
             super(message);
         }
     }

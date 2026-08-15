@@ -1,6 +1,8 @@
 package com.example.aiworkshop.config;
 
 import com.example.aiworkshop.ai.Assistant;
+import com.example.aiworkshop.cases.CaseStatusWriter;
+import com.example.aiworkshop.cases.CaseSummarizer;
 import com.example.aiworkshop.document.DocumentAnalyzer;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.service.AiServices;
@@ -26,5 +28,17 @@ class AiServiceConfig {
     @Bean
     DocumentAnalyzer documentAnalyzer(ChatModel chatModel) {
         return AiServices.create(DocumentAnalyzer.class, chatModel);
+    }
+
+    /** The Case Summary: what is in a Case's Documents, read across all of them. */
+    @Bean
+    CaseSummarizer caseSummarizer(ChatModel chatModel) {
+        return AiServices.create(CaseSummarizer.class, chatModel);
+    }
+
+    /** The situation report: derived facts in, one short piece of prose out. */
+    @Bean
+    CaseStatusWriter caseStatusWriter(ChatModel chatModel) {
+        return AiServices.create(CaseStatusWriter.class, chatModel);
     }
 }

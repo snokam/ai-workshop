@@ -34,6 +34,13 @@ public class DocumentStore {
                 .toList();
     }
 
+    /** Everything attached to one Case, newest first. Every upload is here, including superseded ones. */
+    public List<UploadedDocument> findByCaseId(String caseId) {
+        return findAll().stream()
+                .filter(document -> document.caseId().equals(caseId))
+                .toList();
+    }
+
     public void deleteAll() {
         documents.clear();
     }

@@ -15,6 +15,10 @@ import java.util.List;
  *     yet, so the agent is left to name it
  * @param summary one or two sentences a case handler could read instead of opening the file
  * @param fields the facts worth lifting out, chosen by the agent to suit the document
+ * @param matchedRequiredDocument which of the Case's Required Documents this file satisfies, copied
+ *     back verbatim from the list the agent was given, or {@code null} when it satisfies none.
+ *     Matching free text to free text is the one job here Java cannot do at all (see ADR 0001)
+ * @param matchConfidence how sure the agent is of that match. Shown to a Case Handler, never a gate
  * @param quality the verdict on the file as an artefact: legible, complete, the right document
  */
 public record DocumentAnalysis(
@@ -24,4 +28,10 @@ public record DocumentAnalysis(
                 String summary,
         @Description("The handful of facts a case handler would care about, as name/value pairs.")
                 List<ExtractedField> fields,
+        @Description(
+                        "Which of the documents the case requires this file satisfies, copied exactly from the"
+                                + " list you were given. Null if it satisfies none of them.")
+                String matchedRequiredDocument,
+        @Description("How sure you are of that match: HIGH, MEDIUM or LOW. LOW if you matched nothing.")
+                MatchConfidence matchConfidence,
         @Description("How usable the uploaded file is as an artefact.") QualityAssessment quality) {}
