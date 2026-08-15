@@ -24,20 +24,50 @@ _Avoid_: metadata, parsing, OCR
 
 **Quality Assessment**:
 The agent's verdict on a Document as an artefact: legible, complete, and the document it claims to
-be. Says nothing about whether the contents are correct or acceptable. It is advice shown to whoever
-uploaded the file, never a gate — an upload is always accepted.
+be. Says nothing about whether the contents are correct or acceptable. Never a gate on upload — an
+upload is always accepted — but a poor verdict holds a Case at `NEEDS_REVIEW` until a Review clears it.
 _Avoid_: validation, verification, approval
 
 **Case**:
-The unit of work a Document belongs to, and the thing that has a status.
+The unit of work a Document belongs to, and the thing that has a status. Carries its own list of
+Required Documents; Cases do not come in kinds.
 _Avoid_: claim, application, file
+
+**Case Handler**:
+The internal person who reads across a Case and decides it. The audience for everything the agents
+produce on the handler side.
+_Avoid_: advisor, caseworker
+
+**Claimant**:
+The person whose Case it is. They upload Documents to it and read the intake agent's advice; they
+never handle a Case. "Claim" stays under `_Avoid_` for the work item itself — the person is the
+Claimant, the thing is the Case.
+_Avoid_: user, customer, applicant
+
+**Required Document**:
+One of the documents a Case needs before it can be decided, written as a plain label — the four
+Document Types are not named, so a Required Document is described rather than typed.
+_Avoid_: mandatory document, checklist item
+
+**Case Status**:
+Where a Case stands, derived from which Required Documents are matched and whether any matched
+Document is waiting on a Review: `AWAITING_DOCUMENTS`, `NEEDS_REVIEW`, `READY_FOR_DECISION`.
+_Avoid_: state, stage, phase
+
+**Review**:
+A Case Handler's confirmation that a Document is good enough to work with despite its Quality
+Assessment. A Claimant sending a better Document clears the same block.
+_Avoid_: approval, sign-off
+
+**Case Summary**:
+The agent's account of what is in a Case's Documents, taken across all of them — what a Case Handler
+reads instead of opening each Document in turn. A Document has its own separate summary.
+_Avoid_: overview, digest
 
 ## Not settled yet
 
-Terms the domain clearly has, which are deliberately still open:
+Terms the domain clearly has, which are deliberately still open.
 
-- **The four Document Types** — not named. The intake agent returns free text until they are.
-- **The internal role** — "advisor" and "case handler" have both been used for the person who reads
-  across a Case. One word needs to win before any code names it.
-- **Case Status** — the notes call for knowing "the status of a case". Whether that is derived from
-  which Documents are present or written by an agent is undecided, so it is undefined here.
+- **The four Document Types** — not named. The intake agent returns free text until they are, and a
+  Case's Required Documents are plain labels rather than types. See
+  [ADR 0001](./docs/adr/0001-free-text-required-documents.md).
