@@ -7,6 +7,10 @@
 
 export type Quality = 'GOOD' | 'ACCEPTABLE' | 'POOR'
 
+export type MatchConfidence = 'HIGH' | 'MEDIUM' | 'LOW'
+
+export type CaseStatus = 'AWAITING_DOCUMENTS' | 'NEEDS_REVIEW' | 'READY_FOR_DECISION'
+
 export interface ExtractedField {
   name: string
   value: string
@@ -22,16 +26,38 @@ export interface DocumentAnalysis {
   category: string
   summary: string
   fields: ExtractedField[]
+  /** The required document this file satisfied, or null when it satisfied none. */
+  matchedRequiredDocument: string | null
+  matchConfidence: MatchConfidence
   quality: QualityAssessment
 }
 
 export interface UploadedDocument {
   id: string
+  caseId: string
   filename: string
   contentType: string
   sizeBytes: number
   uploadedAt: string
   analysis: DocumentAnalysis
+  reviewed: boolean
+}
+
+/** One row of the case list. Cheap to fetch — no agent runs to produce it. */
+export interface CaseOverview {
+  id: string
+  reference: string
+  status: CaseStatus
+  requiredDocuments: string[]
+  outstanding: string[]
+}
+
+/** One case, opened. Costs two model calls, so only ever fetched for the case being looked at. */
+export interface CaseDetail {
+  overview: CaseOverview
+  documents: UploadedDocument[]
+  summary: string
+  statusNote: string
 }
 
 /** Pulls the backend's `{ message }` out of a failed response so the screen can show the real cause. */
@@ -45,17 +71,32 @@ async function failureMessage(response: Response): Promise<string> {
   return `${response.status} ${response.statusText}`
 }
 
-export async function listDocuments(): Promise<UploadedDocument[]> {
-  const response = await fetch('/api/documents')
+async function json<T>(response: Response): Promise<T> {
   if (!response.ok) throw new Error(await failureMessage(response))
-  return response.json()
+  return response.json() as Promise<T>
 }
 
-export async function uploadDocument(file: File): Promise<UploadedDocument> {
+export async function listCases(): Promise<CaseOverview[]> {
+  return json(await fetch('/api/cases'))
+}
+
+export async function openCase(caseId: string): Promise<CaseDetail> {
+  return json(await fetch(`/api/cases/${caseId}`))
+}
+
+export async function reviewDocument(documentId: string): Promise<void> {
+  const response = await fetch(`/api/cases/documents/${documentId}/review`, { method: 'POST' })
+  if (!response.ok) throw new Error(await failureMessage(response))
+}
+
+export async function listDocuments(): Promise<UploadedDocument[]> {
+  return json(await fetch('/api/documents'))
+}
+
+export async function uploadDocument(caseId: string, file: File): Promise<UploadedDocument> {
   const body = new FormData()
+  body.append('caseId', caseId)
   body.append('file', file)
 
-  const response = await fetch('/api/documents', { method: 'POST', body })
-  if (!response.ok) throw new Error(await failureMessage(response))
-  return response.json()
+  return json(await fetch('/api/documents', { method: 'POST', body }))
 }

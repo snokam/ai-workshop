@@ -250,3 +250,208 @@ header p {
   margin: 0;
   overflow-wrap: anywhere;
 }
+
+/* --- the two sides ------------------------------------------------------- */
+
+.sides {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 2.25rem;
+}
+
+.sides button,
+.back {
+  padding: 0.45rem 0.9rem;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.sides button.on {
+  color: var(--surface);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.back {
+  margin-bottom: 1.5rem;
+}
+
+/* --- choosing a case ----------------------------------------------------- */
+
+.picker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.picker span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.picker select {
+  flex: 1;
+  padding: 0.55rem 0.7rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* --- what the case still needs ------------------------------------------- */
+
+.checklist {
+  margin: 0 0 1.5rem;
+  padding: 0.9rem 1.1rem;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.checklist li {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.15rem 0;
+}
+
+.checklist .matched {
+  color: var(--good-fg);
+}
+
+.checklist .outstanding {
+  color: var(--muted);
+}
+
+/* --- the case list ------------------------------------------------------- */
+
+.cases {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.case-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.35rem 1rem;
+  padding: 1rem 1.25rem;
+  font: inherit;
+  text-align: left;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.case-row:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.case-row:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.reference {
+  font-weight: 600;
+}
+
+.outstanding-count {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.status {
+  align-self: start;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status.awaiting_documents {
+  background: var(--acceptable-bg);
+  color: var(--acceptable-fg);
+}
+
+.status.needs_review {
+  background: var(--poor-bg);
+  color: var(--poor-fg);
+}
+
+.status.ready_for_decision {
+  background: var(--good-bg);
+  color: var(--good-fg);
+}
+
+header p.status {
+  display: inline-block;
+  margin-bottom: 2rem;
+}
+
+/* --- what the agents wrote ----------------------------------------------- */
+
+.agent-prose {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.agent-prose h2 {
+  margin: 0 0 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.agent-prose p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* --- the match, and reviewing a blocked document ------------------------- */
+
+.match {
+  margin: 0 0 0.75rem;
+  font-size: 0.92rem;
+}
+
+.confidence {
+  color: var(--muted);
+}
+
+.confidence.low {
+  color: var(--acceptable-fg);
+}
+
+.review {
+  margin-top: 0.7rem;
+  padding: 0.4rem 0.8rem;
+  font: inherit;
+  font-size: 0.85rem;
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.reviewed {
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  font-style: italic;
+}
