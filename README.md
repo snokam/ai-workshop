@@ -70,31 +70,27 @@ Case handling — what the handler's screen runs against one Case:
 | `cases/CaseSummaryStore.java` | caches a summary against the Documents it was written over |
 | `cases/CaseDesk.java` | the seam the screen talks to; the only caller of either agent |
 
-Guardrails and screening — what stops a Document talking the agent round:
+Guardrails and screening — what stops a Document talking the agent round. Each is a workshop task,
+and the code sits under the task it belongs to:
 
 | | |
 |---|---|
-| `tasks/task_1_guardrails/UploadedFileGuardrail.java` | input guardrail: only our sentence and one file reach the model |
-| `tasks/task_1_guardrails/AnalysisGuardrail.java` | output guardrail: a match must be a Required Document this Case asked for |
-| `fraud/FraudCheck.java` | the seam — a new check is a new `@Component` and nothing else |
-| `fraud/DuplicateUploadCheck.java` | the same bytes, seen before, on this Case or another |
-| `fraud/ImageMetadataCheck.java` | EXIF: editing software, no camera origin, a capture date out of place |
-| `fraud/ReverseImageCheck.java` | is this picture already published online |
-| `fraud/AddressedTheAgentCheck.java` | the intake agent's own report of a Document that gave it orders |
-| `fraud/FraudScreener.java` | runs them all; cannot refuse an upload and cannot throw |
+| `tasks/task_1_guardrails/Guardrails.java` | **entrypoint** — the pair the intake agent is wired with |
+| `tasks/task_1_guardrails/guardrails/` | the two guardrails: one on the way out, one on the way back |
+| `tasks/task_1_guardrails/model/` | what the agent returns when a Document tries to give it orders |
+| `tasks/task_2_postprocessing/FraudScreener.java` | **entrypoint** — runs every check; cannot refuse an upload and cannot throw |
+| `tasks/task_2_postprocessing/checks/` | the seam, and three checks: duplicate bytes, image metadata, the agent's own report |
+| `tasks/task_2_postprocessing/model/` | what a screening is, and the projection that keeps it off the upload screen |
 
-Guardrails are [task 1](./docs/tasks/task_1_guardrails.md). The three layers are demonstrated in
-[the walkthrough](./docs/guardrails-walkthrough.md), with drag-in files in [`assets/`](./assets). Who sees what is [ADR 0003](./docs/adr/0003-fraud-signals-are-handler-side.md).
+Each task is one folder with one entrypoint. Nothing outside a task calls past it.
 
-Reverse image search is off by default — it is the only thing here that sends a file anywhere but the
-model provider. To switch it on, once per project:
+The briefs are [task 1](./docs/tasks/task_1_guardrails.md) and
+[task 2](./docs/tasks/task_2_postprocessing.md); the three layers are demonstrated end to end in
+[the walkthrough](./docs/guardrails-walkthrough.md), with drag-in files in [`assets/`](./assets).
+Who sees what is [ADR 0003](./docs/adr/0003-fraud-signals-are-handler-side.md).
 
-```bash
-gcloud services enable vision.googleapis.com --project "$GOOGLE_CLOUD_PROJECT"
-FRAUD_REVERSE_IMAGE=vision AI_PROVIDER=vertex ./mvnw spring-boot:run
-```
-
-The first thousand images a month are free, which is more than a workshop will use.
+Nothing in either task needs credentials or a network: the checks read the bytes that are already in
+hand.
 
 | | |
 |---|---|

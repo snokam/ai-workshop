@@ -1,7 +1,7 @@
 package com.example.aiworkshop.cases;
 
 import com.example.aiworkshop.document.UploadedDocument;
-import com.example.aiworkshop.fraud.FraudScreening;
+import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening;
 import java.util.List;
 
 /**

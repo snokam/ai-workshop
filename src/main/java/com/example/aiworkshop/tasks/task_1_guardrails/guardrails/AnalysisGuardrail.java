@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_1_guardrails;
+package com.example.aiworkshop.tasks.task_1_guardrails.guardrails;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -3,8 +3,7 @@ package com.example.aiworkshop.config;
 import com.example.aiworkshop.cases.CaseStatusWriter;
 import com.example.aiworkshop.cases.CaseSummarizer;
 import com.example.aiworkshop.document.DocumentAnalyzer;
-import com.example.aiworkshop.tasks.task_1_guardrails.AnalysisGuardrail;
-import com.example.aiworkshop.tasks.task_1_guardrails.UploadedFileGuardrail;
+import com.example.aiworkshop.tasks.task_1_guardrails.Guardrails;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.service.AiServices;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +24,8 @@ class AiServiceConfig {
     DocumentAnalyzer documentAnalyzer(ChatModel chatModel) {
         return AiServices.builder(DocumentAnalyzer.class)
                 .chatModel(chatModel)
-                .inputGuardrails(new UploadedFileGuardrail())
-                .outputGuardrails(new AnalysisGuardrail())
+                .inputGuardrails(Guardrails.beforeTheCall())
+                .outputGuardrails(Guardrails.afterTheCall())
                 .build();
     }
 

@@ -90,14 +90,14 @@ class GuardrailTest {
     private static DocumentAnalyzer analyzerBackedBy(ChatModel model) {
         return AiServices.builder(DocumentAnalyzer.class)
                 .chatModel(model)
-                .inputGuardrails(new UploadedFileGuardrail())
-                .outputGuardrails(new AnalysisGuardrail())
+                .inputGuardrails(Guardrails.beforeTheCall())
+                .outputGuardrails(Guardrails.afterTheCall())
                 .build();
     }
 
     private static List<dev.langchain4j.data.message.Content> anUploadedFile() {
         return List.of(
-                TextContent.from(UploadedFileGuardrail.INTAKE_INSTRUCTION),
+                TextContent.from(Guardrails.INTAKE_INSTRUCTION),
                 ImageContent.from("aGVsbG8=", "image/png"));
     }
 

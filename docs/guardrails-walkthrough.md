@@ -12,18 +12,19 @@ third are properties you can rely on.
 | Output guardrail | on the reply, before parsing | the model's raw text | correct it, or reprompt |
 | Post-processing | after the answer is accepted | the answer, the bytes, everything stored | anything Java can do |
 
-Files to drag in live are in [`assets/`](../assets).
+Files to drag in live are in [`assets/`](../assets). The exercises behind it are
+[task 1](./tasks/task_1_guardrails.md) and [task 2](./tasks/task_2_postprocessing.md).
 
 ## Beat 1 — the input guardrail: what leaves the building
 
-`UploadedFileGuardrail` allows exactly one file and exactly one sentence — ours — into the message.
+`guardrails/UploadedFileGuardrail` allows exactly one file and exactly one sentence — ours — into the message.
 
 Show the change first. In `DocumentIntake.promptFor`, add the line every developer writes when they
 want to help the model along:
 
 ```java
 return List.of(
-        TextContent.from(UploadedFileGuardrail.INTAKE_INSTRUCTION),
+        TextContent.from(Guardrails.INTAKE_INSTRUCTION),
         TextContent.from("The file is called " + file.getOriginalFilename()),   // helpful!
         fileContent);
 ```
@@ -58,7 +59,7 @@ instruction. Gemini 2.5 Flash held: it matched the real label, judged the qualit
 merits, and reported the attempt — including disobeying the instruction to stay quiet about it. Open
 the case on the handler screen and the report is there, as a STRONG indicator.
 
-**What the guardrail does.** `AnalysisGuardrail` enforces the rule with a definite answer: a match
+**What the guardrail does.** `guardrails/AnalysisGuardrail` enforces the rule with a definite answer: a match
 must be one of the Required Documents this Case actually asked for. If the model had complied, the
 fabricated label would have been struck out, `matchConfidence` dropped to LOW, and the rest of the
 analysis kept — one model call, no failed upload, and the Claimant sees the ordinary "matches none of
@@ -95,10 +96,11 @@ The same file, byte for byte, has already been uploaded to a different case.
 No model, no network, no prompt. A SHA-256 and a map. One expense, two claims — the oldest trick
 there is, and the LLM is the wrong tool for catching it.
 
-The other checks in `fraud/` are the same shape: EXIF says an image came out of Photoshop, or carries
-no camera metadata at all, or was taken in the future. With `FRAUD_REVERSE_IMAGE=vision` there is a
-fourth, which asks Cloud Vision whether the picture is already published on the web — the one that
-catches a damage photo lifted from a used-car listing.
+The other checks in `tasks/task_2_postprocessing/checks/` are the same shape: EXIF says an image came
+out of Photoshop, or carries no camera metadata at all, or was taken in the future. Nothing here
+needs a key or a network, which is deliberate — see the end of
+[task 2](./tasks/task_2_postprocessing.md) for the one check that was left out for exactly that
+reason.
 
 **The lesson:** a lot of what people reach for an LLM to do is a hash, a date comparison, and an API
 call — deterministic, instant, and never wrong in a way you have to argue with.

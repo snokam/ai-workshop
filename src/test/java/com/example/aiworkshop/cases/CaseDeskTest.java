@@ -17,7 +17,7 @@ import com.example.aiworkshop.document.MatchConfidence;
 import com.example.aiworkshop.document.QualityAssessment;
 import com.example.aiworkshop.document.QualityAssessment.Quality;
 import com.example.aiworkshop.document.UploadedDocument;
-import com.example.aiworkshop.fraud.FraudScreeningStore;
+import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener;
 import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,8 +43,8 @@ class CaseDeskTest {
     private final CaseSummaryStore summaries = new CaseSummaryStore();
     private final CaseSummarizer summarizer = mock(CaseSummarizer.class);
     private final CaseStatusWriter statusWriter = mock(CaseStatusWriter.class);
-    private final FraudScreeningStore screenings = new FraudScreeningStore();
-    private final CaseDesk desk = new CaseDesk(cases, documents, summaries, summarizer, statusWriter, screenings);
+    private final FraudScreener screener = new FraudScreener(List.of());
+    private final CaseDesk desk = new CaseDesk(cases, documents, summaries, summarizer, statusWriter, screener);
 
     @BeforeEach
     void aCaseWithOneUnreadableDocument() {

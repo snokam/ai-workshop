@@ -4,8 +4,16 @@ Someone uploads a document that gives the agent orders. Your job is to make it n
 agent obeys.
 
 You will write two LangChain4j guardrails on the intake agent: one on the message going out, one on
-the reply coming back. Both are already in this repository as a worked answer — try it yourself
-first, then compare. The point of the exercise is the reasoning, not the typing.
+the reply coming back. Both are already in this repository as a worked answer, under
+`src/main/java/com/example/aiworkshop/tasks/task_1_guardrails/` — try it yourself first, then
+compare. The point of the exercise is the reasoning, not the typing.
+
+| | Runs | Sees | Can |
+|---|---|---|---|
+| Part 1 — input guardrail | before the call | the message you assembled | block it, for free |
+| Part 2 — output guardrail | on the reply, before parsing | the model's raw text | correct it, or reprompt |
+
+What happens *after* the answer is accepted is [task 2](./task_2_postprocessing.md).
 
 **Time:** 45 minutes. **You need:** the app running (see the [README](../../README.md)).
 
@@ -56,9 +64,12 @@ the builder:
 ```java
 return AiServices.builder(DocumentAnalyzer.class)
         .chatModel(chatModel)
-        .inputGuardrails(new UploadedFileGuardrail())
+        .inputGuardrails(Guardrails.beforeTheCall())
         .build();
 ```
+
+`Guardrails` is this task's entrypoint: the one class the rest of the application talks to, so the
+configuration never names a guardrail directly.
 
 **Then prove it matters.** In `DocumentIntake.promptFor`, add the line any of us would write to help
 the model along:
@@ -155,7 +166,8 @@ rules worth enforcing in code are the ones with a definite answer.
 
 ## The worked answer
 
-- `src/main/java/com/example/aiworkshop/tasks/task_1_guardrails/` — both classes, commented at length
+- `src/main/java/com/example/aiworkshop/tasks/task_1_guardrails/` — `Guardrails` (entrypoint),
+  `guardrails/` (the two of them) and `model/ManipulationAttempt`
 - `src/test/java/com/example/aiworkshop/tasks/task_1_guardrails/GuardrailTest.java` — the six tests
 - [docs/guardrails-walkthrough.md](../guardrails-walkthrough.md) — the demo script, including
   why you should not stake a live demo on the model misbehaving on cue

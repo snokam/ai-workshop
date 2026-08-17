@@ -34,7 +34,6 @@ export interface DocumentAnalysis {
 
 export interface FraudIndicator {
   kind:
-    | 'SEEN_ONLINE'
     | 'ALREADY_UPLOADED'
     | 'EDITED_IN_SOFTWARE'
     | 'NO_CAMERA_ORIGIN'
@@ -48,7 +47,6 @@ export interface FraudIndicator {
 export interface FraudScreening {
   documentId: string
   indicators: FraudIndicator[]
-  screenedAt: string
 }
 
 export interface UploadedDocument {

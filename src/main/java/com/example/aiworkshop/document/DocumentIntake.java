@@ -2,9 +2,9 @@ package com.example.aiworkshop.document;
 
 import com.example.aiworkshop.cases.Case;
 import com.example.aiworkshop.cases.CaseStore;
-import com.example.aiworkshop.fraud.FraudScreener;
-import com.example.aiworkshop.fraud.ScreenedFile;
-import com.example.aiworkshop.tasks.task_1_guardrails.UploadedFileGuardrail;
+import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener;
+import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener.Upload;
+import com.example.aiworkshop.tasks.task_1_guardrails.Guardrails;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;
@@ -58,7 +58,7 @@ public class DocumentIntake {
                 false);
         store.save(document);
 
-        screener.screen(new ScreenedFile(
+        screener.screen(new Upload(
                 documentId, caseId, file.getOriginalFilename(), mimeType, file.getBytes(), analysis));
         return document;
     }
@@ -77,7 +77,7 @@ public class DocumentIntake {
         Content fileContent = mimeType.equals("application/pdf")
                 ? PdfFileContent.from(base64, mimeType)
                 : ImageContent.from(base64, mimeType);
-        return List.of(TextContent.from(UploadedFileGuardrail.INTAKE_INSTRUCTION), fileContent);
+        return List.of(TextContent.from(Guardrails.INTAKE_INSTRUCTION), fileContent);
     }
 
     /**

@@ -2,8 +2,8 @@ package com.example.aiworkshop.cases;
 
 import com.example.aiworkshop.document.DocumentStore;
 import com.example.aiworkshop.document.UploadedDocument;
-import com.example.aiworkshop.fraud.FraudScreening;
-import com.example.aiworkshop.fraud.FraudScreeningStore;
+import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener;
+import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class CaseDesk {
     private final CaseSummaryStore summaries;
     private final CaseSummarizer summarizer;
     private final CaseStatusWriter statusWriter;
-    private final FraudScreeningStore screenings;
+    private final FraudScreener screener;
 
     CaseDesk(
             CaseStore cases,
@@ -34,13 +34,13 @@ public class CaseDesk {
             CaseSummaryStore summaries,
             CaseSummarizer summarizer,
             CaseStatusWriter statusWriter,
-            FraudScreeningStore screenings) {
+            FraudScreener screener) {
         this.cases = cases;
         this.documents = documents;
         this.summaries = summaries;
         this.summarizer = summarizer;
         this.statusWriter = statusWriter;
-        this.screenings = screenings;
+        this.screener = screener;
     }
 
     /** Every Case with its derived status. No model calls — this is a list the handler skims. */
@@ -70,9 +70,7 @@ public class CaseDesk {
     }
 
     private List<FraudScreening> screeningsFound(List<UploadedDocument> attached) {
-        return screenings.findAllFor(idsOf(attached)).stream()
-                .filter(FraudScreening::foundSomething)
-                .toList();
+        return screener.findAllFor(idsOf(attached));
     }
 
     /**

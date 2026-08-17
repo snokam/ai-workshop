@@ -98,10 +98,10 @@ Two, both on the intake agent, because it is the only agent an outsider can put 
 Both are LangChain4j guardrails, so they run inside the call rather than around it — see
 [the walkthrough](./docs/guardrails-walkthrough.md).
 
-- **Input guardrail** (`UploadedFileGuardrail`) — one file and one sentence of ours reach the model.
+- **Input guardrail** (`tasks/task_1_guardrails/guardrails/UploadedFileGuardrail`) — one file and one sentence of ours reach the model.
   Nothing a Claimant typed, the filename above all, becomes part of a prompt. It cannot see inside
   the file and is not a defence against what is printed on the page.
-- **Output guardrail** (`AnalysisGuardrail`) — a match must name a Required Document this Case
+- **Output guardrail** (`tasks/task_1_guardrails/guardrails/AnalysisGuardrail`) — a match must name a Required Document this Case
   actually asked for. A label that is not on the list is struck out, whether the agent paraphrased
   it, invented it, or was talked into it by the Document.
 

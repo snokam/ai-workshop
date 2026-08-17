@@ -6,12 +6,12 @@ it never reaches the Claimant's endpoints, and it never changes a Case Status.
 
 Three consequences follow, and each is load-bearing rather than incidental:
 
-- A Screening is **not a component of `UploadedDocument`**. It lives in `FraudScreeningStore`, keyed
-  by Document id, and reaches the API only through `CaseDetail`.
+- A Screening is **not a component of `UploadedDocument`**. It lives inside `FraudScreener`, keyed by
+  Document id, and reaches the API only through `CaseDetail`.
 - The Claimant's endpoints answer with **`DocumentForClaimant`**, a projection that leaves out the
   agent's `ManipulationAttempt` — the one part of the analysis written for somebody else.
 - `Case.status` is **untouched**. A Case is held at `NEEDS_REVIEW` by a Quality Assessment a Review
-  can clear, and by nothing in the `fraud` package.
+  can clear, and by nothing in `task_2_postprocessing`.
 
 ## What prompted it
 
@@ -41,8 +41,8 @@ attempt it gain a great deal from being told which check caught them.
 behaves, and it guarantees a handler looks. Rejected: the two are not alike. A POOR verdict says the
 Document cannot be worked with, which is a fact about the artefact and one the Claimant can fix by
 sending a better copy. An Indicator says something about the *person* — and every check here has an
-innocent explanation. EXIF is stripped by every messaging app; a photo can be online because the
-Claimant posted it themselves; the same file legitimately belongs to two Cases. A heuristic that
+innocent explanation. EXIF is stripped by every messaging app; a screenshot never had camera
+metadata; the same file legitimately belongs to two Cases when two Cases share an expense. A heuristic that
 stops someone's insurance claim while they are given no way to see it, let alone answer it, is not a
 check. It is a penalty with no appeal, and this is the wrong application to build one in.
 

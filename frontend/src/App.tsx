@@ -32,7 +32,6 @@ const CONFIDENCE_LABEL: Record<MatchConfidence, string> = {
 }
 
 const INDICATOR_LABEL: Record<FraudScreening['indicators'][number]['kind'], string> = {
-  SEEN_ONLINE: 'Published online',
   ALREADY_UPLOADED: 'Sent before',
   EDITED_IN_SOFTWARE: 'Touched by an editor',
   NO_CAMERA_ORIGIN: 'No camera metadata',

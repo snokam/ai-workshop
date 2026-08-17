@@ -10,8 +10,7 @@ import static org.mockito.Mockito.when;
 import com.example.aiworkshop.cases.Case;
 import com.example.aiworkshop.cases.CaseStore;
 import com.example.aiworkshop.document.QualityAssessment.Quality;
-import com.example.aiworkshop.fraud.FraudScreener;
-import com.example.aiworkshop.fraud.FraudScreeningStore;
+import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;
@@ -48,7 +47,7 @@ class DocumentIntakeTest {
     private final DocumentAnalyzer analyzer = mock(DocumentAnalyzer.class);
     private final DocumentStore store = new DocumentStore();
     private final CaseStore cases = new CaseStore();
-    private final FraudScreener screener = new FraudScreener(List.of(), new FraudScreeningStore());
+    private final FraudScreener screener = new FraudScreener(List.of());
     private final DocumentIntake intake = new DocumentIntake(analyzer, store, cases, screener);
 
     @BeforeEach

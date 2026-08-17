@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_1_guardrails;
+package com.example.aiworkshop.tasks.task_1_guardrails.guardrails;
 
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
@@ -6,6 +6,7 @@ import dev.langchain4j.data.message.PdfFileContent;
 import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.guardrail.InputGuardrail;
 import dev.langchain4j.guardrail.InputGuardrailRequest;
+import com.example.aiworkshop.tasks.task_1_guardrails.Guardrails;
 import dev.langchain4j.guardrail.InputGuardrailResult;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class UploadedFileGuardrail implements InputGuardrail {
         }
 
         for (Content content : contents) {
-            if (content instanceof TextContent text && !INTAKE_INSTRUCTION.equals(text.text())) {
+            if (content instanceof TextContent text && !Guardrails.INTAKE_INSTRUCTION.equals(text.text())) {
                 return fatal("Only the intake instruction may accompany the file. Found: \"" + text.text() + "\"");
             }
         }

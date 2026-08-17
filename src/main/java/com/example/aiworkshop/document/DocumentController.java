@@ -1,5 +1,6 @@
 package com.example.aiworkshop.document;
 
+import com.example.aiworkshop.tasks.task_2_postprocessing.model.DocumentForClaimant;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
