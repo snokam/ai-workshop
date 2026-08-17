@@ -40,11 +40,16 @@ gcloud auth application-default set-quota-project "$GOOGLE_CLOUD_PROJECT"
 Foundry needs `AZURE_OPENAI_API_KEY` exported. Both providers accept PDFs and images as inline data,
 so uploads are sent to the model as-is — nothing extracts text first.
 
-## Where the agent is
+## Where the agents are
 
-`DocumentAnalyzer` is the whole intake agent: an interface, a system message, and a return type.
-LangChain4j generates the implementation, so the return type *is* the output schema — add a component
-to `DocumentAnalysis` and the agent starts filling it in.
+There are three, and each one is an interface, a system message and a return type. LangChain4j
+generates the implementation, so the return type *is* the output schema — add a component to
+`DocumentAnalysis` and the intake agent starts filling it in. Every agent is one line in
+`config/AiServiceConfig.java`.
+
+They all write in English; see [ADR 0002](./docs/adr/0002-agents-write-in-english.md).
+
+Intake — runs once, when a file is uploaded:
 
 | | |
 |---|---|
@@ -52,4 +57,18 @@ to `DocumentAnalysis` and the agent starts filling it in.
 | `document/DocumentAnalysis.java` | what it returns, and therefore what it is asked for |
 | `document/DocumentIntake.java` | turns an upload into the file content the model reads |
 | `document/DocumentStore.java` | in-memory; everything is lost on restart |
-| `frontend/src/App.tsx` | the one screen |
+
+Case handling — what the handler's screen runs against one Case:
+
+| | |
+|---|---|
+| `cases/Case.java` | Case Status, derived in Java rather than by a model |
+| `cases/CaseSummarizer.java` | the expensive agent: what the Documents say, across all of them |
+| `cases/DocumentForSummary.java` | what that agent is shown — and, deliberately, what it is not |
+| `cases/CaseStatusWriter.java` | the cheap agent: derived facts in, one situation report out |
+| `cases/CaseSummaryStore.java` | caches a summary against the Documents it was written over |
+| `cases/CaseDesk.java` | the seam the screen talks to; the only caller of either agent |
+
+| | |
+|---|---|
+| `frontend/src/App.tsx` | both screens |

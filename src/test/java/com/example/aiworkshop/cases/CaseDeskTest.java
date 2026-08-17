@@ -89,12 +89,20 @@ class CaseDeskTest {
         assertThat(detail.countingDocumentIds()).doesNotContain("holiday-photo.png");
     }
 
-    /** The expensive agent: it needs the Documents themselves, which is why it is not the same agent. */
+    /**
+     * The expensive agent: it needs what the Documents say, which is why it is not the same agent.
+     * One projection per attached Document, newest first — what each one renders as is pinned at
+     * {@link DocumentForSummaryTest}, not here.
+     */
     @Test
     void theSummarizerIsHandedTheCasesDocuments() {
+        documents.save(document("better.jpg", "receipt", Quality.GOOD, AT_TEN));
+
         desk.open(CASE_ID);
 
-        assertThat(capturedDocuments()).containsExactlyElementsOf(documents.findByCaseId(CASE_ID));
+        assertThat(capturedProjections())
+                .extracting(DocumentForSummary::filename)
+                .containsExactly("better.jpg", "blurry.jpg");
     }
 
     /**
@@ -154,9 +162,9 @@ class CaseDeskTest {
         verify(statusWriter, times(2)).write(any(), anyList(), anyList());
     }
 
-    private List<UploadedDocument> capturedDocuments() {
+    private List<DocumentForSummary> capturedProjections() {
         @SuppressWarnings("unchecked")
-        ArgumentCaptor<List<UploadedDocument>> captor = ArgumentCaptor.forClass(List.class);
+        ArgumentCaptor<List<DocumentForSummary>> captor = ArgumentCaptor.forClass(List.class);
         verify(summarizer).summarise(captor.capture());
         return captor.getValue();
     }

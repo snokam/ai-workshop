@@ -1,6 +1,5 @@
 package com.example.aiworkshop.cases;
 
-import com.example.aiworkshop.document.UploadedDocument;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
@@ -9,10 +8,14 @@ import java.util.List;
 /**
  * Writes the Case Summary: what is in a Case's Documents, taken across all of them.
  *
- * <p>Split from {@link CaseStatusWriter} by input rather than tidiness. This one needs the Documents
- * themselves and only changes when a Document is added; the status prose needs a handful of enum
+ * <p>Split from {@link CaseStatusWriter} by input rather than tidiness. This one needs what the
+ * Documents say and only changes when a Document is added; the status prose needs a handful of enum
  * values and is rewritten every time a Case is opened. One agent doing both would drag this payload
  * through every page view.
+ *
+ * <p>It is handed {@link DocumentForSummary} rather than the Documents themselves. What an agent is
+ * given is a decision, and passing the domain record made it an accident of that record's shape —
+ * see the note there.
  */
 public interface CaseSummarizer {
 
@@ -30,9 +33,11 @@ public interface CaseSummarizer {
             document already has its own summary. Do not repeat either.
 
             A few short paragraphs at most. Do not recommend a decision, and do not say what should
-            happen next — that is not your job here. Write in the language the documents are written
-            in.
+            happen next — that is not your job here.
+
+            Write in English, whatever language the documents themselves are in. Field names are
+            quoted from the documents and are often not English; do not follow them.
             """)
     @UserMessage("The documents attached to this case:\n\n{{documents}}")
-    String summarise(@V("documents") List<UploadedDocument> documents);
+    String summarise(@V("documents") List<DocumentForSummary> documents);
 }

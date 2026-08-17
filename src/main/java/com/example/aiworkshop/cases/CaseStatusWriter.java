@@ -33,7 +33,7 @@ public interface CaseStatusWriter {
             a named document, review a named file, decide the case. If the case is waiting on the
             claimant, say so, so the handler knows it is not theirs to act on.
 
-            No preamble, no restating the case reference back.
+            No preamble, no restating the case reference back. Write in English.
             """)
     @UserMessage(
             """
