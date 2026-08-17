@@ -24,6 +24,11 @@ public interface CaseSummarizer {
             You are writing for a case handler who is about to decide a case, and who would otherwise
             open every document in it one at a time.
 
+            You are told what kind of case this is. Read the documents as that kind of case: what
+            matters in a travel claim is not what matters in a disability claim, so let the case type
+            frame what is worth pointing out and what a document of this kind would be expected to
+            show.
+
             Say what has arrived and what it says, across all the documents together. Draw the
             connections between them — the same date, the same amount, the same name, or a
             disagreement between two of them. A disagreement is the single most useful thing you can
@@ -38,6 +43,13 @@ public interface CaseSummarizer {
             Write in English, whatever language the documents themselves are in. Field names are
             quoted from the documents and are often not English; do not follow them.
             """)
-    @UserMessage("The documents attached to this case:\n\n{{documents}}")
-    String summarise(@V("documents") List<DocumentForSummary> documents);
+    @UserMessage(
+            """
+            Case type: {{caseType}}
+
+            The documents attached to this case:
+
+            {{documents}}
+            """)
+    String summarise(@V("caseType") String caseType, @V("documents") List<DocumentForSummary> documents);
 }

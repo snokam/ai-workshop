@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import com.example.aiworkshop.cases.Case;
 import com.example.aiworkshop.cases.CaseStore;
+import com.example.aiworkshop.cases.CaseType;
 import com.example.aiworkshop.document.QualityAssessment.Quality;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
@@ -48,7 +49,7 @@ class DocumentIntakeTest {
 
     @BeforeEach
     void theClaimantHasACase() {
-        cases.save(new Case(CASE_ID, "CASE-2026-001", List.of("proof of identity", "receipt")));
+        cases.save(new Case(CASE_ID, "CASE-2026-001", CaseType.HOME_CONTENTS, List.of("proof of identity", "receipt")));
     }
 
     /**
