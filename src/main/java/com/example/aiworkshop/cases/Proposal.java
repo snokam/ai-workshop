@@ -20,4 +20,15 @@ public sealed interface Proposal permits ReviewProposal, DocumentRequestProposal
     ProposalState state();
 
     Proposal withState(ProposalState state);
+
+    /**
+     * Whether this Proposal is still a Case Handler's to answer.
+     *
+     * <p>A Proposal is answered once. Two clicks on Confirm is the ordinary way a second answer
+     * arrives, and a second answer to a document request would ask the Claimant twice for the same
+     * thing; reaching Confirm after Decline would perform a write a handler has already refused.
+     */
+    default boolean isOutstanding() {
+        return state() == ProposalState.PROPOSED;
+    }
 }

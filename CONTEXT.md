@@ -72,6 +72,24 @@ The agent's account of what is in a Case's Documents, taken across all of them â
 reads instead of opening each Document in turn. A Document has its own separate summary.
 _Avoid_: overview, digest
 
+**Case Chat**:
+The conversation a Case Handler can have about one Case, beside the Case's contents. Belongs to the
+Case rather than to a person â€” there is no authentication, so two Case Handlers with the same Case
+open share one.
+_Avoid_: assistant, copilot, chatbot
+
+**Proposal**:
+Something suggested in a Case Chat and not done. It performs nothing; a Case Handler confirms or
+declines it, and only a confirmation makes it real. Two kinds exist: a Review, and a Document
+Request. A declined Proposal is kept, not deleted.
+_Avoid_: suggestion, recommendation, action
+
+**Document Request**:
+Something a Case Handler has asked the Claimant for, in plain language, shown on the Claimant's
+upload screen. Not a Required Document: Case Status is derived from that list, so a Document Request
+sits beside it and moves nothing.
+_Avoid_: chase, reminder, task
+
 ## Not settled yet
 
 Terms the domain clearly has, which are deliberately still open.

@@ -43,6 +43,54 @@ export interface UploadedDocument {
   reviewed: boolean
 }
 
+/**
+ * Something a case handler has asked the claimant for. Deliberately not one of the case's required
+ * documents — that list is what the case status is derived from, and a question must not move a case.
+ */
+export interface DocumentRequest {
+  id: string
+  caseId: string
+  label: string
+  reason: string
+}
+
+export type ProposalKind = 'REVIEW' | 'DOCUMENT_REQUEST'
+
+export type ProposalState = 'PROPOSED' | 'CONFIRMED' | 'DECLINED'
+
+/**
+ * Something the case chat agent suggested. It has performed nothing: only a case handler's click on
+ * Confirm turns one into a write.
+ */
+export interface ProposalCard {
+  id: string
+  kind: ProposalKind
+  /** A document's filename, or the label to ask the claimant for. */
+  subject: string
+  reason: string
+  state: ProposalState
+}
+
+/** One thing the agent looked up while answering. Shown so a looked-up fact reads as one. */
+export interface ToolCall {
+  name: string
+  arguments: string
+}
+
+/** One exchange. Proposals are referenced by id and resolved against the case's live list. */
+export interface ChatTurn {
+  question: string
+  answer: string
+  toolCalls: ToolCall[]
+  proposalIds: string[]
+}
+
+export interface ChatAnswer {
+  turn: ChatTurn
+  /** Every proposal on the case, in whatever state it is now — not only the ones this turn raised. */
+  proposals: ProposalCard[]
+}
+
 /** One row of the case list. Cheap to fetch — no agent runs to produce it. */
 export interface CaseOverview {
   id: string
@@ -50,6 +98,7 @@ export interface CaseOverview {
   status: CaseStatus
   requiredDocuments: string[]
   outstanding: string[]
+  documentRequests: DocumentRequest[]
 }
 
 /** One case, opened. Costs two model calls, so only ever fetched for the case being looked at. */
@@ -66,6 +115,9 @@ export interface CaseDetail {
   blockedDocumentIds: string[]
   summary: string
   statusNote: string
+  proposals: ProposalCard[]
+  /** The case chat so far. Free to fetch — the turns were written when they were answered. */
+  conversation: ChatTurn[]
 }
 
 /** Pulls the backend's `{ message }` out of a failed response so the screen can show the real cause. */
@@ -95,6 +147,25 @@ export async function openCase(caseId: string): Promise<CaseDetail> {
 export async function reviewDocument(documentId: string): Promise<void> {
   const response = await fetch(`/api/cases/documents/${documentId}/review`, { method: 'POST' })
   if (!response.ok) throw new Error(await failureMessage(response))
+}
+
+/** One turn of the case chat. Blocks for a model call, and for any tool it decides to reach for. */
+export async function askCaseChat(caseId: string, question: string): Promise<ChatAnswer> {
+  return json(
+    await fetch(`/api/cases/${caseId}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question }),
+    }),
+  )
+}
+
+export async function confirmProposal(proposalId: string): Promise<ProposalCard> {
+  return json(await fetch(`/api/cases/proposals/${proposalId}/confirm`, { method: 'POST' }))
+}
+
+export async function declineProposal(proposalId: string): Promise<ProposalCard> {
+  return json(await fetch(`/api/cases/proposals/${proposalId}/decline`, { method: 'POST' }))
 }
 
 export async function listDocuments(): Promise<UploadedDocument[]> {

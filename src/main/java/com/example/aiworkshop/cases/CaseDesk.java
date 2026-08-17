@@ -14,13 +14,20 @@ import org.springframework.stereotype.Service;
 /**
  * What the Case Handler's screen talks to.
  *
- * <p>Deliberately thin. The rules about what each status means live in {@link Case#status}, where
- * they are a pure function; this class fetches, delegates and hands back. It holds the two
- * handler-side agents as collaborators, and is the only place either of them is called.
+ * <p>Deliberately thin, and wide instead. The rules about what each status means live in
+ * {@link Case#status} and the rules about what confirming a suggestion means live on {@link Proposal};
+ * this class fetches, delegates and hands back. It holds every handler-side agent as a collaborator,
+ * and is the only place any of them is called — including from {@link CaseChatTools}, which is why
+ * that class is allowed to contain nothing.
  *
  * <p>Note which methods call a model and which do not. {@link #list} is pure lookup, so browsing the
  * case list is never gated on a model call per Case; {@link #open} makes both calls, once, for the
- * one Case the handler actually asked for.
+ * one Case the handler actually asked for; {@link #chat} makes one more, plus whatever the agent's
+ * tools cost it. {@link #confirm} and {@link #decline} call none.
+ *
+ * <p>The Case Chat agent arrives {@link Lazy} to break a loop that is real rather than accidental:
+ * the agent's tools call back into this class, so building it eagerly here would need it to exist
+ * first. Nothing else about the wiring depends on it.
  */
 @Service
 public class CaseDesk {
@@ -205,7 +212,10 @@ public class CaseDesk {
      * until someone decides what confirming it means. That is the point of the sealing.
      */
     public ProposalCard confirm(String proposalId) {
-        Proposal proposal = proposals.findById(proposalId).orElseThrow(() -> new UnknownProposalException(proposalId));
+        Proposal proposal = answerable(proposalId);
+        if (!proposal.isOutstanding()) {
+            return ProposalCard.of(proposal);
+        }
         switch (proposal) {
             case ReviewProposal reviewProposal -> review(reviewProposal.documentId());
             case DocumentRequestProposal requestProposal ->
@@ -223,8 +233,14 @@ public class CaseDesk {
      * a declined suggestion is fed back to the agent so it does not make the same one again.
      */
     public ProposalCard decline(String proposalId) {
-        Proposal proposal = proposals.findById(proposalId).orElseThrow(() -> new UnknownProposalException(proposalId));
-        return raise(proposal.withState(ProposalState.DECLINED));
+        Proposal proposal = answerable(proposalId);
+        return proposal.isOutstanding()
+                ? raise(proposal.withState(ProposalState.DECLINED))
+                : ProposalCard.of(proposal);
+    }
+
+    private Proposal answerable(String proposalId) {
+        return proposals.findById(proposalId).orElseThrow(() -> new UnknownProposalException(proposalId));
     }
 
     private ProposalCard raise(Proposal proposal) {

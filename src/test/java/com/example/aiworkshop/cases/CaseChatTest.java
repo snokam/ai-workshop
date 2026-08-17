@@ -168,6 +168,35 @@ class CaseChatTest {
     }
 
     /**
+     * A Proposal is answered once. Two clicks on Confirm is the ordinary way this happens, and the
+     * Claimant should not be asked twice for the same thing because a button was slow.
+     */
+    @Test
+    void aProposalAlreadyAnsweredIsNotAnsweredAgain() {
+        ProposalCard proposed =
+                desk.proposeDocumentRequest(CASE_ID, "the second page of the receipt", "The total did not arrive.");
+
+        desk.confirm(proposed.id());
+        desk.confirm(proposed.id());
+
+        assertThat(overviewOfTheCase().documentRequests()).hasSize(1);
+    }
+
+    /** And a no stays a no: reaching Confirm after Decline should not quietly perform the write. */
+    @Test
+    void aDeclinedProposalCannotBeConfirmedAfterTheFact() {
+        ProposalCard proposed = desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
+        desk.decline(proposed.id());
+
+        desk.confirm(proposed.id());
+
+        assertThat(statusOfTheCase()).isEqualTo(CaseStatus.NEEDS_REVIEW);
+        assertThat(desk.open(CASE_ID).proposals())
+                .extracting(ProposalCard::state)
+                .containsExactly(ProposalState.DECLINED);
+    }
+
+    /**
      * The Case identifier is the memory identifier, and the memory identifier is what binds the
      * tools to one Case. A handler never names the Case, and the agent cannot reach another.
      */

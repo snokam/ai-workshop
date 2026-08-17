@@ -42,10 +42,10 @@ so uploads are sent to the model as-is — nothing extracts text first.
 
 ## Where the agents are
 
-There are three, and each one is an interface, a system message and a return type. LangChain4j
+There are five, and each one is an interface, a system message and a return type. LangChain4j
 generates the implementation, so the return type *is* the output schema — add a component to
 `DocumentAnalysis` and the intake agent starts filling it in. Every agent is one line in
-`config/AiServiceConfig.java`.
+`config/AiServiceConfig.java`, except the Case Chat, which is the only one with tools and a memory.
 
 They all write in English; see [ADR 0002](./docs/adr/0002-agents-write-in-english.md).
 
@@ -57,6 +57,7 @@ Intake — runs once, when a file is uploaded:
 | `document/DocumentAnalysis.java` | what it returns, and therefore what it is asked for |
 | `document/DocumentIntake.java` | turns an upload into the file content the model reads |
 | `document/DocumentStore.java` | in-memory; everything is lost on restart |
+| `document/DocumentFiles.java` | the bytes, on disk, so an agent can look again ([ADR 0003](./docs/adr/0003-uploaded-files-are-kept-on-disk.md)) |
 
 Case handling — what the handler's screen runs against one Case:
 
@@ -67,7 +68,19 @@ Case handling — what the handler's screen runs against one Case:
 | `cases/DocumentForSummary.java` | what that agent is shown — and, deliberately, what it is not |
 | `cases/CaseStatusWriter.java` | the cheap agent: derived facts in, one situation report out |
 | `cases/CaseSummaryStore.java` | caches a summary against the Documents it was written over |
-| `cases/CaseDesk.java` | the seam the screen talks to; the only caller of either agent |
+| `cases/CaseDesk.java` | the seam the screen talks to; the only caller of any handler-side agent |
+
+Case Chat — one conversation per Case, with tools, that suggests and never writes:
+
+| | |
+|---|---|
+| `cases/CaseChatAgent.java` | the agent: memory id, tools, and a `Result` so tool calls survive |
+| `cases/CaseChatTools.java` | four tools, no logic — every one hands straight to `CaseDesk` |
+| `cases/CaseAtAGlance.java` | what it starts with; `DocumentForChat` is one line of it |
+| `cases/DocumentInDetail.java` | what the detail tool fetches — the half the index leaves out |
+| `document/DocumentReader.java` | a second agent, given the file and no Case context at all |
+| `cases/Proposal.java` | sealed: confirming one is a pattern switch that must stay exhaustive |
+| `cases/DocumentRequest.java` | what a confirmed Proposal produces, and what a Claimant sees |
 
 | | |
 |---|---|
