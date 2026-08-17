@@ -57,7 +57,7 @@ Intake — runs once, when a file is uploaded:
 | `document/DocumentAnalysis.java` | what it returns, and therefore what it is asked for |
 | `document/DocumentIntake.java` | turns an upload into the file content the model reads |
 | `document/DocumentStore.java` | in-memory; everything is lost on restart |
-| `document/DocumentFiles.java` | the bytes, on disk, so an agent can look again ([ADR 0003](./docs/adr/0003-uploaded-files-are-kept-on-disk.md)) |
+| `document/DocumentFiles.java` | the bytes, on disk, so an agent can look again ([ADR 0004](./docs/adr/0004-uploaded-files-are-kept-on-disk.md)) |
 
 Case handling — what the handler's screen runs against one Case:
 

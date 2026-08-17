@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import com.example.aiworkshop.cases.Case;
 import com.example.aiworkshop.cases.CaseStore;
+import com.example.aiworkshop.cases.CaseType;
 import com.example.aiworkshop.document.QualityAssessment.Quality;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
@@ -55,14 +56,15 @@ class DocumentIntakeTest {
 
     @BeforeEach
     void theClaimantHasACase() throws IOException {
-        cases.save(new Case(CASE_ID, "CASE-2026-001", List.of("proof of identity", "receipt")));
+        cases.save(new Case(
+                CASE_ID, "CASE-2026-001", CaseType.HOME_CONTENTS, List.of("proof of identity", "receipt")));
         files = new DocumentFiles(directory);
         intake = new DocumentIntake(analyzer, store, cases, files);
     }
 
     /**
      * The Extraction is what an agent made of a file, not the file. Keeping the bytes is what lets
-     * the case chat go back and read the thing itself — see ADR 0003.
+     * the case chat go back and read the thing itself — see ADR 0004.
      */
     @Test
     void theUploadedBytesAreKeptSoAnAgentCanLookAgain() throws IOException {

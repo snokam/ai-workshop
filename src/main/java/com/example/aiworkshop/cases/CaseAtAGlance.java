@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
  */
 public record CaseAtAGlance(
         String reference,
+        String typeLabel,
         CaseStatus status,
         List<String> requiredDocuments,
         List<String> outstanding,
@@ -29,7 +30,7 @@ public record CaseAtAGlance(
     @Override
     public String toString() {
         return """
-                Case %s
+                Case %s — %s
                 Status: %s
                 Required documents: %s
                 Still outstanding: %s
@@ -44,6 +45,7 @@ public record CaseAtAGlance(
                 %s"""
                 .formatted(
                         reference,
+                        typeLabel,
                         status,
                         labels(requiredDocuments),
                         labels(outstanding),

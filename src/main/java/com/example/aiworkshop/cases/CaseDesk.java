@@ -83,14 +83,18 @@ public class CaseDesk {
         List<UploadedDocument> attached = documents.findByCaseId(caseId);
         CaseOverview overview = overviewOf(theCase);
 
+        String caseType = theCase.type().label();
         String statusNote = statusWriter.write(
-                overview.status(), overview.outstanding(), whyEachBlockedDocumentIsBlocked(theCase, attached));
+                caseType,
+                overview.status(),
+                overview.outstanding(),
+                whyEachBlockedDocumentIsBlocked(theCase, attached));
         return new CaseDetail(
                 overview,
                 attached,
                 idsOf(theCase.countingDocuments(attached)),
                 idsOf(theCase.blockedDocuments(attached)),
-                summaryOf(caseId, attached),
+                summaryOf(theCase, attached),
                 statusNote,
                 proposalsOn(caseId),
                 chats.findByCaseId(caseId));
@@ -130,10 +134,11 @@ public class CaseDesk {
         List<String> counting = idsOf(theCase.countingDocuments(attached));
         return new CaseAtAGlance(
                 theCase.reference(),
+                theCase.type().label(),
                 theCase.status(attached),
                 theCase.requiredDocuments(),
                 theCase.unmatchedRequiredDocuments(attached),
-                summaryOf(theCase.id(), attached),
+                summaryOf(theCase, attached),
                 attached.stream()
                         .map(document -> DocumentForChat.of(document, counting.contains(document.id())))
                         .toList(),
@@ -272,10 +277,12 @@ public class CaseDesk {
      * thing it depends on, so re-running the agent for a handler who opened the same Case twice
      * would be paying for the same paragraphs again.
      */
-    private String summaryOf(String caseId, List<UploadedDocument> attached) {
+    private String summaryOf(Case theCase, List<UploadedDocument> attached) {
+        String caseId = theCase.id();
         List<String> writtenOver = idsOf(attached);
         return summaries.find(caseId, writtenOver).orElseGet(() -> {
             String summary = summarizer.summarise(
+                    theCase.type().label(),
                     attached.stream().map(DocumentForSummary::of).toList());
             summaries.save(caseId, writtenOver, summary);
             return summary;
@@ -297,6 +304,7 @@ public class CaseDesk {
         return new CaseOverview(
                 theCase.id(),
                 theCase.reference(),
+                theCase.type().label(),
                 theCase.status(attached),
                 theCase.requiredDocuments(),
                 theCase.unmatchedRequiredDocuments(attached),

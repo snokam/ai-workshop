@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-/** The one place bytes outlive a request. See ADR 0003 for why they are kept at all. */
+/** The one place bytes outlive a request. See ADR 0004 for why they are kept at all. */
 class DocumentFilesTest {
 
     private static final byte[] SCAN = "%PDF-1.4".getBytes();

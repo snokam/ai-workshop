@@ -4,6 +4,7 @@ import com.example.aiworkshop.cases.CaseChatAgent;
 import com.example.aiworkshop.cases.CaseChatTools;
 import com.example.aiworkshop.cases.CaseStatusWriter;
 import com.example.aiworkshop.cases.CaseSummarizer;
+import com.example.aiworkshop.cases.CaseTypeClassifier;
 import com.example.aiworkshop.document.DocumentAnalyzer;
 import com.example.aiworkshop.document.DocumentReader;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
@@ -26,6 +27,12 @@ class AiServiceConfig {
     @Bean
     DocumentAnalyzer documentAnalyzer(ChatModel chatModel) {
         return AiServices.create(DocumentAnalyzer.class, chatModel);
+    }
+
+    /** The case intake agent: reads what a Claimant typed and picks which case type to open. */
+    @Bean
+    CaseTypeClassifier caseTypeClassifier(ChatModel chatModel) {
+        return AiServices.create(CaseTypeClassifier.class, chatModel);
     }
 
     /** The Case Summary: what is in a Case's Documents, read across all of them. */

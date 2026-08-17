@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -70,9 +71,10 @@ class CaseChatTest {
 
     @BeforeEach
     void aCaseHeldUpByOneUnreadableDocument() throws IOException {
-        cases.save(new Case(CASE_ID, "CASE-2026-001", List.of("receipt")));
+        cases.save(new Case(CASE_ID, "CASE-2026-001", CaseType.HOME_CONTENTS, List.of("receipt")));
         documents.save(document("d-1", "blurry.jpg", "receipt", Quality.POOR));
-        when(summarizer.summarise(anyList())).thenReturn("What the documents say, taken together.");
+        when(summarizer.summarise(anyString(), anyList()))
+                .thenReturn("What the documents say, taken together.");
         files = new DocumentFiles(directory);
         desk = new CaseDesk(
                 cases,
@@ -221,7 +223,7 @@ class CaseChatTest {
 
         desk.chat(CASE_ID, "What is this waiting on?");
 
-        verify(summarizer, times(1)).summarise(anyList());
+        verify(summarizer, times(1)).summarise(anyString(), anyList());
     }
 
     /**

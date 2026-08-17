@@ -17,7 +17,8 @@ import org.junit.jupiter.api.Test;
  */
 class CaseStatusTest {
 
-    private static final Case THE_CASE = new Case("c-1", "CASE-2026-001", List.of("proof of identity", "receipt"));
+    private static final Case THE_CASE =
+            new Case("c-1", "CASE-2026-001", CaseType.HOME_CONTENTS, List.of("proof of identity", "receipt"));
 
     private static final Instant AT_NINE = Instant.parse("2026-08-15T09:00:00Z");
     private static final Instant AT_TEN = Instant.parse("2026-08-15T10:00:00Z");

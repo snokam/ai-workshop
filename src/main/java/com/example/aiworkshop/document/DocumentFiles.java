@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * The uploaded bytes, kept on disk so an agent can go back and look at the file again. See ADR 0003.
+ * The uploaded bytes, kept on disk so an agent can go back and look at the file again. See ADR 0004.
  *
  * <p>Every other store in this application is a map in memory, and this one is deliberately not: a
  * Document's Extraction is what an agent made of a file, and a Case Handler asking "what does the

@@ -259,13 +259,7 @@ header p {
 
 /* --- the two sides ------------------------------------------------------- */
 
-.sides {
-  display: flex;
-  gap: 0.4rem;
-  margin-bottom: 2.25rem;
-}
-
-.sides button,
+.claimant-nav button,
 .back {
   padding: 0.45rem 0.9rem;
   font: inherit;
@@ -275,12 +269,19 @@ header p {
   border: 1px solid var(--border);
   border-radius: 999px;
   cursor: pointer;
+  text-decoration: none;
 }
 
-.sides button.on {
+.claimant-nav button.on {
   color: var(--surface);
   background: var(--accent);
   border-color: var(--accent);
+}
+
+.claimant-nav {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 2rem;
 }
 
 .back {
@@ -309,6 +310,147 @@ header p {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
+}
+
+/* --- describing a case --------------------------------------------------- */
+
+.describe {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+
+.describe textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  resize: vertical;
+}
+
+.describe textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.describe button {
+  padding: 0.6rem 1.3rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.describe button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.describe .reading {
+  color: var(--surface);
+}
+
+/* --- supported insurance types on the front page ------------------------- */
+
+.supported {
+  margin-top: 2.5rem;
+}
+
+.supported h2 {
+  margin: 0 0 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.supported ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.supported li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.supported-label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.supported-desc {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* --- the detected case type ---------------------------------------------- */
+
+.detected {
+  margin-bottom: 2rem;
+  padding: 1.1rem 1.35rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 14px;
+}
+
+.detected.high {
+  border-left-color: var(--good-fg);
+}
+
+.detected.medium {
+  border-left-color: var(--acceptable-fg);
+}
+
+.detected.low {
+  border-left-color: var(--poor-fg);
+}
+
+.detected-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.detected h1 {
+  margin: 0.25rem 0 0.1rem;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.detected .reference {
+  margin: 0 0 0.6rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.detected .rationale {
+  margin: 0;
+}
+
+.detected .confidence-note {
+  color: var(--muted);
 }
 
 /* --- what the case still needs ------------------------------------------- */
@@ -400,6 +542,17 @@ header p {
 
 .reference {
   font-weight: 600;
+}
+
+.case-reference {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.case-reference-line {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .outstanding-count {

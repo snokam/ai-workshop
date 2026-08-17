@@ -9,7 +9,7 @@ import java.time.Instant;
  * record's {@code id}. There is deliberately no path component — the path is derivable from the
  * identifier, and a stored one is a second source of truth that can disagree with where the file
  * actually is. The Claimant's screen still renders its preview from the file the browser already
- * holds, so nothing about that path changed. See ADR 0003.
+ * holds, so nothing about that path changed. See ADR 0004.
  *
  * @param id opaque identifier, generated on upload
  * @param caseId the Case this Document belongs to. Never absent — a Document uploaded into nothing

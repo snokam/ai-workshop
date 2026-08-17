@@ -28,15 +28,48 @@ class CaseController {
     private static final Logger log = LoggerFactory.getLogger(CaseController.class);
 
     private final CaseDesk desk;
+    private final CaseIntake intake;
 
-    CaseController(CaseDesk desk) {
+    CaseController(CaseDesk desk, CaseIntake intake) {
         this.desk = desk;
+        this.intake = intake;
     }
 
     @GetMapping
     List<CaseOverview> list() {
         return desk.list();
     }
+
+    /**
+     * The kinds of insurance a Claimant can open a Case for, for the front page to show up front. Read
+     * straight off {@link CaseType} so the page never drifts from what the classifier can actually
+     * pick; {@link CaseType#OTHER} is left out because it is the fallback, not a product.
+     */
+    @GetMapping("/types")
+    List<SupportedType> types() {
+        return java.util.Arrays.stream(CaseType.values())
+                .filter(type -> type != CaseType.OTHER)
+                .map(type -> new SupportedType(type.label(), type.description()))
+                .toList();
+    }
+
+    /** One supported insurance type as the front page shows it. */
+    record SupportedType(String label, String description) {}
+
+    /**
+     * Opens a Case from what the Claimant typed. Blocks for the one classifier call, then returns the
+     * Case that was created — the same failure mode as the other model-backed endpoints, so the
+     * {@code RuntimeException} handler below surfaces the real cause.
+     */
+    @PostMapping
+    ResponseEntity<CreatedCase> create(@RequestBody NewCaseRequest request) {
+        CreatedCase created = intake.open(request.description());
+        log.info("Opened case {} as '{}' ({})", created.reference(), created.typeLabel(), created.confidence());
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    /** What the claimant screen posts: the free-text description of what they need help with. */
+    record NewCaseRequest(String description) {}
 
     /** Blocks for both model calls. Same caveat as uploading: this is where streaming would go. */
     @GetMapping("/{id}")

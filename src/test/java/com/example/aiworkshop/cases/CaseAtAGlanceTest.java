@@ -26,7 +26,7 @@ class CaseAtAGlanceTest {
                 aCase(List.of(DocumentForChat.of(aBlurryReceipt(), true)), List.of()).toString();
 
         assertThat(rendered)
-                .contains("Case CASE-2026-001")
+                .contains("Case CASE-2026-001 — Home contents claim")
                 .contains("Status: NEEDS_REVIEW")
                 .contains("Required documents: receipt")
                 .contains("blurry.jpg — receipt — counts as \"receipt\" — quality POOR")
@@ -84,6 +84,7 @@ class CaseAtAGlanceTest {
     private static CaseAtAGlance aCase(List<DocumentForChat> documents, List<ProposalCard> proposals) {
         return new CaseAtAGlance(
                 "CASE-2026-001",
+                "Home contents claim",
                 CaseStatus.NEEDS_REVIEW,
                 List.of("receipt"),
                 List.of(),

@@ -38,8 +38,18 @@ _Avoid_: validation, verification, approval
 
 **Case**:
 The unit of work a Document belongs to, and the thing that has a status. Carries its own list of
-Required Documents; Cases do not come in kinds.
+Required Documents. A Case is opened from a Case Type, but afterwards it is just its list — the type
+is not stored on it.
 _Avoid_: claim, application, file
+
+**Case Type**:
+The kind of Case a Claimant opens, chosen by an agent from what they typed. A fixed, hardcoded set
+grounded in Storebrand products (travel, home contents, disability, health treatment, motor), each
+carrying the Required Documents that kind of Case needs. `OTHER` is the fallback when nothing fits.
+The type decides the checklist at creation and is kept on the Case: it frames how the handler-side
+agents read across it, so a travel claim is summarised as a travel claim. See
+[ADR 0003](./docs/adr/0003-hardcoded-case-types.md).
+_Avoid_: category, claim kind
 
 **Case Handler**:
 The internal person who reads across a Case and decides it. The audience for everything the agents

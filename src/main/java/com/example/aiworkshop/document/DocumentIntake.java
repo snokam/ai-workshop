@@ -38,7 +38,7 @@ public class DocumentIntake {
                 cases.findById(caseId).orElseThrow(() -> new UnknownCaseException("No such case: " + caseId));
         String mimeType = resolveMimeType(file);
         String id = UUID.randomUUID().toString();
-        // Kept before the agent runs, at the point the bytes are already in hand. See ADR 0003.
+        // Kept before the agent runs, at the point the bytes are already in hand. See ADR 0004.
         files.save(id, file.getBytes());
         UploadedDocument document = new UploadedDocument(
                 id,
