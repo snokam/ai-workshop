@@ -3,7 +3,8 @@
 Upload a document, and an agent reads it: what kind of document it is, the facts worth pulling out
 of it, and whether the file is legible enough to work with.
 
-The domain language lives in [CONTEXT.md](./CONTEXT.md).
+The domain language lives in [CONTEXT.md](./CONTEXT.md), and the workshop exercises in
+[tasks/](./tasks).
 
 ## Running it
 
@@ -82,8 +83,8 @@ Guardrails and screening — what stops a Document talking the agent round:
 | `fraud/AddressedTheAgentCheck.java` | the intake agent's own report of a Document that gave it orders |
 | `fraud/FraudScreener.java` | runs them all; cannot refuse an upload and cannot throw |
 
-The three layers are demonstrated in [the walkthrough](./docs/guardrails-walkthrough.md), with
-drag-in files in [`assets/`](./assets). Who sees what is [ADR 0003](./docs/adr/0003-fraud-signals-are-handler-side.md).
+Guardrails are [task 1](./tasks/task_1_guardrails). The three layers are demonstrated in
+[the walkthrough](./docs/guardrails-walkthrough.md), with drag-in files in [`assets/`](./assets). Who sees what is [ADR 0003](./docs/adr/0003-fraud-signals-are-handler-side.md).
 
 Reverse image search is off by default — it is the only thing here that sends a file anywhere but the
 model provider. To switch it on, once per project:
