@@ -1,6 +1,5 @@
 package com.example.aiworkshop.config;
 
-import com.example.aiworkshop.ai.Assistant;
 import com.example.aiworkshop.cases.CaseStatusWriter;
 import com.example.aiworkshop.cases.CaseSummarizer;
 import com.example.aiworkshop.document.DocumentAnalyzer;
@@ -18,11 +17,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 class AiServiceConfig {
-
-    @Bean
-    Assistant assistant(ChatModel chatModel) {
-        return AiServices.create(Assistant.class, chatModel);
-    }
 
     /** The intake agent: reads an uploaded file and returns structured findings about it. */
     @Bean

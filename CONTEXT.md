@@ -4,6 +4,14 @@ Case handling with AI agents in the loop. Someone uploads documents to a case; a
 say what they are, and judge whether the file is good enough to work with. Insurance is the obvious
 setting, but nothing here is specific to it.
 
+## Output language
+
+Agents write their prose in **English**, whatever language the Documents are in. Extraction is the
+exception: field names and values are quoted off the Document and stay untranslated. Each agent
+states this in its own system message — see
+[ADR 0002](./docs/adr/0002-agents-write-in-english.md) for why, and for why the Case Summary agent is
+handed a projection rather than the Documents.
+
 ## Language
 
 **Document**:

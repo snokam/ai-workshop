@@ -52,9 +52,12 @@ public interface DocumentAnalyzer {
             You do not decide whether the upload is accepted — it already has been. Be concrete: "the
             total at the bottom of the receipt is cut off" is useful, "poor quality" is not.
 
-            Write plainly and factually, in the language the document is written in. Both the person
-            who uploaded the file and the case handler read what you write, so describe the document
-            rather than addressing either of them.
+            Write plainly and factually, in English, whatever language the document itself is in.
+            The one exception is the extracted field names and values: those are quoted from the
+            document and stay exactly as they appear on it, untranslated.
+
+            Both the person who uploaded the file and the case handler read what you write, so
+            describe the document rather than addressing either of them.
             """)
     DocumentAnalysis analyse(
             @UserMessage List<Content> document, @V("requiredDocuments") List<String> requiredDocuments);

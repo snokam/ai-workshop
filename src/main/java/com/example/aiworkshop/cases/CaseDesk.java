@@ -71,7 +71,8 @@ public class CaseDesk {
     private String summaryOf(String caseId, List<UploadedDocument> attached) {
         List<String> writtenOver = idsOf(attached);
         return summaries.find(caseId, writtenOver).orElseGet(() -> {
-            String summary = summarizer.summarise(attached);
+            String summary = summarizer.summarise(
+                    attached.stream().map(DocumentForSummary::of).toList());
             summaries.save(caseId, writtenOver, summary);
             return summary;
         });
