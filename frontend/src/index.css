@@ -157,6 +157,12 @@ header p {
   border-radius: 14px;
 }
 
+/* Still listed — nothing a claimant sent is hidden — but plainly not the one in play. */
+.document.superseded {
+  background: var(--bg);
+  opacity: 0.72;
+}
+
 .preview {
   width: 96px;
   height: 124px;

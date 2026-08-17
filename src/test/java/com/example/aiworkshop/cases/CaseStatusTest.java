@@ -114,6 +114,20 @@ class CaseStatusTest {
     }
 
     /**
+     * The same rule the status is derived from, named so a Case Handler can be shown which of two
+     * receipts the status came from. Superseded Documents are still attached — only inert.
+     */
+    @Test
+    void onlyTheNewestMatchCountsForARequiredDocument() {
+        UploadedDocument superseded = document("receipt", Quality.POOR, AT_NINE);
+        UploadedDocument newest = document("receipt", Quality.GOOD, AT_TEN);
+        List<UploadedDocument> documents =
+                List.of(document("proof of identity", Quality.GOOD), superseded, newest);
+
+        assertThat(THE_CASE.countingDocuments(documents)).contains(newest).doesNotContain(superseded);
+    }
+
+    /**
      * A Case stalling because a model hedged is worse than a visibly wrong match a handler can
      * correct in a second. Confidence is shown on the screen and kept out of the derivation.
      */

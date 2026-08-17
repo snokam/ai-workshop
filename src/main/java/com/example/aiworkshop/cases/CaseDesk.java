@@ -21,12 +21,19 @@ public class CaseDesk {
 
     private final CaseStore cases;
     private final DocumentStore documents;
+    private final CaseSummaryStore summaries;
     private final CaseSummarizer summarizer;
     private final CaseStatusWriter statusWriter;
 
-    CaseDesk(CaseStore cases, DocumentStore documents, CaseSummarizer summarizer, CaseStatusWriter statusWriter) {
+    CaseDesk(
+            CaseStore cases,
+            DocumentStore documents,
+            CaseSummaryStore summaries,
+            CaseSummarizer summarizer,
+            CaseStatusWriter statusWriter) {
         this.cases = cases;
         this.documents = documents;
+        this.summaries = summaries;
         this.summarizer = summarizer;
         this.statusWriter = statusWriter;
     }
@@ -47,7 +54,27 @@ public class CaseDesk {
 
         String statusNote = statusWriter.write(
                 overview.status(), overview.outstanding(), whyEachBlockedDocumentIsBlocked(theCase, attached));
-        return new CaseDetail(overview, attached, summarizer.summarise(attached), statusNote);
+        return new CaseDetail(
+                overview,
+                attached,
+                idsOf(theCase.countingDocuments(attached)),
+                idsOf(theCase.blockedDocuments(attached)),
+                summaryOf(caseId, attached),
+                statusNote);
+    }
+
+    /**
+     * The Case Summary, written once per set of Documents. The Documents themselves are the only
+     * thing it depends on, so re-running the agent for a handler who opened the same Case twice
+     * would be paying for the same paragraphs again.
+     */
+    private String summaryOf(String caseId, List<UploadedDocument> attached) {
+        List<String> writtenOver = idsOf(attached);
+        return summaries.find(caseId, writtenOver).orElseGet(() -> {
+            String summary = summarizer.summarise(attached);
+            summaries.save(caseId, writtenOver, summary);
+            return summary;
+        });
     }
 
     /**
@@ -68,6 +95,11 @@ public class CaseDesk {
                 theCase.status(attached),
                 theCase.requiredDocuments(),
                 theCase.unmatchedRequiredDocuments(attached));
+    }
+
+    /** The screen already has the Documents; what it is missing is which of them a rule picked out. */
+    private static List<String> idsOf(List<UploadedDocument> documents) {
+        return documents.stream().map(UploadedDocument::id).toList();
     }
 
     /**

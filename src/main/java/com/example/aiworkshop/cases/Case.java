@@ -38,10 +38,21 @@ public record Case(String id, String reference, List<String> requiredDocuments) 
                 .toList();
     }
 
-    /** The Documents holding this Case at {@code NEEDS_REVIEW}, and so the ones a Review would free. */
-    public List<UploadedDocument> blockedDocuments(List<UploadedDocument> documents) {
+    /**
+     * The Documents the status was derived from: one per Required Document that has a match.
+     *
+     * <p>Everything else attached is either superseded by a newer upload of the same Required
+     * Document or matched nothing at all. Both stay attached — this only says which ones count.
+     */
+    public List<UploadedDocument> countingDocuments(List<UploadedDocument> documents) {
         return requiredDocuments.stream()
                 .flatMap(required -> countingDocument(documents, required).stream())
+                .toList();
+    }
+
+    /** The Documents holding this Case at {@code NEEDS_REVIEW}, and so the ones a Review would free. */
+    public List<UploadedDocument> blockedDocuments(List<UploadedDocument> documents) {
+        return countingDocuments(documents).stream()
                 .filter(Case::tooPoorToWorkWith)
                 .toList();
     }

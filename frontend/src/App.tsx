@@ -312,6 +312,8 @@ function CaseScreen({
           <DocumentCard
             key={doc.id}
             doc={doc}
+            standing={standingOf(doc, detail)}
+            blocking={detail.blockedDocumentIds.includes(doc.id)}
             onReview={() => void onReview(doc.id, doc.caseId)}
           />
         ))}
@@ -320,23 +322,40 @@ function CaseScreen({
   )
 }
 
+/**
+ * Which of three things this document is to the case, worked out from what the backend derived.
+ *
+ * A document that matched no required document is neither counting nor superseded — it is attached
+ * and ignored, and saying "superseded" about it would name a newer upload that does not exist.
+ */
+function standingOf(doc: UploadedDocument, detail: CaseDetail): Standing {
+  if (!doc.analysis.matchedRequiredDocument) return 'unmatched'
+  return detail.countingDocumentIds.includes(doc.id) ? 'counting' : 'superseded'
+}
+
 /* --- shared -------------------------------------------------------------- */
+
+/** What a document is to its case. The claimant's side has no case context, so it passes none. */
+type Standing = 'counting' | 'superseded' | 'unmatched'
 
 function DocumentCard({
   doc,
   preview,
+  standing,
+  blocking,
   onReview,
 }: {
   doc: UploadedDocument
   preview?: string
+  standing?: Standing
+  blocking?: boolean
   onReview?: () => void
 }) {
   const { analysis } = doc
   const { quality } = analysis
-  const blocked = quality.verdict === 'POOR' && !doc.reviewed
 
   return (
-    <article className="document">
+    <article className={`document ${standing === 'superseded' ? 'superseded' : ''}`}>
       {preview && <img className="preview" src={preview} alt="" />}
 
       <div className="body">
@@ -346,15 +365,20 @@ function DocumentCard({
         </div>
 
         <p className="match">
-          {analysis.matchedRequiredDocument ? (
+          {!analysis.matchedRequiredDocument ? (
+            <span className="confidence low">Matches none of the documents this case needs — kept anyway</span>
+          ) : standing === 'superseded' ? (
+            <>
+              Sent as <strong>{analysis.matchedRequiredDocument}</strong>{' '}
+              <span className="confidence">— a later upload is the one that counts</span>
+            </>
+          ) : (
             <>
               Counts as <strong>{analysis.matchedRequiredDocument}</strong>{' '}
               <span className={`confidence ${analysis.matchConfidence.toLowerCase()}`}>
                 — the agent is {CONFIDENCE_LABEL[analysis.matchConfidence]}
               </span>
             </>
-          ) : (
-            <span className="confidence low">Matches none of the documents this case needs — kept anyway</span>
           )}
         </p>
 
@@ -368,7 +392,8 @@ function DocumentCard({
               ))}
             </ul>
           )}
-          {onReview && blocked && (
+          {/* Only where a review would actually move the case — see blockedDocumentIds. */}
+          {onReview && blocking && (
             <button className="review" onClick={onReview}>
               I can read this — let the case proceed
             </button>
