@@ -84,15 +84,49 @@ class CaseController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(CaseDesk.UnknownCaseException.class)
-    ResponseEntity<Map<String, String>> unknownCase(CaseDesk.UnknownCaseException e) {
+    /**
+     * One turn of the Case Chat. Blocks for one model call plus whatever the agent's tools cost it,
+     * which is the one endpoint here that can run several.
+     */
+    @PostMapping("/{id}/chat")
+    ChatAnswer chat(@PathVariable String id, @RequestBody Question question) {
+        ChatAnswer answered = desk.chat(id, question.question());
+        log.info(
+                "Case chat on {}: {} tool call(s), {} proposal(s) raised",
+                id,
+                answered.turn().toolCalls().size(),
+                answered.turn().proposalIds().size());
+        return answered;
+    }
+
+    /** The click that turns a Proposal into a write. The only path by which one ever does. */
+    @PostMapping("/proposals/{proposalId}/confirm")
+    ProposalCard confirm(@PathVariable String proposalId) {
+        log.info("Proposal {} confirmed by a case handler", proposalId);
+        return desk.confirm(proposalId);
+    }
+
+    @PostMapping("/proposals/{proposalId}/decline")
+    ProposalCard decline(@PathVariable String proposalId) {
+        log.info("Proposal {} declined by a case handler", proposalId);
+        return desk.decline(proposalId);
+    }
+
+    /** What a Case Handler types. A record rather than a raw string so the JSON has a name in it. */
+    record Question(String question) {}
+
+    @ExceptionHandler({CaseDesk.UnknownCaseException.class, CaseDesk.UnknownProposalException.class})
+    ResponseEntity<Map<String, String>> notFound(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
     }
 
-    /** Opening a Case runs two agents, so the same failure mode as upload applies — show the real cause. */
+    /**
+     * Opening a Case runs two agents and a chat turn runs at least one more, so the same failure
+     * mode as upload applies — show the real cause rather than leaving a blank panel on screen.
+     */
     @ExceptionHandler(RuntimeException.class)
     ResponseEntity<Map<String, String>> agentFailed(RuntimeException e) {
-        log.error("Case could not be opened", e);
+        log.error("Case could not be read", e);
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
                 .body(Map.of("message", "The case could not be read: " + e.getMessage()));
     }

@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import {
+  askCaseChat,
+  confirmProposal,
   createCase,
+  declineProposal,
   listCaseTypes,
   listCases,
   listDocuments,
@@ -10,10 +13,13 @@ import {
   type CaseDetail,
   type CaseOverview,
   type CaseStatus,
+  type ChatTurn,
   type CreatedCase,
   type MatchConfidence,
+  type ProposalCard,
   type Quality,
   type SupportedCaseType,
+  type ToolCall,
   type UploadedDocument,
 } from './api'
 
@@ -34,6 +40,24 @@ const CONFIDENCE_LABEL: Record<MatchConfidence, string> = {
   MEDIUM: 'fairly sure',
   LOW: 'unsure',
 }
+
+/**
+ * What each tool call reads as under an answer. The point is that an audience — and a case handler —
+ * can see the agent doing something rather than appearing to be a chatbot with a large prompt.
+ */
+const TOOL_LABEL: Record<string, string> = {
+  documentDetail: 'Looked up',
+  readDocument: 'Read the file',
+  proposeReview: 'Suggested reviewing',
+  proposeDocumentRequest: 'Suggested asking for',
+}
+
+/** Three questions worth asking, so an empty chat is not a blank box. The third provokes a tool call. */
+const SUGGESTED_QUESTIONS = [
+  'What is this case waiting on?',
+  'Do any of the documents disagree with each other?',
+  'Look at the poorest scan again — what can you make out?',
+]
 
 /**
  * Two audiences, one app, split by URL rather than a toggle: the claimant on `/`, the case handler
@@ -323,8 +347,17 @@ function CaseIntakeScreen({
           status: intro.status,
           requiredDocuments: intro.requiredDocuments,
           outstanding: intro.requiredDocuments,
+          documentRequests: [],
         }
-      : { id: caseId, reference: '', typeLabel: '', status: 'AWAITING_DOCUMENTS', requiredDocuments: [], outstanding: [] })
+      : {
+          id: caseId,
+          reference: '',
+          typeLabel: '',
+          status: 'AWAITING_DOCUMENTS',
+          requiredDocuments: [],
+          outstanding: [],
+          documentRequests: [],
+        })
 
   async function refreshOverview() {
     const all = await listCases()
@@ -332,11 +365,22 @@ function CaseIntakeScreen({
   }
 
   useEffect(() => {
-    refreshOverview().catch((e: Error) => setError(e.message))
-    // Show what has already been sent to this case. Bytes are never stored, so these have no preview.
+    function refresh() {
+      refreshOverview().catch((e: Error) => setError(e.message))
+    }
+
+    refresh()
+    // Show what has already been sent to this case. The bytes are never served back, so these have
+    // no preview.
     listDocuments()
       .then((all) => setDocuments(all.filter((d) => d.caseId === caseId)))
       .catch((e: Error) => setError(e.message))
+
+    // The case list is a pure lookup with no model call behind it, which is what makes polling it
+    // reasonable: it is how a document request a case handler has just confirmed appears here
+    // without the claimant reloading the page.
+    const polling = setInterval(refresh, 5000)
+    return () => clearInterval(polling)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId])
 
@@ -445,20 +489,45 @@ function CaseIntakeScreen({
   )
 }
 
-/** What the case still needs. Ticked items are matched; the rest is what is left to do. */
+/**
+ * What the case still needs. Ticked items are matched; the rest is what is left to do.
+ *
+ * Anything a case handler has additionally asked for sits directly underneath, in the same card and
+ * deliberately not in the same list: the checklist is what the case status is derived from, and a
+ * request is a question that does not move the case either way.
+ */
 function Checklist({ chosen }: { chosen: CaseOverview }) {
   return (
-    <ul className="checklist">
-      {chosen.requiredDocuments.map((required) => {
-        const outstanding = chosen.outstanding.includes(required)
-        return (
-          <li key={required} className={outstanding ? 'outstanding' : 'matched'}>
-            <span aria-hidden>{outstanding ? '○' : '✓'}</span>
-            {required}
-          </li>
-        )
-      })}
-    </ul>
+    <div className="checklist">
+      <ul>
+        {chosen.requiredDocuments.map((required) => {
+          const outstanding = chosen.outstanding.includes(required)
+          return (
+            <li key={required} className={outstanding ? 'outstanding' : 'matched'}>
+              <span aria-hidden>{outstanding ? '○' : '✓'}</span>
+              {required}
+            </li>
+          )
+        })}
+      </ul>
+
+      {chosen.documentRequests.length > 0 && (
+        <div className="asked-for">
+          <h3>Your case handler has also asked for</h3>
+          <ul>
+            {chosen.documentRequests.map((request) => (
+              <li key={request.id}>
+                <span aria-hidden>✉</span>
+                <span>
+                  <strong>{request.label}</strong>
+                  <small>{request.reason}</small>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -503,7 +572,12 @@ function HandlerScreen() {
         <button className="back" onClick={() => setOpen(null)}>
           ← All cases
         </button>
-        <CaseScreen detail={open} onReview={review} error={error} />
+        <CaseScreen
+          detail={open}
+          onReview={review}
+          onCaseChanged={() => show(open.overview.id)}
+          error={error}
+        />
       </>
     )
   }
@@ -552,21 +626,145 @@ function HandlerScreen() {
 function CaseScreen({
   detail,
   onReview,
+  onCaseChanged,
   error,
 }: {
   detail: CaseDetail
   onReview: (documentId: string, caseId: string) => Promise<void>
+  onCaseChanged: () => Promise<void>
   error: string | null
 }) {
   const { overview } = detail
 
   return (
-    <>
-      <header>
-        <h1>{overview.typeLabel}</h1>
-        <p className="case-reference-line">{overview.reference}</p>
-        <p className={`status ${overview.status.toLowerCase()}`}>{STATUS_LABEL[overview.status]}</p>
-      </header>
+    <div className="with-chat">
+      <div className="case-contents">
+        <header>
+          <h1>{overview.typeLabel}</h1>
+          <p className="case-reference-line">{overview.reference}</p>
+          <p className={`status ${overview.status.toLowerCase()}`}>{STATUS_LABEL[overview.status]}</p>
+        </header>
+
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
+
+        <section className="agent-prose">
+          <h2>Where this stands</h2>
+          <p>{detail.statusNote}</p>
+        </section>
+
+        <Checklist chosen={overview} />
+
+        <section className="agent-prose">
+          <h2>Across the documents</h2>
+          <p>{detail.summary}</p>
+        </section>
+
+        <section className="documents">
+          {detail.documents.length === 0 && <p className="empty">Nothing uploaded to this case yet.</p>}
+          {detail.documents.map((doc) => (
+            <DocumentCard
+              key={doc.id}
+              doc={doc}
+              standing={standingOf(doc, detail)}
+              blocking={detail.blockedDocumentIds.includes(doc.id)}
+              onReview={() => void onReview(doc.id, doc.caseId)}
+            />
+          ))}
+        </section>
+      </div>
+
+      <CaseChat detail={detail} onCaseChanged={onCaseChanged} />
+    </div>
+  )
+}
+
+/* --- the case chat -------------------------------------------------------- */
+
+/**
+ * A conversation about the one case beside it, so an answer and the document it came from are on
+ * screen together.
+ *
+ * The turns and the proposals are seeded from the case detail — both are kept server-side, so a
+ * handler who goes back to the list and returns does not lose the conversation. Local state carries
+ * the turn they are typing now; re-opening the case resyncs from what came back.
+ */
+function CaseChat({ detail, onCaseChanged }: { detail: CaseDetail; onCaseChanged: () => Promise<void> }) {
+  const [turns, setTurns] = useState<ChatTurn[]>(detail.conversation)
+  const [proposals, setProposals] = useState<ProposalCard[]>(detail.proposals)
+  const [question, setQuestion] = useState('')
+  const [thinking, setThinking] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    setTurns(detail.conversation)
+    setProposals(detail.proposals)
+  }, [detail])
+
+  async function ask(asked: string) {
+    if (!asked.trim() || thinking) return
+    setError(null)
+    setThinking(true)
+    setQuestion('')
+    try {
+      const answered = await askCaseChat(detail.overview.id, asked)
+      setTurns((current) => [...current, answered.turn])
+      setProposals(answered.proposals)
+    } catch (e) {
+      setError((e as Error).message)
+    } finally {
+      setThinking(false)
+    }
+  }
+
+  // A confirmed review moves the case, so the screen beside this one has to be read again. Nothing
+  // else a card can do changes anything the case screen shows.
+  async function resolve(proposal: ProposalCard, confirmed: boolean) {
+    setError(null)
+    try {
+      const resolved = confirmed ? await confirmProposal(proposal.id) : await declineProposal(proposal.id)
+      setProposals((current) => current.map((p) => (p.id === resolved.id ? resolved : p)))
+      if (confirmed && resolved.kind === 'REVIEW') await onCaseChanged()
+    } catch (e) {
+      setError((e as Error).message)
+    }
+  }
+
+  return (
+    <aside className="chat">
+      <h2>Ask about this case</h2>
+
+      <div className="turns">
+        {turns.length === 0 && !thinking && (
+          <div className="suggestions">
+            <p className="empty">Nothing asked yet.</p>
+            {SUGGESTED_QUESTIONS.map((suggested) => (
+              <button key={suggested} className="chip" onClick={() => void ask(suggested)}>
+                {suggested}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {turns.map((turn, index) => (
+          <Turn
+            key={index}
+            turn={turn}
+            proposals={proposals.filter((p) => turn.proposalIds.includes(p.id))}
+            onResolve={resolve}
+          />
+        ))}
+
+        {thinking && (
+          <p className="reading">
+            <span className="spinner" aria-hidden />
+            Reading the case…
+          </p>
+        )}
+      </div>
 
       {error && (
         <p className="error" role="alert">
@@ -574,32 +772,104 @@ function CaseScreen({
         </p>
       )}
 
-      <section className="agent-prose">
-        <h2>Where this stands</h2>
-        <p>{detail.statusNote}</p>
-      </section>
-
-      <Checklist chosen={overview} />
-
-      <section className="agent-prose">
-        <h2>Across the documents</h2>
-        <p>{detail.summary}</p>
-      </section>
-
-      <section className="documents">
-        {detail.documents.length === 0 && <p className="empty">Nothing uploaded to this case yet.</p>}
-        {detail.documents.map((doc) => (
-          <DocumentCard
-            key={doc.id}
-            doc={doc}
-            standing={standingOf(doc, detail)}
-            blocking={detail.blockedDocumentIds.includes(doc.id)}
-            onReview={() => void onReview(doc.id, doc.caseId)}
-          />
-        ))}
-      </section>
-    </>
+      <form
+        className="asking"
+        onSubmit={(e) => {
+          e.preventDefault()
+          void ask(question)
+        }}
+      >
+        <input
+          value={question}
+          disabled={thinking}
+          placeholder="What is the total on the receipt?"
+          onChange={(e) => setQuestion(e.target.value)}
+        />
+        <button type="submit" disabled={thinking || !question.trim()}>
+          Ask
+        </button>
+      </form>
+    </aside>
   )
+}
+
+function Turn({
+  turn,
+  proposals,
+  onResolve,
+}: {
+  turn: ChatTurn
+  proposals: ProposalCard[]
+  onResolve: (proposal: ProposalCard, confirmed: boolean) => Promise<void>
+}) {
+  return (
+    <div className="turn">
+      <p className="asked">{turn.question}</p>
+      <p className="answered">{turn.answer}</p>
+
+      {turn.toolCalls.length > 0 && (
+        <ul className="tools">
+          {turn.toolCalls.map((call, index) => (
+            <li key={index}>{toolLabel(call)}</li>
+          ))}
+        </ul>
+      )}
+
+      {proposals.map((proposal) => (
+        <ProposalCardView key={proposal.id} proposal={proposal} onResolve={onResolve} />
+      ))}
+    </div>
+  )
+}
+
+/** A suggestion, and the two buttons that are the only way anything it suggests ever happens. */
+function ProposalCardView({
+  proposal,
+  onResolve,
+}: {
+  proposal: ProposalCard
+  onResolve: (proposal: ProposalCard, confirmed: boolean) => Promise<void>
+}) {
+  const what =
+    proposal.kind === 'REVIEW'
+      ? `Review ${proposal.subject} — let the case proceed despite its quality`
+      : `Ask the claimant for ${proposal.subject}`
+
+  return (
+    <div className={`proposal ${proposal.state.toLowerCase()}`}>
+      <strong>{what}</strong>
+      <p>{proposal.reason}</p>
+
+      {proposal.state === 'PROPOSED' ? (
+        <div className="decide">
+          <button className="confirm" onClick={() => void onResolve(proposal, true)}>
+            Confirm
+          </button>
+          <button className="decline" onClick={() => void onResolve(proposal, false)}>
+            Decline
+          </button>
+        </div>
+      ) : (
+        <p className="decided">{proposal.state === 'CONFIRMED' ? 'Confirmed by you.' : 'Declined by you.'}</p>
+      )}
+    </div>
+  )
+}
+
+/**
+ * One tool call, in words. The first argument is the document or label the call was about, which is
+ * the part a handler needs in order to go and check the answer against the artefact.
+ */
+function toolLabel(call: ToolCall): string {
+  const name = TOOL_LABEL[call.name] ?? call.name
+  try {
+    const subject = Object.values(JSON.parse(call.arguments) as Record<string, unknown>)
+      .map(String)
+      .find((value) => value.length > 0)
+    return subject ? `${name} ${subject}` : name
+  } catch {
+    return name
+  }
 }
 
 /**

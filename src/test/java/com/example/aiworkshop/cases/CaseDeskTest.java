@@ -13,6 +13,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.aiworkshop.document.DocumentAnalysis;
+import com.example.aiworkshop.document.DocumentFiles;
+import com.example.aiworkshop.document.DocumentReader;
 import com.example.aiworkshop.document.DocumentStore;
 import com.example.aiworkshop.document.MatchConfidence;
 import com.example.aiworkshop.document.QualityAssessment;
@@ -41,9 +43,22 @@ class CaseDeskTest {
     private final CaseStore cases = new CaseStore();
     private final DocumentStore documents = new DocumentStore();
     private final CaseSummaryStore summaries = new CaseSummaryStore();
+    private final ProposalStore proposals = new ProposalStore();
+    private final DocumentRequestStore requests = new DocumentRequestStore();
     private final CaseSummarizer summarizer = mock(CaseSummarizer.class);
     private final CaseStatusWriter statusWriter = mock(CaseStatusWriter.class);
-    private final CaseDesk desk = new CaseDesk(cases, documents, summaries, summarizer, statusWriter);
+    private final CaseDesk desk = new CaseDesk(
+            cases,
+            documents,
+            summaries,
+            proposals,
+            requests,
+            new CaseChatStore(),
+            mock(DocumentFiles.class),
+            summarizer,
+            statusWriter,
+            mock(CaseChatAgent.class),
+            mock(DocumentReader.class));
 
     @BeforeEach
     void aCaseWithOneUnreadableDocument() {

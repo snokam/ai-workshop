@@ -19,6 +19,12 @@ import java.util.List;
  *     Review would change anything for. Always a subset of {@code countingDocumentIds}
  * @param summary the Case Summary, written across all the Documents
  * @param statusNote where the Case stands and the next move, written over the derived facts
+ * @param proposals every Proposal the Case Chat agent has raised on this Case, whatever became of
+ *     it. Costs no model call — a Proposal outlives the answer that raised it, so an unanswered
+ *     suggestion is still on screen when the handler comes back to the Case
+ * @param conversation the Case Chat so far, oldest turn first. Also free: the turns were written
+ *     when they were answered, and opening a Case still costs exactly the two model calls it did
+ *     before the chat existed
  */
 public record CaseDetail(
         CaseOverview overview,
@@ -26,4 +32,6 @@ public record CaseDetail(
         List<String> countingDocumentIds,
         List<String> blockedDocumentIds,
         String summary,
-        String statusNote) {}
+        String statusNote,
+        List<ProposalCard> proposals,
+        List<ChatTurn> conversation) {}

@@ -5,9 +5,11 @@ import java.time.Instant;
 /**
  * A file someone uploaded, together with what the intake agent made of it.
  *
- * <p>The bytes are not kept. The browser already holds the file it just sent, so it can render its
- * own preview; storing a second copy server-side would buy nothing until documents have to outlive
- * the page that uploaded them.
+ * <p>The bytes are not here, but they are kept: {@link DocumentFiles} holds them under this
+ * record's {@code id}. There is deliberately no path component — the path is derivable from the
+ * identifier, and a stored one is a second source of truth that can disagree with where the file
+ * actually is. The Claimant's screen still renders its preview from the file the browser already
+ * holds, so nothing about that path changed. See ADR 0004.
  *
  * @param id opaque identifier, generated on upload
  * @param caseId the Case this Document belongs to. Never absent — a Document uploaded into nothing

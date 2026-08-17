@@ -15,9 +15,11 @@ import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.ArgumentCaptor;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -45,11 +47,32 @@ class DocumentIntakeTest {
     private final DocumentAnalyzer analyzer = mock(DocumentAnalyzer.class);
     private final DocumentStore store = new DocumentStore();
     private final CaseStore cases = new CaseStore();
-    private final DocumentIntake intake = new DocumentIntake(analyzer, store, cases);
+
+    @TempDir
+    Path directory;
+
+    private DocumentFiles files;
+    private DocumentIntake intake;
 
     @BeforeEach
-    void theClaimantHasACase() {
-        cases.save(new Case(CASE_ID, "CASE-2026-001", CaseType.HOME_CONTENTS, List.of("proof of identity", "receipt")));
+    void theClaimantHasACase() throws IOException {
+        cases.save(new Case(
+                CASE_ID, "CASE-2026-001", CaseType.HOME_CONTENTS, List.of("proof of identity", "receipt")));
+        files = new DocumentFiles(directory);
+        intake = new DocumentIntake(analyzer, store, cases, files);
+    }
+
+    /**
+     * The Extraction is what an agent made of a file, not the file. Keeping the bytes is what lets
+     * the case chat go back and read the thing itself — see ADR 0004.
+     */
+    @Test
+    void theUploadedBytesAreKeptSoAnAgentCanLookAgain() throws IOException {
+        when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
+
+        UploadedDocument document = intake.accept(CASE_ID, image("blurry.jpg"));
+
+        assertThat(files.read(document.id())).isEqualTo(new byte[] {1, 2, 3});
     }
 
     /**
