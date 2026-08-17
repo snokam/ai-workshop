@@ -10,9 +10,16 @@ import java.util.List;
  *
  * @param id the Case identifier
  * @param reference the human-readable name the handler recognises the Case by
+ * @param typeLabel the kind of case it is, e.g. "Travel insurance claim" — so the list reads as claims
+ *     rather than reference numbers
  * @param status derived from the attached Documents on every read
  * @param requiredDocuments everything this Case needs before it can be decided
  * @param outstanding the subset of those that nothing has matched yet — what the Case is waiting for
  */
 public record CaseOverview(
-        String id, String reference, CaseStatus status, List<String> requiredDocuments, List<String> outstanding) {}
+        String id,
+        String reference,
+        String typeLabel,
+        CaseStatus status,
+        List<String> requiredDocuments,
+        List<String> outstanding) {}

@@ -47,9 +47,26 @@ export interface UploadedDocument {
 export interface CaseOverview {
   id: string
   reference: string
+  /** The kind of case, e.g. "Travel insurance claim" — so the list reads as claims, not numbers. */
+  typeLabel: string
   status: CaseStatus
   requiredDocuments: string[]
   outstanding: string[]
+}
+
+/**
+ * A case just opened from a free-text description. The `typeLabel`, `confidence` and `rationale`
+ * are the classifier's account of why this kind of case — shown once, at creation, and not stored
+ * on the case afterwards.
+ */
+export interface CreatedCase {
+  id: string
+  reference: string
+  typeLabel: string
+  confidence: MatchConfidence
+  rationale: string
+  requiredDocuments: string[]
+  status: CaseStatus
 }
 
 /** One case, opened. Costs two model calls, so only ever fetched for the case being looked at. */
@@ -84,12 +101,34 @@ async function json<T>(response: Response): Promise<T> {
   return response.json() as Promise<T>
 }
 
+/** One kind of insurance the system can open a case for, for the front page to list. */
+export interface SupportedCaseType {
+  label: string
+  description: string
+}
+
 export async function listCases(): Promise<CaseOverview[]> {
   return json(await fetch('/api/cases'))
 }
 
+/** The insurance types the classifier can land on — shown on the front page so people know the scope. */
+export async function listCaseTypes(): Promise<SupportedCaseType[]> {
+  return json(await fetch('/api/cases/types'))
+}
+
 export async function openCase(caseId: string): Promise<CaseDetail> {
   return json(await fetch(`/api/cases/${caseId}`))
+}
+
+/** Opens a case from what the claimant typed. One classifier call runs on the backend. */
+export async function createCase(description: string): Promise<CreatedCase> {
+  return json(
+    await fetch('/api/cases', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description }),
+    }),
+  )
 }
 
 export async function reviewDocument(documentId: string): Promise<void> {

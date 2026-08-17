@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -46,9 +47,9 @@ class CaseDeskTest {
 
     @BeforeEach
     void aCaseWithOneUnreadableDocument() {
-        cases.save(new Case(CASE_ID, "CASE-2026-001", List.of("receipt")));
+        cases.save(new Case(CASE_ID, "CASE-2026-001", CaseType.HOME_CONTENTS, List.of("receipt")));
         documents.save(document("blurry.jpg", "receipt", Quality.POOR));
-        when(summarizer.summarise(anyList())).thenReturn("What the documents say, taken together.");
+        when(summarizer.summarise(anyString(), anyList())).thenReturn("What the documents say, taken together.");
     }
 
     @Test
@@ -115,7 +116,7 @@ class CaseDeskTest {
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<String>> blocked = ArgumentCaptor.forClass(List.class);
-        verify(statusWriter).write(eq(CaseStatus.NEEDS_REVIEW), eq(List.of()), blocked.capture());
+        verify(statusWriter).write(anyString(), eq(CaseStatus.NEEDS_REVIEW), eq(List.of()), blocked.capture());
         assertThat(blocked.getValue()).singleElement(as(STRING)).contains("blurry.jpg");
     }
 
@@ -128,7 +129,7 @@ class CaseDeskTest {
         desk.open(CASE_ID);
         desk.open(CASE_ID);
 
-        verify(summarizer, times(1)).summarise(anyList());
+        verify(summarizer, times(1)).summarise(anyString(), anyList());
     }
 
     /** And it does go stale: a Document arriving is the one thing the summary is written over. */
@@ -139,7 +140,7 @@ class CaseDeskTest {
         documents.save(document("better.jpg", "receipt", Quality.GOOD, AT_TEN));
         desk.open(CASE_ID);
 
-        verify(summarizer, times(2)).summarise(anyList());
+        verify(summarizer, times(2)).summarise(anyString(), anyList());
     }
 
     /** A Review changes a handler's judgement of a Document, not a word of what it says. */
@@ -150,7 +151,7 @@ class CaseDeskTest {
         desk.review("blurry.jpg");
         desk.open(CASE_ID);
 
-        verify(summarizer, times(1)).summarise(anyList());
+        verify(summarizer, times(1)).summarise(anyString(), anyList());
     }
 
     /** The cheap agent is not cached: the derived facts it writes up change under it. */
@@ -159,13 +160,13 @@ class CaseDeskTest {
         desk.open(CASE_ID);
         desk.open(CASE_ID);
 
-        verify(statusWriter, times(2)).write(any(), anyList(), anyList());
+        verify(statusWriter, times(2)).write(anyString(), any(), anyList(), anyList());
     }
 
     private List<DocumentForSummary> capturedProjections() {
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<DocumentForSummary>> captor = ArgumentCaptor.forClass(List.class);
-        verify(summarizer).summarise(captor.capture());
+        verify(summarizer).summarise(anyString(), captor.capture());
         return captor.getValue();
     }
 

@@ -24,24 +24,28 @@ public interface CaseStatusWriter {
             """
             You write the one-line situation report at the top of a case handler's screen.
 
-            You are given facts that have already been worked out, not documents. Do not speculate
-            about what is in the case beyond what you are told, and do not invent a status — the
-            status you are given is the status.
+            You are given facts that have already been worked out, not documents: the kind of case it
+            is, its status, and what it is waiting on. Do not speculate about what is in the case
+            beyond what you are told, and do not invent a status — the status you are given is the
+            status.
 
-            Two short sentences: where the case stands, and the next move. Address the case handler
-            directly. The next move must be something a person can actually do — chase a claimant for
-            a named document, review a named file, decide the case. If the case is waiting on the
-            claimant, say so, so the handler knows it is not theirs to act on.
+            Two short sentences: where the case stands, and the next move. Name the kind of case so
+            the handler knows at a glance what they are looking at. Address the case handler directly.
+            The next move must be something a person can actually do — chase a claimant for a named
+            document, review a named file, decide the case. If the case is waiting on the claimant,
+            say so, so the handler knows it is not theirs to act on.
 
             No preamble, no restating the case reference back. Write in English.
             """)
     @UserMessage(
             """
+            Case type: {{caseType}}
             Status: {{status}}
             Still waiting for: {{outstanding}}
             Too poor to work with, and not yet reviewed: {{blocked}}
             """)
     String write(
+            @V("caseType") String caseType,
             @V("status") CaseStatus status,
             @V("outstanding") List<String> outstandingRequiredDocuments,
             @V("blocked") List<String> blockedDocuments);

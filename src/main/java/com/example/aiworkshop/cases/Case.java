@@ -18,10 +18,12 @@ import java.util.Optional;
  *
  * @param id opaque identifier, used on the API and on every Document that belongs to this Case
  * @param reference the human-readable name a Case Handler recognises the Case by
- * @param requiredDocuments what this Case needs before it can be decided, as plain labels — the four
- *     Document Types are not named yet, so these are described rather than typed (see ADR 0001)
+ * @param type the {@link CaseType} the Case was opened as — the kind of claim it is, which frames how
+ *     the handler-side agents read across it (see ADR 0003)
+ * @param requiredDocuments what this Case needs before it can be decided, as plain labels — copied
+ *     from the {@link CaseType} at creation, so they stay the source of truth for the checklist
  */
-public record Case(String id, String reference, List<String> requiredDocuments) {
+public record Case(String id, String reference, CaseType type, List<String> requiredDocuments) {
 
     /** Derived on read from the Documents attached to this Case. */
     public CaseStatus status(List<UploadedDocument> documents) {
