@@ -3,12 +3,9 @@ package com.example.aiworkshop.document;
 import com.example.aiworkshop.cases.Case;
 import com.example.aiworkshop.cases.CaseStore;
 import dev.langchain4j.data.message.Content;
-import dev.langchain4j.data.message.ImageContent;
-import dev.langchain4j.data.message.PdfFileContent;
 import dev.langchain4j.data.message.TextContent;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -27,19 +24,24 @@ public class DocumentIntake {
     private final DocumentAnalyzer analyzer;
     private final DocumentStore store;
     private final CaseStore cases;
+    private final DocumentFiles files;
 
-    DocumentIntake(DocumentAnalyzer analyzer, DocumentStore store, CaseStore cases) {
+    DocumentIntake(DocumentAnalyzer analyzer, DocumentStore store, CaseStore cases, DocumentFiles files) {
         this.analyzer = analyzer;
         this.store = store;
         this.cases = cases;
+        this.files = files;
     }
 
     public UploadedDocument accept(String caseId, MultipartFile file) throws IOException {
         Case theCase =
                 cases.findById(caseId).orElseThrow(() -> new UnknownCaseException("No such case: " + caseId));
         String mimeType = resolveMimeType(file);
+        String id = UUID.randomUUID().toString();
+        // Kept before the agent runs, at the point the bytes are already in hand. See ADR 0003.
+        files.save(id, file.getBytes());
         UploadedDocument document = new UploadedDocument(
-                UUID.randomUUID().toString(),
+                id,
                 caseId,
                 file.getOriginalFilename(),
                 mimeType,
@@ -61,11 +63,8 @@ public class DocumentIntake {
      * user-supplied text going into a prompt, which is not somewhere user-supplied text belongs.
      */
     private List<Content> promptFor(MultipartFile file, String mimeType) throws IOException {
-        String base64 = Base64.getEncoder().encodeToString(file.getBytes());
-        Content fileContent = mimeType.equals("application/pdf")
-                ? PdfFileContent.from(base64, mimeType)
-                : ImageContent.from(base64, mimeType);
-        return List.of(TextContent.from("Analyse the attached file."), fileContent);
+        return List.of(
+                TextContent.from("Analyse the attached file."), DocumentFiles.contentOf(file.getBytes(), mimeType));
     }
 
     /**

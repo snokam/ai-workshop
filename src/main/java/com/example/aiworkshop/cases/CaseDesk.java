@@ -1,8 +1,14 @@
 package com.example.aiworkshop.cases;
 
+import com.example.aiworkshop.document.DocumentFiles;
+import com.example.aiworkshop.document.DocumentReader;
 import com.example.aiworkshop.document.DocumentStore;
 import com.example.aiworkshop.document.UploadedDocument;
+import dev.langchain4j.data.message.TextContent;
+import dev.langchain4j.service.Result;
 import java.util.List;
+import java.util.UUID;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,20 +28,38 @@ public class CaseDesk {
     private final CaseStore cases;
     private final DocumentStore documents;
     private final CaseSummaryStore summaries;
+    private final ProposalStore proposals;
+    private final DocumentRequestStore requests;
+    private final CaseChatStore chats;
+    private final DocumentFiles files;
     private final CaseSummarizer summarizer;
     private final CaseStatusWriter statusWriter;
+    private final CaseChatAgent chatAgent;
+    private final DocumentReader reader;
 
     CaseDesk(
             CaseStore cases,
             DocumentStore documents,
             CaseSummaryStore summaries,
+            ProposalStore proposals,
+            DocumentRequestStore requests,
+            CaseChatStore chats,
+            DocumentFiles files,
             CaseSummarizer summarizer,
-            CaseStatusWriter statusWriter) {
+            CaseStatusWriter statusWriter,
+            @Lazy CaseChatAgent chatAgent,
+            DocumentReader reader) {
         this.cases = cases;
         this.documents = documents;
         this.summaries = summaries;
+        this.proposals = proposals;
+        this.requests = requests;
+        this.chats = chats;
+        this.files = files;
         this.summarizer = summarizer;
         this.statusWriter = statusWriter;
+        this.chatAgent = chatAgent;
+        this.reader = reader;
     }
 
     /** Every Case with its derived status. No model calls — this is a list the handler skims. */
@@ -60,7 +84,171 @@ public class CaseDesk {
                 idsOf(theCase.countingDocuments(attached)),
                 idsOf(theCase.blockedDocuments(attached)),
                 summaryOf(caseId, attached),
-                statusNote);
+                statusNote,
+                proposalsOn(caseId),
+                chats.findByCaseId(caseId));
+    }
+
+    /**
+     * One turn of the Case Chat. One model call, plus whatever the agent's tools cost it.
+     *
+     * <p>The Case Summary comes out of the same cache {@link #open} fills, so a handler who has
+     * already opened the Case pays nothing extra for the chat to be grounded in it.
+     *
+     * <p>Which Proposals this turn raised is worked out by difference rather than reported by the
+     * tools. A tool that had to report back would be a tool holding state, and the tools hold
+     * nothing.
+     */
+    public ChatAnswer chat(String caseId, String question) {
+        Case theCase = cases.findById(caseId).orElseThrow(() -> new UnknownCaseException(caseId));
+        List<String> before = idsOfProposalsOn(caseId);
+
+        Result<String> answered = chatAgent.answer(caseId, question, glanceAt(theCase));
+
+        List<String> raised = idsOfProposalsOn(caseId).stream()
+                .filter(id -> !before.contains(id))
+                .toList();
+        ChatTurn turn = new ChatTurn(
+                question,
+                answered.content(),
+                answered.toolExecutions().stream().map(ToolCall::of).toList(),
+                raised);
+        chats.append(caseId, turn);
+        return new ChatAnswer(turn, proposalsOn(caseId));
+    }
+
+    /** Everything the agent starts a turn knowing. Anything not here, it has to fetch. */
+    private CaseAtAGlance glanceAt(Case theCase) {
+        List<UploadedDocument> attached = documents.findByCaseId(theCase.id());
+        List<String> counting = idsOf(theCase.countingDocuments(attached));
+        return new CaseAtAGlance(
+                theCase.reference(),
+                theCase.status(attached),
+                theCase.requiredDocuments(),
+                theCase.unmatchedRequiredDocuments(attached),
+                summaryOf(theCase.id(), attached),
+                attached.stream()
+                        .map(document -> DocumentForChat.of(document, counting.contains(document.id())))
+                        .toList(),
+                proposalsOn(theCase.id()));
+    }
+
+    private List<String> idsOfProposalsOn(String caseId) {
+        return proposals.findByCaseId(caseId).stream().map(Proposal::id).toList();
+    }
+
+    /**
+     * One Document, looked at properly: its own summary, everything the intake agent extracted, and
+     * why the Quality Assessment landed where it did.
+     *
+     * <p>This is the other side of the index the agent starts with. Everything here is deliberately
+     * absent from that index, so a Case Chat prompt does not carry every Extraction in the Case.
+     *
+     * <p>Rendered here rather than in the tool, and rendered rather than returned as a record: a
+     * {@code @Tool} method returning anything but a {@code String} has its result turned into JSON,
+     * and what an agent is handed is a decision worth making somewhere it can be read.
+     */
+    public String documentDetail(String caseId, String filename) {
+        return DocumentInDetail.of(documentIn(caseId, filename)).toString();
+    }
+
+    /**
+     * A second agent sent back to the original file with one question. The second model call a turn
+     * can cost, and the only one that puts a Claimant's file in front of a model again.
+     *
+     * <p>The reader is handed the file and the question and nothing about the Case, on purpose. What
+     * comes back is relayed to the Case Chat agent as the tool's result, whatever it says — including
+     * that the file does not show what was asked.
+     */
+    public String readDocument(String caseId, String filename, String question) {
+        UploadedDocument document = documentIn(caseId, filename);
+        return reader.read(
+                List.of(TextContent.from("Look at the attached file."), files.contentOf(document)), question);
+    }
+
+    /**
+     * The agent suggesting a Review. Records a Proposal and nothing else — the Case is exactly where
+     * it was until a Case Handler confirms it.
+     *
+     * <p>The Document is named by filename because that is what the agent was given; identifiers are
+     * unspeakable. It is resolved to one here, at the moment of proposing, so that confirming later
+     * cannot pick a different Document than the one the agent meant.
+     */
+    public ProposalCard proposeReview(String caseId, String filename, String reason) {
+        UploadedDocument document = documentIn(caseId, filename);
+        return raise(new ReviewProposal(
+                UUID.randomUUID().toString(),
+                caseId,
+                document.id(),
+                document.filename(),
+                reason,
+                ProposalState.PROPOSED));
+    }
+
+    /**
+     * The agent suggesting the Claimant be asked for something. Records a Proposal and nothing else.
+     *
+     * <p>The label is free text rather than one of the Required Documents on purpose: the most
+     * useful thing to ask for is often the part of a document that did not arrive, which no
+     * checklist entry names.
+     */
+    public ProposalCard proposeDocumentRequest(String caseId, String label, String reason) {
+        cases.findById(caseId).orElseThrow(() -> new UnknownCaseException(caseId));
+        return raise(new DocumentRequestProposal(
+                UUID.randomUUID().toString(), caseId, label, reason, ProposalState.PROPOSED));
+    }
+
+    /**
+     * A Case Handler saying yes. The one place a Proposal turns into a write.
+     *
+     * <p>The switch is over a sealed type, so adding a third form of Proposal stops compiling here
+     * until someone decides what confirming it means. That is the point of the sealing.
+     */
+    public ProposalCard confirm(String proposalId) {
+        Proposal proposal = proposals.findById(proposalId).orElseThrow(() -> new UnknownProposalException(proposalId));
+        switch (proposal) {
+            case ReviewProposal reviewProposal -> review(reviewProposal.documentId());
+            case DocumentRequestProposal requestProposal ->
+                requests.save(new DocumentRequest(
+                        UUID.randomUUID().toString(),
+                        requestProposal.caseId(),
+                        requestProposal.label(),
+                        requestProposal.reason()));
+        }
+        return raise(proposal.withState(ProposalState.CONFIRMED));
+    }
+
+    /**
+     * A Case Handler saying no. Nothing is performed, and the Proposal is kept rather than deleted —
+     * a declined suggestion is fed back to the agent so it does not make the same one again.
+     */
+    public ProposalCard decline(String proposalId) {
+        Proposal proposal = proposals.findById(proposalId).orElseThrow(() -> new UnknownProposalException(proposalId));
+        return raise(proposal.withState(ProposalState.DECLINED));
+    }
+
+    private ProposalCard raise(Proposal proposal) {
+        proposals.save(proposal);
+        return ProposalCard.of(proposal);
+    }
+
+    private List<ProposalCard> proposalsOn(String caseId) {
+        return proposals.findByCaseId(caseId).stream().map(ProposalCard::of).toList();
+    }
+
+    /**
+     * The one Document in this Case going by that filename, most recent upload first.
+     *
+     * <p>Nothing stops a Claimant uploading two files with the same name, so this is the same rule
+     * {@link Case} uses to pick the Document that counts: the newest wins. Deliberately scoped to one
+     * Case — the agent is bound to a Case by its memory identifier, and this is where that binding
+     * stops it reaching another one.
+     */
+    private UploadedDocument documentIn(String caseId, String filename) {
+        return documents.findByCaseId(caseId).stream()
+                .filter(document -> document.filename().equals(filename))
+                .findFirst()
+                .orElseThrow(() -> new UnknownDocumentException(filename));
     }
 
     /**
@@ -95,7 +283,8 @@ public class CaseDesk {
                 theCase.reference(),
                 theCase.status(attached),
                 theCase.requiredDocuments(),
-                theCase.unmatchedRequiredDocuments(attached));
+                theCase.unmatchedRequiredDocuments(attached),
+                requests.findByCaseId(theCase.id()));
     }
 
     /** The screen already has the Documents; what it is missing is which of them a rule picked out. */
@@ -117,6 +306,25 @@ public class CaseDesk {
     public static class UnknownCaseException extends RuntimeException {
         UnknownCaseException(String caseId) {
             super("No such case: " + caseId);
+        }
+    }
+
+    /** Thrown when a Confirm or a Decline names a Proposal that does not exist. Mapped to 404. */
+    public static class UnknownProposalException extends RuntimeException {
+        UnknownProposalException(String proposalId) {
+            super("No such proposal: " + proposalId);
+        }
+    }
+
+    /**
+     * Thrown when a filename names no Document in this Case.
+     *
+     * <p>Reached by a model naming a file that is not there, so the message is written for one: it
+     * goes back as the tool's result and is the agent's only chance to correct itself.
+     */
+    public static class UnknownDocumentException extends RuntimeException {
+        UnknownDocumentException(String filename) {
+            super("No document called '" + filename + "' is attached to this case.");
         }
     }
 }
