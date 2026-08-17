@@ -56,6 +56,14 @@ export interface CaseOverview {
 export interface CaseDetail {
   overview: CaseOverview
   documents: UploadedDocument[]
+  /**
+   * Which documents the status was derived from — the newest match for each required document. An
+   * attached document not listed here is either superseded by a newer upload of the same required
+   * document, or matched none of them; `matchedRequiredDocument` tells those two apart.
+   */
+  countingDocumentIds: string[]
+  /** The documents holding the case at NEEDS_REVIEW — the only ones a review changes anything for. */
+  blockedDocumentIds: string[]
   summary: string
   statusNote: string
 }
