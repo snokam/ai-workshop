@@ -69,18 +69,6 @@ public class CaseDesk {
                 screeningsFound(attached));
     }
 
-    /**
-     * What the fraud checks found, for the Documents where they found anything.
-     *
-     * <p>A lookup, not a re-run: the checks ran at intake, over bytes nothing keeps. Screenings with
-     * no Indicators are dropped here rather than sent as empty ones — the screen has nothing to draw
-     * for them, and an empty Screening on every honest Document is the fastest way to teach a
-     * handler to stop looking at this part of the page.
-     *
-     * <p>Note what is deliberately missing: none of this reaches {@link Case#status}. A fraud
-     * Indicator is advice to a Case Handler and never a gate. A Case is held by a Quality Assessment
-     * a Review can clear, and by nothing here.
-     */
     private List<FraudScreening> screeningsFound(List<UploadedDocument> attached) {
         return screenings.findAllFor(idsOf(attached)).stream()
                 .filter(FraudScreening::foundSomething)

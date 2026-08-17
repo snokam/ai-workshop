@@ -20,9 +20,7 @@ import java.util.List;
  *     Matching free text to free text is the one job here Java cannot do at all (see ADR 0001)
  * @param matchConfidence how sure the agent is of that match. Shown to a Case Handler, never a gate
  * @param quality the verdict on the file as an artefact: legible, complete, the right document
- * @param manipulationAttempt text inside the Document aimed at the agent rather than at a reader, or
- *     {@code null} — which is almost always. The one component here the Claimant never sees: it
- *     leaves this package as a fraud Indicator on the handler's screen and nowhere else
+ * @param manipulationAttempt text inside the Document aimed at the agent rather than at a reader
  */
 public record DocumentAnalysis(
         @Description("The kind of document, as a short noun phrase, e.g. 'invoice' or 'medical report'.")

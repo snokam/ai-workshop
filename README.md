@@ -4,7 +4,7 @@ Upload a document, and an agent reads it: what kind of document it is, the facts
 of it, and whether the file is legible enough to work with.
 
 The domain language lives in [CONTEXT.md](./CONTEXT.md), and the workshop exercises in
-[tasks/](./tasks).
+[docs/tasks/](./docs/tasks).
 
 ## Running it
 
@@ -74,8 +74,8 @@ Guardrails and screening — what stops a Document talking the agent round:
 
 | | |
 |---|---|
-| `guardrail/UploadedFileGuardrail.java` | input guardrail: only our sentence and one file reach the model |
-| `guardrail/AnalysisGuardrail.java` | output guardrail: a match must be a Required Document this Case asked for |
+| `tasks/task_1_guardrails/UploadedFileGuardrail.java` | input guardrail: only our sentence and one file reach the model |
+| `tasks/task_1_guardrails/AnalysisGuardrail.java` | output guardrail: a match must be a Required Document this Case asked for |
 | `fraud/FraudCheck.java` | the seam — a new check is a new `@Component` and nothing else |
 | `fraud/DuplicateUploadCheck.java` | the same bytes, seen before, on this Case or another |
 | `fraud/ImageMetadataCheck.java` | EXIF: editing software, no camera origin, a capture date out of place |
@@ -83,7 +83,7 @@ Guardrails and screening — what stops a Document talking the agent round:
 | `fraud/AddressedTheAgentCheck.java` | the intake agent's own report of a Document that gave it orders |
 | `fraud/FraudScreener.java` | runs them all; cannot refuse an upload and cannot throw |
 
-Guardrails are [task 1](./tasks/task_1_guardrails). The three layers are demonstrated in
+Guardrails are [task 1](./docs/tasks/task_1_guardrails.md). The three layers are demonstrated in
 [the walkthrough](./docs/guardrails-walkthrough.md), with drag-in files in [`assets/`](./assets). Who sees what is [ADR 0003](./docs/adr/0003-fraud-signals-are-handler-side.md).
 
 Reverse image search is off by default — it is the only thing here that sends a file anywhere but the

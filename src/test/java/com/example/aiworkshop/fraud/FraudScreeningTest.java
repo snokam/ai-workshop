@@ -13,17 +13,9 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
-/** The checks, and the two rules {@link FraudScreener} exists to keep. */
 class FraudScreeningTest {
-
     private final FraudScreeningStore store = new FraudScreeningStore();
 
-    /* --- the screener's own rules -------------------------------------------- */
-
-    /**
-     * The rule the whole package is built around. A check that throws must cost nobody their upload,
-     * and must not take the other checks down with it.
-     */
     @Test
     void aCheckThatThrowsIsSkippedAndTheRestStillRun() {
         FraudCheck broken = file -> {
@@ -37,7 +29,6 @@ class FraudScreeningTest {
         assertThat(second.indicators()).extracting(FraudIndicator::kind).containsExactly(Kind.ALREADY_UPLOADED);
     }
 
-    /** Heaviest first, so a handler reads the STRONG one before three notes about EXIF. */
     @Test
     void indicatorsComeBackHeaviestFirst() {
         FraudCheck note = file -> List.of(FraudIndicator.of(Kind.NO_CAMERA_ORIGIN, Weight.NOTE, "a", List.of()));
@@ -51,8 +42,6 @@ class FraudScreeningTest {
         assertThat(screening.heaviest()).isEqualTo(Weight.STRONG);
     }
 
-    /* --- duplicate detection -------------------------------------------------- */
-
     @Test
     void aFileIsNeverADuplicateOfItself() {
         FraudScreener screener = new FraudScreener(List.of(new DuplicateUploadCheck()), store);
@@ -61,10 +50,6 @@ class FraudScreeningTest {
                 .isEmpty();
     }
 
-    /**
-     * The same expense claimed on two Cases is the reason this check exists, so it outweighs the same
-     * file arriving twice on one Case — which is usually somebody double-clicking.
-     */
     @Test
     void theSameFileOnADifferentCaseWeighsMoreThanOnTheSameOne() {
         FraudScreener screener = new FraudScreener(List.of(new DuplicateUploadCheck()), store);
@@ -88,12 +73,6 @@ class FraudScreeningTest {
                 .isEmpty();
     }
 
-    /* --- the reverse image lookup --------------------------------------------- */
-
-    /**
-     * The distinction the whole {@link ReverseImageLookup} contract turns on: a lookup that did not
-     * run says nothing, and must not be reported as though it had found nothing.
-     */
     @Test
     void aLookupThatDidNotRunProducesNoIndicator() {
         ReverseImageLookup notRun = (image, mimeType) -> Optional.empty();
@@ -122,7 +101,6 @@ class FraudScreeningTest {
         assertThat(partial.weight()).isEqualTo(Weight.CONCERN);
     }
 
-    /** A PDF has no reverse image search, and its silence is not a finding about the document. */
     @Test
     void aPdfIsNotSentToTheImageLookup() {
         ReverseImageLookup neverAsked = (image, mimeType) -> {
@@ -135,8 +113,6 @@ class FraudScreeningTest {
                         .indicators())
                 .isEmpty();
     }
-
-    /* --- what the agent noticed ------------------------------------------------ */
 
     @Test
     void aDocumentThatGaveTheAgentOrdersIsAStrongIndicator() {
@@ -170,8 +146,6 @@ class FraudScreeningTest {
                         .indicators())
                 .isEmpty();
     }
-
-    /* --- the store -------------------------------------------------------------- */
 
     @Test
     void aScreeningIsKeptAgainstTheDocumentItWasMadeFor() {

@@ -17,32 +17,11 @@ import java.util.Locale;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 
-/**
- * What the file says about where it came from.
- *
- * <p>A photograph taken on a phone carries EXIF: the make and model of the camera, the moment the
- * shutter opened, often the lens. A photograph that has been through an image editor usually carries
- * the editor's name as well. Neither fact is conclusive and this class is careful not to pretend
- * otherwise — every route by which an honest photo loses or gains these tags is common:
- *
- * <ul>
- *   <li>Messaging apps and social networks strip EXIF from everything that passes through them.
- *   <li>A screenshot of a document has no camera metadata and never did.
- *   <li>Cropping a photo to remove a bystander writes an editor's name into it.
- * </ul>
- *
- * <p>So the weights here are low by design. These are the Indicators that earn their place by
- * accumulating — an image with no camera origin, edited in Photoshop, whose capture date is a year
- * before the incident is a different proposition from any one of those alone.
- */
 @Component
 class ImageMetadataCheck implements FraudCheck {
-
-    /** Names that appear in the Software tag of files that have been through an editor. */
     private static final List<String> EDITORS =
             List.of("photoshop", "gimp", "lightroom", "affinity", "pixelmator", "paint.net", "canva", "inkscape");
 
-    /** Older than this before the upload and the date is worth a handler noticing. */
     private static final Duration LONG_AGO = Duration.ofDays(365);
 
     @Override
@@ -55,8 +34,6 @@ class ImageMetadataCheck implements FraudCheck {
         try {
             metadata = ImageMetadataReader.readMetadata(new ByteArrayInputStream(file.content()));
         } catch (Exception e) {
-            // An unreadable header says nothing about honesty; the quality assessment is where an
-            // unusable file gets reported.
             return List.of();
         }
 
@@ -85,11 +62,6 @@ class ImageMetadataCheck implements FraudCheck {
                 List.of("Software: " + software)));
     }
 
-    /**
-     * A capture date after the upload is a clock that has been moved, which is not something an
-     * honest file does. A capture date long before it is ordinary for old paperwork and merely worth
-     * seeing next to what the Case is about.
-     */
     private static Optional<FraudIndicator> captureDate(Metadata metadata) {
         ExifSubIFDDirectory exif = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
         Date taken = exif == null ? null : exif.getDateOriginal();

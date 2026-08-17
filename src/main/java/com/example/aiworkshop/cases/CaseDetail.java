@@ -20,9 +20,7 @@ import java.util.List;
  *     Review would change anything for. Always a subset of {@code countingDocumentIds}
  * @param summary the Case Summary, written across all the Documents
  * @param statusNote where the Case stands and the next move, written over the derived facts
- * @param screenings what the fraud checks found on these Documents, for the Documents where they
- *     found anything. Present on this record and on no other, because this is the only one built for
- *     a Case Handler — the Claimant's endpoints answer with a projection that has no route to it
+ * @param screenings what the fraud checks found on these Documents
  */
 public record CaseDetail(
         CaseOverview overview,

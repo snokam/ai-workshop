@@ -9,7 +9,7 @@ teaches nobody anything about agents. Try it yourself, then read what is there a
 
 | | |
 |---|---|
-| [task_1_guardrails](./task_1_guardrails) | A document that gives the agent orders, and the two guardrails that make it not matter whether the agent obeys |
+| [task_1_guardrails](./task_1_guardrails.md) | A document that gives the agent orders, and the two guardrails that make it not matter whether the agent obeys |
 
-The domain language every task uses is in [CONTEXT.md](../CONTEXT.md). The decisions behind the
-application, including the ones that were rejected, are in [docs/adr](../docs/adr).
+The domain language every task uses is in [CONTEXT.md](../../CONTEXT.md). The decisions behind the
+application, including the ones that were rejected, are in [docs/adr](../adr).

@@ -16,14 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-/**
- * The API the upload screen talks to. Three endpoints, no more than a Claimant needs.
- *
- * <p>Every one of them answers with {@link DocumentForClaimant} rather than {@link UploadedDocument}.
- * This is the Claimant's side of the application, and the projection is what keeps the agent's
- * manipulation report — and, through it, everything the fraud Screening is built on — on the
- * handler's side of the wall.
- */
+/** The API the upload screen talks to. Three endpoints, no more than a Claimant needs. */
 @RestController
 @RequestMapping("/api/documents")
 class DocumentController {

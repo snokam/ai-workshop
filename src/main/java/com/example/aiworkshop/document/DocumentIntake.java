@@ -4,7 +4,7 @@ import com.example.aiworkshop.cases.Case;
 import com.example.aiworkshop.cases.CaseStore;
 import com.example.aiworkshop.fraud.FraudScreener;
 import com.example.aiworkshop.fraud.ScreenedFile;
-import com.example.aiworkshop.guardrail.UploadedFileGuardrail;
+import com.example.aiworkshop.tasks.task_1_guardrails.UploadedFileGuardrail;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;
@@ -22,14 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
  * Accepts an upload, hands the raw file to the intake agent, stores the result, and screens the
  * bytes before they go out of scope.
  *
- * <p>Every upload is kept, whatever the agent thinks of it and whatever the checks find.
- * {@link QualityAssessment} is advice attached to a stored document, never a reason to refuse one,
- * and a fraud Indicator is advice to a Case Handler that a Claimant never sees at all.
- *
- * <p>Nothing here re-checks the agent's answer. The rules Java can enforce over a reply — above all
- * that a match names a Required Document this Case actually asked for — live in
- * {@link com.example.aiworkshop.guardrail.AnalysisGuardrail}, inside the LangChain4j call, so the
- * analysis is already correct by the time it arrives here.
+ * <p>Every upload is kept, whatever the agent thinks of it. {@link QualityAssessment} is advice
+ * attached to a stored document, never a reason to refuse one.
  */
 @Service
 public class DocumentIntake {
@@ -64,10 +58,6 @@ public class DocumentIntake {
                 false);
         store.save(document);
 
-        // Screening happens here because here is where the bytes are: a Document does not keep them,
-        // so a check that did not run now will never run. It cannot refuse the upload — the Document
-        // is already saved — and what it finds is kept in its own store, never on the Document, so
-        // it cannot reach the Claimant's screen by being serialised along with one.
         screener.screen(new ScreenedFile(
                 documentId, caseId, file.getOriginalFilename(), mimeType, file.getBytes(), analysis));
         return document;

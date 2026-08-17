@@ -234,13 +234,6 @@ header p {
   margin: 0 0 0.75rem;
 }
 
-/*
- * The fraud screening, handler side only.
- *
- * Deliberately quieter than .quality: a screening is something to look at, not a verdict, and three
- * red panels on an honest case teaches a handler to scroll past this section forever. Only STRONG
- * gets colour; a NOTE is grey and stays grey.
- */
 .screening {
   margin: 0.9rem 0 0;
   padding-top: 0.75rem;

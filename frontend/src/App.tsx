@@ -31,12 +31,6 @@ const CONFIDENCE_LABEL: Record<MatchConfidence, string> = {
   LOW: 'unsure',
 }
 
-/**
- * What each fraud check looked at, in the handler's language rather than the enum's.
- *
- * The wording avoids concluding anything. "This image is published online" is a fact a handler can
- * check; "stock photo" is a verdict they should reach themselves, having looked.
- */
 const INDICATOR_LABEL: Record<FraudScreening['indicators'][number]['kind'], string> = {
   SEEN_ONLINE: 'Published online',
   ALREADY_UPLOADED: 'Sent before',
@@ -367,10 +361,6 @@ function DocumentCard({
   preview?: string
   standing?: Standing
   blocking?: boolean
-  /**
-   * Only ever passed by the handler screen. The claimant's side does not omit it out of politeness —
-   * its endpoints never return one, so there is nothing here to leave out.
-   */
   screening?: FraudScreening
   onReview?: () => void
 }) {
@@ -443,14 +433,6 @@ function DocumentCard({
   )
 }
 
-/**
- * What the checks noticed, for a case handler.
- *
- * Sits at the foot of the card, below what the document says, because that is the order in which a
- * handler should meet it: read the document first, then what is odd about the file it arrived as.
- * Nothing here is phrased as a decision — the heading is a question and the rows are observations,
- * because the handler is the one entitled to conclude anything.
- */
 function Screening({ screening }: { screening: FraudScreening }) {
   return (
     <section className="screening">

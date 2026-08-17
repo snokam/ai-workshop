@@ -35,7 +35,7 @@ of — your code, or this week's model?
 
 ## Part 1 — The input guardrail
 
-**Write:** `guardrail/UploadedFileGuardrail.java`, implementing `dev.langchain4j.guardrail.InputGuardrail`.
+**Write:** `tasks/task_1_guardrails/UploadedFileGuardrail.java`, implementing `dev.langchain4j.guardrail.InputGuardrail`.
 
 **The rule:** the message intake sends contains exactly one file and exactly one piece of text — the
 fixed instruction this application wrote. Anything else fails the call.
@@ -78,7 +78,7 @@ stranger chose is now part of your prompt. With it, the call never happens.
 
 ## Part 2 — The output guardrail
 
-**Write:** `guardrail/AnalysisGuardrail.java`, implementing `dev.langchain4j.guardrail.OutputGuardrail`.
+**Write:** `tasks/task_1_guardrails/AnalysisGuardrail.java`, implementing `dev.langchain4j.guardrail.OutputGuardrail`.
 
 **The rule:** `matchedRequiredDocument` must be `null` or one of the Required Documents this Case
 actually asked for. Anything else did not match, whatever the model said and whatever the document
@@ -131,7 +131,7 @@ curl -s localhost:8080/api/cases/1001 | jq '.screenings'
 
 The agent reports the attempt, and it surfaces on the handler's screen as a fraud Indicator. Note
 what the *claimant* got back: no such field. That is `DocumentForClaimant`, and the reasoning is in
-[ADR 0003](../../docs/adr/0003-fraud-signals-are-handler-side.md).
+[ADR 0003](../adr/0003-fraud-signals-are-handler-side.md).
 
 ## What this task is really about
 
@@ -155,9 +155,9 @@ rules worth enforcing in code are the ones with a definite answer.
 
 ## The worked answer
 
-- `src/main/java/com/example/aiworkshop/guardrail/` — both classes, commented at length
-- `src/test/java/com/example/aiworkshop/guardrail/GuardrailTest.java` — the six tests
-- [docs/guardrails-walkthrough.md](../../docs/guardrails-walkthrough.md) — the demo script, including
+- `src/main/java/com/example/aiworkshop/tasks/task_1_guardrails/` — both classes, commented at length
+- `src/test/java/com/example/aiworkshop/tasks/task_1_guardrails/GuardrailTest.java` — the six tests
+- [docs/guardrails-walkthrough.md](../guardrails-walkthrough.md) — the demo script, including
   why you should not stake a live demo on the model misbehaving on cue
 
 That walkthrough spoils this task. Read it afterwards.
