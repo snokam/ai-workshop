@@ -16,7 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-/** The API the frontend talks to. Three endpoints, no more than the upload screen needs. */
+/**
+ * The API the upload screen talks to. Three endpoints, no more than a Claimant needs.
+ *
+ * <p>Every one of them answers with {@link DocumentForClaimant} rather than {@link UploadedDocument}.
+ * This is the Claimant's side of the application, and the projection is what keeps the agent's
+ * manipulation report — and, through it, everything the fraud Screening is built on — on the
+ * handler's side of the wall.
+ */
 @RestController
 @RequestMapping("/api/documents")
 class DocumentController {
@@ -37,7 +44,7 @@ class DocumentController {
      * stream them back instead of going quiet until the last one finishes.
      */
     @PostMapping
-    ResponseEntity<UploadedDocument> upload(
+    ResponseEntity<DocumentForClaimant> upload(
             @RequestParam("caseId") String caseId, @RequestParam("file") MultipartFile file) throws IOException {
         UploadedDocument document = intake.accept(caseId, file);
         log.info(
@@ -48,17 +55,20 @@ class DocumentController {
                 document.analysis().category(),
                 document.analysis().matchedRequiredDocument(),
                 document.analysis().quality().verdict());
-        return ResponseEntity.status(HttpStatus.CREATED).body(document);
+        return ResponseEntity.status(HttpStatus.CREATED).body(DocumentForClaimant.of(document));
     }
 
     @GetMapping
-    List<UploadedDocument> list() {
-        return store.findAll();
+    List<DocumentForClaimant> list() {
+        return DocumentForClaimant.of(store.findAll());
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<UploadedDocument> byId(@PathVariable String id) {
-        return store.findById(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    ResponseEntity<DocumentForClaimant> byId(@PathVariable String id) {
+        return store.findById(id)
+                .map(DocumentForClaimant::of)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @ExceptionHandler(DocumentIntake.UnsupportedDocumentException.class)

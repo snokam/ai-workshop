@@ -17,6 +17,7 @@ import com.example.aiworkshop.document.MatchConfidence;
 import com.example.aiworkshop.document.QualityAssessment;
 import com.example.aiworkshop.document.QualityAssessment.Quality;
 import com.example.aiworkshop.document.UploadedDocument;
+import com.example.aiworkshop.fraud.FraudScreeningStore;
 import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +43,8 @@ class CaseDeskTest {
     private final CaseSummaryStore summaries = new CaseSummaryStore();
     private final CaseSummarizer summarizer = mock(CaseSummarizer.class);
     private final CaseStatusWriter statusWriter = mock(CaseStatusWriter.class);
-    private final CaseDesk desk = new CaseDesk(cases, documents, summaries, summarizer, statusWriter);
+    private final FraudScreeningStore screenings = new FraudScreeningStore();
+    private final CaseDesk desk = new CaseDesk(cases, documents, summaries, summarizer, statusWriter, screenings);
 
     @BeforeEach
     void aCaseWithOneUnreadableDocument() {
@@ -196,7 +198,8 @@ class CaseDeskTest {
                         List.of(),
                         matchedRequiredDocument,
                         MatchConfidence.HIGH,
-                        new QualityAssessment(verdict, "A sentence about the file.", List.of())),
+                        new QualityAssessment(verdict, "A sentence about the file.", List.of()),
+                        null),
                 false);
     }
 }

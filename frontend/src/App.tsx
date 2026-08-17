@@ -7,6 +7,7 @@ import {
   type CaseDetail,
   type CaseOverview,
   type CaseStatus,
+  type FraudScreening,
   type MatchConfidence,
   type Quality,
   type UploadedDocument,
@@ -28,6 +29,21 @@ const CONFIDENCE_LABEL: Record<MatchConfidence, string> = {
   HIGH: 'confident',
   MEDIUM: 'fairly sure',
   LOW: 'unsure',
+}
+
+/**
+ * What each fraud check looked at, in the handler's language rather than the enum's.
+ *
+ * The wording avoids concluding anything. "This image is published online" is a fact a handler can
+ * check; "stock photo" is a verdict they should reach themselves, having looked.
+ */
+const INDICATOR_LABEL: Record<FraudScreening['indicators'][number]['kind'], string> = {
+  SEEN_ONLINE: 'Published online',
+  ALREADY_UPLOADED: 'Sent before',
+  EDITED_IN_SOFTWARE: 'Touched by an editor',
+  NO_CAMERA_ORIGIN: 'No camera metadata',
+  DATE_OUT_OF_PLACE: 'Capture date',
+  ADDRESSED_THE_AGENT: 'Tried to instruct the agent',
 }
 
 /**
@@ -314,6 +330,7 @@ function CaseScreen({
             doc={doc}
             standing={standingOf(doc, detail)}
             blocking={detail.blockedDocumentIds.includes(doc.id)}
+            screening={detail.screenings.find((s) => s.documentId === doc.id)}
             onReview={() => void onReview(doc.id, doc.caseId)}
           />
         ))}
@@ -343,12 +360,18 @@ function DocumentCard({
   preview,
   standing,
   blocking,
+  screening,
   onReview,
 }: {
   doc: UploadedDocument
   preview?: string
   standing?: Standing
   blocking?: boolean
+  /**
+   * Only ever passed by the handler screen. The claimant's side does not omit it out of politeness —
+   * its endpoints never return one, so there is nothing here to leave out.
+   */
+  screening?: FraudScreening
   onReview?: () => void
 }) {
   const { analysis } = doc
@@ -413,7 +436,40 @@ function DocumentCard({
             ))}
           </dl>
         )}
+
+        {screening && screening.indicators.length > 0 && <Screening screening={screening} />}
       </div>
     </article>
+  )
+}
+
+/**
+ * What the checks noticed, for a case handler.
+ *
+ * Sits at the foot of the card, below what the document says, because that is the order in which a
+ * handler should meet it: read the document first, then what is odd about the file it arrived as.
+ * Nothing here is phrased as a decision — the heading is a question and the rows are observations,
+ * because the handler is the one entitled to conclude anything.
+ */
+function Screening({ screening }: { screening: FraudScreening }) {
+  return (
+    <section className="screening">
+      <h3>Worth a look</h3>
+      {screening.indicators.map((indicator, index) => (
+        <div key={index} className={`indicator ${indicator.weight.toLowerCase()}`}>
+          <p className="what">
+            <span className="kind">{INDICATOR_LABEL[indicator.kind]}</span>
+            {indicator.detail}
+          </p>
+          {indicator.evidence.length > 0 && (
+            <ul>
+              {indicator.evidence.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ))}
+    </section>
   )
 }

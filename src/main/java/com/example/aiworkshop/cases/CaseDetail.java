@@ -1,6 +1,7 @@
 package com.example.aiworkshop.cases;
 
 import com.example.aiworkshop.document.UploadedDocument;
+import com.example.aiworkshop.fraud.FraudScreening;
 import java.util.List;
 
 /**
@@ -19,6 +20,9 @@ import java.util.List;
  *     Review would change anything for. Always a subset of {@code countingDocumentIds}
  * @param summary the Case Summary, written across all the Documents
  * @param statusNote where the Case stands and the next move, written over the derived facts
+ * @param screenings what the fraud checks found on these Documents, for the Documents where they
+ *     found anything. Present on this record and on no other, because this is the only one built for
+ *     a Case Handler — the Claimant's endpoints answer with a projection that has no route to it
  */
 public record CaseDetail(
         CaseOverview overview,
@@ -26,4 +30,5 @@ public record CaseDetail(
         List<String> countingDocumentIds,
         List<String> blockedDocumentIds,
         String summary,
-        String statusNote) {}
+        String statusNote,
+        List<FraudScreening> screenings) {}

@@ -2,6 +2,8 @@ package com.example.aiworkshop.cases;
 
 import com.example.aiworkshop.document.DocumentStore;
 import com.example.aiworkshop.document.UploadedDocument;
+import com.example.aiworkshop.fraud.FraudScreening;
+import com.example.aiworkshop.fraud.FraudScreeningStore;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -24,18 +26,21 @@ public class CaseDesk {
     private final CaseSummaryStore summaries;
     private final CaseSummarizer summarizer;
     private final CaseStatusWriter statusWriter;
+    private final FraudScreeningStore screenings;
 
     CaseDesk(
             CaseStore cases,
             DocumentStore documents,
             CaseSummaryStore summaries,
             CaseSummarizer summarizer,
-            CaseStatusWriter statusWriter) {
+            CaseStatusWriter statusWriter,
+            FraudScreeningStore screenings) {
         this.cases = cases;
         this.documents = documents;
         this.summaries = summaries;
         this.summarizer = summarizer;
         this.statusWriter = statusWriter;
+        this.screenings = screenings;
     }
 
     /** Every Case with its derived status. No model calls — this is a list the handler skims. */
@@ -60,7 +65,26 @@ public class CaseDesk {
                 idsOf(theCase.countingDocuments(attached)),
                 idsOf(theCase.blockedDocuments(attached)),
                 summaryOf(caseId, attached),
-                statusNote);
+                statusNote,
+                screeningsFound(attached));
+    }
+
+    /**
+     * What the fraud checks found, for the Documents where they found anything.
+     *
+     * <p>A lookup, not a re-run: the checks ran at intake, over bytes nothing keeps. Screenings with
+     * no Indicators are dropped here rather than sent as empty ones — the screen has nothing to draw
+     * for them, and an empty Screening on every honest Document is the fastest way to teach a
+     * handler to stop looking at this part of the page.
+     *
+     * <p>Note what is deliberately missing: none of this reaches {@link Case#status}. A fraud
+     * Indicator is advice to a Case Handler and never a gate. A Case is held by a Quality Assessment
+     * a Review can clear, and by nothing here.
+     */
+    private List<FraudScreening> screeningsFound(List<UploadedDocument> attached) {
+        return screenings.findAllFor(idsOf(attached)).stream()
+                .filter(FraudScreening::foundSomething)
+                .toList();
     }
 
     /**

@@ -2,6 +2,9 @@ package com.example.aiworkshop.document;
 
 import com.example.aiworkshop.cases.Case;
 import com.example.aiworkshop.cases.CaseStore;
+import com.example.aiworkshop.fraud.FraudScreener;
+import com.example.aiworkshop.fraud.ScreenedFile;
+import com.example.aiworkshop.guardrail.UploadedFileGuardrail;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;
@@ -16,10 +19,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Accepts an upload, hands the raw file to the intake agent, and stores the result.
+ * Accepts an upload, hands the raw file to the intake agent, stores the result, and screens the
+ * bytes before they go out of scope.
  *
- * <p>Every upload is kept, whatever the agent thinks of it. {@link QualityAssessment} is advice
- * attached to a stored document, never a reason to refuse one.
+ * <p>Every upload is kept, whatever the agent thinks of it and whatever the checks find.
+ * {@link QualityAssessment} is advice attached to a stored document, never a reason to refuse one,
+ * and a fraud Indicator is advice to a Case Handler that a Claimant never sees at all.
+ *
+ * <p>Nothing here re-checks the agent's answer. The rules Java can enforce over a reply — above all
+ * that a match names a Required Document this Case actually asked for — live in
+ * {@link com.example.aiworkshop.guardrail.AnalysisGuardrail}, inside the LangChain4j call, so the
+ * analysis is already correct by the time it arrives here.
  */
 @Service
 public class DocumentIntake {
@@ -27,27 +37,39 @@ public class DocumentIntake {
     private final DocumentAnalyzer analyzer;
     private final DocumentStore store;
     private final CaseStore cases;
+    private final FraudScreener screener;
 
-    DocumentIntake(DocumentAnalyzer analyzer, DocumentStore store, CaseStore cases) {
+    DocumentIntake(DocumentAnalyzer analyzer, DocumentStore store, CaseStore cases, FraudScreener screener) {
         this.analyzer = analyzer;
         this.store = store;
         this.cases = cases;
+        this.screener = screener;
     }
 
     public UploadedDocument accept(String caseId, MultipartFile file) throws IOException {
         Case theCase =
                 cases.findById(caseId).orElseThrow(() -> new UnknownCaseException("No such case: " + caseId));
         String mimeType = resolveMimeType(file);
+        String documentId = UUID.randomUUID().toString();
+        DocumentAnalysis analysis = analyzer.analyse(promptFor(file, mimeType), theCase.requiredDocuments());
+
         UploadedDocument document = new UploadedDocument(
-                UUID.randomUUID().toString(),
+                documentId,
                 caseId,
                 file.getOriginalFilename(),
                 mimeType,
                 file.getSize(),
                 Instant.now(),
-                analyzer.analyse(promptFor(file, mimeType), theCase.requiredDocuments()),
+                analysis,
                 false);
         store.save(document);
+
+        // Screening happens here because here is where the bytes are: a Document does not keep them,
+        // so a check that did not run now will never run. It cannot refuse the upload — the Document
+        // is already saved — and what it finds is kept in its own store, never on the Document, so
+        // it cannot reach the Claimant's screen by being serialised along with one.
+        screener.screen(new ScreenedFile(
+                documentId, caseId, file.getOriginalFilename(), mimeType, file.getBytes(), analysis));
         return document;
     }
 
@@ -65,7 +87,7 @@ public class DocumentIntake {
         Content fileContent = mimeType.equals("application/pdf")
                 ? PdfFileContent.from(base64, mimeType)
                 : ImageContent.from(base64, mimeType);
-        return List.of(TextContent.from("Analyse the attached file."), fileContent);
+        return List.of(TextContent.from(UploadedFileGuardrail.INTAKE_INSTRUCTION), fileContent);
     }
 
     /**

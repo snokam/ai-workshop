@@ -234,6 +234,76 @@ header p {
   margin: 0 0 0.75rem;
 }
 
+/*
+ * The fraud screening, handler side only.
+ *
+ * Deliberately quieter than .quality: a screening is something to look at, not a verdict, and three
+ * red panels on an honest case teaches a handler to scroll past this section forever. Only STRONG
+ * gets colour; a NOTE is grey and stays grey.
+ */
+.screening {
+  margin: 0.9rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border);
+}
+
+.screening h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.indicator {
+  margin: 0 0 0.5rem;
+  padding: 0.55rem 0.7rem;
+  border-left: 3px solid var(--border);
+  border-radius: 0 8px 8px 0;
+  background: var(--bg);
+  font-size: 0.88rem;
+}
+
+.indicator .what {
+  margin: 0;
+}
+
+.indicator .kind {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 5px;
+  background: var(--border);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.indicator ul {
+  margin: 0.4rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--muted);
+  font-size: 0.83rem;
+  overflow-wrap: anywhere;
+}
+
+.indicator.concern {
+  border-left-color: var(--acceptable-fg);
+}
+
+.indicator.strong {
+  border-left-color: var(--poor-fg);
+  background: var(--poor-bg);
+  color: var(--poor-fg);
+}
+
+.indicator.strong .kind {
+  background: var(--poor-fg);
+  color: var(--poor-bg);
+}
+
 .fields {
   display: grid;
   grid-template-columns: minmax(9rem, auto) 1fr;

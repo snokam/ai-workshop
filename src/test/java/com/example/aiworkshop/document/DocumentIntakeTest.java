@@ -10,6 +10,8 @@ import static org.mockito.Mockito.when;
 import com.example.aiworkshop.cases.Case;
 import com.example.aiworkshop.cases.CaseStore;
 import com.example.aiworkshop.document.QualityAssessment.Quality;
+import com.example.aiworkshop.fraud.FraudScreener;
+import com.example.aiworkshop.fraud.FraudScreeningStore;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;
@@ -31,7 +33,8 @@ class DocumentIntakeTest {
             List.of(),
             null,
             MatchConfidence.LOW,
-            new QualityAssessment(Quality.POOR, "The scan is too blurry to read.", List.of("out of focus")));
+            new QualityAssessment(Quality.POOR, "The scan is too blurry to read.", List.of("out of focus")),
+            null);
 
     private static final DocumentAnalysis MATCHED_RECEIPT = new DocumentAnalysis(
             "receipt",
@@ -39,12 +42,14 @@ class DocumentIntakeTest {
             List.of(new ExtractedField("Total", "4 200 kr")),
             "receipt",
             MatchConfidence.HIGH,
-            new QualityAssessment(Quality.GOOD, "Fully legible.", List.of()));
+            new QualityAssessment(Quality.GOOD, "Fully legible.", List.of()),
+            null);
 
     private final DocumentAnalyzer analyzer = mock(DocumentAnalyzer.class);
     private final DocumentStore store = new DocumentStore();
     private final CaseStore cases = new CaseStore();
-    private final DocumentIntake intake = new DocumentIntake(analyzer, store, cases);
+    private final FraudScreener screener = new FraudScreener(List.of(), new FraudScreeningStore());
+    private final DocumentIntake intake = new DocumentIntake(analyzer, store, cases, screener);
 
     @BeforeEach
     void theClaimantHasACase() {

@@ -32,6 +32,27 @@ export interface DocumentAnalysis {
   quality: QualityAssessment
 }
 
+/** What one fraud check noticed. Never rendered on the claimant's side — see CaseDetail.screenings. */
+export interface FraudIndicator {
+  kind:
+    | 'SEEN_ONLINE'
+    | 'ALREADY_UPLOADED'
+    | 'EDITED_IN_SOFTWARE'
+    | 'NO_CAMERA_ORIGIN'
+    | 'DATE_OUT_OF_PLACE'
+    | 'ADDRESSED_THE_AGENT'
+  weight: 'NOTE' | 'CONCERN' | 'STRONG'
+  detail: string
+  evidence: string[]
+}
+
+/** The checks that ran over one document at upload, and what they found. */
+export interface FraudScreening {
+  documentId: string
+  indicators: FraudIndicator[]
+  screenedAt: string
+}
+
 export interface UploadedDocument {
   id: string
   caseId: string
@@ -66,6 +87,14 @@ export interface CaseDetail {
   blockedDocumentIds: string[]
   summary: string
   statusNote: string
+  /**
+   * What the fraud checks found, for the documents where they found anything — so an empty array is
+   * the ordinary case rather than a sign nothing ran.
+   *
+   * Only ever on this response. The upload screen's endpoints answer with a projection that has no
+   * route to it, which is why there is no screening field on UploadedDocument itself.
+   */
+  screenings: FraudScreening[]
 }
 
 /** Pulls the backend's `{ message }` out of a failed response so the screen can show the real cause. */
