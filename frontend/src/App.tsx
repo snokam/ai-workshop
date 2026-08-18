@@ -7,16 +7,6 @@ import { Cases as ClaimHandlerCases } from './pages/claim-handler/Cases'
 import { MyCases } from './pages/file-claim/MyCases'
 import { NewCase } from './pages/file-claim/NewCase'
 
-/**
- * Two audiences, one app, split by URL rather than a toggle: filing a claim under `/`, the claim
- * handler under `/casehandler`. There is no login and no cross-navigation between the two — each
- * side is simply its own address. The roles are a vocabulary distinction here, not a permission
- * model.
- *
- * Every screen has an address, which is the point of the router being here at all: a case can be
- * refreshed, bookmarked, opened in a second tab, or sent to a colleague. The workshop demo also
- * stops depending on clicking through from the top on every restart.
- */
 export default function App() {
   return (
     <TasksProvider>
@@ -36,7 +26,6 @@ export default function App() {
   )
 }
 
-/** The filing side; the nav that used to live here is now in the branded header. */
 function FileClaimShell() {
   return <Outlet />
 }

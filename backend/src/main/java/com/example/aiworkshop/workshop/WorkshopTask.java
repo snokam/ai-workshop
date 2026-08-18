@@ -1,14 +1,5 @@
 package com.example.aiworkshop.workshop;
 
-/**
- * The six exercises, and where each one is written.
- *
- * <p>Every task ships unfinished. Until a task is done the application still starts and every other
- * screen still works — the one feature that task provides answers with {@link
- * TaskNotImplementedException} instead, and the message says which file to open. Nothing here is
- * cosmetic: it is the difference between a workshop where one missing method takes the whole app
- * down and one where you can do the tasks in any order.
- */
 public enum WorkshopTask {
     FIRST_AGENT(
             1,
@@ -63,7 +54,6 @@ public enum WorkshopTask {
         return title;
     }
 
-    /** The file to open, from the repository root, so it can be pasted straight into an editor. */
     public String file() {
         return SOURCE_ROOT + path;
     }
@@ -72,7 +62,6 @@ public enum WorkshopTask {
         return todo;
     }
 
-    /** The brief, for the message the screen shows. */
     public String brief() {
         return "docs/tasks/task_%d_%s.md".formatted(number, name().toLowerCase());
     }

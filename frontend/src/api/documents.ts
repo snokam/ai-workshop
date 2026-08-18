@@ -1,4 +1,3 @@
-/** Uploading a file, and reading back what the agent made of it. */
 
 import { json } from './client'
 import type { UploadedDocument } from './types'
@@ -14,4 +13,3 @@ export async function uploadDocument(caseId: string, file: File): Promise<Upload
 
   return json(await fetch('/api/documents', { method: 'POST', body }))
 }
-

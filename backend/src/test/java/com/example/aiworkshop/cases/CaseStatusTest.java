@@ -11,12 +11,7 @@ import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-/**
- * Case Status is derived, never stored — so this is a pure function over a Case's Required Documents
- * and the Documents attached to it. No Spring, no mocks, no model.
- */
 class CaseStatusTest {
-
     private static final Case THE_CASE =
             new Case("c-1", "CASE-2026-001", CaseType.HOME_CONTENTS, List.of("proof of identity", "receipt"));
 
@@ -51,7 +46,6 @@ class CaseStatusTest {
         assertThat(THE_CASE.status(documents)).isEqualTo(CaseStatus.NEEDS_REVIEW);
     }
 
-    /** Three verdicts exist so that an imperfect scan is not treated as a failure. Only POOR blocks. */
     @Test
     void anAcceptableDocumentDoesNotBlockTheCase() {
         List<UploadedDocument> documents =
@@ -60,7 +54,6 @@ class CaseStatusTest {
         assertThat(THE_CASE.status(documents)).isEqualTo(CaseStatus.READY_FOR_DECISION);
     }
 
-    /** A missing Required Document outranks a poor one: the Case is not the handler's problem yet. */
     @Test
     void awaitingDocumentsOutranksNeedsReview() {
         List<UploadedDocument> documents = List.of(document("receipt", Quality.POOR));
@@ -68,7 +61,6 @@ class CaseStatusTest {
         assertThat(THE_CASE.status(documents)).isEqualTo(CaseStatus.AWAITING_DOCUMENTS);
     }
 
-    /** The handler could read the file even though the agent could not; their judgement wins. */
     @Test
     void aReviewedDocumentNoLongerBlocksTheCase() {
         List<UploadedDocument> documents = List.of(
@@ -78,7 +70,6 @@ class CaseStatusTest {
         assertThat(THE_CASE.status(documents)).isEqualTo(CaseStatus.READY_FOR_DECISION);
     }
 
-    /** The other way out of NEEDS_REVIEW: the Claimant sends a better copy and the Case unsticks itself. */
     @Test
     void aBetterReUploadClearsTheBlockWithoutAReview() {
         List<UploadedDocument> documents = List.of(
@@ -89,7 +80,6 @@ class CaseStatusTest {
         assertThat(THE_CASE.status(documents)).isEqualTo(CaseStatus.READY_FOR_DECISION);
     }
 
-    /** Newest, not best: a Claimant replacing a good scan with a poor one has made the Case worse. */
     @Test
     void theMostRecentUploadForARequiredDocumentIsTheOneThatCounts() {
         List<UploadedDocument> documents = List.of(
@@ -100,10 +90,6 @@ class CaseStatusTest {
         assertThat(THE_CASE.status(documents)).isEqualTo(CaseStatus.NEEDS_REVIEW);
     }
 
-    /**
-     * An audience uploads whatever is on their desktop. Under any stricter rule every one of those
-     * files would jam the Case it landed in, so a Document matching nothing is attached and ignored.
-     */
     @Test
     void aDocumentMatchingNoRequiredDocumentIsIgnoredByTheStatus() {
         List<UploadedDocument> documents = List.of(
@@ -114,10 +100,6 @@ class CaseStatusTest {
         assertThat(THE_CASE.status(documents)).isEqualTo(CaseStatus.READY_FOR_DECISION);
     }
 
-    /**
-     * The same rule the status is derived from, named so a Case Handler can be shown which of two
-     * receipts the status came from. Superseded Documents are still attached — only inert.
-     */
     @Test
     void onlyTheNewestMatchCountsForARequiredDocument() {
         UploadedDocument superseded = document("receipt", Quality.POOR, AT_NINE);
@@ -128,10 +110,6 @@ class CaseStatusTest {
         assertThat(THE_CASE.countingDocuments(documents)).contains(newest).doesNotContain(superseded);
     }
 
-    /**
-     * A Case stalling because a model hedged is worse than a visibly wrong match a handler can
-     * correct in a second. Confidence is shown on the screen and kept out of the derivation.
-     */
     @Test
     void lowConfidenceInAMatchDoesNotBlockTheCase() {
         List<UploadedDocument> documents = List.of(
@@ -164,7 +142,6 @@ class CaseStatusTest {
                 false);
     }
 
-    /** The same Document, with the agent unsure it matched the right Required Document. */
     private static UploadedDocument hedged(UploadedDocument document) {
         DocumentAnalysis analysis = document.analysis();
         return new UploadedDocument(

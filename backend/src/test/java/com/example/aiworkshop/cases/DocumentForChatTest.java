@@ -12,19 +12,7 @@ import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-/**
- * The one place the Case Chat agent's index of a Case is pinned.
- *
- * <p>Asserted here rather than at {@link CaseChatTest} for the reason {@link DocumentForSummaryTest}
- * gives: this rendering is the whole job of the type, a change to it is a change to a prompt, and it
- * should fail under a name that says so.
- *
- * <p>What is absent matters more here than in any other projection. The agent has tools to fetch a
- * Document's Extraction and the Quality Assessment's reasoning; an index that already carried them
- * would make those tools pointless, the prompt enormous, and the tool strip under the answer a lie.
- */
 class DocumentForChatTest {
-
     @Test
     void itSaysWhatTheDocumentIsAndWhatItCountsAs() {
         String rendered = DocumentForChat.of(aReceipt(Quality.POOR, false), true).toString();
@@ -32,7 +20,6 @@ class DocumentForChatTest {
         assertThat(rendered).isEqualTo("receipt.jpg — receipt — counts as \"receipt\" — quality POOR");
     }
 
-    /** The failure the detail tool exists to prevent: an index that is already the documents. */
     @Test
     void itLeavesOutEverythingATooIsForFetching() {
         String rendered = DocumentForChat.of(aReceipt(Quality.POOR, false), true).toString();
@@ -47,10 +34,6 @@ class DocumentForChatTest {
                 .doesNotContain("image/jpeg");
     }
 
-    /**
-     * A Document that lost to a later upload of the same thing counts as nothing, and the agent has
-     * to know which of two files with the same story is the live one.
-     */
     @Test
     void aSupersededDocumentSaysWhatSupersededIt() {
         String rendered = DocumentForChat.of(aReceipt(Quality.GOOD, false), false).toString();
@@ -65,10 +48,6 @@ class DocumentForChatTest {
         assertThat(rendered).contains("counts as nothing this case requires");
     }
 
-    /**
-     * Without this the agent reads POOR off a Document a handler has already cleared and suggests a
-     * Review that has already happened.
-     */
     @Test
     void aReviewedDocumentSaysItHasBeenReviewed() {
         String rendered = DocumentForChat.of(aReceipt(Quality.POOR, true), true).toString();

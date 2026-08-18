@@ -12,14 +12,7 @@ import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-/**
- * The other half of {@link DocumentForChatTest}: what the detail tool hands back.
- *
- * <p>Everything the index deliberately omits appears here, which is what makes omitting it from the
- * index a division of labour rather than a loss. This text is a tool result and therefore a prompt.
- */
 class DocumentInDetailTest {
-
     @Test
     void itCarriesEverythingTheIndexLeftOut() {
         String rendered = DocumentInDetail.of(aReceipt()).toString();
@@ -33,7 +26,6 @@ class DocumentInDetailTest {
                 .contains("total cut off");
     }
 
-    /** Field names and values are quoted off the Document and stay in its own language (ADR 0002). */
     @Test
     void itQuotesFieldNamesAsTheyAppearOnTheDocument() {
         String rendered = DocumentInDetail.of(aReceipt()).toString();
@@ -41,10 +33,6 @@ class DocumentInDetailTest {
         assertThat(rendered).contains("Butikk").doesNotContain("Store").doesNotContain("Shop");
     }
 
-    /**
-     * An empty field list is a finding, not an absence: the intake agent is told that inventing a
-     * value is worse than returning none. Rendered as a blank it reads as a bug.
-     */
     @Test
     void aDocumentNothingCouldBeReadOffSaysThatRatherThanNothing() {
         String rendered = DocumentInDetail.of(anUnreadableScan()).toString();
@@ -52,7 +40,6 @@ class DocumentInDetailTest {
         assertThat(rendered).contains("nothing could be read off this document");
     }
 
-    /** Still not the file. What this cannot answer is what the reader agent is for. */
     @Test
     void itIsNotTheFile() {
         String rendered = DocumentInDetail.of(aReceipt()).toString();

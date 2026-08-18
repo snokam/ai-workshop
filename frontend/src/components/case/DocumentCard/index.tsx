@@ -59,7 +59,6 @@ export function DocumentCard({
               ))}
             </ul>
           )}
-          {/* Only where a review would actually move the case — see blockedDocumentIds. */}
           {onReview && blocking && (
             <button className="review" onClick={onReview}>
               I can read this — let the case proceed

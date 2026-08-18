@@ -26,9 +26,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.mock.web.MockMultipartFile;
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
 
-/** Covers intake with the agent mocked out, so the whole class runs without credentials. */
 class DocumentIntakeTest {
-
     private static final String CASE_ID = "c-1";
 
     private static final DocumentAnalysis UNREADABLE = new DocumentAnalysis(
@@ -68,10 +66,6 @@ class DocumentIntakeTest {
         intake = new DocumentIntake(analyzer, store, cases, screener, files);
     }
 
-    /**
-     * The Extraction is what an agent made of a file, not the file. Keeping the bytes is what lets
-     * the case chat go back and read the thing itself — see ADR 0004.
-     */
     @Test
     void theUploadedBytesAreKeptSoAnAgentCanLookAgain() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
@@ -81,10 +75,6 @@ class DocumentIntakeTest {
         assertThat(files.read(document.id())).isEqualTo(new byte[] {1, 2, 3});
     }
 
-    /**
-     * The one thing intake refuses on the Case side. An upload is always accepted, but a Case that
-     * does not exist is a broken client rather than a poor document.
-     */
     @Test
     void anUploadNamingACaseThatDoesNotExistIsRefused() {
         assertThatThrownBy(() -> intake.accept("no-such-case", image("receipt.jpg")))
@@ -92,7 +82,6 @@ class DocumentIntakeTest {
                 .hasMessageContaining("no-such-case");
     }
 
-    /** A Document uploaded into nothing has nowhere for the agent's work to go. */
     @Test
     void anUploadedDocumentRecordsTheCaseItBelongsTo() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
@@ -102,11 +91,6 @@ class DocumentIntakeTest {
         assertThat(document.caseId()).isEqualTo(CASE_ID);
     }
 
-    /**
-     * Matching the upload to what the Case asked for is the whole reason the agent is told about the
-     * Case at all — and it happens in the call that already classifies, extracts and assesses, so an
-     * upload is still one model call rather than two.
-     */
     @Test
     void theAgentIsToldWhatTheCaseIsWaitingFor() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
@@ -138,10 +122,6 @@ class DocumentIntakeTest {
         assertThat(store.findById(document.id())).contains(document);
     }
 
-    /**
-     * The other half of "always accepted": a file the agent could not read still lands in the Case,
-     * where it holds the Case at NEEDS_REVIEW rather than vanishing.
-     */
     @Test
     void aPoorDocumentIsStillAttachedToItsCase() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
@@ -151,10 +131,6 @@ class DocumentIntakeTest {
         assertThat(store.findByCaseId(CASE_ID)).containsExactly(document);
     }
 
-    /**
-     * The same bytes on the same Case are not read twice. A double-click should not cost a model
-     * call, and should not produce a second opinion about a file the Case already has a reading of.
-     */
     @Test
     void theSameFileUploadedTwiceToACaseIsOnlyReadOnce() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(MATCHED_RECEIPT);
@@ -167,7 +143,6 @@ class DocumentIntakeTest {
         assertThat(store.findByCaseId(CASE_ID)).hasSize(2);
     }
 
-    /** A different Case asking the same question gets its own answer — that is a claim, not a double-click. */
     @Test
     void theSameFileOnADifferentCaseIsReadAgain() throws IOException {
         cases.save(new Case("c-2", "CASE-2026-002", CaseType.HOME_CONTENTS, List.of("receipt")));
@@ -179,7 +154,6 @@ class DocumentIntakeTest {
         verify(analyzer, times(2)).analyse(anyList(), anyList());
     }
 
-    /** Nothing a Claimant sent is thrown away, so a better re-upload adds a Document rather than replacing one. */
     @Test
     void aBetterReUploadIsKeptAlongsideTheEarlierOne() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE, MATCHED_RECEIPT);
@@ -208,7 +182,6 @@ class DocumentIntakeTest {
         assertThat(capturedContent()).hasAtLeastOneElementOfType(ImageContent.class);
     }
 
-    /** Browsers routinely mislabel a PDF as a generic binary, so the extension has to win. */
     @Test
     void anUnhelpfulContentTypeFallsBackToTheExtension() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);

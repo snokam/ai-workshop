@@ -25,6 +25,16 @@ public class DuplicateUploadCheck implements FraudCheck {
         //
         // Returning nothing is what no check looks like.
         return List.of();
+
+        // ── One version of the answer ──────────────────────────────────────────────────────
+        // Try it yourself first. Uncomment this a piece at a time if you get stuck, or write
+        // your own and read this after to argue with it.
+        //
+        // List<String> earlier = seenBefore.computeIfAbsent(upload.contentHash(), key -> new CopyOnWriteArrayList<>());
+        //
+        // List<Indicator> found = earlier.isEmpty() ? List.of() : List.of(indicatorFor(upload, earlier));
+        // earlier.add(upload.caseId() + " / " + upload.filename());
+        // return found;
     }
 
     private static Indicator indicatorFor(Upload upload, List<String> earlier) {

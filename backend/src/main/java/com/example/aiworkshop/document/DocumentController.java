@@ -20,11 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-/** The API the upload screen talks to. No more than a Claimant needs, plus the file itself. */
 @RestController
 @RequestMapping("/api/documents")
 class DocumentController {
-
     private static final Logger log = LoggerFactory.getLogger(DocumentController.class);
 
     private final DocumentIntake intake;
@@ -37,11 +35,6 @@ class DocumentController {
         this.files = files;
     }
 
-    /**
-     * Blocks for as long as the model takes — several seconds for a large scan. Acceptable while the
-     * screen shows one upload at a time; the moment the agent becomes a chain of steps, this wants to
-     * stream them back instead of going quiet until the last one finishes.
-     */
     @PostMapping
     ResponseEntity<DocumentForClaimant> upload(
             @RequestParam("caseId") String caseId, @RequestParam("file") MultipartFile file) throws IOException {
@@ -62,15 +55,6 @@ class DocumentController {
         return DocumentForClaimant.of(store.findAll());
     }
 
-    /**
-     * The file itself, as it arrived.
-     *
-     * <p>The screens used to preview an upload from the {@code File} the browser still had in hand,
-     * which meant the preview lasted exactly as long as the tab did: reload the page and the document
-     * you had just sent was a filename and nothing else. The bytes are kept now (ADR 0004), so the
-     * preview can come from where the file actually is — which also gives the Case Handler's screen
-     * one, having never had one at all.
-     */
     @GetMapping("/{id}/file")
     ResponseEntity<byte[]> file(@PathVariable String id) {
         return store.findById(id)
@@ -80,7 +64,6 @@ class DocumentController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    /** The directory is emptied on startup, so a Document can outlive its file. Not an error worth a 500. */
     @ExceptionHandler(DocumentFiles.MissingFileException.class)
     ResponseEntity<Void> missingFile(DocumentFiles.MissingFileException e) {
         log.info("{}", e.getMessage());
@@ -105,12 +88,6 @@ class DocumentController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
     }
 
-    /**
-     * A failed model call is the most likely error on workshop day — a missing API key, a deployment
-     * that rejects PDFs, a reply the parser could not read. Surface the real message rather than a
-     * bare 500, so the screen can show what actually went wrong.
-     */
-    /** An unfinished task is not a failure: it is the workshop, so it says what to open. */
     @ExceptionHandler(TaskNotImplementedException.class)
     ResponseEntity<Map<String, Object>> taskNotDone(TaskNotImplementedException e) {
         return TaskNotImplementedAdvice.response(e);

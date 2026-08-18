@@ -36,6 +36,35 @@ public class ImageMetadataCheck implements FraudCheck {
         //
         // Returning nothing is what no check looks like.
         return List.of();
+
+        // ── One version of the answer ──────────────────────────────────────────────────────
+        // Try it yourself first. Uncomment this a piece at a time if you get stuck, or write
+        // your own and read this after to argue with it.
+        //
+        // if (!upload.isImage()) {
+        // return List.of();
+        // }
+        // Metadata metadata;
+        // try {
+        // metadata = ImageMetadataReader.readMetadata(new ByteArrayInputStream(upload.content()));
+        // } catch (Exception e) {
+        // return List.of();
+        // }
+        //
+        // ExifIFD0Directory exif = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+        // ExifSubIFDDirectory sub = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+        //
+        // List<Indicator> found = new ArrayList<>();
+        // editedInSoftware(exif).ifPresent(found::add);
+        // captureDate(sub).ifPresent(found::add);
+        // if (upload.isJpeg() && noCameraOrigin(exif)) {
+        // found.add(new Indicator(
+        // Kind.NO_CAMERA_ORIGIN,
+        // Weight.NOTE,
+        // "The photo carries none of the metadata a camera writes.",
+        // List.of("Ordinary for a screenshot, a download, or anything sent through a messaging app.")));
+        // }
+        // return found;
     }
 
     private static Optional<Indicator> editedInSoftware(ExifIFD0Directory exif) {

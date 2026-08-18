@@ -522,14 +522,17 @@ header p {
   list-style: none;
 }
 
+/*
+ * Reference, not choices. A raised card on a white surface reads as something to press, and these
+ * do nothing — the list is here to say what the agent can recognise. Flat, on the page's own
+ * background, with a rule between them instead of a box around each.
+ */
 .supported li {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  padding: 0.85rem 1rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--border);
 }
 
 .supported-label {

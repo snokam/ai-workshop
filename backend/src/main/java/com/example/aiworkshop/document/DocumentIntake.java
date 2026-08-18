@@ -24,16 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
 
-/**
- * Accepts an upload, hands the raw file to the intake agent, stores the result, and screens the
- * bytes before they go out of scope.
- *
- * <p>Every upload is kept, whatever the agent thinks of it. {@link QualityAssessment} is advice
- * attached to a stored document, never a reason to refuse one.
- */
 @Service
 public class DocumentIntake {
-
     private static final Logger log = LoggerFactory.getLogger(DocumentIntake.class);
 
     private final DocumentAnalyzer analyzer;
@@ -61,13 +53,9 @@ public class DocumentIntake {
                 cases.findById(caseId).orElseThrow(() -> new UnknownCaseException("No such case: " + caseId));
         String mimeType = resolveMimeType(file);
         String id = UUID.randomUUID().toString();
-        // Kept before the agent runs, at the point the bytes are already in hand. See ADR 0004.
         files.save(id, file.getBytes());
         String contentHash = hashOf(file.getBytes());
 
-        // One at a time per file, per Case. Without this the reuse below is a race a double-click
-        // wins: two uploads of one file arrive milliseconds apart, both look in the store before
-        // either has saved, and both pay for a reading — which then disagree with each other.
         synchronized (arrivalOf(caseId, contentHash)) {
             DocumentAnalysis analysis = analysisFor(theCase, file, mimeType, contentHash);
             return store(id, caseId, file, mimeType, contentHash, analysis);
@@ -95,7 +83,6 @@ public class DocumentIntake {
             String contentHash,
             DocumentAnalysis analysis)
             throws IOException {
-
         UploadedDocument document = new UploadedDocument(
                 id,
                 caseId,
@@ -113,24 +100,10 @@ public class DocumentIntake {
         return document;
     }
 
-    /** One lock per file per Case, so two arrivals of the same upload queue rather than race. */
     private Object arrivalOf(String caseId, String contentHash) {
         return arrivals.computeIfAbsent(caseId + "/" + contentHash, key -> new Object());
     }
 
-    /**
-     * The reading this Case already has of these exact bytes, if it has one.
-     *
-     * <p>A Claimant who uploads the same file twice — a double-click, or sending it again because
-     * nothing seemed to happen — should not cost a second model call, and should not get a second
-     * opinion. Asking the model again is not free and not deterministic: the same licence read twice
-     * came back GOOD once and ACCEPTABLE once, which on the handler's screen looks like the agent
-     * contradicting itself about one file.
-     *
-     * <p>Scoped to the Case on purpose. The same bytes on a *different* Case is the interesting case
-     * and gets read on its own merits, because the question there is whether one expense is being
-     * claimed twice — which is the screening's job to raise, not intake's to quietly optimise away.
-     */
     private Optional<DocumentAnalysis> alreadyReadOnThisCase(String caseId, String contentHash) {
         return store.findByCaseId(caseId).stream()
                 .filter(document -> contentHash.equals(document.contentHash()))
@@ -146,24 +119,11 @@ public class DocumentIntake {
         }
     }
 
-    /**
-     * The file goes to the model as-is: a PDF as a PDF, a photo as a photo. Both providers accept
-     * both, so nothing is parsed to text on the way — and nothing can be, if the agent is to say
-     * whether a scan is legible.
-     *
-     * <p>The filename is deliberately left out of the prompt. A file called {@code invoice.pdf}
-     * would lead the categorisation before the model had looked at a single pixel, and a filename is
-     * user-supplied text going into a prompt, which is not somewhere user-supplied text belongs.
-     */
     private List<Content> promptFor(MultipartFile file, String mimeType) throws IOException {
         return List.of(
                 TextContent.from(Guardrails.INTAKE_INSTRUCTION), DocumentFiles.contentOf(file.getBytes(), mimeType));
     }
 
-    /**
-     * Browsers are unreliable about MIME types — some send {@code application/octet-stream} for a
-     * PDF, some send nothing at all — so the extension is the fallback.
-     */
     private String resolveMimeType(MultipartFile file) {
         String declared = file.getContentType();
         if (declared != null && (declared.equals("application/pdf") || declared.startsWith("image/"))) {
@@ -183,19 +143,12 @@ public class DocumentIntake {
         };
     }
 
-    /** Thrown for a file the agent cannot look at. Mapped to 415 by the controller. */
     public static class UnsupportedDocumentException extends RuntimeException {
         UnsupportedDocumentException(String message) {
             super(message);
         }
     }
 
-    /**
-     * Thrown when the upload names a Case that does not exist. Mapped to 404 by the controller.
-     *
-     * <p>The only refusal on the Case side. A poor document is still accepted — this is a broken
-     * client, not a judgement about the file.
-     */
     public static class UnknownCaseException extends RuntimeException {
         UnknownCaseException(String message) {
             super(message);

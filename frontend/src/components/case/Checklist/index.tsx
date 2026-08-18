@@ -1,13 +1,5 @@
 import type { CaseOverview, UploadedDocument } from '../../../api'
 
-/**
- * What the case still needs. Ticked items are matched; the rest is what is left to do, and anything
- * that arrived without being asked for is listed under both.
- *
- * Anything a case handler has additionally asked for sits directly underneath, in the same card and
- * deliberately not in the same list: the checklist is what the case status is derived from, and a
- * request is a question that does not move the case either way.
- */
 export function Checklist({ chosen, alsoSent = [] }: { chosen: CaseOverview; alsoSent?: UploadedDocument[] }) {
   return (
     <div className="checklist">
@@ -22,13 +14,6 @@ export function Checklist({ chosen, alsoSent = [] }: { chosen: CaseOverview; als
           )
         })}
 
-        {/*
-          What arrived that the list did not ask for. Kept in the same list rather than a section of
-          its own, because the question the list answers is "where does my case stand", and a
-          document nobody asked for is part of that answer — it is work the claimant has already
-          done, and leaving it off the list reads as though it were never received.
-        */}
-        {/* One line per distinct file: sending the same thing twice is still one thing sent. */}
         {alsoSent
           .filter((doc, i, all) => all.findIndex((d) => d.contentHash === doc.contentHash) === i)
           .map((doc) => (
@@ -61,5 +46,3 @@ export function Checklist({ chosen, alsoSent = [] }: { chosen: CaseOverview; als
     </div>
   )
 }
-
-/* --- the case handler's side --------------------------------------------- */

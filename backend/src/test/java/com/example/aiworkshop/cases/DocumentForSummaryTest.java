@@ -13,14 +13,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
 
-/**
- * The one place the text handed to {@link CaseSummarizer} is pinned.
- *
- * <p>Asserted here rather than at {@link CaseDeskTest} because this rendering is the whole job of the
- * type: a change to it is a change to a prompt, and it should fail under a name that says so.
- */
 class DocumentForSummaryTest {
-
     @Test
     void itRendersWhatTheDocumentSays() {
         String rendered = DocumentForSummary.of(aReceipt()).toString();
@@ -34,12 +27,6 @@ class DocumentForSummaryTest {
                 .contains("POOR");
     }
 
-    /**
-     * The failure this type was introduced for. A Document carries plenty the summarizer has no use
-     * for, and under the old record dump all of it reached the model — including the Quality
-     * Assessment's own prose, which the agent then paraphrased back into the Case Summary beside the
-     * Document that already said it.
-     */
     @Test
     void itLeavesOutTheInternals() {
         String rendered = DocumentForSummary.of(aReceipt()).toString();

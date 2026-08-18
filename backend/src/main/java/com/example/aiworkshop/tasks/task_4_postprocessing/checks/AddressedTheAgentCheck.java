@@ -21,5 +21,19 @@ public class AddressedTheAgentCheck implements FraudCheck {
         //
         // Returning nothing is what no check looks like.
         return List.of();
+
+        // ── One version of the answer ──────────────────────────────────────────────────────
+        // Try it yourself first. Uncomment this a piece at a time if you get stuck, or write
+        // your own and read this after to argue with it.
+        //
+        // ManipulationAttempt attempt = upload.analysis().manipulationAttempt();
+        // if (attempt == null || attempt.attemptedInstruction() == null) {
+        // return List.of();
+        // }
+        // return List.of(new Indicator(
+        // Kind.ADDRESSED_THE_AGENT,
+        // Weight.STRONG,
+        // "The document contains text aimed at the software reading it: " + attempt.attemptedInstruction(),
+        // attempt.quote() == null ? List.of() : List.of("The document says: " + attempt.quote())));
     }
 }

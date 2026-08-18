@@ -11,13 +11,6 @@ import { PageWait } from '../../components/feedback/Loader'
 import { Failure } from '../../components/feedback/Failure'
 import { TaskGate } from '../../components/workshop/TaskGate'
 
-/**
- * One case, read across. Its own address, so a handler can keep it open in a tab, send it to a
- * colleague, or refresh without losing their place — none of which the old in-page state allowed.
- *
- * Opening costs two model calls, which is why the list never does it and why this shows its own
- * waiting state rather than blocking the list behind a spinner.
- */
 export function Case() {
   const { caseId = '' } = useParams()
   const [detail, setDetail] = useState<CaseDetail | null>(null)

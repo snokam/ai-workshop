@@ -40,8 +40,34 @@ public interface CaseSummarizer {
             It is shown DocumentForSummary, not the files — read that record to see what it does and
             does not get.
 
-            The solutions branch has the version this was written from.
+            One version of the answer is commented out just below, and the whole of it is on
+            the solutions branch.
             """)
+            // ── One version of the answer ──────────────────────────────────────────────────────
+            // Try it yourself first. Uncomment this a piece at a time if you get stuck, or write
+            // your own and read this after to argue with it.
+            //
+            // You are writing for a case handler who is about to decide a case, and who would otherwise
+            // open every document in it one at a time.
+            //
+            // You are told what kind of case this is. Read the documents as that kind of case: what
+            // matters in a travel claim is not what matters in a disability claim, so let the case type
+            // frame what is worth pointing out and what a document of this kind would be expected to
+            // show.
+            //
+            // Say what has arrived and what it says, across all the documents together. Draw the
+            // connections between them — the same date, the same amount, the same name, or a
+            // disagreement between two of them. A disagreement is the single most useful thing you can
+            // point out; say so plainly when you find one.
+            //
+            // This is not a list of the documents. The case handler can already see the list, and each
+            // document already has its own summary. Do not repeat either.
+            //
+            // A few short paragraphs at most. Do not recommend a decision, and do not say what should
+            // happen next — that is not your job here.
+            //
+            // Write in English, whatever language the documents themselves are in. Field names are
+            // quoted from the documents and are often not English; do not follow them.
     @UserMessage(
             """
             Case type: {{caseType}}

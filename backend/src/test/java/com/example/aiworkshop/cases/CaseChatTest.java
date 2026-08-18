@@ -37,18 +37,7 @@ import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
 import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
 import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
 
-/**
- * The Case Chat, at the same seam as {@link CaseDeskTest} and with the same agents mocked out.
- *
- * <p>Split from that class by subject rather than by seam: what a Proposal is and what confirming
- * one does is the whole of this feature, and it should not be read through a class whose javadoc
- * says it is deliberately thin.
- *
- * <p>Nothing here drives a model. What the agents are handed is captured; what they reply is
- * stubbed.
- */
 class CaseChatTest {
-
     private static final String CASE_ID = "c-1";
 
     private static final Instant AT_NINE = Instant.parse("2026-08-15T09:00:00Z");
@@ -95,10 +84,6 @@ class CaseChatTest {
                 reader);
     }
 
-    /**
-     * The guarantee the whole feature rests on: the agent suggests, and until a Case Handler clicks,
-     * the Case is exactly where it was.
-     */
     @Test
     void aProposedReviewIsRecordedAndMovesNothing() {
         ProposalCard proposed = desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
@@ -108,7 +93,6 @@ class CaseChatTest {
         assertThat(statusOfTheCase()).isEqualTo(CaseStatus.NEEDS_REVIEW);
     }
 
-    /** The Review path a Proposal reaches is the Document's own, so a Case moves the one way it moves. */
     @Test
     void confirmingAProposedReviewMovesTheCase() {
         ProposalCard proposed = desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
@@ -121,7 +105,6 @@ class CaseChatTest {
                 .containsExactly(ProposalState.CONFIRMED);
     }
 
-    /** Saying no is a thing a Case Handler can do, and it is kept — an ignored suggestion is not a no. */
     @Test
     void decliningAProposedReviewLeavesTheCaseWhereItWas() {
         ProposalCard proposed = desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
@@ -134,10 +117,6 @@ class CaseChatTest {
                 .containsExactly(ProposalState.DECLINED);
     }
 
-    /**
-     * The demo beat, asserted: one agent's suggestion, one handler's click, and something the
-     * Claimant can see on their own screen.
-     */
     @Test
     void aConfirmedDocumentRequestReachesTheClaimant() {
         ProposalCard proposed = desk.proposeDocumentRequest(
@@ -150,7 +129,6 @@ class CaseChatTest {
                 .containsExactly("the second page of the receipt");
     }
 
-    /** A Document Request only exists because a Case Handler clicked. The Proposal alone is a question. */
     @Test
     void anUnconfirmedDocumentRequestReachesNobody() {
         desk.proposeDocumentRequest(CASE_ID, "the second page of the receipt", "The total did not arrive.");
@@ -158,10 +136,6 @@ class CaseChatTest {
         assertThat(overviewOfTheCase().documentRequests()).isEmpty();
     }
 
-    /**
-     * Per ADR 0001 the Required Documents are what Case Status is derived from. Appending to them
-     * would let an agent walk a Case backwards out of READY_FOR_DECISION by asking a question.
-     */
     @Test
     void aConfirmedDocumentRequestDoesNotChangeWhatTheCaseRequires() {
         ProposalCard proposed =
@@ -174,10 +148,6 @@ class CaseChatTest {
         assertThat(statusOfTheCase()).isEqualTo(CaseStatus.NEEDS_REVIEW);
     }
 
-    /**
-     * A Proposal is answered once. Two clicks on Confirm is the ordinary way this happens, and the
-     * Claimant should not be asked twice for the same thing because a button was slow.
-     */
     @Test
     void aProposalAlreadyAnsweredIsNotAnsweredAgain() {
         ProposalCard proposed =
@@ -189,7 +159,6 @@ class CaseChatTest {
         assertThat(overviewOfTheCase().documentRequests()).hasSize(1);
     }
 
-    /** And a no stays a no: reaching Confirm after Decline should not quietly perform the write. */
     @Test
     void aDeclinedProposalCannotBeConfirmedAfterTheFact() {
         ProposalCard proposed = desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
@@ -203,10 +172,6 @@ class CaseChatTest {
                 .containsExactly(ProposalState.DECLINED);
     }
 
-    /**
-     * The Case identifier is the memory identifier, and the memory identifier is what binds the
-     * tools to one Case. A handler never names the Case, and the agent cannot reach another.
-     */
     @Test
     void theChatIsBoundToTheCaseItWasAskedIn() {
         theAgentReplies("This case is waiting on a review of blurry.jpg.");
@@ -217,10 +182,6 @@ class CaseChatTest {
         verify(chatAgent).answer(eq(CASE_ID), eq("What is this waiting on?"), any());
     }
 
-    /**
-     * Opening a Case must not get slower because a chat exists. The Case Summary the chat is
-     * grounded in is the one already on screen above it, read from the same cache.
-     */
     @Test
     void theChatReusesTheCaseSummaryTheHandlerHasAlreadyPaidFor() {
         theAgentReplies("Waiting on a review.");
@@ -231,10 +192,6 @@ class CaseChatTest {
         verify(summarizer, times(1)).summarise(anyString(), anyList());
     }
 
-    /**
-     * A suggestion the handler has already answered, put back in front of the agent. Without this it
-     * proposes the same Review two questions later, and a handler who said no has to say it again.
-     */
     @Test
     void whatTheHandlerHasAlreadyAnsweredReachesTheAgent() {
         theAgentReplies("Nothing further.");
@@ -251,7 +208,6 @@ class CaseChatTest {
                         tuple("the second page of the receipt", ProposalState.PROPOSED));
     }
 
-    /** A handler who goes back to the case list and returns should not have to ask everything again. */
     @Test
     void theConversationIsStillThereWhenTheCaseIsReopened() {
         theAgentReplies("It is waiting on a review of blurry.jpg.");
@@ -263,10 +219,6 @@ class CaseChatTest {
                 .containsExactly(tuple("What is this waiting on?", "It is waiting on a review of blurry.jpg."));
     }
 
-    /**
-     * Which Proposals a turn raised is worked out by difference, so a card lands under the answer
-     * that argued for it rather than at the bottom of the conversation.
-     */
     @Test
     void aTurnRemembersTheSuggestionsItRaised() {
         when(chatAgent.answer(any(), any(), any())).thenAnswer(invocation -> {
@@ -284,10 +236,6 @@ class CaseChatTest {
                 .containsExactly(answer.proposals().getFirst().id());
     }
 
-    /**
-     * The expensive tool, and the only one that costs a second model call. Answering from the index
-     * must not quietly drag the original file through a model as well.
-     */
     @Test
     void answeringWithoutTheReadToolNeverOpensAFile() {
         theAgentReplies("It is waiting on a review of blurry.jpg.");
@@ -297,10 +245,6 @@ class CaseChatTest {
         verifyNoInteractions(reader);
     }
 
-    /**
-     * The tool the whole storage decision exists for: a question the Extraction cannot answer, put to
-     * an agent that can see the file itself.
-     */
     @Test
     void readingADocumentHandsTheOriginalFileToTheReaderAgent() {
         files.save("d-1", SCAN);
@@ -312,10 +256,6 @@ class CaseChatTest {
         assertThat(capturedFile()).hasAtLeastOneElementOfType(ImageContent.class);
     }
 
-    /**
-     * A Claimant can upload two files with the same name, and the agent has only names to go on. The
-     * rule is the one {@link Case} already uses to pick the Document that counts: the newest wins.
-     */
     @Test
     void aFilenameUsedTwiceResolvesToTheNewerDocument() {
         documents.save(document("d-2", "blurry.jpg", "receipt", Quality.GOOD, AT_TEN));
@@ -323,7 +263,6 @@ class CaseChatTest {
         assertThat(desk.documentDetail(CASE_ID, "blurry.jpg")).contains("Quality: GOOD");
     }
 
-    /** The agent is bound to one Case, so a filename that is not in it is a filename that is not there. */
     @Test
     void aFilenameFromAnotherCaseIsNotFound() {
         assertThatThrownBy(() -> desk.documentDetail(CASE_ID, "someone-elses.pdf"))

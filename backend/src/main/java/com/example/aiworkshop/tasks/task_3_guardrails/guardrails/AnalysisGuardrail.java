@@ -31,6 +31,51 @@ public class AnalysisGuardrail implements OutputGuardrail {
         //
         // success() is what no guardrail at all looks like.
         return success();
+
+        // ── One version of the answer ──────────────────────────────────────────────────────
+        // Try it yourself first. Uncomment this a piece at a time if you get stuck, or write
+        // your own and read this after to argue with it.
+        //
+        // String reply = request.responseFromLLM().aiMessage().text();
+        //
+        // JsonNode analysis;
+        // try {
+        // analysis = JSON.readTree(jsonIn(reply));
+        // } catch (Exception e) {
+        // log.warn(
+        // "Guardrail: the reply could not be read as an analysis. It began: {}",
+        // reply.substring(0, Math.min(200, reply.length())));
+        // return reprompt(
+        // "The model's reply was not JSON",
+        // "Your reply could not be read as JSON. Send the analysis again, as a single JSON object"
+        // + " matching the schema and nothing else.");
+        // }
+        //
+        // if (analysis.path("quality").path("verdict").isMissingNode()) {
+        // return reprompt(
+        // "The model's reply had no quality verdict",
+        // "Your reply was missing the quality assessment. Send the whole analysis again, including"
+        // + " the quality verdict, and follow the schema exactly.");
+        // }
+        //
+        // String claimed = text(analysis, "matchedRequiredDocument");
+        // if (claimed == null) {
+        // return success();
+        // }
+        //
+        // List<String> allowed = requiredDocumentsIn(request);
+        // if (allowed.contains(claimed)) {
+        // return success();
+        // }
+        //
+        // log.warn(
+        // "Guardrail: the agent matched '{}', which is not one of {}. Recording no match instead.",
+        // claimed,
+        // allowed);
+        // ObjectNode corrected = ((ObjectNode) analysis).deepCopy();
+        // corrected.putNull("matchedRequiredDocument");
+        // corrected.put("matchConfidence", "LOW");
+        // return successWith(corrected.toString());
     }
 
     private static String jsonIn(String reply) {

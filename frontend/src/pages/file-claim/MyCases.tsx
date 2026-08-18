@@ -6,7 +6,6 @@ import { STATUS_LABEL } from '../../lib/labels'
 import { rememberedCaseIds } from './openedCases'
 import { Failure } from '../../components/feedback/Failure'
 
-/** The cases opened from this browser that the backend still has, so the claimant can return to one. */
 export function MyCases() {
   const [cases, setCases] = useState<CaseOverview[] | null>(null)
   const [error, setError] = useState<Error | null>(null)
@@ -51,4 +50,3 @@ export function MyCases() {
     </>
   )
 }
-

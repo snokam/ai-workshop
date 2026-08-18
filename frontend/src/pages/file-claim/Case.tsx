@@ -10,11 +10,8 @@ import { Loader } from '../../components/feedback/Loader'
 import { Failure } from '../../components/feedback/Failure'
 import { TaskGate } from '../../components/workshop/TaskGate'
 
-/** One case, open for uploading into. Its address is /cases/:caseId, so it survives a refresh. */
 export function Case() {
   const { caseId = '' } = useParams()
-  // Shown once, on arrival from the describe form. A link someone shares carries no state, so
-  // opening the same address later shows the case without the "we have opened this for you" banner.
   const intro = (useLocation().state as { intro?: CreatedCase } | null)?.intro
   const [overview, setOverview] = useState<CaseOverview | null>(null)
   const [documents, setDocuments] = useState<UploadedDocument[]>([])
@@ -22,11 +19,6 @@ export function Case() {
   const [error, setError] = useState<Error | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
 
-  // Previews are made from the File the browser already has. The backend never stores the bytes,
-  // so this map only holds documents uploaded in this tab, this session.
-
-  // The checklist needs `outstanding`, which the case list is the source of truth for. Until the
-  // first read comes back, fall back to what we already know: the fresh case's list, or nothing.
   const checklist: CaseOverview =
     overview ??
     (intro
@@ -60,15 +52,10 @@ export function Case() {
     }
 
     refresh()
-    // Show what has already been sent to this case. The bytes are never served back, so these have
-    // no preview.
     listDocuments()
       .then((all) => setDocuments(all.filter((d) => d.caseId === caseId)))
       .catch((e: Error) => setError(e))
 
-    // The case list is a pure lookup with no model call behind it, which is what makes polling it
-    // reasonable: it is how a document request a case handler has just confirmed appears here
-    // without the claimant reloading the page.
     const polling = setInterval(refresh, 5000)
     return () => clearInterval(polling)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -83,7 +70,6 @@ export function Case() {
       try {
         const uploaded = await uploadDocument(caseId, file)
         setDocuments((current) => [uploaded, ...current])
-        // The case now needs one thing fewer, so re-read what is outstanding.
         await refreshOverview()
       } catch (e) {
         setError(e as Error)

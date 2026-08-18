@@ -7,25 +7,7 @@ import dev.langchain4j.service.V;
 import java.util.List;
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
 
-/**
- * A second look at the original file, for a question no Extraction answers.
- *
- * <p>One-shot and given no Case context at all — not the Case Summary, not what the Case is waiting
- * for, not why it is being asked. A reader that knew what answer would be convenient could be led to
- * it, and the whole value of going back to the file is that it reports what is on the file.
- *
- * <p>It exists because a tool cannot hand the model a file. LangChain4j supports returning image
- * content from a tool, but the documented provider list covers neither Vertex AI Gemini nor the
- * OpenAI-compatible Foundry path this application also runs on, and PDF content is not a supported
- * tool return type on any of them. Anyone tempted to simplify this agent away will meet that first.
- *
- * <p>Shaped like {@link DocumentAnalyzer}: the file is the user message, so the question rides in
- * the system message as a template variable rather than competing with it for the user turn.
- *
- * <p>Per ADR 0002 the English rule is stated here rather than inherited from anywhere.
- */
 public interface DocumentReader {
-
     @SystemMessage(
             """
             You are looking at one file on behalf of a case handler who cannot make something out on

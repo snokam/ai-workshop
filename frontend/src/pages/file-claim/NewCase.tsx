@@ -8,11 +8,6 @@ import { Loader } from '../../components/feedback/Loader'
 import { Failure } from '../../components/feedback/Failure'
 import { TaskGate } from '../../components/workshop/TaskGate'
 
-/**
- * A new case has its own address the moment it exists, and the classifier's reasoning travels to it
- * in history state rather than in the URL — it is worth showing once, on arrival, and not worth
- * putting in a link somebody might send to someone else.
- */
 function openCreated(navigate: NavigateFunction, created: CreatedCase) {
   rememberCase(created.id)
   navigate(`/cases/${created.id}`, { state: { intro: created } })
@@ -25,7 +20,6 @@ export function NewCase() {
   const [error, setError] = useState<Error | null>(null)
   const [types, setTypes] = useState<SupportedCaseType[]>([])
 
-  // Pulled from the backend so the scope shown here is exactly what the classifier can land on.
   useEffect(() => {
     let live = true
     listCaseTypes()
@@ -78,7 +72,6 @@ export function NewCase() {
             placeholder="For example: my suitcase never turned up after my flight home, and I had to buy clothes and toiletries."
             rows={5}
             disabled={submitting}
-            // Submit on Enter, newline on Shift+Enter — the box is for a sentence or two, not an essay.
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault()

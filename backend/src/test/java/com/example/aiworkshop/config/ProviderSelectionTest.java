@@ -8,12 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-/**
- * Verifies the {@code aiworkshop.model.provider} switch, without calling either provider. Dummy
- * Azure credentials are enough because the client is only built here, never used.
- */
 class ProviderSelectionTest {
-
     private final ApplicationContextRunner runner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(VertexAiConfig.class, FoundryConfig.class))
             .withPropertyValues(

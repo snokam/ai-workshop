@@ -7,27 +7,6 @@ import type { ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import { framework } from '../framework'
 
-/**
- * The real @snokam/navbar and @snokam/footer, in an app that has none of what they normally read.
- *
- * Their wired versions — SimpleHeader and Footer — pull the logo and every label out of Sanity, the
- * signed-in user out of next-auth and the link targets out of the tenant config. This app has no
- * CMS, no login and no tenant, so those would render empty strings, and useConfig would throw
- * before that. The Base components take the same values as props, which is all this needs.
- *
- * The `page` wrapper is what holds the footer at the bottom: a column that is at least the height
- * of the viewport, with `main` taking the slack, so a short screen still puts the footer on the
- * fold rather than partway up an empty page.
- *
- * `main` is Snokam.Container/Content/Section, the same three the header and footer use, so the
- * page gutters and the maximum text width line up with the chrome above and below rather than
- * being a second set of numbers that happens to look close.
- */
-/**
- * Where the header's back link points, worked out from the address. A case is always reached from
- * one list, so the way back is a fixed place rather than whatever the history stack happens to
- * hold — a reload or a pasted link then still has somewhere to go.
- */
 function backFrom(pathname: string): { url: string; text: string } | null {
   if (/^\/casehandler\/cases\/[^/]+$/.test(pathname)) {
     return { url: '/casehandler', text: 'All cases' }

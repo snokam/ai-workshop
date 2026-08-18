@@ -2,18 +2,6 @@ import type { ReactNode } from 'react'
 import type { TaskKey } from '../../../api/workshop'
 import { useTask } from '../../../lib/task-state'
 
-/**
- * A feature that is waiting on an exercise.
- *
- * The controls stay live. You can type in the field, press the button, drop a file — and then the
- * call fails and says which file to open. Blocking the input would teach less: half of what a task
- * is for only becomes clear when you use the thing it is missing from.
- *
- * So this only adds the explanation. The failure on use is the backstop in Failure, and the two
- * say the same thing.
- *
- * Once the flag is set the wrapper disappears entirely and the feature is simply there.
- */
 export function TaskGate({
   task: key,
   children,
@@ -21,12 +9,10 @@ export function TaskGate({
 }: {
   task: TaskKey
   children: ReactNode
-  /** One sentence on what this particular screen is missing, above the task's own todo. */
   instead?: ReactNode
 }) {
   const task = useTask(key)
 
-  // Still loading, or already written: get out of the way.
   if (task === null || task.done) return <>{children}</>
 
   return (

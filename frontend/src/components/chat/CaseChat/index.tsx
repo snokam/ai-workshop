@@ -41,8 +41,6 @@ export function CaseChat({
     }
   }
 
-  // A confirmed review moves the case, so the screen beside this one has to be read again. Nothing
-  // else a card can do changes anything the case screen shows.
   async function resolve(proposal: ProposalCard, confirmed: boolean) {
     setError(null)
     try {

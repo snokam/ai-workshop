@@ -4,16 +4,8 @@ import java.util.EnumMap;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 
-/**
- * Which tasks have been written, in one place.
- *
- * <p>The flags live on the agent interfaces, because that is the file a participant has open. This
- * gathers them so nothing else has to know where they are — the wiring asks it, and so does the
- * endpoint the screens read.
- */
 @Component
 public class TaskProgress {
-
     private final Map<WorkshopTask, Boolean> done = new EnumMap<>(WorkshopTask.class);
 
     public TaskProgress() {

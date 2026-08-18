@@ -31,15 +31,7 @@ import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
 import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
 import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
 
-/**
- * The handler side, with both agents mocked out the way {@code DocumentAnalyzer} already is.
- *
- * <p>Deliberately thin. What each status means is settled at {@link CaseStatusTest}, and this seam
- * should not become a second home for it — only what the agents are handed, and that a Review
- * actually moves the Case, are asserted here.
- */
 class CaseDeskTest {
-
     private static final String CASE_ID = "c-1";
 
     private static final Instant AT_NINE = Instant.parse("2026-08-15T09:00:00Z");
@@ -83,10 +75,6 @@ class CaseDeskTest {
         assertThat(statusOfTheCase()).isEqualTo(CaseStatus.READY_FOR_DECISION);
     }
 
-    /**
-     * Two receipts, and the handler is looking at both. Which one the status came from is derived
-     * here rather than left for the screen to work out again.
-     */
     @Test
     void theCaseDetailSaysWhichDocumentCounts() {
         documents.save(document("better.jpg", "receipt", Quality.GOOD, AT_TEN));
@@ -97,10 +85,6 @@ class CaseDeskTest {
         assertThat(detail.documents()).extracting(UploadedDocument::id).contains("blurry.jpg", "better.jpg");
     }
 
-    /**
-     * Three Documents the agent could not read, one Case held up. Offering a Review on the other two
-     * would be offering a fix for a problem the Case does not have.
-     */
     @Test
     void onlyTheDocumentsHoldingTheCaseUpAreMarkedAsBlocking() {
         documents.save(document("holiday-photo.png", null, Quality.POOR));
@@ -112,11 +96,6 @@ class CaseDeskTest {
         assertThat(detail.countingDocumentIds()).doesNotContain("holiday-photo.png");
     }
 
-    /**
-     * The expensive agent: it needs what the Documents say, which is why it is not the same agent.
-     * One projection per attached Document, newest first — what each one renders as is pinned at
-     * {@link DocumentForSummaryTest}, not here.
-     */
     @Test
     void theSummarizerIsHandedTheCasesDocuments() {
         documents.save(document("better.jpg", "receipt", Quality.GOOD, AT_TEN));
@@ -128,10 +107,6 @@ class CaseDeskTest {
                 .containsExactly("better.jpg", "blurry.jpg");
     }
 
-    /**
-     * The cheap agent: derived facts only. Its signature is what keeps Document contents out of a
-     * call made every time a Case is opened — and what keeps it from inventing a status of its own.
-     */
     @Test
     void theStatusWriterIsHandedTheDerivedFactsAndNothingElse() {
         desk.open(CASE_ID);
@@ -142,10 +117,6 @@ class CaseDeskTest {
         assertThat(blocked.getValue()).singleElement(as(STRING)).contains("blurry.jpg");
     }
 
-    /**
-     * The point of splitting the two agents: the expensive one is not re-run for a handler reading
-     * the same Case twice, because nothing it was written over has changed.
-     */
     @Test
     void openingTheSameCaseTwiceWritesTheSummaryOnce() {
         desk.open(CASE_ID);
@@ -154,7 +125,6 @@ class CaseDeskTest {
         verify(summarizer, times(1)).summarise(anyString(), anyList());
     }
 
-    /** And it does go stale: a Document arriving is the one thing the summary is written over. */
     @Test
     void aNewDocumentMakesTheNextOpenWriteTheSummaryAgain() {
         desk.open(CASE_ID);
@@ -165,7 +135,6 @@ class CaseDeskTest {
         verify(summarizer, times(2)).summarise(anyString(), anyList());
     }
 
-    /** A Review changes a handler's judgement of a Document, not a word of what it says. */
     @Test
     void aReviewDoesNotMakeTheSummaryStale() {
         desk.open(CASE_ID);
@@ -176,7 +145,6 @@ class CaseDeskTest {
         verify(summarizer, times(1)).summarise(anyString(), anyList());
     }
 
-    /** The cheap agent is not cached: the derived facts it writes up change under it. */
     @Test
     void theStatusNoteIsWrittenOnEveryOpen() {
         desk.open(CASE_ID);
