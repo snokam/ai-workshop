@@ -26,6 +26,7 @@ public class TaskNotImplementedAdvice {
                 .body(Map.of(
                         "taskNotImplemented", true,
                         "task", task.number(),
+                        "key", task.name(),
                         "title", task.title(),
                         "file", task.file(),
                         "todo", task.todo(),

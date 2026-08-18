@@ -1,5 +1,5 @@
-import type { FraudScreening } from '../api'
-import { INDICATOR_LABEL } from '../ui/labels'
+import type { FraudScreening } from '../../../api'
+import { INDICATOR_LABEL } from '../../../lib/labels'
 
 export function Screening({ screening }: { screening: FraudScreening }) {
   return (

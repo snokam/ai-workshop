@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listCases } from '../../api'
 import type { CaseOverview } from '../../api'
-import { STATUS_LABEL } from '../../ui/labels'
+import { STATUS_LABEL } from '../../lib/labels'
 import { rememberedCaseIds } from './openedCases'
-import { Failure } from '../../ui/Failure'
+import { Failure } from '../../components/feedback/Failure'
 
 /** The cases opened from this browser that the backend still has, so the claimant can return to one. */
 export function MyCases() {

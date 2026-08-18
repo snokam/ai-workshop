@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listCases } from '../../api'
 import type { CaseOverview } from '../../api'
-import { STATUS_LABEL } from '../../ui/labels'
-import { Failure } from '../../ui/Failure'
-import { TaskGate } from '../../ui/TaskGate'
-import { useTaskPending } from '../../workshop/task-state'
+import { STATUS_LABEL } from '../../lib/labels'
+import { Failure } from '../../components/feedback/Failure'
+import { TaskGate } from '../../components/workshop/TaskGate'
+import { useTaskPending } from '../../lib/task-state'
 
 /** Every case, cheap to read: no agent runs to produce this list. Opening one is what costs. */
 export function HandlerCases() {

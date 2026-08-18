@@ -122,12 +122,20 @@ Who sees what is [ADR 0005](./docs/adr/0005-fraud-signals-are-handler-side.md).
 Nothing in either task needs credentials or a network: the checks read the bytes that are already in
 hand.
 
-The frontend is a folder per job, and every screen has an address:
+The frontend is laid out like the pages, so where a file sits says who uses it:
 
 | | |
 |---|---|
 | `frontend/src/App.tsx` | the route table, and nothing else |
-| `frontend/src/routes/` | one file per screen: `/`, `/cases`, `/cases/:caseId`, `/casehandler`, `/casehandler/cases/:caseId` |
-| `frontend/src/components/` | the pieces a screen is built from |
+| `frontend/src/pages/claimant/` | `/`, `/cases`, `/cases/:caseId` |
+| `frontend/src/pages/handler/` | `/casehandler`, `/casehandler/cases/:caseId` |
+| `frontend/src/components/case/` | the pieces both Case screens are built from |
+| `frontend/src/components/chat/` | the chat, its turns, and the proposals it puts up |
+| `frontend/src/components/feedback/` | waiting, and everything that can come back wrong |
+| `frontend/src/components/workshop/` | which exercises are done, and what a screen says when one is not |
+| `frontend/src/components/layout/` | the snokam header and footer, and the router bridge they use |
 | `frontend/src/api/` | types, the fetch helpers, and one file per resource |
-| `frontend/src/lib/` | labels, and the two questions the screens ask about a Document |
+| `frontend/src/lib/` | labels, and the task state every screen reads |
+
+A screen that needs an unwritten task keeps working: the controls stay live, the
+explanation sits under them, and using them fails with the file to open.

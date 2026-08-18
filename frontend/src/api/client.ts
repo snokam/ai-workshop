@@ -1,3 +1,5 @@
+import type { TaskKey } from './workshop'
+
 /** How every call in this folder talks to the backend, and how a failure becomes a message. */
 
 /**
@@ -7,6 +9,8 @@
 export interface TaskNotImplemented {
   taskNotImplemented: true
   task: number
+  /** The stable identifier, so a screen can tell this is the task it is already explaining. */
+  key: TaskKey
   title: string
   file: string
   todo: string

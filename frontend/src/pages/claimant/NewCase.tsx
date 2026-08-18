@@ -4,9 +4,9 @@ import { createCase, listCaseTypes } from '../../api'
 import type { CreatedCase, SupportedCaseType } from '../../api'
 import { rememberCase } from './openedCases'
 import { useEffect } from 'react'
-import { Loader } from '../../ui/Loader'
-import { Failure } from '../../ui/Failure'
-import { TaskGate } from '../../ui/TaskGate'
+import { Loader } from '../../components/feedback/Loader'
+import { Failure } from '../../components/feedback/Failure'
+import { TaskGate } from '../../components/workshop/TaskGate'
 
 /**
  * A new case has its own address the moment it exists, and the classifier's reasoning travels to it

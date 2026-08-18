@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { listTasks, type TaskState } from '../api/workshop'
-import { TasksContext } from './task-state'
+import { listTasks, type TaskState } from '../../../api/workshop'
+import { TasksContext } from '../../../lib/task-state'
 
 /**
  * Reads how far the workshop has got, once, for every screen.

@@ -1,4 +1,4 @@
-import type { CaseOverview, UploadedDocument } from '../api'
+import type { CaseOverview, UploadedDocument } from '../../../api'
 
 /**
  * What the case still needs. Ticked items are matched; the rest is what is left to do, and anything

@@ -1,6 +1,6 @@
 /** Two questions the screens ask about a Document that the backend does not answer directly. */
 
-import type { CaseDetail, UploadedDocument } from '../api'
+import type { CaseDetail, UploadedDocument } from '../../api'
 
 /** What a document is to its case. The claimant's side has no case context, so it passes none. */
 export type Standing = 'counting' | 'superseded' | 'unmatched'

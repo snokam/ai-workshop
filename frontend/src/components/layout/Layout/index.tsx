@@ -5,7 +5,7 @@ import { SimpleHeaderBase, HeaderTheme } from '@snokam/navbar/v1/base'
 import { FooterBase, FooterTheme } from '@snokam/footer/v1/base'
 import type { ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
-import { framework } from './framework'
+import { framework } from '../framework'
 
 /**
  * The real @snokam/navbar and @snokam/footer, in an app that has none of what they normally read.

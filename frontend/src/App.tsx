@@ -1,6 +1,6 @@
 import { Link, Outlet, Route, Routes } from 'react-router-dom'
-import { Layout } from './ui/layout/Layout'
-import { TasksProvider } from './workshop/TasksProvider'
+import { Layout } from './components/layout/Layout'
+import { TasksProvider } from './components/workshop/TasksProvider'
 import { ClaimantCase } from './pages/claimant/Case'
 import { HandlerCase } from './pages/handler/Case'
 import { HandlerCases } from './pages/handler/Cases'

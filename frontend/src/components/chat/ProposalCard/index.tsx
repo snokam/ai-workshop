@@ -1,4 +1,4 @@
-import type { ProposalCard } from '../../api'
+import type { ProposalCard } from '../../../api'
 
 export function ProposalCardView({
   proposal,

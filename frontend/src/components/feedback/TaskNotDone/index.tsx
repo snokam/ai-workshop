@@ -1,4 +1,4 @@
-import type { TaskNotImplementedError } from '../api/client'
+import type { TaskNotImplementedError } from '../../../api/client'
 
 /**
  * What a screen shows when a call comes back saying the exercise behind it is unfinished.
