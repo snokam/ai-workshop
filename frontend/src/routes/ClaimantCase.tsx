@@ -8,6 +8,7 @@ import { CONFIDENCE_LABEL } from '../lib/labels'
 import { previewOf } from '../lib/documents'
 import { Loader } from '../components/Loader'
 import { Failure } from '../components/Failure'
+import { TaskGate } from '../components/TaskGate'
 
 /** One case, open for uploading into. Its address is /cases/:caseId, so it survives a refresh. */
 export function ClaimantCase() {
@@ -23,7 +24,6 @@ export function ClaimantCase() {
 
   // Previews are made from the File the browser already has. The backend never stores the bytes,
   // so this map only holds documents uploaded in this tab, this session.
-
 
   // The checklist needs `outstanding`, which the case list is the source of truth for. Until the
   // first read comes back, fall back to what we already know: the fresh case's list, or nothing.
@@ -103,7 +103,9 @@ export function ClaimantCase() {
           <p className="reference">{intro.reference}</p>
           <p className="rationale">
             {intro.rationale}{' '}
-            <span className="confidence-note">— the agent is {CONFIDENCE_LABEL[intro.confidence]}</span>
+            <span className="confidence-note">
+              — the agent is {CONFIDENCE_LABEL[intro.confidence]}
+            </span>
           </p>
         </section>
       ) : (
@@ -116,52 +118,65 @@ export function ClaimantCase() {
       <header>
         <h2>What to send in</h2>
         <p>
-          Upload each of these and an agent reads it, tells you what it is, says which item it counts
-          as, and whether the file is good enough to work with.
+          Upload each of these and an agent reads it, tells you what it is, says
+          which item it counts as, and whether the file is good enough to work
+          with.
         </p>
       </header>
 
       {checklist.requiredDocuments.length > 0 ? (
-        <Checklist chosen={checklist} alsoSent={documents.filter((d) => !d.analysis.matchedRequiredDocument)} />
-      ) : (
-        <p className="empty">This case has no set list of documents. Send in anything relevant.</p>
-      )}
-
-      <label
-        className={`dropzone ${busyWith ? 'busy' : ''}`}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
-          e.preventDefault()
-          void handleFiles(e.dataTransfer.files)
-        }}
-      >
-        <input
-          ref={fileInput}
-          type="file"
-          accept="application/pdf,image/*"
-          multiple
-          disabled={busyWith !== null}
-          onChange={(e) => void handleFiles(e.target.files)}
+        <Checklist
+          chosen={checklist}
+          alsoSent={documents.filter(
+            (d) => !d.analysis.matchedRequiredDocument,
+          )}
         />
-        {busyWith ? (
-          <span className="reading">
-            <Loader />
-            Reading <strong>{busyWith}</strong>…
-          </span>
-        ) : (
-          <span>
-            <strong>Drop a PDF or a photo here</strong>
-            <small>or click to choose a file</small>
-          </span>
-        )}
-      </label>
-
-      {error && (
-        <Failure error={error} />
+      ) : (
+        <p className="empty">
+          This case has no set list of documents. Send in anything relevant.
+        </p>
       )}
+
+      <TaskGate
+        task="DOCUMENT_AGENT"
+        instead="A file can be dropped here, but the agent that reads an uploaded PDF or photo has not been written yet."
+      >
+        <label
+          className={`dropzone ${busyWith ? 'busy' : ''}`}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault()
+            void handleFiles(e.dataTransfer.files)
+          }}
+        >
+          <input
+            ref={fileInput}
+            type="file"
+            accept="application/pdf,image/*"
+            multiple
+            disabled={busyWith !== null}
+            onChange={(e) => void handleFiles(e.target.files)}
+          />
+          {busyWith ? (
+            <span className="reading">
+              <Loader />
+              Reading <strong>{busyWith}</strong>…
+            </span>
+          ) : (
+            <span>
+              <strong>Drop a PDF or a photo here</strong>
+              <small>or click to choose a file</small>
+            </span>
+          )}
+        </label>
+      </TaskGate>
+
+      {error && <Failure error={error} />}
 
       <section className="documents">
-        {documents.length === 0 && !busyWith && <p className="empty">Nothing uploaded yet.</p>}
+        {documents.length === 0 && !busyWith && (
+          <p className="empty">Nothing uploaded yet.</p>
+        )}
         {documents.map((doc) => (
           <DocumentCard key={doc.id} doc={doc} preview={previewOf(doc)} />
         ))}

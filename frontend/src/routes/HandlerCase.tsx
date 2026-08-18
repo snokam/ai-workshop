@@ -9,6 +9,7 @@ import { previewOf, standingOf } from '../lib/documents'
 import { STATUS_LABEL } from '../lib/labels'
 import { PageWait } from '../components/Loader'
 import { Failure } from '../components/Failure'
+import { TaskGate } from '../components/TaskGate'
 
 /**
  * One case, read across. Its own address, so a handler can keep it open in a tab, send it to a
@@ -66,12 +67,12 @@ export function HandlerCase() {
           <header>
             <h1>{overview.typeLabel}</h1>
             <p className="case-reference-line">{overview.reference}</p>
-            <p className={`status ${overview.status.toLowerCase()}`}>{STATUS_LABEL[overview.status]}</p>
+            <p className={`status ${overview.status.toLowerCase()}`}>
+              {STATUS_LABEL[overview.status]}
+            </p>
           </header>
 
-          {error && (
-            <Failure error={error} />
-          )}
+          {error && <Failure error={error} />}
 
           <section className="agent-prose">
             <h2>Where this stands</h2>
@@ -80,13 +81,20 @@ export function HandlerCase() {
 
           <Checklist chosen={overview} />
 
-          <section className="agent-prose">
-            <h2>Across the documents</h2>
-            <p>{detail.summary}</p>
-          </section>
+          <TaskGate
+            task="SUMMARY"
+            instead="This is what every document on the case says when read together, which is its own agent and has not been written yet."
+          >
+            <section className="agent-prose">
+              <h2>Across the documents</h2>
+              <p>{detail.summary}</p>
+            </section>
+          </TaskGate>
 
           <section className="documents">
-            {detail.documents.length === 0 && <p className="empty">Nothing uploaded to this case yet.</p>}
+            {detail.documents.length === 0 && (
+              <p className="empty">Nothing uploaded to this case yet.</p>
+            )}
             {detail.documents.map((doc) => (
               <DocumentCard
                 key={doc.id}
@@ -94,7 +102,9 @@ export function HandlerCase() {
                 preview={previewOf(doc)}
                 standing={standingOf(doc, detail)}
                 blocking={detail.blockedDocumentIds.includes(doc.id)}
-                screening={detail.screenings.find((s) => s.documentId === doc.id)}
+                screening={detail.screenings.find(
+                  (s) => s.documentId === doc.id,
+                )}
                 onReview={() => void review(doc.id)}
               />
             ))}

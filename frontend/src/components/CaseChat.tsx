@@ -5,8 +5,15 @@ import { SUGGESTED_QUESTIONS } from '../lib/labels'
 import { Turn } from './Turn'
 import { Loader } from './Loader'
 import { Failure } from './Failure'
+import { TaskGate } from './TaskGate'
 
-export function CaseChat({ detail, onCaseChanged }: { detail: CaseDetail; onCaseChanged: () => Promise<void> }) {
+export function CaseChat({
+  detail,
+  onCaseChanged,
+}: {
+  detail: CaseDetail
+  onCaseChanged: () => Promise<void>
+}) {
   const [turns, setTurns] = useState<ChatTurn[]>(detail.conversation)
   const [proposals, setProposals] = useState<ProposalCard[]>(detail.proposals)
   const [question, setQuestion] = useState('')
@@ -39,8 +46,12 @@ export function CaseChat({ detail, onCaseChanged }: { detail: CaseDetail; onCase
   async function resolve(proposal: ProposalCard, confirmed: boolean) {
     setError(null)
     try {
-      const resolved = confirmed ? await confirmProposal(proposal.id) : await declineProposal(proposal.id)
-      setProposals((current) => current.map((p) => (p.id === resolved.id ? resolved : p)))
+      const resolved = confirmed
+        ? await confirmProposal(proposal.id)
+        : await declineProposal(proposal.id)
+      setProposals((current) =>
+        current.map((p) => (p.id === resolved.id ? resolved : p)),
+      )
       if (confirmed && resolved.kind === 'REVIEW') await onCaseChanged()
     } catch (e) {
       setError(e as Error)
@@ -51,56 +62,65 @@ export function CaseChat({ detail, onCaseChanged }: { detail: CaseDetail; onCase
     <aside className="chat">
       <h2>Ask about this case</h2>
 
-      <div className="turns">
-        {turns.length === 0 && !thinking && (
-          <div className="suggestions">
-            <p className="empty">Nothing asked yet.</p>
-            {SUGGESTED_QUESTIONS.map((suggested) => (
-              <button key={suggested} className="chip" onClick={() => void ask(suggested)}>
-                {suggested}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {turns.map((turn, index) => (
-          <Turn
-            key={index}
-            turn={turn}
-            proposals={proposals.filter((p) => turn.proposalIds.includes(p.id))}
-            onResolve={resolve}
-          />
-        ))}
-
-        {thinking && (
-          <p className="reading">
-            <Loader />
-            Reading the case…
-          </p>
-        )}
-      </div>
-
-      {error && (
-        <Failure error={error} />
-      )}
-
-      <form
-        className="asking"
-        onSubmit={(e) => {
-          e.preventDefault()
-          void ask(question)
-        }}
+      <TaskGate
+        task="CHAT"
+        instead="Asking about a case is a conversation with tools and a memory, and that agent has not been written yet."
       >
-        <input
-          value={question}
-          disabled={thinking}
-          placeholder="What is the total on the receipt?"
-          onChange={(e) => setQuestion(e.target.value)}
-        />
-        <button type="submit" disabled={thinking || !question.trim()}>
-          Ask
-        </button>
-      </form>
+        <div className="turns">
+          {turns.length === 0 && !thinking && (
+            <div className="suggestions">
+              <p className="empty">Nothing asked yet.</p>
+              {SUGGESTED_QUESTIONS.map((suggested) => (
+                <button
+                  key={suggested}
+                  className="chip"
+                  onClick={() => void ask(suggested)}
+                >
+                  {suggested}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {turns.map((turn, index) => (
+            <Turn
+              key={index}
+              turn={turn}
+              proposals={proposals.filter((p) =>
+                turn.proposalIds.includes(p.id),
+              )}
+              onResolve={resolve}
+            />
+          ))}
+
+          {thinking && (
+            <p className="reading">
+              <Loader />
+              Reading the case…
+            </p>
+          )}
+        </div>
+
+        {error && <Failure error={error} />}
+
+        <form
+          className="asking"
+          onSubmit={(e) => {
+            e.preventDefault()
+            void ask(question)
+          }}
+        >
+          <input
+            value={question}
+            disabled={thinking}
+            placeholder="What is the total on the receipt?"
+            onChange={(e) => setQuestion(e.target.value)}
+          />
+          <button type="submit" disabled={thinking || !question.trim()}>
+            Ask
+          </button>
+        </form>
+      </TaskGate>
     </aside>
   )
 }

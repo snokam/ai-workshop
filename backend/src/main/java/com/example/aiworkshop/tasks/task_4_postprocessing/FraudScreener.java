@@ -16,6 +16,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FraudScreener {
+    /**
+     * ── TASK POSTPROCESSING ────────────────────────────────────────────────────────────────────────
+     * Set to true once you have written the checks that run after the agent answers below. While it is false the
+     * application still runs and every screen says so rather than failing.
+     * ──────────────────────────────────────────────────────────────────────────────────
+     */
+    public static final boolean IMPLEMENTED = true;
+
 
     private static final Logger log = LoggerFactory.getLogger(FraudScreener.class);
 

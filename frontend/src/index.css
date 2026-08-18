@@ -159,13 +159,19 @@ header p {
   color: var(--muted);
 }
 
+/* The controls a task will bring to life: visible so they explain themselves, plainly not live. */
+.task-pending-preview {
+  opacity: 0.5;
+  filter: saturate(0.4);
+}
+
 /*
  * An exercise nobody has written yet. Deliberately not the error styling: nothing has gone wrong,
  * the workshop has simply not reached this task. The file path is what a participant actually
  * needs, so it gets the most weight.
  */
 .task-todo {
-  margin: 1.5rem 0 0;
+  margin: 1rem 0 0;
   padding: 1.25rem 1.5rem;
   background: var(--surface);
   border: 1px solid var(--border);

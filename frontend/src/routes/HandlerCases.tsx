@@ -4,11 +4,14 @@ import { listCases } from '../api'
 import type { CaseOverview } from '../api'
 import { STATUS_LABEL } from '../lib/labels'
 import { Failure } from '../components/Failure'
+import { TaskGate } from '../components/TaskGate'
+import { useTaskPending } from '../lib/tasks'
 
 /** Every case, cheap to read: no agent runs to produce this list. Opening one is what costs. */
 export function HandlerCases() {
   const [cases, setCases] = useState<CaseOverview[]>([])
   const [error, setError] = useState<Error | null>(null)
+  const firstAgentPending = useTaskPending('FIRST_AGENT')
 
   useEffect(() => {
     listCases()
@@ -21,26 +24,43 @@ export function HandlerCases() {
       <header>
         <h1>Cases</h1>
         <p>
-          Where each case stands, worked out from the documents attached to it. Opening one runs the
-          agents over it; this list does not.
+          Where each case stands, worked out from the documents attached to it.
+          Opening one runs the agents over it; this list does not.
         </p>
       </header>
 
-      {error && (
-        <Failure error={error} />
-      )}
+      {error && <Failure error={error} />}
 
       <section className="cases">
-        {cases.length === 0 && (
-          <p className="empty">No cases yet. They appear here once someone opens one on the intake side.</p>
-        )}
+        {cases.length === 0 &&
+          (firstAgentPending ? (
+            <TaskGate
+              task="FIRST_AGENT"
+              instead="No case can be opened yet, so there is nothing for this list to show. A case is created by the agent that reads what a claimant typed and decides which kind of case it is."
+            >
+              <p className="empty">
+                No cases yet. They appear here once someone opens one on the intake side.
+              </p>
+            </TaskGate>
+          ) : (
+            <p className="empty">
+              No cases yet. They appear here once someone opens one on the
+              intake side.
+            </p>
+          ))}
         {cases.map((c) => (
-          <Link key={c.id} className="case-row" to={`/casehandler/cases/${c.id}`}>
+          <Link
+            key={c.id}
+            className="case-row"
+            to={`/casehandler/cases/${c.id}`}
+          >
             <span className="reference">
               {c.typeLabel}
               <span className="case-reference"> · {c.reference}</span>
             </span>
-            <span className={`status ${c.status.toLowerCase()}`}>{STATUS_LABEL[c.status]}</span>
+            <span className={`status ${c.status.toLowerCase()}`}>
+              {STATUS_LABEL[c.status]}
+            </span>
             <span className="outstanding-count">
               {c.outstanding.length === 0
                 ? 'Everything required has arrived'

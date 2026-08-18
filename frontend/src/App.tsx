@@ -1,5 +1,6 @@
 import { Link, Outlet, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/layout/Layout'
+import { TasksProvider } from './lib/tasks'
 import { ClaimantCase } from './routes/ClaimantCase'
 import { HandlerCase } from './routes/HandlerCase'
 import { HandlerCases } from './routes/HandlerCases'
@@ -18,18 +19,20 @@ import { NewCase } from './routes/NewCase'
  */
 export default function App() {
   return (
-    <Layout>
-      <Routes>
-        <Route path="/" element={<ClaimantShell />}>
-          <Route index element={<NewCase />} />
-          <Route path="cases" element={<MyCases />} />
-        </Route>
-        <Route path="/cases/:caseId" element={<ClaimantCase />} />
-        <Route path="/casehandler" element={<HandlerCases />} />
-        <Route path="/casehandler/cases/:caseId" element={<HandlerCase />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Layout>
+    <TasksProvider>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<ClaimantShell />}>
+            <Route index element={<NewCase />} />
+            <Route path="cases" element={<MyCases />} />
+          </Route>
+          <Route path="/cases/:caseId" element={<ClaimantCase />} />
+          <Route path="/casehandler" element={<HandlerCases />} />
+          <Route path="/casehandler/cases/:caseId" element={<HandlerCase />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Layout>
+    </TasksProvider>
   )
 }
 
