@@ -152,6 +152,7 @@ class CaseStatusTest {
                 "application/pdf",
                 1024,
                 uploadedAt,
+                "hash-of-" + matchedRequiredDocument,
                 new DocumentAnalysis(
                         "some document",
                         "What the document says.",
@@ -173,6 +174,7 @@ class CaseStatusTest {
                 document.contentType(),
                 document.sizeBytes(),
                 document.uploadedAt(),
+                document.contentHash(),
                 new DocumentAnalysis(
                         analysis.category(),
                         analysis.summary(),

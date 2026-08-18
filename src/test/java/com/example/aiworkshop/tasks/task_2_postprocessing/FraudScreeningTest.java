@@ -54,7 +54,7 @@ class FraudScreeningTest {
                 "Told the agent to record the document as already approved.", "IGNORE ALL PREVIOUS"));
 
         FraudScreening.Indicator found = screener
-                .screen(new Upload("d", "c", "receipt.pdf", "application/pdf", new byte[] {1}, analysis))
+                .screen(new Upload("d", "c", "receipt.pdf", "application/pdf", new byte[] {1}, "hash-1", analysis))
                 .indicators()
                 .getFirst();
 
@@ -67,7 +67,7 @@ class FraudScreeningTest {
     void anOrdinaryDocumentProducesNothing() {
         assertThat(screener
                         .screen(new Upload(
-                                "d", "c", "receipt.pdf", "application/pdf", new byte[] {1}, analysis(null)))
+                                "d", "c", "receipt.pdf", "application/pdf", new byte[] {1}, "hash-1", analysis(null)))
                         .indicators())
                 .isEmpty();
     }
@@ -83,7 +83,13 @@ class FraudScreeningTest {
 
     private static Upload upload(String filename, String caseId, byte[] content) {
         return new Upload(
-                "doc-" + filename + caseId, caseId, filename, "image/png", content, analysis(null));
+                "doc-" + filename + caseId,
+                caseId,
+                filename,
+                "image/png",
+                content,
+                "hash-of-" + new String(content),
+                analysis(null));
     }
 
     private static DocumentAnalysis analysis(ManipulationAttempt attempt) {

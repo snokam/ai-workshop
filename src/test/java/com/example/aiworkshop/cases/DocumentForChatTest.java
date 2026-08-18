@@ -113,6 +113,7 @@ class DocumentForChatTest {
                 "image/jpeg",
                 4821004,
                 Instant.parse("2026-08-15T09:00:00Z"),
+                "hash-of-" + filename,
                 new DocumentAnalysis(
                         category, summary, fields, matchedRequiredDocument, MatchConfidence.HIGH, quality, null),
                 reviewed);

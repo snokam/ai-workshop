@@ -61,6 +61,7 @@ public class FraudScreener {
             String filename,
             String contentType,
             byte[] content,
+            String contentHash,
             DocumentAnalysis analysis) {
 
         public boolean isImage() {

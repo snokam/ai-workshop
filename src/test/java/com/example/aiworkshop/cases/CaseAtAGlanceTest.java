@@ -102,6 +102,7 @@ class CaseAtAGlanceTest {
                 "image/jpeg",
                 1024,
                 Instant.parse("2026-08-15T09:00:00Z"),
+                "hash-of-blurry",
                 new DocumentAnalysis(
                         "receipt",
                         "A receipt from MENY.",

@@ -18,6 +18,8 @@ import java.time.Instant;
  * @param contentType the MIME type the browser sent
  * @param sizeBytes size of the uploaded file
  * @param uploadedAt when the upload was accepted
+ * @param contentHash a fingerprint of the bytes that arrived, taken once at intake. What lets a
+ *     re-upload of the same file be recognised without reading it again — see {@code DocumentIntake}
  * @param analysis what the intake agent returned
  * @param reviewed whether a Case Handler has confirmed this Document is good enough to work with
  *     despite its Quality Assessment. Only ever true because a human said so
@@ -29,11 +31,13 @@ public record UploadedDocument(
         String contentType,
         long sizeBytes,
         Instant uploadedAt,
+        String contentHash,
         DocumentAnalysis analysis,
         boolean reviewed) {
 
     /** A Case Handler's judgement, which beats the agent's when they can read the file and it could not. */
     public UploadedDocument markReviewed() {
-        return new UploadedDocument(id, caseId, filename, contentType, sizeBytes, uploadedAt, analysis, true);
+        return new UploadedDocument(
+                id, caseId, filename, contentType, sizeBytes, uploadedAt, contentHash, analysis, true);
     }
 }

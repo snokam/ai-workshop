@@ -378,6 +378,7 @@ class CaseChatTest {
                 "image/jpeg",
                 1024,
                 uploadedAt,
+                "hash-of-" + filename,
                 new DocumentAnalysis(
                         "receipt",
                         "What the document says.",

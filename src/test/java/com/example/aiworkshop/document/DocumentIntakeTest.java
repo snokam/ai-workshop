@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -147,6 +148,34 @@ class DocumentIntakeTest {
         UploadedDocument document = intake.accept(CASE_ID, image("blurry.jpg"));
 
         assertThat(store.findByCaseId(CASE_ID)).containsExactly(document);
+    }
+
+    /**
+     * The same bytes on the same Case are not read twice. A double-click should not cost a model
+     * call, and should not produce a second opinion about a file the Case already has a reading of.
+     */
+    @Test
+    void theSameFileUploadedTwiceToACaseIsOnlyReadOnce() throws IOException {
+        when(analyzer.analyse(anyList(), anyList())).thenReturn(MATCHED_RECEIPT);
+
+        UploadedDocument first = intake.accept(CASE_ID, image("receipt.jpg"));
+        UploadedDocument second = intake.accept(CASE_ID, image("receipt.jpg"));
+
+        verify(analyzer, times(1)).analyse(anyList(), anyList());
+        assertThat(second.analysis()).isEqualTo(first.analysis());
+        assertThat(store.findByCaseId(CASE_ID)).hasSize(2);
+    }
+
+    /** A different Case asking the same question gets its own answer — that is a claim, not a double-click. */
+    @Test
+    void theSameFileOnADifferentCaseIsReadAgain() throws IOException {
+        cases.save(new Case("c-2", "CASE-2026-002", CaseType.HOME_CONTENTS, List.of("receipt")));
+        when(analyzer.analyse(anyList(), anyList())).thenReturn(MATCHED_RECEIPT);
+
+        intake.accept(CASE_ID, image("receipt.jpg"));
+        intake.accept("c-2", image("receipt.jpg"));
+
+        verify(analyzer, times(2)).analyse(anyList(), anyList());
     }
 
     /** Nothing a Claimant sent is thrown away, so a better re-upload adds a Document rather than replacing one. */

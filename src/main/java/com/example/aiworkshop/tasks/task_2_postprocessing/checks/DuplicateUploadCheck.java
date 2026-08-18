@@ -4,8 +4,6 @@ import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener.Upload;
 import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening.Indicator;
 import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening.Kind;
 import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening.Weight;
-import java.security.MessageDigest;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,7 +17,7 @@ public class DuplicateUploadCheck implements FraudCheck {
 
     @Override
     public List<Indicator> screen(Upload upload) {
-        List<String> earlier = seenBefore.computeIfAbsent(sha256(upload.content()), key -> new CopyOnWriteArrayList<>());
+        List<String> earlier = seenBefore.computeIfAbsent(upload.contentHash(), key -> new CopyOnWriteArrayList<>());
 
         List<Indicator> found = earlier.isEmpty() ? List.of() : List.of(indicatorFor(upload, earlier));
         earlier.add(upload.caseId() + " / " + upload.filename());
@@ -33,15 +31,7 @@ public class DuplicateUploadCheck implements FraudCheck {
                 anotherCase ? Weight.STRONG : Weight.NOTE,
                 anotherCase
                         ? "The same file, byte for byte, has already been uploaded to a different case."
-                        : "The same file has already been uploaded to this case.",
+                        : "The same file has already been uploaded to this case, and was not read again.",
                 List.copyOf(earlier));
-    }
-
-    private static String sha256(byte[] content) {
-        try {
-            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(content));
-        } catch (Exception e) {
-            throw new IllegalStateException("SHA-256 is required of every JVM", e);
-        }
     }
 }

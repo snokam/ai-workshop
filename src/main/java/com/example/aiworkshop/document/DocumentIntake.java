@@ -8,10 +8,16 @@ import com.example.aiworkshop.tasks.task_1_guardrails.Guardrails;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.TextContent;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.List;
+import java.util.HexFormat;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 public class DocumentIntake {
+
+    private static final Logger log = LoggerFactory.getLogger(DocumentIntake.class);
 
     private final DocumentAnalyzer analyzer;
     private final DocumentStore store;
@@ -51,7 +59,16 @@ public class DocumentIntake {
         String id = UUID.randomUUID().toString();
         // Kept before the agent runs, at the point the bytes are already in hand. See ADR 0004.
         files.save(id, file.getBytes());
-        DocumentAnalysis analysis = analyzer.analyse(promptFor(file, mimeType), theCase.requiredDocuments());
+
+        String contentHash = hashOf(file.getBytes());
+        Optional<DocumentAnalysis> alreadyRead = alreadyReadOnThisCase(caseId, contentHash);
+        if (alreadyRead.isPresent()) {
+            log.info("{} is byte-identical to a document already on case {}; not reading it again",
+                    file.getOriginalFilename(), caseId);
+        }
+        DocumentAnalysis analysis = alreadyRead.isPresent()
+                ? alreadyRead.get()
+                : analyzer.analyse(promptFor(file, mimeType), theCase.requiredDocuments());
 
         UploadedDocument document = new UploadedDocument(
                 id,
@@ -60,13 +77,42 @@ public class DocumentIntake {
                 mimeType,
                 file.getSize(),
                 Instant.now(),
+                contentHash,
                 analysis,
                 false);
         store.save(document);
 
-        screener.screen(
-                new Upload(id, caseId, file.getOriginalFilename(), mimeType, file.getBytes(), analysis));
+        screener.screen(new Upload(
+                id, caseId, file.getOriginalFilename(), mimeType, file.getBytes(), contentHash, analysis));
         return document;
+    }
+
+    /**
+     * The reading this Case already has of these exact bytes, if it has one.
+     *
+     * <p>A Claimant who uploads the same file twice — a double-click, or sending it again because
+     * nothing seemed to happen — should not cost a second model call, and should not get a second
+     * opinion. Asking the model again is not free and not deterministic: the same licence read twice
+     * came back GOOD once and ACCEPTABLE once, which on the handler's screen looks like the agent
+     * contradicting itself about one file.
+     *
+     * <p>Scoped to the Case on purpose. The same bytes on a *different* Case is the interesting case
+     * and gets read on its own merits, because the question there is whether one expense is being
+     * claimed twice — which is the screening's job to raise, not intake's to quietly optimise away.
+     */
+    private Optional<DocumentAnalysis> alreadyReadOnThisCase(String caseId, String contentHash) {
+        return store.findByCaseId(caseId).stream()
+                .filter(document -> contentHash.equals(document.contentHash()))
+                .map(UploadedDocument::analysis)
+                .findFirst();
+    }
+
+    private static String hashOf(byte[] content) {
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(content));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 is required of every JVM", e);
+        }
     }
 
     /**

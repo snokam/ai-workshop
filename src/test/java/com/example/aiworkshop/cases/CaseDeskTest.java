@@ -209,6 +209,7 @@ class CaseDeskTest {
                 "image/jpeg",
                 1024,
                 uploadedAt,
+                "hash-of-" + id,
                 new DocumentAnalysis(
                         "some document",
                         "What the document says.",

@@ -67,6 +67,15 @@ The same file, byte for byte, has already been uploaded to a different case.
 
 A SHA-256 and a map. One expense, two claims — the oldest trick there is.
 
+**The hash earns its keep twice.** Intake takes it before the agent runs, so the same file uploaded
+twice to one Case is not read twice: the second upload attaches the reading the Case already has,
+costs no model call, and returns in milliseconds rather than seconds. That is worth more than the
+money — ask the model twice about one file and it can answer differently, and two cards disagreeing
+about one document is the agent appearing to contradict itself.
+
+The same bytes on a *different* Case are still read on their own merits. That is not a double-click,
+it is possibly one expense claimed twice, and it is the screening's job to say so.
+
 ## Two rules a check must hold to
 
 Both live in `FraudScreener`, and both matter more than anything a check finds:

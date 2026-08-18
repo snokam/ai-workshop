@@ -61,6 +61,7 @@ class DocumentForSummaryTest {
                 "image/jpeg",
                 4821004,
                 Instant.parse("2026-08-15T09:00:00Z"),
+                "hash-of-receipt",
                 new DocumentAnalysis(
                         "receipt",
                         "A receipt from MENY.",
