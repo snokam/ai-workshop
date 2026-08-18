@@ -6,18 +6,32 @@ of it, and whether the file is legible enough to work with.
 The domain language lives in [CONTEXT.md](./CONTEXT.md), and the workshop exercises in
 [docs/tasks/](./docs/tasks).
 
+## Layout
+
+```
+backend/    Spring Boot, Java 25 — the API and every agent
+frontend/   Vite and React — the two screens
+docs/       the task briefs, the walkthrough, and the ADRs
+assets/     files to drag into the app
+```
+
+The two halves are built and run separately. Maven does not build the frontend and never will:
+Vite proxies `/api` to Spring Boot, so the browser sees a single origin and there is no CORS
+configuration anywhere.
+
 ## Running it
 
-Two terminals. Maven does not build the frontend and never will — Vite proxies `/api` to Spring Boot,
-so the browser sees a single origin and there is no CORS configuration anywhere.
+Two terminals.
 
 ```bash
 # terminal 1 — backend on :8080
+cd backend
 export AZURE_OPENAI_API_KEY=...        # or use the Vertex provider, see below
 ./mvnw spring-boot:run
 
 # terminal 2 — frontend on :5173
-cd frontend && npm install && npm run dev
+cd frontend
+npm install && npm run dev
 ```
 
 Then open http://localhost:5173.
@@ -27,6 +41,7 @@ Then open http://localhost:5173.
 `aiworkshop.model.provider` picks which `ChatModel` bean is built. Override per run:
 
 ```bash
+cd backend
 AI_PROVIDER=vertex ./mvnw spring-boot:run    # Gemini on Vertex AI
 AI_PROVIDER=foundry ./mvnw spring-boot:run   # a deployment on Azure AI Foundry
 ```
@@ -42,6 +57,8 @@ Foundry needs `AZURE_OPENAI_API_KEY` exported. Both providers accept PDFs and im
 so uploads are sent to the model as-is — nothing extracts text first.
 
 ## Where the agents are
+
+Paths below are relative to `backend/src/main/java/com/example/aiworkshop/`.
 
 There are five, and each one is an interface, a system message and a return type. LangChain4j
 generates the implementation, so the return type *is* the output schema — add a component to

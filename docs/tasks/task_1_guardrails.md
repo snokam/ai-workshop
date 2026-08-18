@@ -5,7 +5,7 @@ agent obeys.
 
 You will write two LangChain4j guardrails on the intake agent: one on the message going out, one on
 the reply coming back. Both are already in this repository as a worked answer, under
-`src/main/java/com/example/aiworkshop/tasks/task_1_guardrails/` — try it yourself first, then
+`backend/src/main/java/com/example/aiworkshop/tasks/task_1_guardrails/` — try it yourself first, then
 compare. The point of the exercise is the reasoning, not the typing.
 
 | | Runs | Sees | Can |
@@ -135,7 +135,7 @@ someone's insurance claim is a worse bug than the one it prevents.
 ## How you know it worked
 
 ```bash
-./mvnw test -Dtest=GuardrailTest
+cd backend && ./mvnw test -Dtest=GuardrailTest
 ```
 
 Six tests. They build the analyzer through `AiServices` exactly as `AiServiceConfig` does and put a
@@ -176,9 +176,9 @@ rules worth enforcing in code are the ones with a definite answer.
 
 ## The worked answer
 
-- `src/main/java/com/example/aiworkshop/tasks/task_1_guardrails/` — `Guardrails` (entrypoint),
+- `backend/src/main/java/com/example/aiworkshop/tasks/task_1_guardrails/` — `Guardrails` (entrypoint),
   `guardrails/` (the two of them) and `model/ManipulationAttempt`
-- `src/test/java/com/example/aiworkshop/tasks/task_1_guardrails/GuardrailTest.java` — the six tests
+- `backend/src/test/java/com/example/aiworkshop/tasks/task_1_guardrails/GuardrailTest.java` — the six tests
 - [docs/guardrails-walkthrough.md](../guardrails-walkthrough.md) — the demo script, including
   why you should not stake a live demo on the model misbehaving on cue
 

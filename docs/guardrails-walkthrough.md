@@ -78,7 +78,7 @@ the documents this case needs".
 > *reporting* live, and the *striking* from the tests, where a scripted model complies on cue:
 >
 > ```bash
-> ./mvnw test -Dtest=GuardrailTest
+> cd backend && ./mvnw test -Dtest=GuardrailTest
 > ```
 >
 > Six tests, 0.3 seconds, no credentials. They build the analyzer through `AiServices` exactly as

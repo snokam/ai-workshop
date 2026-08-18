@@ -123,7 +123,7 @@ authorisation boundary.
 ## How you know it worked
 
 ```bash
-./mvnw test -Dtest=FraudScreeningTest
+cd backend && ./mvnw test -Dtest=FraudScreeningTest
 ```
 
 Six tests, no credentials, no network.
