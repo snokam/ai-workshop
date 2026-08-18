@@ -55,6 +55,16 @@
   }
 }
 
+/*
+ * The snokam components style their links for layout only and take the colour from the page —
+ * @snokam/ui/styles/global.css carries `a { color: inherit }` for that. This app cannot import
+ * that file, because it also sets body and main to display: flex, so the one rule it does need
+ * lives here instead. Without it the footer links come out as the browser's default purple.
+ */
+a {
+  color: inherit;
+}
+
 * {
   box-sizing: border-box;
 }
