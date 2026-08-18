@@ -2,6 +2,7 @@ package com.example.aiworkshop.cases;
 
 import com.example.aiworkshop.document.MatchConfidence;
 import dev.langchain4j.model.output.structured.Description;
+import com.example.aiworkshop.tasks.task_1_first_agent.CaseTypeClassifier;
 
 /**
  * What the {@link CaseTypeClassifier} returns after reading a Claimant's description of what they

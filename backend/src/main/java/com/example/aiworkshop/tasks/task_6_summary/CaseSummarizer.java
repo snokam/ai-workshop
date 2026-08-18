@@ -1,9 +1,10 @@
-package com.example.aiworkshop.cases;
+package com.example.aiworkshop.tasks.task_6_summary;
 
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
 import java.util.List;
+import com.example.aiworkshop.cases.DocumentForSummary;
 
 /**
  * Writes the Case Summary: what is in a Case's Documents, taken across all of them.
@@ -18,6 +19,15 @@ import java.util.List;
  * see the note there.
  */
 public interface CaseSummarizer {
+    /**
+     * ── TASK SUMMARY ────────────────────────────────────────────────────────────────────────
+     * Set to true once you have written the case summariser below. While it is false the
+     * application still runs: every screen that does not need this agent works as normal,
+     * and the one that does explains which file to open.
+     * ──────────────────────────────────────────────────────────────────────────────────
+     */
+    boolean IMPLEMENTED = true;
+
 
     @SystemMessage(
             """

@@ -5,6 +5,7 @@ import com.example.aiworkshop.document.QualityAssessment.Quality;
 import com.example.aiworkshop.document.UploadedDocument;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
 
 /**
  * One Document as the {@link CaseSummarizer} sees it — what it says, and nothing about the file it

@@ -4,13 +4,14 @@ import type { CaseDetail, ChatTurn, ProposalCard } from '../api'
 import { SUGGESTED_QUESTIONS } from '../lib/labels'
 import { Turn } from './Turn'
 import { Loader } from './Loader'
+import { Failure } from './Failure'
 
 export function CaseChat({ detail, onCaseChanged }: { detail: CaseDetail; onCaseChanged: () => Promise<void> }) {
   const [turns, setTurns] = useState<ChatTurn[]>(detail.conversation)
   const [proposals, setProposals] = useState<ProposalCard[]>(detail.proposals)
   const [question, setQuestion] = useState('')
   const [thinking, setThinking] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     setTurns(detail.conversation)
@@ -27,7 +28,7 @@ export function CaseChat({ detail, onCaseChanged }: { detail: CaseDetail; onCase
       setTurns((current) => [...current, answered.turn])
       setProposals(answered.proposals)
     } catch (e) {
-      setError((e as Error).message)
+      setError(e as Error)
     } finally {
       setThinking(false)
     }
@@ -42,7 +43,7 @@ export function CaseChat({ detail, onCaseChanged }: { detail: CaseDetail; onCase
       setProposals((current) => current.map((p) => (p.id === resolved.id ? resolved : p)))
       if (confirmed && resolved.kind === 'REVIEW') await onCaseChanged()
     } catch (e) {
-      setError((e as Error).message)
+      setError(e as Error)
     }
   }
 
@@ -80,9 +81,7 @@ export function CaseChat({ detail, onCaseChanged }: { detail: CaseDetail; onCase
       </div>
 
       {error && (
-        <p className="error" role="alert">
-          {error}
-        </p>
+        <Failure error={error} />
       )}
 
       <form

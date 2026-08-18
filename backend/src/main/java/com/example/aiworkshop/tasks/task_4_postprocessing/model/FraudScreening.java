@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_2_postprocessing.model;
+package com.example.aiworkshop.tasks.task_4_postprocessing.model;
 
 import java.util.List;
 

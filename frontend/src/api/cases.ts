@@ -1,6 +1,6 @@
 /** Everything the screens ask of a Case: opening one, reading one, and answering the agent. */
 
-import { failureMessage, json } from './client'
+import { failure, json } from './client'
 import type { CaseDetail, CaseOverview, ChatAnswer, CreatedCase, ProposalCard, SupportedCaseType } from './types'
 
 export async function listCases(): Promise<CaseOverview[]> {
@@ -29,7 +29,7 @@ export async function createCase(description: string): Promise<CreatedCase> {
 
 export async function reviewDocument(documentId: string): Promise<void> {
   const response = await fetch(`/api/cases/documents/${documentId}/review`, { method: 'POST' })
-  if (!response.ok) throw new Error(await failureMessage(response))
+  if (!response.ok) throw await failure(response)
 }
 
 /** One turn of the case chat. Blocks for a model call, and for any tool it decides to reach for. */

@@ -4,17 +4,18 @@ import { listCases } from '../api'
 import type { CaseOverview } from '../api'
 import { STATUS_LABEL } from '../lib/labels'
 import { rememberedCaseIds } from '../lib/myCases'
+import { Failure } from '../components/Failure'
 
 /** The cases opened from this browser that the backend still has, so the claimant can return to one. */
 export function MyCases() {
   const [cases, setCases] = useState<CaseOverview[] | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     const mine = new Set(rememberedCaseIds())
     listCases()
       .then((all) => setCases(all.filter((c) => mine.has(c.id))))
-      .catch((e: Error) => setError(e.message))
+      .catch((e: Error) => setError(e))
   }, [])
 
   return (
@@ -25,9 +26,7 @@ export function MyCases() {
       </header>
 
       {error && (
-        <p className="error" role="alert">
-          {error}
-        </p>
+        <Failure error={error} />
       )}
 
       <section className="cases">

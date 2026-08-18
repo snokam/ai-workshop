@@ -1,5 +1,7 @@
 package com.example.aiworkshop.cases;
 
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
+import com.example.aiworkshop.workshop.TaskNotImplementedAdvice;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -124,6 +126,12 @@ class CaseController {
      * Opening a Case runs two agents and a chat turn runs at least one more, so the same failure
      * mode as upload applies — show the real cause rather than leaving a blank panel on screen.
      */
+    /** An unfinished task is not a failure: it is the workshop, so it says what to open. */
+    @ExceptionHandler(TaskNotImplementedException.class)
+    ResponseEntity<Map<String, Object>> taskNotDone(TaskNotImplementedException e) {
+        return TaskNotImplementedAdvice.response(e);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     ResponseEntity<Map<String, String>> agentFailed(RuntimeException e) {
         log.error("Case could not be read", e);

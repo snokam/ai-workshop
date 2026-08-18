@@ -1,15 +1,17 @@
 package com.example.aiworkshop.config;
 
-import com.example.aiworkshop.cases.CaseChatAgent;
-import com.example.aiworkshop.cases.CaseChatTools;
-import com.example.aiworkshop.cases.CaseStatusWriter;
-import com.example.aiworkshop.cases.CaseSummarizer;
-import com.example.aiworkshop.cases.CaseTypeClassifier;
-import com.example.aiworkshop.document.DocumentAnalyzer;
+import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_5_chat.CaseChatTools;
+import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
+import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_1_first_agent.CaseTypeClassifier;
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
 import com.example.aiworkshop.document.DocumentReader;
-import com.example.aiworkshop.tasks.task_1_guardrails.Guardrails;
+import com.example.aiworkshop.tasks.task_3_guardrails.Guardrails;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
+import com.example.aiworkshop.workshop.UnfinishedTasks;
+import com.example.aiworkshop.workshop.WorkshopTask;
 import dev.langchain4j.service.AiServices;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,23 +29,35 @@ class AiServiceConfig {
     /** The intake agent: reads an uploaded file and returns structured findings about it. */
     @Bean
     DocumentAnalyzer documentAnalyzer(ChatModel chatModel) {
-        return AiServices.builder(DocumentAnalyzer.class)
-                .chatModel(chatModel)
-                .inputGuardrails(Guardrails.beforeTheCall())
-                .outputGuardrails(Guardrails.afterTheCall())
-                .build();
+        return UnfinishedTasks.wire(
+                DocumentAnalyzer.class,
+                WorkshopTask.DOCUMENT_AGENT,
+                DocumentAnalyzer.IMPLEMENTED,
+                () -> AiServices.builder(DocumentAnalyzer.class)
+                        .chatModel(chatModel)
+                        .inputGuardrails(Guardrails.beforeTheCall())
+                        .outputGuardrails(Guardrails.afterTheCall())
+                        .build());
     }
 
     /** The case intake agent: reads what a Claimant typed and picks which case type to open. */
     @Bean
     CaseTypeClassifier caseTypeClassifier(ChatModel chatModel) {
-        return AiServices.create(CaseTypeClassifier.class, chatModel);
+        return UnfinishedTasks.wire(
+                CaseTypeClassifier.class,
+                WorkshopTask.FIRST_AGENT,
+                CaseTypeClassifier.IMPLEMENTED,
+                () -> AiServices.create(CaseTypeClassifier.class, chatModel));
     }
 
     /** The Case Summary: what is in a Case's Documents, read across all of them. */
     @Bean
     CaseSummarizer caseSummarizer(ChatModel chatModel) {
-        return AiServices.create(CaseSummarizer.class, chatModel);
+        return UnfinishedTasks.wire(
+                CaseSummarizer.class,
+                WorkshopTask.SUMMARY,
+                CaseSummarizer.IMPLEMENTED,
+                () -> AiServices.create(CaseSummarizer.class, chatModel));
     }
 
     /** The situation report: derived facts in, one short piece of prose out. */
@@ -66,11 +80,15 @@ class AiServiceConfig {
      */
     @Bean
     CaseChatAgent caseChatAgent(ChatModel chatModel, CaseChatTools tools) {
-        return AiServices.builder(CaseChatAgent.class)
-                .chatModel(chatModel)
-                .tools(tools)
-                .chatMemoryProvider(caseId -> MessageWindowChatMemory.withMaxMessages(20))
-                .build();
+        return UnfinishedTasks.wire(
+                CaseChatAgent.class,
+                WorkshopTask.CHAT,
+                CaseChatAgent.IMPLEMENTED,
+                () -> AiServices.builder(CaseChatAgent.class)
+                        .chatModel(chatModel)
+                        .tools(tools)
+                        .chatMemoryProvider(caseId -> MessageWindowChatMemory.withMaxMessages(20))
+                        .build());
     }
 
     /** The document reader: one file, one question, no case context at all. */

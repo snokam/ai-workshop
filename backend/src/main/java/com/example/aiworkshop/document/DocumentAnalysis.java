@@ -1,6 +1,6 @@
 package com.example.aiworkshop.document;
 
-import com.example.aiworkshop.tasks.task_1_guardrails.model.ManipulationAttempt;
+import com.example.aiworkshop.tasks.task_3_guardrails.model.ManipulationAttempt;
 import dev.langchain4j.model.output.structured.Description;
 import java.util.List;
 

@@ -1,9 +1,10 @@
-package com.example.aiworkshop.cases;
+package com.example.aiworkshop.tasks.task_6_summary;
 
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
 import java.util.List;
+import com.example.aiworkshop.cases.CaseStatus;
 
 /**
  * Turns the derived Case Status into the sentence a Case Handler wants to read, and says what to do

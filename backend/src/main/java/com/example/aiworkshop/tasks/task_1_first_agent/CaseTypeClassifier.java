@@ -1,8 +1,9 @@
-package com.example.aiworkshop.cases;
+package com.example.aiworkshop.tasks.task_1_first_agent;
 
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
+import com.example.aiworkshop.cases.CaseTypeSuggestion;
 
 /**
  * The intake agent for a whole Case: the first thing that reads what a Claimant typed when they said
@@ -18,6 +19,15 @@ import dev.langchain4j.service.V;
  * competing with the instructions for the model's attention.
  */
 public interface CaseTypeClassifier {
+    /**
+     * ── TASK FIRST AGENT ────────────────────────────────────────────────────────────────────────
+     * Set to true once you have written the case type classifier below. While it is false the
+     * application still runs: every screen that does not need this agent works as normal,
+     * and the one that does explains which file to open.
+     * ──────────────────────────────────────────────────────────────────────────────────
+     */
+    boolean IMPLEMENTED = true;
+
 
     @SystemMessage(
             """

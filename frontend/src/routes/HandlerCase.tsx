@@ -8,6 +8,7 @@ import { DocumentCard } from '../components/DocumentCard'
 import { previewOf, standingOf } from '../lib/documents'
 import { STATUS_LABEL } from '../lib/labels'
 import { PageWait } from '../components/Loader'
+import { Failure } from '../components/Failure'
 
 /**
  * One case, read across. Its own address, so a handler can keep it open in a tab, send it to a
@@ -19,14 +20,14 @@ import { PageWait } from '../components/Loader'
 export function HandlerCase() {
   const { caseId = '' } = useParams()
   const [detail, setDetail] = useState<CaseDetail | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<Error | null>(null)
 
   const read = useCallback(async () => {
     setError(null)
     try {
       setDetail(await openCase(caseId))
     } catch (e) {
-      setError((e as Error).message)
+      setError(e as Error)
     }
   }, [caseId])
 
@@ -40,7 +41,7 @@ export function HandlerCase() {
       await reviewDocument(documentId)
       await read()
     } catch (e) {
-      setError((e as Error).message)
+      setError(e as Error)
     }
   }
 
@@ -48,9 +49,7 @@ export function HandlerCase() {
     return (
       <>
         {error ? (
-          <p className="error" role="alert">
-            {error}
-          </p>
+          <Failure error={error} />
         ) : (
           <PageWait>Reading the case…</PageWait>
         )}
@@ -71,9 +70,7 @@ export function HandlerCase() {
           </header>
 
           {error && (
-            <p className="error" role="alert">
-              {error}
-            </p>
+            <Failure error={error} />
           )}
 
           <section className="agent-prose">

@@ -3,16 +3,17 @@ import { Link } from 'react-router-dom'
 import { listCases } from '../api'
 import type { CaseOverview } from '../api'
 import { STATUS_LABEL } from '../lib/labels'
+import { Failure } from '../components/Failure'
 
 /** Every case, cheap to read: no agent runs to produce this list. Opening one is what costs. */
 export function HandlerCases() {
   const [cases, setCases] = useState<CaseOverview[]>([])
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     listCases()
       .then(setCases)
-      .catch((e: Error) => setError(e.message))
+      .catch((e: Error) => setError(e))
   }, [])
 
   return (
@@ -26,9 +27,7 @@ export function HandlerCases() {
       </header>
 
       {error && (
-        <p className="error" role="alert">
-          {error}
-        </p>
+        <Failure error={error} />
       )}
 
       <section className="cases">

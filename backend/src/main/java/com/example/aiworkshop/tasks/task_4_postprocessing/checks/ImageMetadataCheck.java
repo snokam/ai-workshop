@@ -1,13 +1,13 @@
-package com.example.aiworkshop.tasks.task_2_postprocessing.checks;
+package com.example.aiworkshop.tasks.task_4_postprocessing.checks;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
-import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener.Upload;
-import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening.Indicator;
-import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening.Kind;
-import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening.Weight;
+import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
+import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
+import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Kind;
+import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Weight;
 import java.io.ByteArrayInputStream;
 import java.time.Duration;
 import java.time.Instant;

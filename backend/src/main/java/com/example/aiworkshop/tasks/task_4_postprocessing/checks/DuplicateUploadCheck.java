@@ -1,9 +1,9 @@
-package com.example.aiworkshop.tasks.task_2_postprocessing.checks;
+package com.example.aiworkshop.tasks.task_4_postprocessing.checks;
 
-import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener.Upload;
-import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening.Indicator;
-import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening.Kind;
-import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening.Weight;
+import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
+import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
+import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Kind;
+import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Weight;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

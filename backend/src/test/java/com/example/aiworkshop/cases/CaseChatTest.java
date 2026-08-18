@@ -17,7 +17,7 @@ import com.example.aiworkshop.document.DocumentAnalysis;
 import com.example.aiworkshop.document.DocumentFiles;
 import com.example.aiworkshop.document.DocumentReader;
 import com.example.aiworkshop.document.DocumentStore;
-import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener;
+import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
 import com.example.aiworkshop.document.MatchConfidence;
 import com.example.aiworkshop.document.QualityAssessment;
 import com.example.aiworkshop.document.QualityAssessment.Quality;
@@ -33,6 +33,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.ArgumentCaptor;
+import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
 
 /**
  * The Case Chat, at the same seam as {@link CaseDeskTest} and with the same agents mocked out.

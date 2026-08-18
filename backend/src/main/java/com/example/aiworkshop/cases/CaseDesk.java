@@ -4,14 +4,18 @@ import com.example.aiworkshop.document.DocumentFiles;
 import com.example.aiworkshop.document.DocumentReader;
 import com.example.aiworkshop.document.DocumentStore;
 import com.example.aiworkshop.document.UploadedDocument;
-import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener;
-import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening;
+import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
+import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening;
 import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.service.Result;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_5_chat.CaseChatTools;
+import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
 
 /**
  * What the Case Handler's screen talks to.

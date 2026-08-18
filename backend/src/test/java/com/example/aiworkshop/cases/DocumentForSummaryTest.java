@@ -11,6 +11,7 @@ import com.example.aiworkshop.document.UploadedDocument;
 import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
 
 /**
  * The one place the text handed to {@link CaseSummarizer} is pinned.

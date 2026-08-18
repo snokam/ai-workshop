@@ -1,6 +1,8 @@
 package com.example.aiworkshop.document;
 
-import com.example.aiworkshop.tasks.task_2_postprocessing.model.DocumentForClaimant;
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
+import com.example.aiworkshop.workshop.TaskNotImplementedAdvice;
+import com.example.aiworkshop.tasks.task_4_postprocessing.model.DocumentForClaimant;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -108,6 +110,12 @@ class DocumentController {
      * that rejects PDFs, a reply the parser could not read. Surface the real message rather than a
      * bare 500, so the screen can show what actually went wrong.
      */
+    /** An unfinished task is not a failure: it is the workshop, so it says what to open. */
+    @ExceptionHandler(TaskNotImplementedException.class)
+    ResponseEntity<Map<String, Object>> taskNotDone(TaskNotImplementedException e) {
+        return TaskNotImplementedAdvice.response(e);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     ResponseEntity<Map<String, String>> analysisFailed(RuntimeException e) {
         log.error("Analysis failed", e);

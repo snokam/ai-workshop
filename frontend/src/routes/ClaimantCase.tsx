@@ -7,6 +7,7 @@ import { DocumentCard } from '../components/DocumentCard'
 import { CONFIDENCE_LABEL } from '../lib/labels'
 import { previewOf } from '../lib/documents'
 import { Loader } from '../components/Loader'
+import { Failure } from '../components/Failure'
 
 /** One case, open for uploading into. Its address is /cases/:caseId, so it survives a refresh. */
 export function ClaimantCase() {
@@ -17,7 +18,7 @@ export function ClaimantCase() {
   const [overview, setOverview] = useState<CaseOverview | null>(null)
   const [documents, setDocuments] = useState<UploadedDocument[]>([])
   const [busyWith, setBusyWith] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<Error | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
 
   // Previews are made from the File the browser already has. The backend never stores the bytes,
@@ -55,7 +56,7 @@ export function ClaimantCase() {
 
   useEffect(() => {
     function refresh() {
-      refreshOverview().catch((e: Error) => setError(e.message))
+      refreshOverview().catch((e: Error) => setError(e))
     }
 
     refresh()
@@ -63,7 +64,7 @@ export function ClaimantCase() {
     // no preview.
     listDocuments()
       .then((all) => setDocuments(all.filter((d) => d.caseId === caseId)))
-      .catch((e: Error) => setError(e.message))
+      .catch((e: Error) => setError(e))
 
     // The case list is a pure lookup with no model call behind it, which is what makes polling it
     // reasonable: it is how a document request a case handler has just confirmed appears here
@@ -85,7 +86,7 @@ export function ClaimantCase() {
         // The case now needs one thing fewer, so re-read what is outstanding.
         await refreshOverview()
       } catch (e) {
-        setError((e as Error).message)
+        setError(e as Error)
       } finally {
         setBusyWith(null)
       }
@@ -156,9 +157,7 @@ export function ClaimantCase() {
       </label>
 
       {error && (
-        <p className="error" role="alert">
-          {error}
-        </p>
+        <Failure error={error} />
       )}
 
       <section className="documents">

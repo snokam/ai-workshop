@@ -5,6 +5,7 @@ import type { CreatedCase, SupportedCaseType } from '../api'
 import { rememberCase } from '../lib/myCases'
 import { useEffect } from 'react'
 import { Loader } from '../components/Loader'
+import { Failure } from '../components/Failure'
 
 /**
  * A new case has its own address the moment it exists, and the classifier's reasoning travels to it
@@ -20,7 +21,7 @@ export function NewCase() {
   const navigate = useNavigate()
   const [description, setDescription] = useState('')
   const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<Error | null>(null)
   const [types, setTypes] = useState<SupportedCaseType[]>([])
 
   // Pulled from the backend so the scope shown here is exactly what the classifier can land on.
@@ -42,7 +43,7 @@ export function NewCase() {
     try {
       openCreated(navigate, await createCase(text))
     } catch (e) {
-      setError((e as Error).message)
+      setError(e as Error)
     } finally {
       setSubmitting(false)
     }
@@ -92,9 +93,7 @@ export function NewCase() {
       </form>
 
       {error && (
-        <p className="error" role="alert">
-          {error}
-        </p>
+        <Failure error={error} />
       )}
 
       {types.length > 0 && (

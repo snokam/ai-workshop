@@ -1,9 +1,11 @@
-package com.example.aiworkshop.cases;
+package com.example.aiworkshop.tasks.task_5_chat;
 
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolMemoryId;
 import org.springframework.stereotype.Component;
+import com.example.aiworkshop.cases.CaseDesk;
+import com.example.aiworkshop.cases.ProposalCard;
 
 /**
  * What the Case Chat agent can reach for. Four methods, and not one line of logic.

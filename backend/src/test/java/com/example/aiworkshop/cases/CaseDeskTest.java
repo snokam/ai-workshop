@@ -20,12 +20,16 @@ import com.example.aiworkshop.document.MatchConfidence;
 import com.example.aiworkshop.document.QualityAssessment;
 import com.example.aiworkshop.document.QualityAssessment.Quality;
 import com.example.aiworkshop.document.UploadedDocument;
-import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener;
+import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
 import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
+import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
 
 /**
  * The handler side, with both agents mocked out the way {@code DocumentAnalyzer} already is.

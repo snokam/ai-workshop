@@ -4,6 +4,7 @@ import java.time.Year;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.stereotype.Service;
+import com.example.aiworkshop.tasks.task_1_first_agent.CaseTypeClassifier;
 
 /**
  * Opens a Case from what a Claimant typed. The counterpart to {@code DocumentIntake} on the Case

@@ -1,10 +1,11 @@
-package com.example.aiworkshop.document;
+package com.example.aiworkshop.tasks.task_2_document_agent;
 
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
 import java.util.List;
+import com.example.aiworkshop.document.DocumentAnalysis;
 
 /**
  * The intake agent: the first thing that looks at a file after someone uploads it.
@@ -22,6 +23,15 @@ import java.util.List;
  * they are rendered into the system message rather than competing with the file for the user turn.
  */
 public interface DocumentAnalyzer {
+    /**
+     * ── TASK DOCUMENT AGENT ────────────────────────────────────────────────────────────────────────
+     * Set to true once you have written the document intake agent below. While it is false the
+     * application still runs: every screen that does not need this agent works as normal,
+     * and the one that does explains which file to open.
+     * ──────────────────────────────────────────────────────────────────────────────────
+     */
+    boolean IMPLEMENTED = true;
+
 
     @SystemMessage(
             """

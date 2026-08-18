@@ -12,7 +12,7 @@ import com.example.aiworkshop.cases.Case;
 import com.example.aiworkshop.cases.CaseStore;
 import com.example.aiworkshop.cases.CaseType;
 import com.example.aiworkshop.document.QualityAssessment.Quality;
-import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener;
+import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;
@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.ArgumentCaptor;
 import org.springframework.mock.web.MockMultipartFile;
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
 
 /** Covers intake with the agent mocked out, so the whole class runs without credentials. */
 class DocumentIntakeTest {

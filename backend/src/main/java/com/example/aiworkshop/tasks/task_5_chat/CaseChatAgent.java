@@ -1,10 +1,11 @@
-package com.example.aiworkshop.cases;
+package com.example.aiworkshop.tasks.task_5_chat;
 
 import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.Result;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
+import com.example.aiworkshop.cases.CaseAtAGlance;
 
 /**
  * The Case Chat agent: a conversation about one Case, with tools, that can suggest but never write.
@@ -26,6 +27,15 @@ import dev.langchain4j.service.V;
  * {@code AiServices.create} builds an agent from its interface alone.
  */
 public interface CaseChatAgent {
+    /**
+     * ── TASK CHAT ────────────────────────────────────────────────────────────────────────
+     * Set to true once you have written the case chat agent below. While it is false the
+     * application still runs: every screen that does not need this agent works as normal,
+     * and the one that does explains which file to open.
+     * ──────────────────────────────────────────────────────────────────────────────────
+     */
+    boolean IMPLEMENTED = true;
+
 
     @SystemMessage(
             """
