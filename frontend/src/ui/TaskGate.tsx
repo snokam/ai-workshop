@@ -5,10 +5,12 @@ import { useTask } from '../workshop/task-state'
 /**
  * A feature that is waiting on an exercise.
  *
- * The controls stay on screen. Hiding them would remove the one thing that shows what the task is
- * for — a participant needs to see the form they are about to make work, not an empty space where
- * it will eventually be. They are rendered inert instead: visible, dimmed, and not clickable, with
- * the brief underneath saying which file to open.
+ * The controls stay live. You can type in the field, press the button, drop a file — and then the
+ * call fails and says which file to open. Blocking the input would teach less: half of what a task
+ * is for only becomes clear when you use the thing it is missing from.
+ *
+ * So this only adds the explanation. The failure on use is the backstop in Failure, and the two
+ * say the same thing.
  *
  * Once the flag is set the wrapper disappears entirely and the feature is simply there.
  */
@@ -29,10 +31,7 @@ export function TaskGate({
 
   return (
     <div className="task-pending">
-      {/* inert keeps it visible and readable while taking it out of tab order and off the pointer. */}
-      <div className="task-pending-preview" inert>
-        {children}
-      </div>
+      {children}
 
       <section className="task-todo" role="status">
         <p className="task-todo-label">
@@ -51,7 +50,8 @@ export function TaskGate({
           </dd>
         </dl>
         <p className="task-todo-note">
-          The controls above are switched off until this task is written. Everything else works.
+          The controls above still work — using them is how you see what is missing. Everything
+          else in the app is unaffected.
         </p>
       </section>
     </div>

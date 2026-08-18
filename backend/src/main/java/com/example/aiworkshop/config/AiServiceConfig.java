@@ -4,7 +4,6 @@ import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
 import com.example.aiworkshop.tasks.task_5_chat.CaseChatTools;
 import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
 import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
-import com.example.aiworkshop.tasks.task_1_first_agent.CaseTypeClassifier;
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
 import com.example.aiworkshop.document.DocumentReader;
 import com.example.aiworkshop.tasks.task_3_guardrails.Guardrails;
@@ -38,16 +37,6 @@ class AiServiceConfig {
                         .inputGuardrails(Guardrails.beforeTheCall())
                         .outputGuardrails(Guardrails.afterTheCall())
                         .build());
-    }
-
-    /** The case intake agent: reads what a Claimant typed and picks which case type to open. */
-    @Bean
-    CaseTypeClassifier caseTypeClassifier(ChatModel chatModel) {
-        return UnfinishedTasks.wire(
-                CaseTypeClassifier.class,
-                WorkshopTask.FIRST_AGENT,
-                CaseTypeClassifier.IMPLEMENTED,
-                () -> AiServices.create(CaseTypeClassifier.class, chatModel));
     }
 
     /** The Case Summary: what is in a Case's Documents, read across all of them. */
