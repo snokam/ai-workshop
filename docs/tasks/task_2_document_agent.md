@@ -3,7 +3,7 @@
 Task 1's agent read a sentence someone typed. This one is handed a PDF or a photograph and has to
 say what it is looking at.
 
-**Time:** 45 minutes. **You need:** task 1 working, and the files in [`assets/`](../../assets).
+**Time:** 50 minutes. **You need:** task 1 working, and the files in [`assets/`](../../assets).
 
 ## The one idea
 
@@ -28,7 +28,30 @@ LangChain4j looks for a message template instead, and the file is never sent —
 is the annoying part. The Case's required documents come in through `@V` for the same reason as
 task 1: they belong in the instructions, not in the turn carrying untrusted content.
 
-## What to write
+## Part 1 — what the model is sent
+
+`DocumentIntake.promptFor` is the whole of "give it a file", and it is two lines:
+
+```java
+return List.of(
+        TextContent.from(Guardrails.INTAKE_INSTRUCTION),
+        DocumentFiles.contentOf(file.getBytes(), mimeType));
+```
+
+One text and one file. `contentOf` picks `PdfFileContent` or `ImageContent` from the mime type
+resolved a few lines above — nothing reads the file, the bytes go as they are.
+
+Read the rest of `DocumentIntake` before moving on. Two decisions in it are worth more than the
+prompt you are about to write:
+
+- **The bytes are hashed before the model is called.** The same file uploaded twice to one case is
+  not read twice; the second upload attaches the reading the case already has. That is not only
+  cheaper — ask a model twice about one file and it can answer differently, and two cards
+  disagreeing about one document is the agent appearing to contradict itself.
+- **The hash is also a lock.** Two concurrent uploads of the same bytes wait on each other rather
+  than both paying for a call.
+
+## Part 2 — what to ask for
 
 One system message asking for five things in a single pass:
 

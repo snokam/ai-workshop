@@ -1,5 +1,6 @@
 package com.example.aiworkshop.document;
 
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentIntake;
 import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.workshop.TaskNotImplementedAdvice;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.DocumentForClaimant;

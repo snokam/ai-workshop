@@ -1,4 +1,4 @@
-package com.example.aiworkshop.document;
+package com.example.aiworkshop.tasks.task_2_document_agent;
 
 import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;

@@ -13,6 +13,28 @@ Six exercises, in order. Each one is an agent, and each adds exactly one idea to
 
 1 and 2 build an agent. 3 and 4 contain one. 5 and 6 grow one.
 
+## Three hours
+
+The six add up to about four and a quarter hours of writing, which is more than a session holds.
+They are ordered so that stopping anywhere leaves something whole:
+
+| | |
+|---|---|
+| 0:00 | set up, and run both halves with nothing written |
+| 0:15 | **task 1** — the model, the agent, and the case its answer opens |
+| 1:05 | **task 2** — the same again with a file, which is where it gets interesting |
+| 1:55 | break |
+| 2:05 | **task 3** — what happens when a document argues back |
+| 2:40 | **task 4** — what the model cannot know |
+| 3:05 | where this goes: tools, memory, and reading across documents |
+
+That is 1 to 4 done properly, with 5 and 6 read rather than written and left for afterwards. Do not
+try to fit six in: task 1 is where the ideas are, and rushing it to reach task 6 trades the part
+that transfers for the part that impresses.
+
+If the room is quick, 5 is the better of the two to add — it is the one that changes what an agent
+*is*, from something you call to something that decides what to look at.
+
 ## How the repository behaves while you work
 
 Nothing is finished, and the application runs anyway.

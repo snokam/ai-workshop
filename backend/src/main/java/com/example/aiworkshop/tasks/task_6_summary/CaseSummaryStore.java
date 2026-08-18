@@ -1,4 +1,4 @@
-package com.example.aiworkshop.cases.store;
+package com.example.aiworkshop.tasks.task_6_summary;
 
 import java.util.List;
 import java.util.Optional;

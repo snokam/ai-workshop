@@ -1,4 +1,4 @@
-package com.example.aiworkshop.document;
+package com.example.aiworkshop.tasks.task_5_chat;
 
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.service.SystemMessage;

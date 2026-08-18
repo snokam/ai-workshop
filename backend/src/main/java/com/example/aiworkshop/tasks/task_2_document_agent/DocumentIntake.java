@@ -1,5 +1,7 @@
-package com.example.aiworkshop.document;
+package com.example.aiworkshop.tasks.task_2_document_agent;
 
+import com.example.aiworkshop.workshop.WorkshopTask;
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
 import com.example.aiworkshop.tasks.task_3_guardrails.Guardrails;
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
@@ -124,8 +126,22 @@ public class DocumentIntake {
     }
 
     private List<Content> promptFor(MultipartFile file, String mimeType) throws IOException {
-        return List.of(
-                TextContent.from(Guardrails.INTAKE_INSTRUCTION), DocumentFiles.contentOf(file.getBytes(), mimeType));
+        // TODO — task 2, part 2. Turn an upload into what the model is sent.
+        //
+        // This is the whole of "give it a file": a list of Content, one text and one file. The text
+        // is Guardrails.INTAKE_INSTRUCTION and nothing else — task 3's input guardrail refuses
+        // anything more, and it is worth understanding why before you write past it.
+        //
+        // DocumentFiles.contentOf(bytes, mimeType) decides between PdfFileContent and ImageContent
+        // from the mime type resolved above. Nothing here reads the file: the bytes go as they are.
+        throw new TaskNotImplementedException(WorkshopTask.DOCUMENT_AGENT);
+
+        // ── One version of the answer ──────────────────────────────────────────────────────
+        // Try it yourself first. Uncomment this if you get stuck.
+        //
+        // return List.of(
+        //         TextContent.from(Guardrails.INTAKE_INSTRUCTION),
+        //         DocumentFiles.contentOf(file.getBytes(), mimeType));
     }
 
     private String resolveMimeType(MultipartFile file) {
