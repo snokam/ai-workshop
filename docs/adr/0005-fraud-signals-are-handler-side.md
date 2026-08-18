@@ -53,10 +53,13 @@ reads it. A projection is a few more lines and no bet at all.
 
 ## Consequences
 
-A Screening cannot be recomputed. It is made at intake because that is where the bytes are — an
-`UploadedDocument` does not keep them — so a check added later sees nothing already uploaded. Given
-an in-memory store lost on every restart, this costs nothing today and would need a decision the
-moment Documents outlive the process.
+A Screening is made once, at intake, and not recomputed. That was originally forced: the bytes were
+not kept. [ADR 0004](./0004-uploaded-files-are-kept-on-disk.md) has since changed that, so it is now a
+choice rather than a constraint — a check added later *could* be run over everything already
+uploaded. It still is not, for a reason worth stating: a Screening a handler has already read should
+not quietly change underneath them, and a check that reaches a different verdict on a Document
+tomorrow than it did today is worse than one that never ran. Re-screening, if it is ever wanted,
+should be something someone asks for and can see the result of.
 
 `CaseDetail` grows a component, and the handler screen is now the only screen that can render one.
 

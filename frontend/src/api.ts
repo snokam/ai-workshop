@@ -60,13 +60,79 @@ export interface UploadedDocument {
   reviewed: boolean
 }
 
+/**
+ * Something a case handler has asked the claimant for. Deliberately not one of the case's required
+ * documents — that list is what the case status is derived from, and a question must not move a case.
+ */
+export interface DocumentRequest {
+  id: string
+  caseId: string
+  label: string
+  reason: string
+}
+
+export type ProposalKind = 'REVIEW' | 'DOCUMENT_REQUEST'
+
+export type ProposalState = 'PROPOSED' | 'CONFIRMED' | 'DECLINED'
+
+/**
+ * Something the case chat agent suggested. It has performed nothing: only a case handler's click on
+ * Confirm turns one into a write.
+ */
+export interface ProposalCard {
+  id: string
+  kind: ProposalKind
+  /** A document's filename, or the label to ask the claimant for. */
+  subject: string
+  reason: string
+  state: ProposalState
+}
+
+/** One thing the agent looked up while answering. Shown so a looked-up fact reads as one. */
+export interface ToolCall {
+  name: string
+  arguments: string
+}
+
+/** One exchange. Proposals are referenced by id and resolved against the case's live list. */
+export interface ChatTurn {
+  question: string
+  answer: string
+  toolCalls: ToolCall[]
+  proposalIds: string[]
+}
+
+export interface ChatAnswer {
+  turn: ChatTurn
+  /** Every proposal on the case, in whatever state it is now — not only the ones this turn raised. */
+  proposals: ProposalCard[]
+}
+
 /** One row of the case list. Cheap to fetch — no agent runs to produce it. */
 export interface CaseOverview {
   id: string
   reference: string
+  /** The kind of case, e.g. "Travel insurance claim" — so the list reads as claims, not numbers. */
+  typeLabel: string
   status: CaseStatus
   requiredDocuments: string[]
   outstanding: string[]
+  documentRequests: DocumentRequest[]
+}
+
+/**
+ * A case just opened from a free-text description. The `typeLabel`, `confidence` and `rationale`
+ * are the classifier's account of why this kind of case — shown once, at creation, and not stored
+ * on the case afterwards.
+ */
+export interface CreatedCase {
+  id: string
+  reference: string
+  typeLabel: string
+  confidence: MatchConfidence
+  rationale: string
+  requiredDocuments: string[]
+  status: CaseStatus
 }
 
 /** One case, opened. Costs two model calls, so only ever fetched for the case being looked at. */
@@ -84,6 +150,9 @@ export interface CaseDetail {
   summary: string
   statusNote: string
   screenings: FraudScreening[]
+  proposals: ProposalCard[]
+  /** The case chat so far. Free to fetch — the turns were written when they were answered. */
+  conversation: ChatTurn[]
 }
 
 /** Pulls the backend's `{ message }` out of a failed response so the screen can show the real cause. */
@@ -102,17 +171,58 @@ async function json<T>(response: Response): Promise<T> {
   return response.json() as Promise<T>
 }
 
+/** One kind of insurance the system can open a case for, for the front page to list. */
+export interface SupportedCaseType {
+  label: string
+  description: string
+}
+
 export async function listCases(): Promise<CaseOverview[]> {
   return json(await fetch('/api/cases'))
+}
+
+/** The insurance types the classifier can land on — shown on the front page so people know the scope. */
+export async function listCaseTypes(): Promise<SupportedCaseType[]> {
+  return json(await fetch('/api/cases/types'))
 }
 
 export async function openCase(caseId: string): Promise<CaseDetail> {
   return json(await fetch(`/api/cases/${caseId}`))
 }
 
+/** Opens a case from what the claimant typed. One classifier call runs on the backend. */
+export async function createCase(description: string): Promise<CreatedCase> {
+  return json(
+    await fetch('/api/cases', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description }),
+    }),
+  )
+}
+
 export async function reviewDocument(documentId: string): Promise<void> {
   const response = await fetch(`/api/cases/documents/${documentId}/review`, { method: 'POST' })
   if (!response.ok) throw new Error(await failureMessage(response))
+}
+
+/** One turn of the case chat. Blocks for a model call, and for any tool it decides to reach for. */
+export async function askCaseChat(caseId: string, question: string): Promise<ChatAnswer> {
+  return json(
+    await fetch(`/api/cases/${caseId}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question }),
+    }),
+  )
+}
+
+export async function confirmProposal(proposalId: string): Promise<ProposalCard> {
+  return json(await fetch(`/api/cases/proposals/${proposalId}/confirm`, { method: 'POST' }))
+}
+
+export async function declineProposal(proposalId: string): Promise<ProposalCard> {
+  return json(await fetch(`/api/cases/proposals/${proposalId}/decline`, { method: 'POST' }))
 }
 
 export async function listDocuments(): Promise<UploadedDocument[]> {

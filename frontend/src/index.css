@@ -322,13 +322,7 @@ header p {
 
 /* --- the two sides ------------------------------------------------------- */
 
-.sides {
-  display: flex;
-  gap: 0.4rem;
-  margin-bottom: 2.25rem;
-}
-
-.sides button,
+.claimant-nav button,
 .back {
   padding: 0.45rem 0.9rem;
   font: inherit;
@@ -338,12 +332,19 @@ header p {
   border: 1px solid var(--border);
   border-radius: 999px;
   cursor: pointer;
+  text-decoration: none;
 }
 
-.sides button.on {
+.claimant-nav button.on {
   color: var(--surface);
   background: var(--accent);
   border-color: var(--accent);
+}
+
+.claimant-nav {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 2rem;
 }
 
 .back {
@@ -374,21 +375,193 @@ header p {
   border-radius: 10px;
 }
 
+/* --- describing a case --------------------------------------------------- */
+
+.describe {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+
+.describe textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  resize: vertical;
+}
+
+.describe textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.describe button {
+  padding: 0.6rem 1.3rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.describe button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.describe .reading {
+  color: var(--surface);
+}
+
+/* --- supported insurance types on the front page ------------------------- */
+
+.supported {
+  margin-top: 2.5rem;
+}
+
+.supported h2 {
+  margin: 0 0 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.supported ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.supported li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.supported-label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.supported-desc {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* --- the detected case type ---------------------------------------------- */
+
+.detected {
+  margin-bottom: 2rem;
+  padding: 1.1rem 1.35rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 14px;
+}
+
+.detected.high {
+  border-left-color: var(--good-fg);
+}
+
+.detected.medium {
+  border-left-color: var(--acceptable-fg);
+}
+
+.detected.low {
+  border-left-color: var(--poor-fg);
+}
+
+.detected-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.detected h1 {
+  margin: 0.25rem 0 0.1rem;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.detected .reference {
+  margin: 0 0 0.6rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.detected .rationale {
+  margin: 0;
+}
+
+.detected .confidence-note {
+  color: var(--muted);
+}
+
 /* --- what the case still needs ------------------------------------------- */
 
 .checklist {
   margin: 0 0 1.5rem;
   padding: 0.9rem 1.1rem;
-  list-style: none;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 14px;
+}
+
+.checklist ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .checklist li {
   display: flex;
   gap: 0.6rem;
   padding: 0.15rem 0;
+}
+
+/* What a case handler asked for on top of the checklist — same card, separate list. */
+.asked-for {
+  margin-top: 0.9rem;
+  padding-top: 0.8rem;
+  border-top: 1px dashed var(--border);
+}
+
+.asked-for h3 {
+  margin: 0 0 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.asked-for li {
+  align-items: baseline;
+  padding: 0.25rem 0;
+}
+
+.asked-for small {
+  display: block;
+  color: var(--muted);
 }
 
 .checklist .matched {
@@ -432,6 +605,17 @@ header p {
 
 .reference {
   font-weight: 600;
+}
+
+.case-reference {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.case-reference-line {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .outstanding-count {
@@ -523,4 +707,196 @@ header p.status {
   margin: 0.6rem 0 0;
   font-size: 0.85rem;
   font-style: italic;
+}
+
+/* --- the case chat -------------------------------------------------------- */
+
+/*
+ * The case screen is the one screen wide enough to need it: the answer and the document it came from
+ * have to be readable in the same glance, which a panel over the top of them would prevent.
+ */
+main:has(.with-chat) {
+  max-width: 1240px;
+}
+
+.with-chat {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 1040px) {
+  .with-chat {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.chat {
+  position: sticky;
+  top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 3rem);
+  padding: 1rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.chat h2 {
+  margin: 0 0 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.turns {
+  flex: 1;
+  min-height: 12rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.suggestions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.chip {
+  padding: 0.35rem 0.75rem;
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: left;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+}
+
+.turn .asked {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+}
+
+.turn .answered {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* What the answer was built from, so a looked-up fact reads as one. */
+.tools {
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.tools li {
+  padding: 0.1rem 0.5rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.proposal {
+  margin-top: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+.proposal.declined,
+.proposal.confirmed {
+  border-left-color: var(--border);
+  opacity: 0.7;
+}
+
+.proposal p {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+}
+
+.decide {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.decide button {
+  padding: 0.3rem 0.75rem;
+  font: inherit;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.decide .confirm {
+  color: var(--surface);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.decide .decline {
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+.decided {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.asking {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.asking input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.7rem;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.asking button {
+  padding: 0.5rem 0.9rem;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--surface);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.asking button:disabled {
+  opacity: 0.5;
+  cursor: default;
 }

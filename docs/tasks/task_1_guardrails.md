@@ -19,7 +19,17 @@ What happens *after* the answer is accepted is [task 2](./task_2_postprocessing.
 
 ## Before you write anything: see the problem
 
-Upload the poisoned document to case 1001 and read what comes back.
+Cases are not seeded any more — a Claimant opens one by describing what happened, and a classifier
+picks the type and its Required Documents. So make one first, and note the id it gives back:
+
+```bash
+curl -s -X POST localhost:8080/api/cases -H 'Content-Type: application/json' \
+  -d '{"description":"Someone reversed into my parked car. The rear door is dented and I paid for the repair."}'
+```
+
+The first case of a run is `1001`, which is what the commands below assume.
+
+Now upload the poisoned document to it and read what comes back.
 
 ```bash
 curl -s -X POST localhost:8080/api/documents \
@@ -142,7 +152,7 @@ curl -s localhost:8080/api/cases/1001 | jq '.screenings'
 
 The agent reports the attempt, and it surfaces on the handler's screen as a fraud Indicator. Note
 what the *claimant* got back: no such field. That is `DocumentForClaimant`, and the reasoning is in
-[ADR 0003](../adr/0003-fraud-signals-are-handler-side.md).
+[ADR 0005](../adr/0005-fraud-signals-are-handler-side.md).
 
 ## What this task is really about
 

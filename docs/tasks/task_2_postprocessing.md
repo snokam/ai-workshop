@@ -43,13 +43,22 @@ One entrypoint per task: `DocumentIntake` and `CaseDesk` talk to `FraudScreener`
 `FraudScreener` and run, so adding a check is adding a class and nothing else — that is the only
 piece of structure in this task, and it is the piece worth having.
 
-Start with `DuplicateUploadCheck`, because it is the one you can demo in ten seconds:
+Start with `DuplicateUploadCheck`, because it is the one you can demo in ten seconds. Open two cases
+first — a Claimant describes what happened and a classifier opens the Case, so there are no seeded
+ones to borrow:
 
 ```bash
+curl -s -X POST localhost:8080/api/cases -H 'Content-Type: application/json' \
+  -d '{"description":"Someone reversed into my parked car and I paid for the repair."}'
+curl -s -X POST localhost:8080/api/cases -H 'Content-Type: application/json' \
+  -d '{"description":"My laptop was stolen from my flat during a break-in."}'
+
 curl -s -X POST localhost:8080/api/documents -F caseId=1001 -F file=@assets/repair-receipt.pdf
 curl -s -X POST localhost:8080/api/documents -F caseId=1002 -F file=@assets/repair-receipt.pdf
 curl -s localhost:8080/api/cases/1002 | jq '.screenings'
 ```
+
+The same expense on a motor claim and a theft claim — which is the point.
 
 ```
 [STRONG] ALREADY_UPLOADED
@@ -98,7 +107,7 @@ curl -s localhost:8080/api/cases/1001 | jq '.screenings'
 ```
 
 Telling someone which of their tricks was noticed is free coaching in the ones that were not. Read
-[ADR 0003](../adr/0003-fraud-signals-are-handler-side.md) and decide whether you agree — including
+[ADR 0005](../adr/0005-fraud-signals-are-handler-side.md) and decide whether you agree — including
 the part where it admits there is no login here, so this is the shape of the API rather than an
 authorisation boundary.
 

@@ -6,12 +6,9 @@ import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener;
 import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener.Upload;
 import com.example.aiworkshop.tasks.task_1_guardrails.Guardrails;
 import dev.langchain4j.data.message.Content;
-import dev.langchain4j.data.message.ImageContent;
-import dev.langchain4j.data.message.PdfFileContent;
 import dev.langchain4j.data.message.TextContent;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -32,23 +29,32 @@ public class DocumentIntake {
     private final DocumentStore store;
     private final CaseStore cases;
     private final FraudScreener screener;
+    private final DocumentFiles files;
 
-    DocumentIntake(DocumentAnalyzer analyzer, DocumentStore store, CaseStore cases, FraudScreener screener) {
+    DocumentIntake(
+            DocumentAnalyzer analyzer,
+            DocumentStore store,
+            CaseStore cases,
+            FraudScreener screener,
+            DocumentFiles files) {
         this.analyzer = analyzer;
         this.store = store;
         this.cases = cases;
         this.screener = screener;
+        this.files = files;
     }
 
     public UploadedDocument accept(String caseId, MultipartFile file) throws IOException {
         Case theCase =
                 cases.findById(caseId).orElseThrow(() -> new UnknownCaseException("No such case: " + caseId));
         String mimeType = resolveMimeType(file);
-        String documentId = UUID.randomUUID().toString();
+        String id = UUID.randomUUID().toString();
+        // Kept before the agent runs, at the point the bytes are already in hand. See ADR 0004.
+        files.save(id, file.getBytes());
         DocumentAnalysis analysis = analyzer.analyse(promptFor(file, mimeType), theCase.requiredDocuments());
 
         UploadedDocument document = new UploadedDocument(
-                documentId,
+                id,
                 caseId,
                 file.getOriginalFilename(),
                 mimeType,
@@ -58,8 +64,8 @@ public class DocumentIntake {
                 false);
         store.save(document);
 
-        screener.screen(new Upload(
-                documentId, caseId, file.getOriginalFilename(), mimeType, file.getBytes(), analysis));
+        screener.screen(
+                new Upload(id, caseId, file.getOriginalFilename(), mimeType, file.getBytes(), analysis));
         return document;
     }
 
@@ -73,11 +79,8 @@ public class DocumentIntake {
      * user-supplied text going into a prompt, which is not somewhere user-supplied text belongs.
      */
     private List<Content> promptFor(MultipartFile file, String mimeType) throws IOException {
-        String base64 = Base64.getEncoder().encodeToString(file.getBytes());
-        Content fileContent = mimeType.equals("application/pdf")
-                ? PdfFileContent.from(base64, mimeType)
-                : ImageContent.from(base64, mimeType);
-        return List.of(TextContent.from(Guardrails.INTAKE_INSTRUCTION), fileContent);
+        return List.of(
+                TextContent.from(Guardrails.INTAKE_INSTRUCTION), DocumentFiles.contentOf(file.getBytes(), mimeType));
     }
 
     /**

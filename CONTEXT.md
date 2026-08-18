@@ -38,8 +38,18 @@ _Avoid_: validation, verification, approval
 
 **Case**:
 The unit of work a Document belongs to, and the thing that has a status. Carries its own list of
-Required Documents; Cases do not come in kinds.
+Required Documents. A Case is opened from a Case Type, but afterwards it is just its list — the type
+is not stored on it.
 _Avoid_: claim, application, file
+
+**Case Type**:
+The kind of Case a Claimant opens, chosen by an agent from what they typed. A fixed, hardcoded set
+grounded in Storebrand products (travel, home contents, disability, health treatment, motor), each
+carrying the Required Documents that kind of Case needs. `OTHER` is the fallback when nothing fits.
+The type decides the checklist at creation and is kept on the Case: it frames how the handler-side
+agents read across it, so a travel claim is summarised as a travel claim. See
+[ADR 0005](./docs/adr/0003-hardcoded-case-types.md).
+_Avoid_: category, claim kind
 
 **Case Handler**:
 The internal person who reads across a Case and decides it. The audience for everything the agents
@@ -71,7 +81,7 @@ _Avoid_: approval, sign-off
 The checks that run over an uploaded file at intake, asking whether it is what it appears to be. Runs
 over the bytes and over what the intake agent already noticed — never over whether the Case deserves
 to be paid. Read by a Case Handler and by nobody else; never a gate on anything (see
-[ADR 0003](./docs/adr/0003-fraud-signals-are-handler-side.md)).
+[ADR 0005](./docs/adr/0005-fraud-signals-are-handler-side.md)).
 _Avoid_: fraud detection, risk scoring, verification
 
 **Fraud Indicator**:
@@ -92,6 +102,7 @@ The agent's account of what is in a Case's Documents, taken across all of them �
 reads instead of opening each Document in turn. A Document has its own separate summary.
 _Avoid_: overview, digest
 
+<<<<<<< HEAD
 ## Guardrails
 
 Two, both on the intake agent, because it is the only agent an outsider can put anything in front of.
@@ -104,6 +115,25 @@ Both are LangChain4j guardrails, so they run inside the call rather than around 
 - **Output guardrail** (`tasks/task_1_guardrails/guardrails/AnalysisGuardrail`) — a match must name a Required Document this Case
   actually asked for. A label that is not on the list is struck out, whether the agent paraphrased
   it, invented it, or was talked into it by the Document.
+=======
+**Case Chat**:
+The conversation a Case Handler can have about one Case, beside the Case's contents. Belongs to the
+Case rather than to a person — there is no authentication, so two Case Handlers with the same Case
+open share one.
+_Avoid_: assistant, copilot, chatbot
+
+**Proposal**:
+Something suggested in a Case Chat and not done. It performs nothing; a Case Handler confirms or
+declines it, and only a confirmation makes it real. Two kinds exist: a Review, and a Document
+Request. A declined Proposal is kept, not deleted.
+_Avoid_: suggestion, recommendation, action
+
+**Document Request**:
+Something a Case Handler has asked the Claimant for, in plain language, shown on the Claimant's
+upload screen. Not a Required Document: Case Status is derived from that list, so a Document Request
+sits beside it and moves nothing.
+_Avoid_: chase, reminder, task
+>>>>>>> origin/main
 
 ## Not settled yet
 
