@@ -1,10 +1,31 @@
+/*
+ * The two brand faces the @snokam/ui theme asks for. Declared here rather than by importing
+ * @snokam/ui/styles/global.css, which also sets `body` and `main` to display: flex for the shell
+ * the Next apps use, and that fights the page layout below.
+ */
+@font-face {
+  font-family: DMSans-Light;
+  src: url("https://ressurser.snokam.no/fonts/dm-sans/DMSans-Light.ttf");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Cocogoose-Regular;
+  src: url("https://ressurser.snokam.no/fonts/cocogoose/Cocogoose-Regular.ttf");
+  font-display: swap;
+}
+
 :root {
-  --bg: #f6f7f9;
+  /* The snokam palette, the same values @snokam/ui/theme exposes as Color and BaseColor. */
+  --navy: #071d41;
+  --cyan: #67dafd;
+
+  --bg: #f4f6fb;
   --surface: #ffffff;
-  --border: #e2e5ea;
-  --text: #1a1d21;
-  --muted: #6b7280;
-  --accent: #2563eb;
+  --border: rgba(7, 29, 65, 0.1);
+  --text: var(--navy);
+  --muted: rgba(7, 29, 65, 0.68);
+  --accent: #0284c7;
 
   --good-bg: #ecfdf3;
   --good-fg: #0f6c3d;
@@ -18,12 +39,12 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #14171a;
-    --surface: #1c2024;
-    --border: #2c3238;
-    --text: #e8eaed;
-    --muted: #9aa2ad;
-    --accent: #6ea8fe;
+    --bg: #050f28;
+    --surface: #071d41;
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #ffffff;
+    --muted: rgba(255, 255, 255, 0.62);
+    --accent: var(--cyan);
 
     --good-bg: #10291d;
     --good-fg: #6ee7a8;
@@ -32,6 +53,16 @@
     --poor-bg: #2d1618;
     --poor-fg: #f5a3a3;
   }
+}
+
+/*
+ * The snokam components style their links for layout only and take the colour from the page —
+ * @snokam/ui/styles/global.css carries `a { color: inherit }` for that. This app cannot import
+ * that file, because it also sets body and main to display: flex, so the one rule it does need
+ * lives here instead. Without it the footer links come out as the browser's default purple.
+ */
+a {
+  color: inherit;
 }
 
 * {
@@ -45,11 +76,18 @@ body {
   font: 16px/1.55 system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
-main {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 3rem 1.25rem 5rem;
+/* The column that keeps the footer down: see components/layout/Layout.tsx. */
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
+
+/* Width and gutters come from Layout.Content; main only has to take up the slack. */
+main {
+  flex-grow: 1;
+}
+
 
 header h1 {
   margin: 0 0 0.35rem;
@@ -322,9 +360,10 @@ header p {
 
 /* --- the two sides ------------------------------------------------------- */
 
-.claimant-nav a,
 .back {
+  display: inline-block;
   padding: 0.45rem 0.9rem;
+  margin-bottom: 1.5rem;
   font: inherit;
   font-size: 0.9rem;
   color: var(--muted);
@@ -333,22 +372,6 @@ header p {
   border-radius: 999px;
   cursor: pointer;
   text-decoration: none;
-}
-
-.claimant-nav a.on {
-  color: var(--surface);
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.claimant-nav {
-  display: flex;
-  gap: 0.4rem;
-  margin-bottom: 2rem;
-}
-
-.back {
-  margin-bottom: 1.5rem;
 }
 
 /* --- choosing a case ----------------------------------------------------- */
@@ -382,6 +405,9 @@ header p {
   flex-direction: column;
   gap: 0.9rem;
   align-items: flex-start;
+  /* Fill the column, but stop before the line length gets uncomfortable to read back. */
+  width: 100%;
+  max-width: 48rem;
 }
 
 .describe textarea {
@@ -730,10 +756,6 @@ header p.status {
  * The case screen is the one screen wide enough to need it: the answer and the document it came from
  * have to be readable in the same glance, which a panel over the top of them would prevent.
  */
-main:has(.with-chat) {
-  max-width: 1240px;
-}
-
 .with-chat {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 400px;
