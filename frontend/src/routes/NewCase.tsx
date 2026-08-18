@@ -50,10 +50,10 @@ export function NewCase() {
   return (
     <>
       <header>
-        <h1>What do you need help with?</h1>
+        <h1>Report a case</h1>
         <p>
-          Describe your situation in your own words. An agent reads it, works out what kind of case to
-          open, and tells you which documents you will need to send in.
+          Describe what happened in your own words. An agent reads it, opens the right kind of case
+          for you, and tells you which documents you will need to send in.
         </p>
       </header>
 
@@ -82,10 +82,10 @@ export function NewCase() {
           {submitting ? (
             <span className="reading">
               <span className="spinner" aria-hidden />
-              Reading what you wrote…
+              Opening your case…
             </span>
           ) : (
-            'Get started'
+            'Open the case'
           )}
         </button>
       </form>

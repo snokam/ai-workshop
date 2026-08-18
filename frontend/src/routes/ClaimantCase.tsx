@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { listCases, listDocuments, uploadDocument } from '../api'
 import type { CaseOverview, CreatedCase, UploadedDocument } from '../api'
 import { Checklist } from '../components/Checklist'
@@ -13,7 +13,6 @@ export function ClaimantCase() {
   // Shown once, on arrival from the describe form. A link someone shares carries no state, so
   // opening the same address later shows the case without the "we have opened this for you" banner.
   const intro = (useLocation().state as { intro?: CreatedCase } | null)?.intro
-  const navigate = useNavigate()
   const [overview, setOverview] = useState<CaseOverview | null>(null)
   const [documents, setDocuments] = useState<UploadedDocument[]>([])
   const [busyWith, setBusyWith] = useState<string | null>(null)
@@ -95,10 +94,6 @@ export function ClaimantCase() {
 
   return (
     <>
-      <button className="back" onClick={() => navigate(-1)}>
-        ← Back
-      </button>
-
       {intro ? (
         <section className={`detected ${intro.confidence.toLowerCase()}`}>
           <span className="detected-label">We have opened a case for you</span>

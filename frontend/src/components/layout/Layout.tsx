@@ -4,6 +4,7 @@ import { FrameworkProvider } from '@snokam/ui/framework'
 import { SimpleHeaderBase, HeaderTheme } from '@snokam/navbar/v1/base'
 import { FooterBase, FooterTheme } from '@snokam/footer/v1/base'
 import type { ReactNode } from 'react'
+import { useLocation } from 'react-router-dom'
 import { framework } from './framework'
 
 /**
@@ -22,7 +23,24 @@ import { framework } from './framework'
  * page gutters and the maximum text width line up with the chrome above and below rather than
  * being a second set of numbers that happens to look close.
  */
+/**
+ * Where the header's back link points, worked out from the address. A case is always reached from
+ * one list, so the way back is a fixed place rather than whatever the history stack happens to
+ * hold — a reload or a pasted link then still has somewhere to go.
+ */
+function backFrom(pathname: string): { url: string; text: string } | null {
+  if (/^\/casehandler\/cases\/[^/]+$/.test(pathname)) {
+    return { url: '/casehandler', text: 'All cases' }
+  }
+  if (/^\/cases\/[^/]+$/.test(pathname)) {
+    return { url: '/cases', text: 'My cases' }
+  }
+  return null
+}
+
 export function Layout({ children }: { children: ReactNode }) {
+  const back = backFrom(useLocation().pathname)
+
   return (
     <Theme.Provider>
       <FrameworkProvider framework={framework}>
@@ -31,6 +49,8 @@ export function Layout({ children }: { children: ReactNode }) {
             theme={HeaderTheme.Light}
             logo={{ url: '/snokam-logo.svg', alt: 'Snøkam' }}
             homeUrl="/"
+            backUrl={back?.url}
+            backText={back?.text}
           />
           <Snokam.Container as="main" theme={LayoutTheme.Light}>
             <Snokam.Content width={Width.Normal}>

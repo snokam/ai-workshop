@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { openCase, reviewDocument } from '../api'
 import type { CaseDetail } from '../api'
 import { CaseChat } from '../components/CaseChat'
@@ -46,9 +46,6 @@ export function HandlerCase() {
   if (!detail) {
     return (
       <>
-        <Link className="back" to="/casehandler">
-          ← All cases
-        </Link>
         {error ? (
           <p className="error" role="alert">
             {error}
@@ -67,10 +64,6 @@ export function HandlerCase() {
 
   return (
     <>
-      <Link className="back" to="/casehandler">
-        ← All cases
-      </Link>
-
       <div className="with-chat">
         <div className="case-contents">
           <header>
