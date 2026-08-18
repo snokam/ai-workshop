@@ -1,6 +1,15 @@
 
 import { failure, json } from './client'
-import type { CaseDetail, CaseOverview, ChatAnswer, CreatedCase, ProposalCard, SupportedCaseType } from './types'
+import type {
+  CaseDetail,
+  CaseOverview,
+  ChatAnswer,
+  CreatedCase,
+  InterviewAnswer,
+  InterviewResponse,
+  ProposalCard,
+  SupportedCaseType,
+} from './types'
 
 export async function listCases(): Promise<CaseOverview[]> {
   return json(await fetch('/api/cases'))
@@ -20,6 +29,19 @@ export async function createCase(description: string): Promise<CreatedCase> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ description }),
+    }),
+  )
+}
+
+export async function interviewIntake(
+  description: string,
+  answers: InterviewAnswer[],
+): Promise<InterviewResponse> {
+  return json(
+    await fetch('/api/cases/interview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description, answers }),
     }),
   )
 }

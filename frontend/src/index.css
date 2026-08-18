@@ -992,3 +992,127 @@ header p.status {
   opacity: 0.5;
   cursor: default;
 }
+
+/* --- report with AI chat (task 7) ---------------------------------------- */
+
+/* A quiet way between screens. Sits under a form, plain link, not a second button competing with it. */
+.chat-alt {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.chat-alt a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.intake-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  width: 100%;
+  max-width: 48rem;
+}
+
+/* The conversation so far, read back above the next question so nothing the person said is lost. */
+.chat-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.chat-exchange {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.chat-asked,
+.chat-said {
+  margin: 0;
+  padding: 0.7rem 1rem;
+  border-radius: 14px;
+  line-height: 1.45;
+}
+
+/* Agent on the left, on the page's surface; the claimant's own words tinted and pulled to the right. */
+.chat-asked {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  align-self: flex-start;
+}
+
+.chat-said {
+  background: var(--accent);
+  color: var(--surface);
+  align-self: flex-end;
+}
+
+.chat-who {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+  margin-bottom: 0.2rem;
+}
+
+.chat-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* Why the agent is asking, before what it is asking — one line, muted, so the questions stay the focus. */
+.chat-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.chat-question {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.chat-question span {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.chat-question input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.chat-question input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.chat-questions button {
+  padding: 0.6rem 1.3rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.chat-questions button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}

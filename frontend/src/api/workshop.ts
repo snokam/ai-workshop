@@ -8,6 +8,7 @@ export type TaskKey =
   | 'POSTPROCESSING'
   | 'CHAT'
   | 'SUMMARY'
+  | 'CREATE_CASE_CHAT'
 
 export interface TaskState {
   number: number

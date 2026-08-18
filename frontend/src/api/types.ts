@@ -126,3 +126,17 @@ export interface SupportedCaseType {
   label: string
   description: string
 }
+
+/* --- optional module: conversational intake ("Report with AI chat", task 7) --- */
+
+export interface InterviewAnswer {
+  question: string
+  answer: string
+}
+
+export interface InterviewResponse {
+  status: 'NEEDS_INFO' | 'DECIDED'
+  questions: string[]
+  rationale: string | null
+  createdCase: CreatedCase | null
+}

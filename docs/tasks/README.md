@@ -13,6 +13,14 @@ Six exercises, in order. Each one is an agent, and each adds exactly one idea to
 
 1 and 2 build an agent. 3 and 4 contain one. 5 and 6 grow one.
 
+There is also an extra, optional seventh, for anyone who finishes early:
+
+| | | you write |
+|---|---|---|
+| 7 | [Report with AI chat](./task_7_create_case_chat.md) | an intake agent that may ask before it commits, deciding the exact documents a situation needs |
+
+It stands beside task 1 rather than after it — the quick report still works untouched.
+
 ## Three hours
 
 The six add up to about four and a quarter hours of writing, which is more than a session holds.

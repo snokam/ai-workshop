@@ -31,7 +31,12 @@ public enum WorkshopTask {
             6,
             "Across documents",
             "tasks/task_6_summary/CaseSummarizer.java",
-            "Write the agent that reads every document on a case at once.");
+            "Write the agent that reads every document on a case at once."),
+    CREATE_CASE_CHAT(
+            7,
+            "Report with AI chat",
+            "tasks/task_7_create_case_chat/CaseIntakeInterviewer.java",
+            "Write the @SystemMessage in CaseIntakeInterviewer so it can ask before it commits.");
 
     private static final String SOURCE_ROOT = "backend/src/main/java/com/example/aiworkshop/";
 
