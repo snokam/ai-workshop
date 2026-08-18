@@ -7,6 +7,7 @@ import { Checklist } from '../components/Checklist'
 import { DocumentCard } from '../components/DocumentCard'
 import { previewOf, standingOf } from '../lib/documents'
 import { STATUS_LABEL } from '../lib/labels'
+import { PageWait } from '../components/Loader'
 
 /**
  * One case, read across. Its own address, so a handler can keep it open in a tab, send it to a
@@ -51,10 +52,7 @@ export function HandlerCase() {
             {error}
           </p>
         ) : (
-          <p className="reading">
-            <span className="spinner" aria-hidden />
-            Reading the case…
-          </p>
+          <PageWait>Reading the case…</PageWait>
         )}
       </>
     )

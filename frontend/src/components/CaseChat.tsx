@@ -3,6 +3,7 @@ import { askCaseChat, confirmProposal, declineProposal } from '../api'
 import type { CaseDetail, ChatTurn, ProposalCard } from '../api'
 import { SUGGESTED_QUESTIONS } from '../lib/labels'
 import { Turn } from './Turn'
+import { Loader } from './Loader'
 
 export function CaseChat({ detail, onCaseChanged }: { detail: CaseDetail; onCaseChanged: () => Promise<void> }) {
   const [turns, setTurns] = useState<ChatTurn[]>(detail.conversation)
@@ -72,7 +73,7 @@ export function CaseChat({ detail, onCaseChanged }: { detail: CaseDetail; onCase
 
         {thinking && (
           <p className="reading">
-            <span className="spinner" aria-hidden />
+            <Loader />
             Reading the case…
           </p>
         )}

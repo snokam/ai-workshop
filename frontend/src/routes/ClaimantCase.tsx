@@ -6,6 +6,7 @@ import { Checklist } from '../components/Checklist'
 import { DocumentCard } from '../components/DocumentCard'
 import { CONFIDENCE_LABEL } from '../lib/labels'
 import { previewOf } from '../lib/documents'
+import { Loader } from '../components/Loader'
 
 /** One case, open for uploading into. Its address is /cases/:caseId, so it survives a refresh. */
 export function ClaimantCase() {
@@ -143,7 +144,7 @@ export function ClaimantCase() {
         />
         {busyWith ? (
           <span className="reading">
-            <span className="spinner" aria-hidden />
+            <Loader />
             Reading <strong>{busyWith}</strong>…
           </span>
         ) : (

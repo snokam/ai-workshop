@@ -4,6 +4,7 @@ import { createCase, listCaseTypes } from '../api'
 import type { CreatedCase, SupportedCaseType } from '../api'
 import { rememberCase } from '../lib/myCases'
 import { useEffect } from 'react'
+import { Loader } from '../components/Loader'
 
 /**
  * A new case has its own address the moment it exists, and the classifier's reasoning travels to it
@@ -81,7 +82,7 @@ export function NewCase() {
         <button type="submit" disabled={submitting || description.trim().length === 0}>
           {submitting ? (
             <span className="reading">
-              <span className="spinner" aria-hidden />
+              <Loader />
               Opening your case…
             </span>
           ) : (
