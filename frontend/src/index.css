@@ -322,7 +322,7 @@ header p {
 
 /* --- the two sides ------------------------------------------------------- */
 
-.claimant-nav button,
+.claimant-nav a,
 .back {
   padding: 0.45rem 0.9rem;
   font: inherit;
@@ -335,7 +335,7 @@ header p {
   text-decoration: none;
 }
 
-.claimant-nav button.on {
+.claimant-nav a.on {
   color: var(--surface);
   background: var(--accent);
   border-color: var(--accent);
@@ -598,8 +598,10 @@ header p {
   gap: 0.75rem;
 }
 
+/* Rows and nav items are links now, so each screen has an address you can copy. */
 .case-row {
   display: grid;
+  text-decoration: none;
   grid-template-columns: 1fr auto;
   gap: 0.35rem 1rem;
   padding: 1rem 1.25rem;
@@ -612,13 +614,8 @@ header p {
   cursor: pointer;
 }
 
-.case-row:hover:not(:disabled) {
+.case-row:hover {
   border-color: var(--accent);
-}
-
-.case-row:disabled {
-  opacity: 0.6;
-  cursor: default;
 }
 
 .reference {

@@ -1,8 +1,7 @@
 /**
- * The API surface, and the types that mirror the Java records on the other side.
+ * The types that mirror the Java records on the other side.
  *
- * Keeping these in one file means there is exactly one place to change when the backend's
- * DocumentAnalysis grows a field.
+ * One file, so there is exactly one place to change when a record over there grows a component.
  */
 
 export type Quality = 'GOOD' | 'ACCEPTABLE' | 'POOR'
@@ -157,84 +156,8 @@ export interface CaseDetail {
   conversation: ChatTurn[]
 }
 
-/** Pulls the backend's `{ message }` out of a failed response so the screen can show the real cause. */
-async function failureMessage(response: Response): Promise<string> {
-  try {
-    const body = await response.json()
-    if (body && typeof body.message === 'string') return body.message
-  } catch {
-    // Not JSON — fall through to the status line.
-  }
-  return `${response.status} ${response.statusText}`
-}
-
-async function json<T>(response: Response): Promise<T> {
-  if (!response.ok) throw new Error(await failureMessage(response))
-  return response.json() as Promise<T>
-}
-
 /** One kind of insurance the system can open a case for, for the front page to list. */
 export interface SupportedCaseType {
   label: string
   description: string
-}
-
-export async function listCases(): Promise<CaseOverview[]> {
-  return json(await fetch('/api/cases'))
-}
-
-/** The insurance types the classifier can land on — shown on the front page so people know the scope. */
-export async function listCaseTypes(): Promise<SupportedCaseType[]> {
-  return json(await fetch('/api/cases/types'))
-}
-
-export async function openCase(caseId: string): Promise<CaseDetail> {
-  return json(await fetch(`/api/cases/${caseId}`))
-}
-
-/** Opens a case from what the claimant typed. One classifier call runs on the backend. */
-export async function createCase(description: string): Promise<CreatedCase> {
-  return json(
-    await fetch('/api/cases', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ description }),
-    }),
-  )
-}
-
-export async function reviewDocument(documentId: string): Promise<void> {
-  const response = await fetch(`/api/cases/documents/${documentId}/review`, { method: 'POST' })
-  if (!response.ok) throw new Error(await failureMessage(response))
-}
-
-/** One turn of the case chat. Blocks for a model call, and for any tool it decides to reach for. */
-export async function askCaseChat(caseId: string, question: string): Promise<ChatAnswer> {
-  return json(
-    await fetch(`/api/cases/${caseId}/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question }),
-    }),
-  )
-}
-
-export async function confirmProposal(proposalId: string): Promise<ProposalCard> {
-  return json(await fetch(`/api/cases/proposals/${proposalId}/confirm`, { method: 'POST' }))
-}
-
-export async function declineProposal(proposalId: string): Promise<ProposalCard> {
-  return json(await fetch(`/api/cases/proposals/${proposalId}/decline`, { method: 'POST' }))
-}
-
-export async function listDocuments(): Promise<UploadedDocument[]> {
-  return json(await fetch('/api/documents'))
-}
-
-export async function uploadDocument(caseId: string, file: File): Promise<UploadedDocument> {
-  const body = new FormData()
-  body.append('caseId', caseId)
-  body.append('file', file)
-
-  return json(await fetch('/api/documents', { method: 'POST', body }))
 }

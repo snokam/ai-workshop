@@ -105,6 +105,12 @@ Who sees what is [ADR 0005](./docs/adr/0005-fraud-signals-are-handler-side.md).
 Nothing in either task needs credentials or a network: the checks read the bytes that are already in
 hand.
 
+The frontend is a folder per job, and every screen has an address:
+
 | | |
 |---|---|
-| `frontend/src/App.tsx` | both screens |
+| `frontend/src/App.tsx` | the route table, and nothing else |
+| `frontend/src/routes/` | one file per screen: `/`, `/cases`, `/cases/:caseId`, `/casehandler`, `/casehandler/cases/:caseId` |
+| `frontend/src/components/` | the pieces a screen is built from |
+| `frontend/src/api/` | types, the fetch helpers, and one file per resource |
+| `frontend/src/lib/` | labels, and the two questions the screens ask about a Document |
