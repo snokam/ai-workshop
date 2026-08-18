@@ -15,6 +15,9 @@ export const framework: Partial<Framework> = {
   useNavigation: () => {
     const navigate = useNavigate()
     const location = useLocation()
-    return { push: (href: string) => navigate(href), pathname: location.pathname }
+    return {
+      push: (href: string) => navigate(href),
+      pathname: location.pathname,
+    }
   },
 }

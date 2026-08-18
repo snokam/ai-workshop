@@ -1,3 +1,4 @@
+import Snokam, { LayoutTheme, Padding, Width } from '@snokam/ui/layout'
 import Theme from '@snokam/ui/theme'
 import { FrameworkProvider } from '@snokam/ui/framework'
 import { SimpleHeaderBase, HeaderTheme } from '@snokam/navbar/v1/base'
@@ -12,32 +13,48 @@ import { framework } from './framework'
  * signed-in user out of next-auth and the link targets out of the tenant config. This app has no
  * CMS, no login and no tenant, so those would render empty strings, and useConfig would throw
  * before that. The Base components take the same values as props, which is all this needs.
+ *
+ * The `page` wrapper is what holds the footer at the bottom: a column that is at least the height
+ * of the viewport, with `main` taking the slack, so a short screen still puts the footer on the
+ * fold rather than partway up an empty page.
+ *
+ * `main` is Snokam.Container/Content/Section, the same three the header and footer use, so the
+ * page gutters and the maximum text width line up with the chrome above and below rather than
+ * being a second set of numbers that happens to look close.
  */
 export function Layout({ children }: { children: ReactNode }) {
   return (
     <Theme.Provider>
       <FrameworkProvider framework={framework}>
-        <SimpleHeaderBase
-          theme={HeaderTheme.Light}
-          logo={{ url: '/snokam-logo.svg', alt: 'Snøkam' }}
-          homeUrl="/"
-        />
-        <main>{children}</main>
-        <FooterBase
-          theme={FooterTheme.Light}
-          logo={{ url: '/snokam-logo.svg', alt: 'Snøkam' }}
-          content={
-            <p>
-              A workshop on document handling with LLMs. Everything you upload stays on this
-              machine.
-            </p>
-          }
-          links={[
-            { href: '/', text: 'Report a case' },
-            { href: '/cases', text: 'My cases' },
-            { href: '/casehandler', text: 'Case handler' },
-          ]}
-        />
+        <div className="page">
+          <SimpleHeaderBase
+            theme={HeaderTheme.Light}
+            logo={{ url: '/snokam-logo.svg', alt: 'Snøkam' }}
+            homeUrl="/"
+          />
+          <Snokam.Container as="main" theme={LayoutTheme.Light}>
+            <Snokam.Content width={Width.Normal}>
+              <Snokam.Section padding={Padding.Large} stretchItems>
+                {children}
+              </Snokam.Section>
+            </Snokam.Content>
+          </Snokam.Container>
+          <FooterBase
+            theme={FooterTheme.Light}
+            logo={{ url: '/snokam-logo.svg', alt: 'Snøkam' }}
+            content={
+              <p>
+                A workshop on document handling with LLMs. Everything you upload
+                stays on this machine.
+              </p>
+            }
+            links={[
+              { href: '/', text: 'Report a case' },
+              { href: '/cases', text: 'My cases' },
+              { href: '/casehandler', text: 'Case handler' },
+            ]}
+          />
+        </div>
       </FrameworkProvider>
     </Theme.Provider>
   )

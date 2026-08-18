@@ -76,14 +76,18 @@ body {
   font: 16px/1.55 system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
+/* The column that keeps the footer down: see components/layout/Layout.tsx. */
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Width and gutters come from Layout.Content; main only has to take up the slack. */
 main {
   flex-grow: 1;
-  max-width: 760px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 3rem 1.25rem 5rem;
-  box-sizing: border-box;
 }
+
 
 header h1 {
   margin: 0 0 0.35rem;
@@ -401,6 +405,9 @@ header p {
   flex-direction: column;
   gap: 0.9rem;
   align-items: flex-start;
+  /* Fill the column, but stop before the line length gets uncomfortable to read back. */
+  width: 100%;
+  max-width: 48rem;
 }
 
 .describe textarea {
@@ -749,10 +756,6 @@ header p.status {
  * The case screen is the one screen wide enough to need it: the answer and the document it came from
  * have to be readable in the same glance, which a panel over the top of them would prevent.
  */
-main:has(.with-chat) {
-  max-width: 1240px;
-}
-
 .with-chat {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 400px;
