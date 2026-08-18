@@ -29,7 +29,6 @@ class FirstAgentConfig {
         return UnfinishedTasks.wire(
                 CaseTypeClassifier.class,
                 WorkshopTask.FIRST_AGENT,
-                CaseTypeClassifier.IMPLEMENTED,
                 () -> AiServices.create(CaseTypeClassifier.class, chatModel));
     }
 }

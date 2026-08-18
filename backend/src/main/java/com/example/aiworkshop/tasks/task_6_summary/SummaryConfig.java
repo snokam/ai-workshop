@@ -16,7 +16,6 @@ class SummaryConfig {
         return UnfinishedTasks.wire(
                 CaseSummarizer.class,
                 WorkshopTask.SUMMARY,
-                CaseSummarizer.IMPLEMENTED,
                 () -> AiServices.create(CaseSummarizer.class, chatModel));
     }
 

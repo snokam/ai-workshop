@@ -35,8 +35,6 @@ write a system message for an agent that says, across all of them:
 Not a list of summaries. One document at a time is what the cards already show; if this agent only
 restates them it has earned nothing.
 
-Then set `IMPLEMENTED = true`.
-
 `CaseStatusWriter` sits beside it and is the cheap counterpart: derived facts in, one short
 situation report out, no documents at all. Read both and note that they are not the same kind of
 thing, though both are "the agent that writes prose".

@@ -76,17 +76,17 @@ Intake — runs once, when a file is uploaded:
 
 | | |
 |---|---|
-| `document/DocumentAnalyzer.java` | the agent |
-| `document/DocumentAnalysis.java` | what it returns, and therefore what it is asked for |
-| `document/DocumentIntake.java` | turns an upload into the file content the model reads |
-| `document/DocumentStore.java` | in-memory; everything is lost on restart |
-| `document/DocumentFiles.java` | the bytes, on disk, so an agent can look again ([ADR 0004](./docs/adr/0004-uploaded-files-are-kept-on-disk.md)) |
+| `tasks/task_2_document_agent/DocumentAnalyzer.java` | the agent |
+| `documents/DocumentAnalysis.java` | what it returns, and therefore what it is asked for |
+| `documents/DocumentIntake.java` | turns an upload into the file content the model reads |
+| `documents/DocumentStore.java` | in-memory; everything is lost on restart |
+| `documents/DocumentFiles.java` | the bytes, on disk, so an agent can look again ([ADR 0004](./docs/adr/0004-uploaded-files-are-kept-on-disk.md)) |
 
 Case handling — what the handler's screen runs against one Case:
 
 | | |
 |---|---|
-| `cases/Case.java` | Case Status, derived in Java rather than by a model |
+| `cases/model/Case.java` | Case Status, derived in Java rather than by a model |
 | `cases/CaseSummarizer.java` | the expensive agent: what the Documents say, across all of them |
 | `cases/DocumentForSummary.java` | what that agent is shown — and, deliberately, what it is not |
 | `cases/CaseStatusWriter.java` | the cheap agent: derived facts in, one situation report out |
@@ -101,7 +101,7 @@ Case Chat — one conversation per Case, with tools, that suggests and never wri
 | `cases/CaseChatTools.java` | four tools, no logic — every one hands straight to `CaseDesk` |
 | `cases/CaseAtAGlance.java` | what it starts with; `DocumentForChat` is one line of it |
 | `cases/DocumentInDetail.java` | what the detail tool fetches — the half the index leaves out |
-| `document/DocumentReader.java` | a second agent, given the file and no Case context at all |
+| `documents/DocumentReader.java` | a second agent, given the file and no Case context at all |
 | `cases/Proposal.java` | sealed: confirming one is a pattern switch that must stay exhaustive |
 | `cases/DocumentRequest.java` | what a confirmed Proposal produces, and what a Claimant sees |
 

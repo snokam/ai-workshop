@@ -1,5 +1,7 @@
 package com.example.aiworkshop.tasks.task_4_postprocessing.checks;
 
+import com.example.aiworkshop.workshop.WorkshopTask;
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Kind;
@@ -23,8 +25,9 @@ public class DuplicateUploadCheck implements FraudCheck {
         // case it arrived on; when one turns up again on a different case, that is one expense
         // being claimed twice. The same hash on the same case is a double-click, not a signal.
         //
-        // Returning nothing is what no check looks like.
-        return List.of();
+        // Throwing is how the screener knows: it logs, skips, and keeps the other checks running —
+        // which is the rule this task is really about.
+        throw new TaskNotImplementedException(WorkshopTask.POSTPROCESSING);
 
         // ── One version of the answer ──────────────────────────────────────────────────────
         // Try it yourself first. Uncomment this a piece at a time if you get stuck, or write

@@ -20,14 +20,6 @@ import dev.langchain4j.service.V;
  * competing with the instructions for the model's attention.
  */
 public interface CaseTypeClassifier {
-    /**
-     * ── TASK FIRST AGENT ────────────────────────────────────────────────────────────────────────
-     * Set to true once you have written the case type classifier below. While it is false the
-     * application still runs: every screen that does not need this agent works as normal,
-     * and the one that does explains which file to open.
-     * ──────────────────────────────────────────────────────────────────────────────────
-     */
-    boolean IMPLEMENTED = false;
 
 
     @SystemMessage(

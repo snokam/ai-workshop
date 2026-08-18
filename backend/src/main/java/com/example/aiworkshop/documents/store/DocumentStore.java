@@ -1,6 +1,6 @@
-package com.example.aiworkshop.document.store;
+package com.example.aiworkshop.documents.store;
 
-import com.example.aiworkshop.document.model.UploadedDocument;
+import com.example.aiworkshop.documents.model.UploadedDocument;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;

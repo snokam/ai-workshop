@@ -69,8 +69,6 @@ One system message asking for five things in a single pass:
 Read `DocumentAnalysis` before you start. That record is the contract, and the five jobs above are
 its five components.
 
-Then set `IMPLEMENTED = true`.
-
 ## How you know it worked
 
 ```bash

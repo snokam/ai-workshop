@@ -89,8 +89,6 @@ A system message that:
 - asks for one plain sentence of reasoning, in English, whatever language was written in
 - tells it not to address the person or ask them anything
 
-Then set `IMPLEMENTED = true` at the top of the file.
-
 ## Part 3 — the answer becomes a case
 
 An agent that returns a good answer nobody acts on has done nothing. `CaseIntake.open` is where the

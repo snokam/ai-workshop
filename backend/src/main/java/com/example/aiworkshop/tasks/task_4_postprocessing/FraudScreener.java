@@ -2,7 +2,7 @@ package com.example.aiworkshop.tasks.task_4_postprocessing;
 
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening;
 import com.example.aiworkshop.tasks.task_4_postprocessing.checks.FraudCheck;
-import com.example.aiworkshop.document.model.DocumentAnalysis;
+import com.example.aiworkshop.documents.model.DocumentAnalysis;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,13 +16,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FraudScreener {
-    /**
-     * ── TASK POSTPROCESSING ────────────────────────────────────────────────────────────────────────
-     * Set to true once you have written the checks that run after the agent answers below. While it is false the
-     * application still runs and every screen says so rather than failing.
-     * ──────────────────────────────────────────────────────────────────────────────────
-     */
-    public static final boolean IMPLEMENTED = false;
 
 
     private static final Logger log = LoggerFactory.getLogger(FraudScreener.class);

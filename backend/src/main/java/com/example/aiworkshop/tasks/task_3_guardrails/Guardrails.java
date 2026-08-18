@@ -1,18 +1,13 @@
 package com.example.aiworkshop.tasks.task_3_guardrails;
 
+import com.example.aiworkshop.workshop.WorkshopTask;
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.tasks.task_3_guardrails.guardrails.UploadedFileGuardrail;
 import com.example.aiworkshop.tasks.task_3_guardrails.guardrails.AnalysisGuardrail;
 import dev.langchain4j.guardrail.InputGuardrail;
 import dev.langchain4j.guardrail.OutputGuardrail;
 
 public final class Guardrails {
-    /**
-     * ── TASK GUARDRAILS ────────────────────────────────────────────────────────────────────────
-     * Set to true once you have written the two guardrails below. While it is false the
-     * application still runs and every screen says so rather than failing.
-     * ──────────────────────────────────────────────────────────────────────────────────
-     */
-    public static final boolean IMPLEMENTED = false;
 
 
     public static final String INTAKE_INSTRUCTION = "Analyse the attached file.";
@@ -20,10 +15,18 @@ public final class Guardrails {
     private Guardrails() {}
 
     public static InputGuardrail beforeTheCall() {
-        return new UploadedFileGuardrail();
+        // TODO — task 3. Hand back the guardrail that checks the message before it is sent.
+        //
+        // Until this returns one the intake agent is wired without guardrails: uploads still work,
+        // and nothing is checked. Write UploadedFileGuardrail, then return it here.
+        throw new TaskNotImplementedException(WorkshopTask.GUARDRAILS);
+
+        // return new UploadedFileGuardrail();
     }
 
     public static OutputGuardrail afterTheCall() {
-        return new AnalysisGuardrail();
+        // TODO — task 3. Hand back the guardrail that checks the reply before it is parsed.
+        // return new AnalysisGuardrail();
+        throw new TaskNotImplementedException(WorkshopTask.GUARDRAILS);
     }
 }

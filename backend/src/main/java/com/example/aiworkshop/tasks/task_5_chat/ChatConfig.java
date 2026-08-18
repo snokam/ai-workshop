@@ -20,7 +20,6 @@ class ChatConfig {
         return UnfinishedTasks.wire(
                 CaseChatAgent.class,
                 WorkshopTask.CHAT,
-                CaseChatAgent.IMPLEMENTED,
                 () -> AiServices.builder(CaseChatAgent.class)
                         .chatModel(chatModel)
                         .tools(tools)

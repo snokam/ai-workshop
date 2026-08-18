@@ -1,4 +1,4 @@
-package com.example.aiworkshop.document.model;
+package com.example.aiworkshop.documents.model;
 
 import java.time.Instant;
 

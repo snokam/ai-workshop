@@ -1,5 +1,7 @@
 package com.example.aiworkshop.tasks.task_4_postprocessing.checks;
 
+import com.example.aiworkshop.workshop.WorkshopTask;
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifIFD0Directory;
@@ -34,8 +36,9 @@ public class ImageMetadataCheck implements FraudCheck {
         // last wrote it — and its absence says something too. Every one of these has an innocent
         // explanation, so weigh them accordingly: they are worth something together, little alone.
         //
-        // Returning nothing is what no check looks like.
-        return List.of();
+        // Throwing is how the screener knows: it logs, skips, and keeps the other checks running —
+        // which is the rule this task is really about.
+        throw new TaskNotImplementedException(WorkshopTask.POSTPROCESSING);
 
         // ── One version of the answer ──────────────────────────────────────────────────────
         // Try it yourself first. Uncomment this a piece at a time if you get stuck, or write

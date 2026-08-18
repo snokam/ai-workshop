@@ -28,14 +28,6 @@ import dev.langchain4j.service.V;
  * {@code AiServices.create} builds an agent from its interface alone.
  */
 public interface CaseChatAgent {
-    /**
-     * ── TASK CHAT ────────────────────────────────────────────────────────────────────────
-     * Set to true once you have written the case chat agent below. While it is false the
-     * application still runs: every screen that does not need this agent works as normal,
-     * and the one that does explains which file to open.
-     * ──────────────────────────────────────────────────────────────────────────────────
-     */
-    boolean IMPLEMENTED = false;
 
 
     @SystemMessage(

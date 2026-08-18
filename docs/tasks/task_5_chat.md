@@ -35,8 +35,6 @@ A system message for an agent that:
 That last one matters more here than anywhere else in the workshop. This agent talks to the person
 deciding the claim.
 
-Then set `IMPLEMENTED = true`.
-
 ## Why it never writes
 
 Look at `Proposal`. It is a sealed interface, and every proposal the agent makes has to be confirmed

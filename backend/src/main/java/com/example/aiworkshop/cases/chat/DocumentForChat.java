@@ -1,7 +1,7 @@
 package com.example.aiworkshop.cases.chat;
 
-import com.example.aiworkshop.document.model.UploadedDocument;
-import com.example.aiworkshop.document.model.QualityAssessment.Quality;
+import com.example.aiworkshop.documents.model.UploadedDocument;
+import com.example.aiworkshop.documents.model.QualityAssessment.Quality;
 
 public record DocumentForChat(
         String filename,

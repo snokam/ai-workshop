@@ -1,14 +1,14 @@
 package com.example.aiworkshop.cases;
 
-import com.example.aiworkshop.document.model.UploadedDocument;
-import com.example.aiworkshop.document.model.QualityAssessment;
-import com.example.aiworkshop.document.model.MatchConfidence;
-import com.example.aiworkshop.document.model.ExtractedField;
-import com.example.aiworkshop.document.model.DocumentAnalysis;
+import com.example.aiworkshop.documents.model.UploadedDocument;
+import com.example.aiworkshop.documents.model.QualityAssessment;
+import com.example.aiworkshop.documents.model.MatchConfidence;
+import com.example.aiworkshop.documents.model.ExtractedField;
+import com.example.aiworkshop.documents.model.DocumentAnalysis;
 import com.example.aiworkshop.cases.chat.DocumentForChat;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.example.aiworkshop.document.model.QualityAssessment.Quality;
+import com.example.aiworkshop.documents.model.QualityAssessment.Quality;
 import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;

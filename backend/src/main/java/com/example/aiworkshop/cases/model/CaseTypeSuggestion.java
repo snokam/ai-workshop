@@ -1,6 +1,6 @@
 package com.example.aiworkshop.cases.model;
 
-import com.example.aiworkshop.document.model.MatchConfidence;
+import com.example.aiworkshop.documents.model.MatchConfidence;
 import dev.langchain4j.model.output.structured.Description;
 
 public record CaseTypeSuggestion(

@@ -1,7 +1,7 @@
 package com.example.aiworkshop.cases.model;
 
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening;
-import com.example.aiworkshop.document.model.UploadedDocument;
+import com.example.aiworkshop.documents.model.UploadedDocument;
 import com.example.aiworkshop.cases.proposals.ProposalCard;
 import com.example.aiworkshop.cases.chat.ChatTurn;
 import java.util.List;

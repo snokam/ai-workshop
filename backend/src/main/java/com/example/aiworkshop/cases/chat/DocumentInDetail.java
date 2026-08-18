@@ -1,8 +1,8 @@
 package com.example.aiworkshop.cases.chat;
 
-import com.example.aiworkshop.document.model.UploadedDocument;
-import com.example.aiworkshop.document.model.ExtractedField;
-import com.example.aiworkshop.document.model.QualityAssessment.Quality;
+import com.example.aiworkshop.documents.model.UploadedDocument;
+import com.example.aiworkshop.documents.model.ExtractedField;
+import com.example.aiworkshop.documents.model.QualityAssessment.Quality;
 import java.util.List;
 import java.util.stream.Collectors;
 

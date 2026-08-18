@@ -1,12 +1,12 @@
-package com.example.aiworkshop.document;
+package com.example.aiworkshop.documents;
 
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentIntake;
 import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.workshop.TaskNotImplementedAdvice;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.DocumentForClaimant;
-import com.example.aiworkshop.document.store.DocumentStore;
-import com.example.aiworkshop.document.store.DocumentFiles;
-import com.example.aiworkshop.document.model.UploadedDocument;
+import com.example.aiworkshop.documents.store.DocumentStore;
+import com.example.aiworkshop.documents.store.DocumentFiles;
+import com.example.aiworkshop.documents.model.UploadedDocument;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -26,14 +26,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/documents")
-class DocumentController {
-    private static final Logger log = LoggerFactory.getLogger(DocumentController.class);
+class DocumentsController {
+    private static final Logger log = LoggerFactory.getLogger(DocumentsController.class);
 
     private final DocumentIntake intake;
     private final DocumentStore store;
     private final DocumentFiles files;
 
-    DocumentController(DocumentIntake intake, DocumentStore store, DocumentFiles files) {
+    DocumentsController(DocumentIntake intake, DocumentStore store, DocumentFiles files) {
         this.intake = intake;
         this.store = store;
         this.files = files;

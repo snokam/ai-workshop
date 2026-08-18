@@ -1,23 +1,31 @@
 package com.example.aiworkshop.tasks;
 
-import com.example.aiworkshop.workshop.WorkshopTask;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.example.aiworkshop.workshop.TaskProgress;
+import com.example.aiworkshop.workshop.WorkshopTask;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * One test per exercise, red until it is written.
+ * One test per exercise, red until it is written. This is the workshop's progress bar: run it and
+ * the failures are what is left, each naming the file to open.
  *
- * <p>This is the workshop's progress bar. Run it and the failures are the tasks still to do, each
- * naming the file to open. It asserts the flag rather than the behaviour on purpose: what an agent
- * writes back depends on a model, so a test that called one would be slow, need credentials, and
- * fail for reasons that have nothing to do with whether the exercise was done. The tests that
- * check what the code actually does sit in the task's own folder next to it.
+ * <p>It asks {@link TaskProgress}, which is what the screens ask, so the test and the application
+ * can never disagree about what is done. Nothing here calls a model — what an agent writes back
+ * depends on one, and a test that waited for that would be slow, need credentials, and fail for
+ * reasons that have nothing to do with the exercise. The tests that check behaviour sit in each
+ * task's own folder.
  */
+@SpringBootTest
 class TaskCompletionTest {
+
+    @Autowired
+    private TaskProgress progress;
 
     static Stream<WorkshopTask> tasks() {
         return Stream.of(WorkshopTask.values());
@@ -27,17 +35,15 @@ class TaskCompletionTest {
     @ParameterizedTest(name = "task {0}")
     @MethodSource("tasks")
     void isImplemented(WorkshopTask task) {
-        assertThat(TaskFlags.isDone(task))
+        assertThat(progress.isDone(task))
                 .describedAs(
                         """
 
-                        Task %d — %s is not implemented yet.
+                        Task %d — %s is not written yet.
 
                           Open   %s
                           Brief  %s
                           To do  %s
-
-                        Set IMPLEMENTED to true in that file once you have written it.
                         """
                                 .formatted(task.number(), task.title(), task.file(), task.brief(), task.todo()))
                 .isTrue();

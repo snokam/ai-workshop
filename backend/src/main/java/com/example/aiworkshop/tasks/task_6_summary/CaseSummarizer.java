@@ -20,14 +20,6 @@ import java.util.List;
  * see the note there.
  */
 public interface CaseSummarizer {
-    /**
-     * ── TASK SUMMARY ────────────────────────────────────────────────────────────────────────
-     * Set to true once you have written the case summariser below. While it is false the
-     * application still runs: every screen that does not need this agent works as normal,
-     * and the one that does explains which file to open.
-     * ──────────────────────────────────────────────────────────────────────────────────
-     */
-    boolean IMPLEMENTED = false;
 
 
     @SystemMessage(

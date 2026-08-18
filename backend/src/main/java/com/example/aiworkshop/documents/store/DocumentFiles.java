@@ -1,6 +1,6 @@
-package com.example.aiworkshop.document.store;
+package com.example.aiworkshop.documents.store;
 
-import com.example.aiworkshop.document.model.UploadedDocument;
+import com.example.aiworkshop.documents.model.UploadedDocument;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;

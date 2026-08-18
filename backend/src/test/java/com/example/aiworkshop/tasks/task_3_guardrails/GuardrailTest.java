@@ -1,7 +1,7 @@
 package com.example.aiworkshop.tasks.task_3_guardrails;
 
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
-import com.example.aiworkshop.document.model.DocumentAnalysis;
+import com.example.aiworkshop.documents.model.DocumentAnalysis;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

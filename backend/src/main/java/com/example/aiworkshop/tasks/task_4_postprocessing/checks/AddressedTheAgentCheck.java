@@ -1,5 +1,7 @@
 package com.example.aiworkshop.tasks.task_4_postprocessing.checks;
 
+import com.example.aiworkshop.workshop.WorkshopTask;
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.tasks.task_3_guardrails.model.ManipulationAttempt;
 import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
@@ -19,8 +21,9 @@ public class AddressedTheAgentCheck implements FraudCheck {
         // reads it. upload.analysis() carries what it found. Nothing here calls a model: the
         // reading was done, this only decides what it is worth.
         //
-        // Returning nothing is what no check looks like.
-        return List.of();
+        // Throwing is how the screener knows: it logs, skips, and keeps the other checks running —
+        // which is the rule this task is really about.
+        throw new TaskNotImplementedException(WorkshopTask.POSTPROCESSING);
 
         // ── One version of the answer ──────────────────────────────────────────────────────
         // Try it yourself first. Uncomment this a piece at a time if you get stuck, or write

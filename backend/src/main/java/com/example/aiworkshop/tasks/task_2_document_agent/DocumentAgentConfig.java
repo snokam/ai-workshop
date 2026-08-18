@@ -20,11 +20,13 @@ class DocumentAgentConfig {
         return UnfinishedTasks.wire(
                 DocumentAnalyzer.class,
                 WorkshopTask.DOCUMENT_AGENT,
-                DocumentAnalyzer.IMPLEMENTED,
-                () -> AiServices.builder(DocumentAnalyzer.class)
-                        .chatModel(chatModel)
-                        .inputGuardrails(Guardrails.beforeTheCall())
-                        .outputGuardrails(Guardrails.afterTheCall())
-                        .build());
+                () -> {
+                    var agent = AiServices.builder(DocumentAnalyzer.class).chatModel(chatModel);
+                    if (UnfinishedTasks.written(Guardrails::beforeTheCall)) {
+                        agent.inputGuardrails(Guardrails.beforeTheCall())
+                                .outputGuardrails(Guardrails.afterTheCall());
+                    }
+                    return agent.build();
+                });
     }
 }

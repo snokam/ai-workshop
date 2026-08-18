@@ -25,13 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/cases")
-class CaseController {
-    private static final Logger log = LoggerFactory.getLogger(CaseController.class);
+class CasesController {
+    private static final Logger log = LoggerFactory.getLogger(CasesController.class);
 
     private final CaseDesk desk;
     private final CaseIntake intake;
 
-    CaseController(CaseDesk desk, CaseIntake intake) {
+    CasesController(CaseDesk desk, CaseIntake intake) {
         this.desk = desk;
         this.intake = intake;
     }

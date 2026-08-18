@@ -51,6 +51,11 @@ cd backend && ./mvnw test -Dtest=TaskCompletionTest
 Six tests, one per exercise, red until you write it. That is the progress bar: run it whenever you
 want to know what is left.
 
+Nothing marks a task done. An agent is unwritten while its `@SystemMessage` still holds the
+paragraph it shipped with, and everything else is unwritten while it still throws
+`TaskNotImplementedException`. Both are the code saying so, so there is no flag to forget and
+nothing that can disagree with what you actually wrote.
+
 Each task also has tests of its own next to the code, checking what it does rather than that it
 exists. `TaskCompletionTest` going green means you set a flag; those going green means it works.
 
