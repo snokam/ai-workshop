@@ -1,7 +1,7 @@
 package com.example.aiworkshop.tasks.task_3_guardrails;
 
-import com.example.aiworkshop.tasks.task_3_guardrails.guardrails.AnalysisGuardrail;
 import com.example.aiworkshop.tasks.task_3_guardrails.guardrails.UploadedFileGuardrail;
+import com.example.aiworkshop.tasks.task_3_guardrails.guardrails.AnalysisGuardrail;
 import dev.langchain4j.guardrail.InputGuardrail;
 import dev.langchain4j.guardrail.OutputGuardrail;
 

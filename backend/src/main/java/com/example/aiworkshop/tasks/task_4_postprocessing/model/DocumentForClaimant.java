@@ -1,10 +1,10 @@
 package com.example.aiworkshop.tasks.task_4_postprocessing.model;
 
-import com.example.aiworkshop.document.DocumentAnalysis;
-import com.example.aiworkshop.document.ExtractedField;
-import com.example.aiworkshop.document.MatchConfidence;
-import com.example.aiworkshop.document.QualityAssessment;
-import com.example.aiworkshop.document.UploadedDocument;
+import com.example.aiworkshop.document.model.UploadedDocument;
+import com.example.aiworkshop.document.model.QualityAssessment;
+import com.example.aiworkshop.document.model.MatchConfidence;
+import com.example.aiworkshop.document.model.ExtractedField;
+import com.example.aiworkshop.document.model.DocumentAnalysis;
 import java.time.Instant;
 import java.util.List;
 

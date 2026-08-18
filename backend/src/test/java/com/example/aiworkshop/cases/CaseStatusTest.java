@@ -1,12 +1,15 @@
 package com.example.aiworkshop.cases;
 
+import com.example.aiworkshop.document.model.UploadedDocument;
+import com.example.aiworkshop.document.model.QualityAssessment;
+import com.example.aiworkshop.document.model.MatchConfidence;
+import com.example.aiworkshop.document.model.DocumentAnalysis;
+import com.example.aiworkshop.cases.model.CaseType;
+import com.example.aiworkshop.cases.model.CaseStatus;
+import com.example.aiworkshop.cases.model.Case;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.example.aiworkshop.document.DocumentAnalysis;
-import com.example.aiworkshop.document.MatchConfidence;
-import com.example.aiworkshop.document.QualityAssessment;
-import com.example.aiworkshop.document.QualityAssessment.Quality;
-import com.example.aiworkshop.document.UploadedDocument;
+import com.example.aiworkshop.document.model.QualityAssessment.Quality;
 import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;

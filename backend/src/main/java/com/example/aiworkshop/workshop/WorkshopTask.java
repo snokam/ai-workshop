@@ -1,5 +1,6 @@
 package com.example.aiworkshop.workshop;
 
+
 public enum WorkshopTask {
     FIRST_AGENT(
             1,

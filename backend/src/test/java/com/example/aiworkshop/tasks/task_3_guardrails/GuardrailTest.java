@@ -1,10 +1,10 @@
 package com.example.aiworkshop.tasks.task_3_guardrails;
 
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
+import com.example.aiworkshop.document.model.DocumentAnalysis;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.aiworkshop.document.DocumentAnalysis;
-import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.TextContent;

@@ -2,6 +2,13 @@ package com.example.aiworkshop.cases;
 
 import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.workshop.TaskNotImplementedAdvice;
+import com.example.aiworkshop.tasks.task_1_first_agent.CaseIntake;
+import com.example.aiworkshop.cases.proposals.ProposalCard;
+import com.example.aiworkshop.cases.model.CreatedCase;
+import com.example.aiworkshop.cases.model.CaseType;
+import com.example.aiworkshop.cases.model.CaseOverview;
+import com.example.aiworkshop.cases.model.CaseDetail;
+import com.example.aiworkshop.cases.chat.ChatAnswer;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;

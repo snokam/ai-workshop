@@ -1,11 +1,12 @@
 package com.example.aiworkshop.tasks.task_2_document_agent;
 
+import com.example.aiworkshop.document.model.DocumentAnalysis;
+import com.example.aiworkshop.cases.model.Case;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
 import java.util.List;
-import com.example.aiworkshop.document.DocumentAnalysis;
 
 /**
  * The intake agent: the first thing that looks at a file after someone uploads it.

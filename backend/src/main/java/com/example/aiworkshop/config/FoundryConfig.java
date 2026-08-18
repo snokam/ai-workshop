@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties(FoundryProperties.class)
 @ConditionalOnProperty(name = "aiworkshop.model.provider", havingValue = "foundry")
-class FoundryConfig {
+public class FoundryConfig {
     @Bean
     ChatModel chatModel(FoundryProperties properties) {
         OpenAiChatModel.OpenAiChatModelBuilder builder = OpenAiChatModel.builder()

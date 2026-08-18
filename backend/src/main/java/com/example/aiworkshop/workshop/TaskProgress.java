@@ -1,5 +1,11 @@
 package com.example.aiworkshop.workshop;
 
+import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
+import com.example.aiworkshop.tasks.task_3_guardrails.Guardrails;
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
+import com.example.aiworkshop.tasks.task_1_first_agent.CaseTypeClassifier;
 import java.util.EnumMap;
 import java.util.Map;
 import org.springframework.stereotype.Component;

@@ -1,21 +1,41 @@
 package com.example.aiworkshop.cases;
 
-import com.example.aiworkshop.document.DocumentFiles;
-import com.example.aiworkshop.document.DocumentReader;
-import com.example.aiworkshop.document.DocumentStore;
-import com.example.aiworkshop.document.UploadedDocument;
-import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
+import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
+import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening;
+import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
+import com.example.aiworkshop.document.store.DocumentStore;
+import com.example.aiworkshop.document.store.DocumentFiles;
+import com.example.aiworkshop.document.model.UploadedDocument;
+import com.example.aiworkshop.document.DocumentReader;
+import com.example.aiworkshop.cases.store.CaseSummaryStore;
+import com.example.aiworkshop.cases.store.CaseStore;
+import com.example.aiworkshop.cases.proposals.ReviewProposal;
+import com.example.aiworkshop.cases.proposals.ProposalStore;
+import com.example.aiworkshop.cases.proposals.ProposalState;
+import com.example.aiworkshop.cases.proposals.ProposalCard;
+import com.example.aiworkshop.cases.proposals.Proposal;
+import com.example.aiworkshop.cases.proposals.DocumentRequestStore;
+import com.example.aiworkshop.cases.proposals.DocumentRequestProposal;
+import com.example.aiworkshop.cases.proposals.DocumentRequest;
+import com.example.aiworkshop.cases.model.DocumentForSummary;
+import com.example.aiworkshop.cases.model.CaseOverview;
+import com.example.aiworkshop.cases.model.CaseDetail;
+import com.example.aiworkshop.cases.model.Case;
+import com.example.aiworkshop.cases.chat.ToolCall;
+import com.example.aiworkshop.cases.chat.DocumentInDetail;
+import com.example.aiworkshop.cases.chat.DocumentForChat;
+import com.example.aiworkshop.cases.chat.ChatTurn;
+import com.example.aiworkshop.cases.chat.ChatAnswer;
+import com.example.aiworkshop.cases.chat.CaseChatStore;
+import com.example.aiworkshop.cases.chat.CaseAtAGlance;
 import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.service.Result;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
-import com.example.aiworkshop.tasks.task_5_chat.CaseChatTools;
-import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
-import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
 
 @Service
 public class CaseDesk {

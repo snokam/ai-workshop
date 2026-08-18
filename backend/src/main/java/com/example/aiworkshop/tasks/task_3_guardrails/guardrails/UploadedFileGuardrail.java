@@ -1,12 +1,12 @@
 package com.example.aiworkshop.tasks.task_3_guardrails.guardrails;
 
+import com.example.aiworkshop.tasks.task_3_guardrails.Guardrails;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;
 import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.guardrail.InputGuardrail;
 import dev.langchain4j.guardrail.InputGuardrailRequest;
-import com.example.aiworkshop.tasks.task_3_guardrails.Guardrails;
 import dev.langchain4j.guardrail.InputGuardrailResult;
 import java.util.List;
 

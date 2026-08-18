@@ -1,5 +1,6 @@
 package com.example.aiworkshop.document;
 
+import com.example.aiworkshop.document.store.DocumentFiles;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

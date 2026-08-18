@@ -1,9 +1,9 @@
 package com.example.aiworkshop.tasks.task_4_postprocessing;
 
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
-import com.example.aiworkshop.document.DocumentAnalysis;
 import com.example.aiworkshop.tasks.task_4_postprocessing.checks.FraudCheck;
+import com.example.aiworkshop.document.model.DocumentAnalysis;
+import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

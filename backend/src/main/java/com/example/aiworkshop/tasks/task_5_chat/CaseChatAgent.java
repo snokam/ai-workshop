@@ -1,11 +1,12 @@
 package com.example.aiworkshop.tasks.task_5_chat;
 
+import com.example.aiworkshop.cases.model.Case;
+import com.example.aiworkshop.cases.chat.CaseAtAGlance;
 import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.Result;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
-import com.example.aiworkshop.cases.CaseAtAGlance;
 
 /**
  * The Case Chat agent: a conversation about one Case, with tools, that can suggest but never write.

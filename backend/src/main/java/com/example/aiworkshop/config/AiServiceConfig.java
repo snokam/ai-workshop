@@ -1,16 +1,16 @@
 package com.example.aiworkshop.config;
 
-import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
-import com.example.aiworkshop.tasks.task_5_chat.CaseChatTools;
-import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
+import com.example.aiworkshop.workshop.WorkshopTask;
+import com.example.aiworkshop.workshop.UnfinishedTasks;
 import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
+import com.example.aiworkshop.tasks.task_5_chat.CaseChatTools;
+import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_3_guardrails.Guardrails;
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
 import com.example.aiworkshop.document.DocumentReader;
-import com.example.aiworkshop.tasks.task_3_guardrails.Guardrails;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
-import com.example.aiworkshop.workshop.UnfinishedTasks;
-import com.example.aiworkshop.workshop.WorkshopTask;
 import dev.langchain4j.service.AiServices;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

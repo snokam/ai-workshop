@@ -1,5 +1,6 @@
 package com.example.aiworkshop.tasks.task_1_first_agent;
 
+import com.example.aiworkshop.config.FoundryConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import dev.langchain4j.model.chat.ChatModel;

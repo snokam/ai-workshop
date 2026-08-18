@@ -1,9 +1,10 @@
 package com.example.aiworkshop.tasks.task_1_first_agent;
 
+import com.example.aiworkshop.cases.model.CaseTypeSuggestion;
+import com.example.aiworkshop.cases.model.Case;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
-import com.example.aiworkshop.cases.CaseTypeSuggestion;
 
 /**
  * The intake agent for a whole Case: the first thing that reads what a Claimant typed when they said

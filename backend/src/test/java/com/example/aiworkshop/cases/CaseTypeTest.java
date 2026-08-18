@@ -1,5 +1,6 @@
 package com.example.aiworkshop.cases;
 
+import com.example.aiworkshop.cases.model.CaseType;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;

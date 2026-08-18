@@ -1,7 +1,7 @@
 package com.example.aiworkshop.tasks.task_1_first_agent;
 
-import com.example.aiworkshop.workshop.UnfinishedTasks;
 import com.example.aiworkshop.workshop.WorkshopTask;
+import com.example.aiworkshop.workshop.UnfinishedTasks;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.service.AiServices;
 import org.springframework.context.annotation.Bean;

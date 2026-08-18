@@ -1,10 +1,15 @@
 package com.example.aiworkshop.document;
 
-import com.example.aiworkshop.cases.Case;
-import com.example.aiworkshop.cases.CaseStore;
 import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
-import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
 import com.example.aiworkshop.tasks.task_3_guardrails.Guardrails;
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
+import com.example.aiworkshop.document.store.DocumentStore;
+import com.example.aiworkshop.document.store.DocumentFiles;
+import com.example.aiworkshop.document.model.UploadedDocument;
+import com.example.aiworkshop.document.model.DocumentAnalysis;
+import com.example.aiworkshop.cases.store.CaseStore;
+import com.example.aiworkshop.cases.model.Case;
+import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.TextContent;
 import java.io.IOException;
@@ -22,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
 
 @Service
 public class DocumentIntake {

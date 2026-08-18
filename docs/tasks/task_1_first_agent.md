@@ -91,6 +91,25 @@ A system message that:
 
 Then set `IMPLEMENTED = true` at the top of the file.
 
+## Part 3 — the answer becomes a case
+
+An agent that returns a good answer nobody acts on has done nothing. `CaseIntake.open` is where the
+suggestion becomes the shape of someone's case, and it is the last thing to write.
+
+```java
+CaseTypeSuggestion suggestion = classifier.classify(CaseType.catalog(), description);
+CaseType type = suggestion.type();
+// ...
+```
+
+The type chosen decides `CaseType.requiredDocuments()`, which is the checklist the person is then
+asked to satisfy. That is the whole weight of this exercise in one line: a model picked a category,
+and a checklist appeared because of it.
+
+Note what is *not* here. The confidence and the rationale are carried through to the screen, not
+acted on — nothing branches on `LOW`. Whether that is right is worth arguing about before you move
+on, and it is the same question task 3 asks from the other side.
+
 ## How you know it worked
 
 ```bash

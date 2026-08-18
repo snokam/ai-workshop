@@ -1,5 +1,26 @@
 package com.example.aiworkshop.cases;
 
+import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
+import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
+import com.example.aiworkshop.document.store.DocumentStore;
+import com.example.aiworkshop.document.store.DocumentFiles;
+import com.example.aiworkshop.document.model.UploadedDocument;
+import com.example.aiworkshop.document.model.QualityAssessment;
+import com.example.aiworkshop.document.model.MatchConfidence;
+import com.example.aiworkshop.document.model.DocumentAnalysis;
+import com.example.aiworkshop.document.DocumentReader;
+import com.example.aiworkshop.cases.store.CaseSummaryStore;
+import com.example.aiworkshop.cases.store.CaseStore;
+import com.example.aiworkshop.cases.proposals.ProposalStore;
+import com.example.aiworkshop.cases.proposals.DocumentRequestStore;
+import com.example.aiworkshop.cases.model.DocumentForSummary;
+import com.example.aiworkshop.cases.model.CaseType;
+import com.example.aiworkshop.cases.model.CaseStatus;
+import com.example.aiworkshop.cases.model.CaseDetail;
+import com.example.aiworkshop.cases.model.Case;
+import com.example.aiworkshop.cases.chat.CaseChatStore;
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
@@ -12,24 +33,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.aiworkshop.document.DocumentAnalysis;
-import com.example.aiworkshop.document.DocumentFiles;
-import com.example.aiworkshop.document.DocumentReader;
-import com.example.aiworkshop.document.DocumentStore;
-import com.example.aiworkshop.document.MatchConfidence;
-import com.example.aiworkshop.document.QualityAssessment;
-import com.example.aiworkshop.document.QualityAssessment.Quality;
-import com.example.aiworkshop.document.UploadedDocument;
-import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
+import com.example.aiworkshop.document.model.QualityAssessment.Quality;
 import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
-import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
-import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
-import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
 
 class CaseDeskTest {
     private static final String CASE_ID = "c-1";

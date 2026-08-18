@@ -5,7 +5,6 @@ import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
 import java.util.List;
-import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
 
 public interface DocumentReader {
     @SystemMessage(

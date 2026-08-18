@@ -1,0 +1,61 @@
+package com.example.aiworkshop.tasks.task_1_first_agent;
+
+import com.example.aiworkshop.cases.store.CaseStore;
+import com.example.aiworkshop.cases.model.CreatedCase;
+import com.example.aiworkshop.cases.model.CaseTypeSuggestion;
+import com.example.aiworkshop.cases.model.CaseType;
+import com.example.aiworkshop.cases.model.Case;
+import java.time.Year;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
+import com.example.aiworkshop.workshop.WorkshopTask;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CaseIntake {
+    private final CaseTypeClassifier classifier;
+    private final CaseStore cases;
+
+    private final AtomicInteger nextReference = new AtomicInteger(1001);
+
+    CaseIntake(CaseTypeClassifier classifier, CaseStore cases) {
+        this.classifier = classifier;
+        this.cases = cases;
+    }
+
+    public CreatedCase open(String description) {
+        // TODO — task 1, part 3. Turn the agent's answer into a Case.
+        //
+        // classifier.classify(CaseType.catalog(), description) is the call. What comes back is a
+        // CaseTypeSuggestion: a type, a confidence and a sentence of reasoning.
+        //
+        // The type is what decides the checklist — CaseType.requiredDocuments() — so this is where
+        // the model's answer stops being a suggestion and starts being the shape of someone's case.
+        // Give it a reference, save it, and return the CreatedCase the screen shows.
+        throw new TaskNotImplementedException(WorkshopTask.FIRST_AGENT);
+
+        // ── One version of the answer ──────────────────────────────────────────────────────
+        // Try it yourself first. Uncomment this a piece at a time if you get stuck.
+        //
+        // CaseTypeSuggestion suggestion = classifier.classify(CaseType.catalog(), description);
+        // CaseType type = suggestion.type();
+        //
+        // int number = nextReference.getAndIncrement();
+        // String id = String.valueOf(number);
+        // String reference = "CASE-%d-%d".formatted(Year.now().getValue(), number);
+        // List<String> requiredDocuments = type.requiredDocuments();
+        //
+        // Case theCase = new Case(id, reference, type, requiredDocuments);
+        // cases.save(theCase);
+        //
+        // return new CreatedCase(
+        //         id,
+        //         reference,
+        //         type.label(),
+        //         suggestion.confidence(),
+        //         suggestion.rationale(),
+        //         requiredDocuments,
+        //         theCase.status(List.of()));
+    }
+}

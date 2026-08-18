@@ -1,10 +1,11 @@
 package com.example.aiworkshop.tasks.task_6_summary;
 
+import com.example.aiworkshop.cases.model.DocumentForSummary;
+import com.example.aiworkshop.cases.model.Case;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
 import java.util.List;
-import com.example.aiworkshop.cases.DocumentForSummary;
 
 /**
  * Writes the Case Summary: what is in a Case's Documents, taken across all of them.
