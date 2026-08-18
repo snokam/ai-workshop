@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { askCaseChat, confirmProposal, declineProposal } from '../api'
-import type { CaseDetail, ChatTurn, ProposalCard } from '../api'
-import { SUGGESTED_QUESTIONS } from '../lib/labels'
+import { askCaseChat, confirmProposal, declineProposal } from '../../api'
+import type { CaseDetail, ChatTurn, ProposalCard } from '../../api'
+import { SUGGESTED_QUESTIONS } from '../../ui/labels'
 import { Turn } from './Turn'
-import { Loader } from './Loader'
-import { Failure } from './Failure'
-import { TaskGate } from './TaskGate'
+import { Loader } from '../../ui/Loader'
+import { Failure } from '../../ui/Failure'
+import { TaskGate } from '../../ui/TaskGate'
 
 export function CaseChat({
   detail,

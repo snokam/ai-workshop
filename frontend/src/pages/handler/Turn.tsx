@@ -1,6 +1,6 @@
-import type { ChatTurn, ProposalCard } from '../api'
-import { toolLabel } from '../lib/labels'
-import { ProposalCardView } from './ProposalCardView'
+import type { ChatTurn, ProposalCard } from '../../api'
+import { toolLabel } from '../../ui/labels'
+import { ProposalCardView } from './ProposalCard'
 
 export function Turn({
   turn,

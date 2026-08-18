@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
-import { listCases, listDocuments, uploadDocument } from '../api'
-import type { CaseOverview, CreatedCase, UploadedDocument } from '../api'
-import { Checklist } from '../components/Checklist'
-import { DocumentCard } from '../components/DocumentCard'
-import { CONFIDENCE_LABEL } from '../lib/labels'
-import { previewOf } from '../lib/documents'
-import { Loader } from '../components/Loader'
-import { Failure } from '../components/Failure'
-import { TaskGate } from '../components/TaskGate'
+import { listCases, listDocuments, uploadDocument } from '../../api'
+import type { CaseOverview, CreatedCase, UploadedDocument } from '../../api'
+import { Checklist } from '../../case/Checklist'
+import { DocumentCard } from '../../case/DocumentCard'
+import { CONFIDENCE_LABEL } from '../../ui/labels'
+import { previewOf } from '../../case/standing'
+import { Loader } from '../../ui/Loader'
+import { Failure } from '../../ui/Failure'
+import { TaskGate } from '../../ui/TaskGate'
 
 /** One case, open for uploading into. Its address is /cases/:caseId, so it survives a refresh. */
 export function ClaimantCase() {

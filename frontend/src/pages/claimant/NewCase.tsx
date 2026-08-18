@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useNavigate, type NavigateFunction } from 'react-router-dom'
-import { createCase, listCaseTypes } from '../api'
-import type { CreatedCase, SupportedCaseType } from '../api'
-import { rememberCase } from '../lib/myCases'
+import { createCase, listCaseTypes } from '../../api'
+import type { CreatedCase, SupportedCaseType } from '../../api'
+import { rememberCase } from './openedCases'
 import { useEffect } from 'react'
-import { Loader } from '../components/Loader'
-import { Failure } from '../components/Failure'
-import { TaskGate } from '../components/TaskGate'
+import { Loader } from '../../ui/Loader'
+import { Failure } from '../../ui/Failure'
+import { TaskGate } from '../../ui/TaskGate'
 
 /**
  * A new case has its own address the moment it exists, and the classifier's reasoning travels to it

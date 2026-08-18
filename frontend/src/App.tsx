@@ -1,11 +1,11 @@
 import { Link, Outlet, Route, Routes } from 'react-router-dom'
-import { Layout } from './components/layout/Layout'
-import { TasksProvider } from './lib/tasks'
-import { ClaimantCase } from './routes/ClaimantCase'
-import { HandlerCase } from './routes/HandlerCase'
-import { HandlerCases } from './routes/HandlerCases'
-import { MyCases } from './routes/MyCases'
-import { NewCase } from './routes/NewCase'
+import { Layout } from './ui/layout/Layout'
+import { TasksProvider } from './workshop/TasksProvider'
+import { ClaimantCase } from './pages/claimant/Case'
+import { HandlerCase } from './pages/handler/Case'
+import { HandlerCases } from './pages/handler/Cases'
+import { MyCases } from './pages/claimant/MyCases'
+import { NewCase } from './pages/claimant/NewCase'
 
 /**
  * Two audiences, one app, split by URL rather than a toggle: the claimant under `/`, the case
