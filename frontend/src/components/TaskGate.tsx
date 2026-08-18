@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import type { TaskKey } from '../api/workshop'
-import { useTask } from '../lib/tasks'
+import { useTask } from '../lib/task-state'
 
 /**
  * A feature that is waiting on an exercise.

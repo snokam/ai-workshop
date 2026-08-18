@@ -5,7 +5,7 @@ import type { CaseOverview } from '../api'
 import { STATUS_LABEL } from '../lib/labels'
 import { Failure } from '../components/Failure'
 import { TaskGate } from '../components/TaskGate'
-import { useTaskPending } from '../lib/tasks'
+import { useTaskPending } from '../lib/task-state'
 
 /** Every case, cheap to read: no agent runs to produce this list. Opening one is what costs. */
 export function HandlerCases() {
