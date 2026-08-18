@@ -15,6 +15,7 @@ public record DocumentForClaimant(
         String contentType,
         long sizeBytes,
         Instant uploadedAt,
+        String contentHash,
         AnalysisForClaimant analysis,
         boolean reviewed) {
     public static DocumentForClaimant of(UploadedDocument document) {
@@ -26,6 +27,7 @@ public record DocumentForClaimant(
                 document.contentType(),
                 document.sizeBytes(),
                 document.uploadedAt(),
+                document.contentHash(),
                 new AnalysisForClaimant(
                         analysis.category(),
                         analysis.summary(),

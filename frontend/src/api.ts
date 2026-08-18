@@ -56,6 +56,8 @@ export interface UploadedDocument {
   contentType: string
   sizeBytes: number
   uploadedAt: string
+  /** Fingerprint of the bytes. Two uploads of one file share it. */
+  contentHash: string
   analysis: DocumentAnalysis
   reviewed: boolean
 }

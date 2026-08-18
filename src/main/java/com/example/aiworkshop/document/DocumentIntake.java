@@ -14,8 +14,10 @@ import java.time.Instant;
 import java.util.List;
 import java.util.HexFormat;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,7 @@ public class DocumentIntake {
     private final DocumentAnalyzer analyzer;
     private final DocumentStore store;
     private final CaseStore cases;
+    private final Map<String, Object> arrivals = new ConcurrentHashMap<>();
     private final FraudScreener screener;
     private final DocumentFiles files;
 
@@ -59,16 +62,38 @@ public class DocumentIntake {
         String id = UUID.randomUUID().toString();
         // Kept before the agent runs, at the point the bytes are already in hand. See ADR 0004.
         files.save(id, file.getBytes());
-
         String contentHash = hashOf(file.getBytes());
-        Optional<DocumentAnalysis> alreadyRead = alreadyReadOnThisCase(caseId, contentHash);
-        if (alreadyRead.isPresent()) {
-            log.info("{} is byte-identical to a document already on case {}; not reading it again",
-                    file.getOriginalFilename(), caseId);
+
+        // One at a time per file, per Case. Without this the reuse below is a race a double-click
+        // wins: two uploads of one file arrive milliseconds apart, both look in the store before
+        // either has saved, and both pay for a reading — which then disagree with each other.
+        synchronized (arrivalOf(caseId, contentHash)) {
+            DocumentAnalysis analysis = analysisFor(theCase, file, mimeType, contentHash);
+            return store(id, caseId, file, mimeType, contentHash, analysis);
         }
-        DocumentAnalysis analysis = alreadyRead.isPresent()
-                ? alreadyRead.get()
-                : analyzer.analyse(promptFor(file, mimeType), theCase.requiredDocuments());
+    }
+
+    private DocumentAnalysis analysisFor(Case theCase, MultipartFile file, String mimeType, String contentHash)
+            throws IOException {
+        Optional<DocumentAnalysis> alreadyRead = alreadyReadOnThisCase(theCase.id(), contentHash);
+        if (alreadyRead.isPresent()) {
+            log.info(
+                    "{} is byte-identical to a document already on case {}; not reading it again",
+                    file.getOriginalFilename(),
+                    theCase.id());
+            return alreadyRead.get();
+        }
+        return analyzer.analyse(promptFor(file, mimeType), theCase.requiredDocuments());
+    }
+
+    private UploadedDocument store(
+            String id,
+            String caseId,
+            MultipartFile file,
+            String mimeType,
+            String contentHash,
+            DocumentAnalysis analysis)
+            throws IOException {
 
         UploadedDocument document = new UploadedDocument(
                 id,
@@ -85,6 +110,11 @@ public class DocumentIntake {
         screener.screen(new Upload(
                 id, caseId, file.getOriginalFilename(), mimeType, file.getBytes(), contentHash, analysis));
         return document;
+    }
+
+    /** One lock per file per Case, so two arrivals of the same upload queue rather than race. */
+    private Object arrivalOf(String caseId, String contentHash) {
+        return arrivals.computeIfAbsent(caseId + "/" + contentHash, key -> new Object());
     }
 
     /**

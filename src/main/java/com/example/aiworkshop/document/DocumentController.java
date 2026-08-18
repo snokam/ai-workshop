@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-/** The API the upload screen talks to. Three endpoints, no more than a Claimant needs. */
+/** The API the upload screen talks to. No more than a Claimant needs, plus the file itself. */
 @RestController
 @RequestMapping("/api/documents")
 class DocumentController {
@@ -26,10 +27,12 @@ class DocumentController {
 
     private final DocumentIntake intake;
     private final DocumentStore store;
+    private final DocumentFiles files;
 
-    DocumentController(DocumentIntake intake, DocumentStore store) {
+    DocumentController(DocumentIntake intake, DocumentStore store, DocumentFiles files) {
         this.intake = intake;
         this.store = store;
+        this.files = files;
     }
 
     /**
@@ -55,6 +58,31 @@ class DocumentController {
     @GetMapping
     List<DocumentForClaimant> list() {
         return DocumentForClaimant.of(store.findAll());
+    }
+
+    /**
+     * The file itself, as it arrived.
+     *
+     * <p>The screens used to preview an upload from the {@code File} the browser still had in hand,
+     * which meant the preview lasted exactly as long as the tab did: reload the page and the document
+     * you had just sent was a filename and nothing else. The bytes are kept now (ADR 0004), so the
+     * preview can come from where the file actually is — which also gives the Case Handler's screen
+     * one, having never had one at all.
+     */
+    @GetMapping("/{id}/file")
+    ResponseEntity<byte[]> file(@PathVariable String id) {
+        return store.findById(id)
+                .map(document -> ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(document.contentType()))
+                        .body(files.read(id)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    /** The directory is emptied on startup, so a Document can outlive its file. Not an error worth a 500. */
+    @ExceptionHandler(DocumentFiles.MissingFileException.class)
+    ResponseEntity<Void> missingFile(DocumentFiles.MissingFileException e) {
+        log.info("{}", e.getMessage());
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")

@@ -572,6 +572,24 @@ header p {
   color: var(--muted);
 }
 
+/*
+ * An upload that matched nothing on the list. Neither ticked nor outstanding — it is neither
+ * progress nor work remaining, so it is styled as neither: quieter than a matched item, separated
+ * from the asked-for ones by a rule rather than a heading.
+ */
+.checklist .unasked {
+  align-items: baseline;
+  margin-top: 0.35rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed var(--border);
+  color: var(--muted);
+}
+
+.checklist .unasked small {
+  display: block;
+  font-size: 0.82rem;
+}
+
 /* --- the case list ------------------------------------------------------- */
 
 .cases {

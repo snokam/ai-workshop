@@ -342,7 +342,7 @@ function CaseIntakeScreen({
 
   // Previews are made from the File the browser already has. The backend never stores the bytes,
   // so this map only holds documents uploaded in this tab, this session.
-  const [previews, setPreviews] = useState<Record<string, string>>({})
+
 
   // The checklist needs `outstanding`, which the case list is the source of truth for. Until the
   // first read comes back, fall back to what we already know: the fresh case's list, or nothing.
@@ -402,9 +402,6 @@ function CaseIntakeScreen({
       try {
         const uploaded = await uploadDocument(caseId, file)
         setDocuments((current) => [uploaded, ...current])
-        if (file.type.startsWith('image/')) {
-          setPreviews((current) => ({ ...current, [uploaded.id]: URL.createObjectURL(file) }))
-        }
         // The case now needs one thing fewer, so re-read what is outstanding.
         await refreshOverview()
       } catch (e) {
@@ -448,7 +445,7 @@ function CaseIntakeScreen({
       </header>
 
       {checklist.requiredDocuments.length > 0 ? (
-        <Checklist chosen={checklist} />
+        <Checklist chosen={checklist} alsoSent={documents.filter((d) => !d.analysis.matchedRequiredDocument)} />
       ) : (
         <p className="empty">This case has no set list of documents. Send in anything relevant.</p>
       )}
@@ -491,7 +488,7 @@ function CaseIntakeScreen({
       <section className="documents">
         {documents.length === 0 && !busyWith && <p className="empty">Nothing uploaded yet.</p>}
         {documents.map((doc) => (
-          <DocumentCard key={doc.id} doc={doc} preview={previews[doc.id]} />
+          <DocumentCard key={doc.id} doc={doc} preview={previewOf(doc)} />
         ))}
       </section>
     </>
@@ -505,7 +502,7 @@ function CaseIntakeScreen({
  * deliberately not in the same list: the checklist is what the case status is derived from, and a
  * request is a question that does not move the case either way.
  */
-function Checklist({ chosen }: { chosen: CaseOverview }) {
+function Checklist({ chosen, alsoSent = [] }: { chosen: CaseOverview; alsoSent?: UploadedDocument[] }) {
   return (
     <div className="checklist">
       <ul>
@@ -518,6 +515,25 @@ function Checklist({ chosen }: { chosen: CaseOverview }) {
             </li>
           )
         })}
+
+        {/*
+          What arrived that the list did not ask for. Kept in the same list rather than a section of
+          its own, because the question the list answers is "where does my case stand", and a
+          document nobody asked for is part of that answer — it is work the claimant has already
+          done, and leaving it off the list reads as though it were never received.
+        */}
+        {/* One line per distinct file: sending the same thing twice is still one thing sent. */}
+        {alsoSent
+          .filter((doc, i, all) => all.findIndex((d) => d.contentHash === doc.contentHash) === i)
+          .map((doc) => (
+            <li key={doc.id} className="unasked">
+              <span aria-hidden>+</span>
+              <span>
+                {doc.analysis.category}
+                <small>{doc.filename} — kept, but not one of the documents above</small>
+              </span>
+            </li>
+          ))}
       </ul>
 
       {chosen.documentRequests.length > 0 && (
@@ -678,6 +694,7 @@ function CaseScreen({
             <DocumentCard
               key={doc.id}
               doc={doc}
+              preview={previewOf(doc)}
               standing={standingOf(doc, detail)}
               blocking={detail.blockedDocumentIds.includes(doc.id)}
               screening={detail.screenings.find((s) => s.documentId === doc.id)}
@@ -894,6 +911,16 @@ function standingOf(doc: UploadedDocument, detail: CaseDetail): Standing {
 }
 
 /* --- shared -------------------------------------------------------------- */
+
+/**
+ * Where to fetch a document's own image, or nothing for a file no <img> can render.
+ *
+ * The bytes are on the server (ADR 0004), so this survives a reload — unlike the object URL it
+ * replaced, which lived and died with the tab that did the uploading.
+ */
+function previewOf(doc: UploadedDocument): string | undefined {
+  return doc.contentType.startsWith('image/') ? `/api/documents/${doc.id}/file` : undefined
+}
 
 /** What a document is to its case. The claimant's side has no case context, so it passes none. */
 type Standing = 'counting' | 'superseded' | 'unmatched'
