@@ -18,7 +18,7 @@ import { TaskGate } from '../../components/workshop/TaskGate'
  * Opening costs two model calls, which is why the list never does it and why this shows its own
  * waiting state rather than blocking the list behind a spinner.
  */
-export function HandlerCase() {
+export function Case() {
   const { caseId = '' } = useParams()
   const [detail, setDetail] = useState<CaseDetail | null>(null)
   const [error, setError] = useState<Error | null>(null)

@@ -11,7 +11,7 @@ import { Failure } from '../../components/feedback/Failure'
 import { TaskGate } from '../../components/workshop/TaskGate'
 
 /** One case, open for uploading into. Its address is /cases/:caseId, so it survives a refresh. */
-export function ClaimantCase() {
+export function Case() {
   const { caseId = '' } = useParams()
   // Shown once, on arrival from the describe form. A link someone shares carries no state, so
   // opening the same address later shows the case without the "we have opened this for you" banner.

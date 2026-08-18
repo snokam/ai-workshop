@@ -12,7 +12,7 @@ public final class Guardrails {
      * application still runs and every screen says so rather than failing.
      * ──────────────────────────────────────────────────────────────────────────────────
      */
-    public static final boolean IMPLEMENTED = true;
+    public static final boolean IMPLEMENTED = false;
 
 
     public static final String INTAKE_INSTRUCTION = "Analyse the attached file.";

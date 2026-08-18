@@ -15,20 +15,14 @@ public class UploadedFileGuardrail implements InputGuardrail {
 
     @Override
     public InputGuardrailResult validate(InputGuardrailRequest request) {
-        List<Content> contents = request.userMessage().contents();
-
-        long files = contents.stream()
-                .filter(content -> content instanceof PdfFileContent || content instanceof ImageContent)
-                .count();
-        if (files != 1) {
-            return fatal("Intake sends exactly one file to the model; this message carries " + files + ".");
-        }
-
-        for (Content content : contents) {
-            if (content instanceof TextContent text && !Guardrails.INTAKE_INSTRUCTION.equals(text.text())) {
-                return fatal("Only the intake instruction may accompany the file. Found: \"" + text.text() + "\"");
-            }
-        }
+        // TODO — task 3. Refuse anything that is not one file plus the intake instruction.
+        //
+        // request.userMessage().contents() is what is about to be sent. Exactly one PdfFileContent
+        // or ImageContent belongs there, and the only text allowed beside it is
+        // Guardrails.INTAKE_INSTRUCTION. Return fatal(...) with a reason when it is anything else.
+        //
+        // Returning success() unconditionally is what an unwritten guardrail does: it lets
+        // everything through, which is why the tests below are red.
         return success();
     }
 }

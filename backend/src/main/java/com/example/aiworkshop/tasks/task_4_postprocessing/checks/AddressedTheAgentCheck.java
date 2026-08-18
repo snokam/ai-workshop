@@ -13,14 +13,13 @@ public class AddressedTheAgentCheck implements FraudCheck {
 
     @Override
     public List<Indicator> screen(Upload upload) {
-        ManipulationAttempt attempt = upload.analysis().manipulationAttempt();
-        if (attempt == null || attempt.attemptedInstruction() == null) {
-            return List.of();
-        }
-        return List.of(new Indicator(
-                Kind.ADDRESSED_THE_AGENT,
-                Weight.STRONG,
-                "The document contains text aimed at the software reading it: " + attempt.attemptedInstruction(),
-                attempt.quote() == null ? List.of() : List.of("The document says: " + attempt.quote())));
+        // TODO — task 4. The report the agent already made.
+        //
+        // The intake agent was asked to record any text in the document aimed at whatever software
+        // reads it. upload.analysis() carries what it found. Nothing here calls a model: the
+        // reading was done, this only decides what it is worth.
+        //
+        // Returning nothing is what no check looks like.
+        return List.of();
     }
 }

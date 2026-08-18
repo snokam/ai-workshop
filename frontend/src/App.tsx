@@ -1,14 +1,14 @@
 import { Link, Outlet, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/layout/Layout'
 import { TasksProvider } from './components/workshop/TasksProvider'
-import { ClaimantCase } from './pages/claimant/Case'
-import { HandlerCase } from './pages/handler/Case'
-import { HandlerCases } from './pages/handler/Cases'
-import { MyCases } from './pages/claimant/MyCases'
-import { NewCase } from './pages/claimant/NewCase'
+import { Case as FileClaimCase } from './pages/file-claim/Case'
+import { Case as ClaimHandlerCase } from './pages/claim-handler/Case'
+import { Cases as ClaimHandlerCases } from './pages/claim-handler/Cases'
+import { MyCases } from './pages/file-claim/MyCases'
+import { NewCase } from './pages/file-claim/NewCase'
 
 /**
- * Two audiences, one app, split by URL rather than a toggle: the claimant under `/`, the case
+ * Two audiences, one app, split by URL rather than a toggle: filing a claim under `/`, the claim
  * handler under `/casehandler`. There is no login and no cross-navigation between the two — each
  * side is simply its own address. The roles are a vocabulary distinction here, not a permission
  * model.
@@ -22,13 +22,13 @@ export default function App() {
     <TasksProvider>
       <Layout>
         <Routes>
-          <Route path="/" element={<ClaimantShell />}>
+          <Route path="/" element={<FileClaimShell />}>
             <Route index element={<NewCase />} />
             <Route path="cases" element={<MyCases />} />
           </Route>
-          <Route path="/cases/:caseId" element={<ClaimantCase />} />
-          <Route path="/casehandler" element={<HandlerCases />} />
-          <Route path="/casehandler/cases/:caseId" element={<HandlerCase />} />
+          <Route path="/cases/:caseId" element={<FileClaimCase />} />
+          <Route path="/casehandler" element={<ClaimHandlerCases />} />
+          <Route path="/casehandler/cases/:caseId" element={<ClaimHandlerCase />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
@@ -36,8 +36,8 @@ export default function App() {
   )
 }
 
-/** The claimant's screens; the nav that used to live here is now in the branded header. */
-function ClaimantShell() {
+/** The filing side; the nav that used to live here is now in the branded header. */
+function FileClaimShell() {
   return <Outlet />
 }
 

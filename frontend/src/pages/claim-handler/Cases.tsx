@@ -8,7 +8,7 @@ import { TaskGate } from '../../components/workshop/TaskGate'
 import { useTaskPending } from '../../lib/task-state'
 
 /** Every case, cheap to read: no agent runs to produce this list. Opening one is what costs. */
-export function HandlerCases() {
+export function Cases() {
   const [cases, setCases] = useState<CaseOverview[]>([])
   const [error, setError] = useState<Error | null>(null)
   const firstAgentPending = useTaskPending('FIRST_AGENT')

@@ -17,11 +17,14 @@ public class DuplicateUploadCheck implements FraudCheck {
 
     @Override
     public List<Indicator> screen(Upload upload) {
-        List<String> earlier = seenBefore.computeIfAbsent(upload.contentHash(), key -> new CopyOnWriteArrayList<>());
-
-        List<Indicator> found = earlier.isEmpty() ? List.of() : List.of(indicatorFor(upload, earlier));
-        earlier.add(upload.caseId() + " / " + upload.filename());
-        return found;
+        // TODO — task 4. The same bytes, seen before.
+        //
+        // upload.contentHash() is a SHA-256 of the file. Remember every hash you are given with the
+        // case it arrived on; when one turns up again on a different case, that is one expense
+        // being claimed twice. The same hash on the same case is a double-click, not a signal.
+        //
+        // Returning nothing is what no check looks like.
+        return List.of();
     }
 
     private static Indicator indicatorFor(Upload upload, List<String> earlier) {

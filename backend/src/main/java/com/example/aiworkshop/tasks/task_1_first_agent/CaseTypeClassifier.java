@@ -26,28 +26,21 @@ public interface CaseTypeClassifier {
      * and the one that does explains which file to open.
      * ──────────────────────────────────────────────────────────────────────────────────
      */
-    boolean IMPLEMENTED = true;
+    boolean IMPLEMENTED = false;
 
 
     @SystemMessage(
             """
-            You are the intake agent in a case-handling system. Someone has just written, in their
-            own words, what they need help with, and you are the first to read it. Your one job is to
-            decide which kind of case to open for them.
+            TODO — task 1.
 
-            Choose exactly one of these case types:
+            Write the system message for an agent that reads what someone typed when they said what
+            they needed help with, and decides which kind of case to open for them.
 
-            {{caseTypes}}
+            The list of types it may choose from is rendered in through {{caseTypes}}. It has to
+            choose exactly one, say how sure it is, and give one plain sentence of reasoning — which
+            is the shape of CaseTypeSuggestion, the record this returns.
 
-            Pick the single type that best fits what the person described. If none of the specific
-            types fit — the description is off-topic, too vague to place, or about something the list
-            does not cover — choose OTHER rather than forcing the closest match. Say how sure you
-            are: HIGH when the description plainly is one kind of case, LOW when you fell back to
-            OTHER or had little to go on.
-
-            Do not ask the person for more information and do not address them. Write the rationale as
-            one plain, factual sentence about why the type fits, in English, whatever language the
-            description is written in.
+            The solutions branch has the version this was written from.
             """)
     CaseTypeSuggestion classify(@V("caseTypes") String caseTypes, @UserMessage String description);
 }

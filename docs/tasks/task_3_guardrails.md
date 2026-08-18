@@ -1,19 +1,19 @@
-# Task 1 — Guardrails
+# Task 3 — Guardrails
 
 Someone uploads a document that gives the agent orders. Your job is to make it not matter whether the
 agent obeys.
 
 You will write two LangChain4j guardrails on the intake agent: one on the message going out, one on
-the reply coming back. Both are already in this repository as a worked answer, under
-`backend/src/main/java/com/example/aiworkshop/tasks/task_1_guardrails/` — try it yourself first, then
-compare. The point of the exercise is the reasoning, not the typing.
+the reply coming back. Both live in `backend/src/main/java/com/example/aiworkshop/tasks/task_3_guardrails/`, where the
+method bodies are waiting for you. A worked answer is on the `solutions` branch — try it yourself
+first, then compare. The point of the exercise is the reasoning, not the typing.
 
 | | Runs | Sees | Can |
 |---|---|---|---|
 | Part 1 — input guardrail | before the call | the message you assembled | block it, for free |
 | Part 2 — output guardrail | on the reply, before parsing | the model's raw text | correct it, or reprompt |
 
-What happens *after* the answer is accepted is [task 2](./task_2_postprocessing.md).
+What happens *after* the answer is accepted is [task 4](./task_4_postprocessing.md).
 
 **Time:** 45 minutes. **You need:** the app running (see the [README](../../README.md)).
 
@@ -53,7 +53,7 @@ of — your code, or this week's model?
 
 ## Part 1 — The input guardrail
 
-**Write:** `tasks/task_1_guardrails/UploadedFileGuardrail.java`, implementing `dev.langchain4j.guardrail.InputGuardrail`.
+**Write:** `tasks/task_3_guardrails/UploadedFileGuardrail.java`, implementing `dev.langchain4j.guardrail.InputGuardrail`.
 
 **The rule:** the message intake sends contains exactly one file and exactly one piece of text — the
 fixed instruction this application wrote. Anything else fails the call.
@@ -99,7 +99,7 @@ stranger chose is now part of your prompt. With it, the call never happens.
 
 ## Part 2 — The output guardrail
 
-**Write:** `tasks/task_1_guardrails/AnalysisGuardrail.java`, implementing `dev.langchain4j.guardrail.OutputGuardrail`.
+**Write:** `tasks/task_3_guardrails/AnalysisGuardrail.java`, implementing `dev.langchain4j.guardrail.OutputGuardrail`.
 
 **The rule:** `matchedRequiredDocument` must be `null` or one of the Required Documents this Case
 actually asked for. Anything else did not match, whatever the model said and whatever the document
@@ -176,9 +176,9 @@ rules worth enforcing in code are the ones with a definite answer.
 
 ## The worked answer
 
-- `backend/src/main/java/com/example/aiworkshop/tasks/task_1_guardrails/` — `Guardrails` (entrypoint),
+- `backend/src/main/java/com/example/aiworkshop/tasks/task_3_guardrails/` — `Guardrails` (entrypoint),
   `guardrails/` (the two of them) and `model/ManipulationAttempt`
-- `backend/src/test/java/com/example/aiworkshop/tasks/task_1_guardrails/GuardrailTest.java` — the six tests
+- `backend/src/test/java/com/example/aiworkshop/tasks/task_3_guardrails/GuardrailTest.java` — the six tests
 - [docs/guardrails-walkthrough.md](../guardrails-walkthrough.md) — the demo script, including
   why you should not stake a live demo on the model misbehaving on cue
 

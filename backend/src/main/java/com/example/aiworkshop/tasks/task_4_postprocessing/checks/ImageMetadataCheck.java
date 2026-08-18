@@ -28,30 +28,14 @@ public class ImageMetadataCheck implements FraudCheck {
 
     @Override
     public List<Indicator> screen(Upload upload) {
-        if (!upload.isImage()) {
-            return List.of();
-        }
-        Metadata metadata;
-        try {
-            metadata = ImageMetadataReader.readMetadata(new ByteArrayInputStream(upload.content()));
-        } catch (Exception e) {
-            return List.of();
-        }
-
-        ExifIFD0Directory exif = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
-        ExifSubIFDDirectory sub = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-
-        List<Indicator> found = new ArrayList<>();
-        editedInSoftware(exif).ifPresent(found::add);
-        captureDate(sub).ifPresent(found::add);
-        if (upload.isJpeg() && noCameraOrigin(exif)) {
-            found.add(new Indicator(
-                    Kind.NO_CAMERA_ORIGIN,
-                    Weight.NOTE,
-                    "The photo carries none of the metadata a camera writes.",
-                    List.of("Ordinary for a screenshot, a download, or anything sent through a messaging app.")));
-        }
-        return found;
+        // TODO — task 4. What the file says about where it came from.
+        //
+        // upload.bytes() is the image. EXIF can say which camera took it, when, and which editor
+        // last wrote it — and its absence says something too. Every one of these has an innocent
+        // explanation, so weigh them accordingly: they are worth something together, little alone.
+        //
+        // Returning nothing is what no check looks like.
+        return List.of();
     }
 
     private static Optional<Indicator> editedInSoftware(ExifIFD0Directory exif) {
