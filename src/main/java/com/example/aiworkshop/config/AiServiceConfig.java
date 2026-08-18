@@ -7,6 +7,7 @@ import com.example.aiworkshop.cases.CaseSummarizer;
 import com.example.aiworkshop.cases.CaseTypeClassifier;
 import com.example.aiworkshop.document.DocumentAnalyzer;
 import com.example.aiworkshop.document.DocumentReader;
+import com.example.aiworkshop.tasks.task_1_guardrails.Guardrails;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.service.AiServices;
@@ -26,7 +27,11 @@ class AiServiceConfig {
     /** The intake agent: reads an uploaded file and returns structured findings about it. */
     @Bean
     DocumentAnalyzer documentAnalyzer(ChatModel chatModel) {
-        return AiServices.create(DocumentAnalyzer.class, chatModel);
+        return AiServices.builder(DocumentAnalyzer.class)
+                .chatModel(chatModel)
+                .inputGuardrails(Guardrails.beforeTheCall())
+                .outputGuardrails(Guardrails.afterTheCall())
+                .build();
     }
 
     /** The case intake agent: reads what a Claimant typed and picks which case type to open. */

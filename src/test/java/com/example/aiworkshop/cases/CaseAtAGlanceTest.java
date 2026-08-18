@@ -108,7 +108,8 @@ class CaseAtAGlanceTest {
                         List.of(),
                         "receipt",
                         MatchConfidence.HIGH,
-                        new QualityAssessment(Quality.POOR, "Shadows across the lower half.", List.of())),
+                        new QualityAssessment(Quality.POOR, "Shadows across the lower half.", List.of()),
+                        null),
                 false);
     }
 }

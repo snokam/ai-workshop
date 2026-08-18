@@ -3,7 +3,8 @@
 Upload a document, and an agent reads it: what kind of document it is, the facts worth pulling out
 of it, and whether the file is legible enough to work with.
 
-The domain language lives in [CONTEXT.md](./CONTEXT.md).
+The domain language lives in [CONTEXT.md](./CONTEXT.md), and the workshop exercises in
+[docs/tasks/](./docs/tasks).
 
 ## Running it
 
@@ -81,6 +82,28 @@ Case Chat — one conversation per Case, with tools, that suggests and never wri
 | `document/DocumentReader.java` | a second agent, given the file and no Case context at all |
 | `cases/Proposal.java` | sealed: confirming one is a pattern switch that must stay exhaustive |
 | `cases/DocumentRequest.java` | what a confirmed Proposal produces, and what a Claimant sees |
+
+Guardrails and screening — what stops a Document talking the agent round. Each is a workshop task,
+and the code sits under the task it belongs to:
+
+| | |
+|---|---|
+| `tasks/task_1_guardrails/Guardrails.java` | **entrypoint** — the pair the intake agent is wired with |
+| `tasks/task_1_guardrails/guardrails/` | the two guardrails: one on the way out, one on the way back |
+| `tasks/task_1_guardrails/model/` | what the agent returns when a Document tries to give it orders |
+| `tasks/task_2_postprocessing/FraudScreener.java` | **entrypoint** — runs every check; cannot refuse an upload and cannot throw |
+| `tasks/task_2_postprocessing/checks/` | the seam, and three checks: duplicate bytes, image metadata, the agent's own report |
+| `tasks/task_2_postprocessing/model/` | what a screening is, and the projection that keeps it off the upload screen |
+
+Each task is one folder with one entrypoint. Nothing outside a task calls past it.
+
+The briefs are [task 1](./docs/tasks/task_1_guardrails.md) and
+[task 2](./docs/tasks/task_2_postprocessing.md); the three layers are demonstrated end to end in
+[the walkthrough](./docs/guardrails-walkthrough.md), with drag-in files in [`assets/`](./assets).
+Who sees what is [ADR 0005](./docs/adr/0005-fraud-signals-are-handler-side.md).
+
+Nothing in either task needs credentials or a network: the checks read the bytes that are already in
+hand.
 
 | | |
 |---|---|

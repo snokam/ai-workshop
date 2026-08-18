@@ -2,6 +2,9 @@ package com.example.aiworkshop.document;
 
 import com.example.aiworkshop.cases.Case;
 import com.example.aiworkshop.cases.CaseStore;
+import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener;
+import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener.Upload;
+import com.example.aiworkshop.tasks.task_1_guardrails.Guardrails;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.TextContent;
 import java.io.IOException;
@@ -13,7 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Accepts an upload, hands the raw file to the intake agent, and stores the result.
+ * Accepts an upload, hands the raw file to the intake agent, stores the result, and screens the
+ * bytes before they go out of scope.
  *
  * <p>Every upload is kept, whatever the agent thinks of it. {@link QualityAssessment} is advice
  * attached to a stored document, never a reason to refuse one.
@@ -24,12 +28,19 @@ public class DocumentIntake {
     private final DocumentAnalyzer analyzer;
     private final DocumentStore store;
     private final CaseStore cases;
+    private final FraudScreener screener;
     private final DocumentFiles files;
 
-    DocumentIntake(DocumentAnalyzer analyzer, DocumentStore store, CaseStore cases, DocumentFiles files) {
+    DocumentIntake(
+            DocumentAnalyzer analyzer,
+            DocumentStore store,
+            CaseStore cases,
+            FraudScreener screener,
+            DocumentFiles files) {
         this.analyzer = analyzer;
         this.store = store;
         this.cases = cases;
+        this.screener = screener;
         this.files = files;
     }
 
@@ -40,6 +51,8 @@ public class DocumentIntake {
         String id = UUID.randomUUID().toString();
         // Kept before the agent runs, at the point the bytes are already in hand. See ADR 0004.
         files.save(id, file.getBytes());
+        DocumentAnalysis analysis = analyzer.analyse(promptFor(file, mimeType), theCase.requiredDocuments());
+
         UploadedDocument document = new UploadedDocument(
                 id,
                 caseId,
@@ -47,9 +60,12 @@ public class DocumentIntake {
                 mimeType,
                 file.getSize(),
                 Instant.now(),
-                analyzer.analyse(promptFor(file, mimeType), theCase.requiredDocuments()),
+                analysis,
                 false);
         store.save(document);
+
+        screener.screen(
+                new Upload(id, caseId, file.getOriginalFilename(), mimeType, file.getBytes(), analysis));
         return document;
     }
 
@@ -64,7 +80,7 @@ public class DocumentIntake {
      */
     private List<Content> promptFor(MultipartFile file, String mimeType) throws IOException {
         return List.of(
-                TextContent.from("Analyse the attached file."), DocumentFiles.contentOf(file.getBytes(), mimeType));
+                TextContent.from(Guardrails.INTAKE_INSTRUCTION), DocumentFiles.contentOf(file.getBytes(), mimeType));
     }
 
     /**

@@ -114,7 +114,7 @@ class DocumentForChatTest {
                 4821004,
                 Instant.parse("2026-08-15T09:00:00Z"),
                 new DocumentAnalysis(
-                        category, summary, fields, matchedRequiredDocument, MatchConfidence.HIGH, quality),
+                        category, summary, fields, matchedRequiredDocument, MatchConfidence.HIGH, quality, null),
                 reviewed);
     }
 }

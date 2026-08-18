@@ -48,7 +48,7 @@ grounded in Storebrand products (travel, home contents, disability, health treat
 carrying the Required Documents that kind of Case needs. `OTHER` is the fallback when nothing fits.
 The type decides the checklist at creation and is kept on the Case: it frames how the handler-side
 agents read across it, so a travel claim is summarised as a travel claim. See
-[ADR 0003](./docs/adr/0003-hardcoded-case-types.md).
+[ADR 0005](./docs/adr/0003-hardcoded-case-types.md).
 _Avoid_: category, claim kind
 
 **Case Handler**:
@@ -77,11 +77,45 @@ A Case Handler's confirmation that a Document is good enough to work with despit
 Assessment. A Claimant sending a better Document clears the same block.
 _Avoid_: approval, sign-off
 
+**Fraud Screening**:
+The checks that run over an uploaded file at intake, asking whether it is what it appears to be. Runs
+over the bytes and over what the intake agent already noticed — never over whether the Case deserves
+to be paid. Read by a Case Handler and by nobody else; never a gate on anything (see
+[ADR 0005](./docs/adr/0005-fraud-signals-are-handler-side.md)).
+_Avoid_: fraud detection, risk scoring, verification
+
+**Fraud Indicator**:
+One thing a check noticed. An observation a Case Handler can go and check for themselves — "this
+image is published on four pages" — and never a conclusion about the person who sent it. Carries a
+Weight (`NOTE`, `CONCERN`, `STRONG`) saying how much attention it deserves before a handler has seen
+the rest.
+_Avoid_: red flag, fraud score, alert
+
+**Manipulation Attempt**:
+Text inside a Document addressed to the agent reading it rather than to a person. A component of what
+the intake agent returns, and the only part of it a Claimant never sees — it reaches the Case
+Handler as a Fraud Indicator instead.
+_Avoid_: prompt injection (accurate, but it names the mechanism rather than the thing a handler reads)
+
 **Case Summary**:
 The agent's account of what is in a Case's Documents, taken across all of them — what a Case Handler
 reads instead of opening each Document in turn. A Document has its own separate summary.
 _Avoid_: overview, digest
 
+<<<<<<< HEAD
+## Guardrails
+
+Two, both on the intake agent, because it is the only agent an outsider can put anything in front of.
+Both are LangChain4j guardrails, so they run inside the call rather than around it — see
+[the walkthrough](./docs/guardrails-walkthrough.md).
+
+- **Input guardrail** (`tasks/task_1_guardrails/guardrails/UploadedFileGuardrail`) — one file and one sentence of ours reach the model.
+  Nothing a Claimant typed, the filename above all, becomes part of a prompt. It cannot see inside
+  the file and is not a defence against what is printed on the page.
+- **Output guardrail** (`tasks/task_1_guardrails/guardrails/AnalysisGuardrail`) — a match must name a Required Document this Case
+  actually asked for. A label that is not on the list is struck out, whether the agent paraphrased
+  it, invented it, or was talked into it by the Document.
+=======
 **Case Chat**:
 The conversation a Case Handler can have about one Case, beside the Case's contents. Belongs to the
 Case rather than to a person — there is no authentication, so two Case Handlers with the same Case
@@ -99,6 +133,7 @@ Something a Case Handler has asked the Claimant for, in plain language, shown on
 upload screen. Not a Required Document: Case Status is derived from that list, so a Document Request
 sits beside it and moves nothing.
 _Avoid_: chase, reminder, task
+>>>>>>> origin/main
 
 ## Not settled yet
 

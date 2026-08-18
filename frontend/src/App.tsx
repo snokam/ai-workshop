@@ -15,6 +15,7 @@ import {
   type CaseStatus,
   type ChatTurn,
   type CreatedCase,
+  type FraudScreening,
   type MatchConfidence,
   type ProposalCard,
   type Quality,
@@ -39,6 +40,14 @@ const CONFIDENCE_LABEL: Record<MatchConfidence, string> = {
   HIGH: 'confident',
   MEDIUM: 'fairly sure',
   LOW: 'unsure',
+}
+
+const INDICATOR_LABEL: Record<FraudScreening['indicators'][number]['kind'], string> = {
+  ALREADY_UPLOADED: 'Sent before',
+  EDITED_IN_SOFTWARE: 'Touched by an editor',
+  NO_CAMERA_ORIGIN: 'No camera metadata',
+  DATE_OUT_OF_PLACE: 'Capture date',
+  ADDRESSED_THE_AGENT: 'Tried to instruct the agent',
 }
 
 /**
@@ -671,6 +680,7 @@ function CaseScreen({
               doc={doc}
               standing={standingOf(doc, detail)}
               blocking={detail.blockedDocumentIds.includes(doc.id)}
+              screening={detail.screenings.find((s) => s.documentId === doc.id)}
               onReview={() => void onReview(doc.id, doc.caseId)}
             />
           ))}
@@ -893,12 +903,14 @@ function DocumentCard({
   preview,
   standing,
   blocking,
+  screening,
   onReview,
 }: {
   doc: UploadedDocument
   preview?: string
   standing?: Standing
   blocking?: boolean
+  screening?: FraudScreening
   onReview?: () => void
 }) {
   const { analysis } = doc
@@ -963,7 +975,32 @@ function DocumentCard({
             ))}
           </dl>
         )}
+
+        {screening && screening.indicators.length > 0 && <Screening screening={screening} />}
       </div>
     </article>
+  )
+}
+
+function Screening({ screening }: { screening: FraudScreening }) {
+  return (
+    <section className="screening">
+      <h3>Worth a look</h3>
+      {screening.indicators.map((indicator, index) => (
+        <div key={index} className={`indicator ${indicator.weight.toLowerCase()}`}>
+          <p className="what">
+            <span className="kind">{INDICATOR_LABEL[indicator.kind]}</span>
+            {indicator.detail}
+          </p>
+          {indicator.evidence.length > 0 && (
+            <ul>
+              {indicator.evidence.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ))}
+    </section>
   )
 }

@@ -158,7 +158,8 @@ class CaseStatusTest {
                         List.of(),
                         matchedRequiredDocument,
                         MatchConfidence.HIGH,
-                        new QualityAssessment(verdict, "A sentence about the file.", List.of())),
+                        new QualityAssessment(verdict, "A sentence about the file.", List.of()),
+                        null),
                 false);
     }
 
@@ -178,7 +179,8 @@ class CaseStatusTest {
                         analysis.fields(),
                         analysis.matchedRequiredDocument(),
                         MatchConfidence.LOW,
-                        analysis.quality()),
+                        analysis.quality(),
+                        analysis.manipulationAttempt()),
                 document.reviewed());
     }
 }

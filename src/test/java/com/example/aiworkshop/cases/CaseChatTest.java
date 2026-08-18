@@ -17,6 +17,7 @@ import com.example.aiworkshop.document.DocumentAnalysis;
 import com.example.aiworkshop.document.DocumentFiles;
 import com.example.aiworkshop.document.DocumentReader;
 import com.example.aiworkshop.document.DocumentStore;
+import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener;
 import com.example.aiworkshop.document.MatchConfidence;
 import com.example.aiworkshop.document.QualityAssessment;
 import com.example.aiworkshop.document.QualityAssessment.Quality;
@@ -86,6 +87,7 @@ class CaseChatTest {
                 files,
                 summarizer,
                 statusWriter,
+                new FraudScreener(List.of()),
                 chatAgent,
                 reader);
     }
@@ -382,7 +384,8 @@ class CaseChatTest {
                         List.of(),
                         matchedRequiredDocument,
                         MatchConfidence.HIGH,
-                        new QualityAssessment(verdict, "Shadows across the lower half.", List.of("total cut off"))),
+                        new QualityAssessment(verdict, "Shadows across the lower half.", List.of("total cut off")),
+                        null),
                 false);
     }
 }

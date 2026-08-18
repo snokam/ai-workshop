@@ -1,6 +1,7 @@
 package com.example.aiworkshop.cases;
 
 import com.example.aiworkshop.document.UploadedDocument;
+import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening;
 import java.util.List;
 
 /**
@@ -19,6 +20,7 @@ import java.util.List;
  *     Review would change anything for. Always a subset of {@code countingDocumentIds}
  * @param summary the Case Summary, written across all the Documents
  * @param statusNote where the Case stands and the next move, written over the derived facts
+ * @param screenings what the fraud checks found on these Documents
  * @param proposals every Proposal the Case Chat agent has raised on this Case, whatever became of
  *     it. Costs no model call — a Proposal outlives the answer that raised it, so an unanswered
  *     suggestion is still on screen when the handler comes back to the Case
@@ -33,5 +35,6 @@ public record CaseDetail(
         List<String> blockedDocumentIds,
         String summary,
         String statusNote,
+        List<FraudScreening> screenings,
         List<ProposalCard> proposals,
         List<ChatTurn> conversation) {}

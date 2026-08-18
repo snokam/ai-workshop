@@ -79,7 +79,7 @@ class DocumentInDetailTest {
                 4821004,
                 Instant.parse("2026-08-15T09:00:00Z"),
                 new DocumentAnalysis(
-                        "receipt", "A receipt from MENY.", fields, "receipt", MatchConfidence.HIGH, quality),
+                        "receipt", "A receipt from MENY.", fields, "receipt", MatchConfidence.HIGH, quality, null),
                 false);
     }
 }

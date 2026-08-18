@@ -4,6 +4,8 @@ import com.example.aiworkshop.document.DocumentFiles;
 import com.example.aiworkshop.document.DocumentReader;
 import com.example.aiworkshop.document.DocumentStore;
 import com.example.aiworkshop.document.UploadedDocument;
+import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener;
+import com.example.aiworkshop.tasks.task_2_postprocessing.model.FraudScreening;
 import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.service.Result;
 import java.util.List;
@@ -41,6 +43,7 @@ public class CaseDesk {
     private final DocumentFiles files;
     private final CaseSummarizer summarizer;
     private final CaseStatusWriter statusWriter;
+    private final FraudScreener screener;
     private final CaseChatAgent chatAgent;
     private final DocumentReader reader;
 
@@ -54,6 +57,7 @@ public class CaseDesk {
             DocumentFiles files,
             CaseSummarizer summarizer,
             CaseStatusWriter statusWriter,
+            FraudScreener screener,
             @Lazy CaseChatAgent chatAgent,
             DocumentReader reader) {
         this.cases = cases;
@@ -65,6 +69,7 @@ public class CaseDesk {
         this.files = files;
         this.summarizer = summarizer;
         this.statusWriter = statusWriter;
+        this.screener = screener;
         this.chatAgent = chatAgent;
         this.reader = reader;
     }
@@ -96,8 +101,13 @@ public class CaseDesk {
                 idsOf(theCase.blockedDocuments(attached)),
                 summaryOf(theCase, attached),
                 statusNote,
+                screeningsFound(attached),
                 proposalsOn(caseId),
                 chats.findByCaseId(caseId));
+    }
+
+    private List<FraudScreening> screeningsFound(List<UploadedDocument> attached) {
+        return screener.findAllFor(idsOf(attached));
     }
 
     /**

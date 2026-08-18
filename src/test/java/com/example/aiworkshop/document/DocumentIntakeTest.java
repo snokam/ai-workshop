@@ -11,6 +11,7 @@ import com.example.aiworkshop.cases.Case;
 import com.example.aiworkshop.cases.CaseStore;
 import com.example.aiworkshop.cases.CaseType;
 import com.example.aiworkshop.document.QualityAssessment.Quality;
+import com.example.aiworkshop.tasks.task_2_postprocessing.FraudScreener;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;
@@ -34,7 +35,8 @@ class DocumentIntakeTest {
             List.of(),
             null,
             MatchConfidence.LOW,
-            new QualityAssessment(Quality.POOR, "The scan is too blurry to read.", List.of("out of focus")));
+            new QualityAssessment(Quality.POOR, "The scan is too blurry to read.", List.of("out of focus")),
+            null);
 
     private static final DocumentAnalysis MATCHED_RECEIPT = new DocumentAnalysis(
             "receipt",
@@ -42,11 +44,13 @@ class DocumentIntakeTest {
             List.of(new ExtractedField("Total", "4 200 kr")),
             "receipt",
             MatchConfidence.HIGH,
-            new QualityAssessment(Quality.GOOD, "Fully legible.", List.of()));
+            new QualityAssessment(Quality.GOOD, "Fully legible.", List.of()),
+            null);
 
     private final DocumentAnalyzer analyzer = mock(DocumentAnalyzer.class);
     private final DocumentStore store = new DocumentStore();
     private final CaseStore cases = new CaseStore();
+    private final FraudScreener screener = new FraudScreener(List.of());
 
     @TempDir
     Path directory;
@@ -59,7 +63,7 @@ class DocumentIntakeTest {
         cases.save(new Case(
                 CASE_ID, "CASE-2026-001", CaseType.HOME_CONTENTS, List.of("proof of identity", "receipt")));
         files = new DocumentFiles(directory);
-        intake = new DocumentIntake(analyzer, store, cases, files);
+        intake = new DocumentIntake(analyzer, store, cases, screener, files);
     }
 
     /**

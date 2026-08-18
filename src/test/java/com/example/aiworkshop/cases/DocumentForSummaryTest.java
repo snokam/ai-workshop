@@ -67,7 +67,8 @@ class DocumentForSummaryTest {
                         List.of(new ExtractedField("Butikk", "MENY Storo"), new ExtractedField("Summa", "unreadable")),
                         "receipt",
                         MatchConfidence.HIGH,
-                        new QualityAssessment(Quality.POOR, "Shadows across the lower half.", List.of("total cut off"))),
+                        new QualityAssessment(Quality.POOR, "Shadows across the lower half.", List.of("total cut off")),
+                        null),
                 false);
     }
 }
