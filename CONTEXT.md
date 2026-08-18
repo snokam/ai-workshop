@@ -102,20 +102,6 @@ The agent's account of what is in a Case's Documents, taken across all of them �
 reads instead of opening each Document in turn. A Document has its own separate summary.
 _Avoid_: overview, digest
 
-<<<<<<< HEAD
-## Guardrails
-
-Two, both on the intake agent, because it is the only agent an outsider can put anything in front of.
-Both are LangChain4j guardrails, so they run inside the call rather than around it — see
-[the walkthrough](./docs/guardrails-walkthrough.md).
-
-- **Input guardrail** (`tasks/task_1_guardrails/guardrails/UploadedFileGuardrail`) — one file and one sentence of ours reach the model.
-  Nothing a Claimant typed, the filename above all, becomes part of a prompt. It cannot see inside
-  the file and is not a defence against what is printed on the page.
-- **Output guardrail** (`tasks/task_1_guardrails/guardrails/AnalysisGuardrail`) — a match must name a Required Document this Case
-  actually asked for. A label that is not on the list is struck out, whether the agent paraphrased
-  it, invented it, or was talked into it by the Document.
-=======
 **Case Chat**:
 The conversation a Case Handler can have about one Case, beside the Case's contents. Belongs to the
 Case rather than to a person — there is no authentication, so two Case Handlers with the same Case
@@ -133,7 +119,19 @@ Something a Case Handler has asked the Claimant for, in plain language, shown on
 upload screen. Not a Required Document: Case Status is derived from that list, so a Document Request
 sits beside it and moves nothing.
 _Avoid_: chase, reminder, task
->>>>>>> origin/main
+
+## Guardrails
+
+Two, both on the intake agent, because it is the only agent an outsider can put anything in front of.
+Both are LangChain4j guardrails, so they run inside the call rather than around it — see
+[the walkthrough](./docs/guardrails-walkthrough.md).
+
+- **Input guardrail** (`tasks/task_3_guardrails/guardrails/UploadedFileGuardrail`) — one file and one sentence of ours reach the model.
+  Nothing a Claimant typed, the filename above all, becomes part of a prompt. It cannot see inside
+  the file and is not a defence against what is printed on the page.
+- **Output guardrail** (`tasks/task_3_guardrails/guardrails/AnalysisGuardrail`) — a match must name a Required Document this Case
+  actually asked for. A label that is not on the list is struck out, whether the agent paraphrased
+  it, invented it, or was talked into it by the Document.
 
 ## Not settled yet
 
