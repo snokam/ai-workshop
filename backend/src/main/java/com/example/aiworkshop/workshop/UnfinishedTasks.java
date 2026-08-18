@@ -10,13 +10,26 @@ public final class UnfinishedTasks {
         return implemented ? agent.get() : stub(type, task);
     }
 
+    /**
+     * A stand-in for any interface, for when the task that builds the real one is not written.
+     *
+     * <p>{@code ChatModel} needs this as much as an agent does: without a model bean nothing in the
+     * application can be constructed and it will not start at all, which is the one thing the
+     * workshop cannot afford.
+     */
+    public static <T> T notWrittenYet(Class<T> type, WorkshopTask task) {
+        return stub(type, task);
+    }
+
     @SuppressWarnings("unchecked")
     private static <T> T stub(Class<T> type, WorkshopTask task) {
-        return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] {type}, (proxy, method, args) -> {
-            if (method.getName().equals("toString")) {
-                return "not implemented yet: task " + task.number();
-            }
-            throw new TaskNotImplementedException(task);
+        Class<?>[] faces = {type, AutoCloseable.class};
+        return (T) Proxy.newProxyInstance(type.getClassLoader(), faces, (proxy, method, args) -> switch (method.getName()) {
+            case "toString" -> "not implemented yet: task " + task.number();
+            case "hashCode" -> System.identityHashCode(proxy);
+            case "equals" -> proxy == args[0];
+            case "close" -> null;
+            default -> throw new TaskNotImplementedException(task);
         });
     }
 }

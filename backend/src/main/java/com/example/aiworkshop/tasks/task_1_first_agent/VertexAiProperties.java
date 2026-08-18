@@ -1,4 +1,4 @@
-package com.example.aiworkshop.config;
+package com.example.aiworkshop.tasks.task_1_first_agent;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;

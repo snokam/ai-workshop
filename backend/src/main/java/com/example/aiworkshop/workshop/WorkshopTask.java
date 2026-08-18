@@ -4,8 +4,9 @@ public enum WorkshopTask {
     FIRST_AGENT(
             1,
             "Your first agent",
-            "tasks/task_1_first_agent/CaseTypeClassifier.java",
-            "Write the @SystemMessage that decides which kind of case to open, then set IMPLEMENTED to true."),
+            "tasks/task_1_first_agent/",
+            "Build the ChatModel in VertexAiConfig, write the @SystemMessage in CaseTypeClassifier,"
+                    + " then set IMPLEMENTED to true."),
     DOCUMENT_AGENT(
             2,
             "Give it a file",

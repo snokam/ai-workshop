@@ -4,34 +4,45 @@ Someone types what happened to them, in their own words. You have to work out wh
 open. That is the whole exercise, and by the end you will have written a working LLM integration
 with no HTTP client, no JSON parsing and no prompt string concatenated by hand.
 
-**Time:** 45 minutes. **You need:** a provider you can reach — see below.
+**Time:** 60 minutes. **You need:** a Google Cloud project you can reach, and `gcloud`.
 
 ## Part 1 — the connection
 
-An agent is two halves. This is the first.
+An agent is two halves, and this is the first: without it nothing else in the workshop can run.
 
-`ChatModel` is LangChain4j's handle on a model: which provider, which model, which credentials. Two
-are configured in this repository, and `aiworkshop.model.provider` picks between them:
+Open `backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/VertexAiConfig.java`.
+The bean is empty and returns a stand-in, which is why the application starts and then says which
+file to open the moment anything needs a model.
 
-| | built in | authenticates with |
-|---|---|---|
-| `vertex` | `config/VertexAiConfig.java` | Application Default Credentials — no key |
-| `foundry` | `config/FoundryConfig.java` | `AZURE_OPENAI_API_KEY` |
+```java
+@Bean(destroyMethod = "close")
+ChatModel chatModel(VertexAiProperties properties) {
+    // TODO — build it
+}
+```
 
-Pick one and make it work before writing any prompt. For Vertex:
+`VertexAiGeminiChatModel.builder()` is the SDK's builder for Gemini on Vertex. Everything it needs
+is already bound in `VertexAiProperties` beside it — read that record, then read the `vertex-ai.*`
+block in `backend/src/main/resources/application.properties` to see where the values come from and
+which have defaults.
+
+`ChatModel` is the type every agent depends on, and nothing downstream knows which provider built
+it. That is the point of returning the interface: the provider is a configuration decision, not an
+architectural one. Snøkam staff can run the same application against Azure AI Foundry by setting
+`AI_PROVIDER=foundry`, and not one line of agent code changes.
+
+Authenticate before you run it. Vertex uses Application Default Credentials, not an API key:
 
 ```bash
 gcloud auth application-default login
 gcloud auth application-default set-quota-project "$GOOGLE_CLOUD_PROJECT"
 
 cd backend
-AI_PROVIDER=vertex GOOGLE_CLOUD_PROJECT=... ./mvnw spring-boot:run
+GOOGLE_CLOUD_PROJECT=... ./mvnw spring-boot:run
 ```
 
-For Foundry, `export AZURE_OPENAI_API_KEY=...` and use `AI_PROVIDER=foundry`.
-
-Nothing downstream binds to either one. Both contribute the same `ChatModel` bean, which is the
-point of the interface: the provider is a configuration decision, not an architectural one.
+You will know it worked when the application starts and the error changes: it stops being about the
+model and starts being about the agent, which is part 2.
 
 ## Part 2 — the agent
 
@@ -86,7 +97,9 @@ Then set `IMPLEMENTED = true` at the top of the file.
 cd backend && ./mvnw test -Dtest=TaskCompletionTest
 ```
 
-Six tests, one per exercise. Task 1 should now be green.
+Six tests, one per exercise. Task 1 should now be green — and so should
+`CaseTypeClassifierTest` and `ProviderSelectionTest`, which sit beside the code and check the
+wiring rather than the flag.
 
 Then use it. With both halves running, describe something at http://localhost:5173 — the app said
 which file to open until now, and should open a case instead:
