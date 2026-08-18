@@ -1,10 +1,31 @@
+/*
+ * The two brand faces the @snokam/ui theme asks for. Declared here rather than by importing
+ * @snokam/ui/styles/global.css, which also sets `body` and `main` to display: flex for the shell
+ * the Next apps use, and that fights the page layout below.
+ */
+@font-face {
+  font-family: DMSans-Light;
+  src: url("https://ressurser.snokam.no/fonts/dm-sans/DMSans-Light.ttf");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Cocogoose-Regular;
+  src: url("https://ressurser.snokam.no/fonts/cocogoose/Cocogoose-Regular.ttf");
+  font-display: swap;
+}
+
 :root {
-  --bg: #f6f7f9;
+  /* The snokam palette, the same values @snokam/ui/theme exposes as Color and BaseColor. */
+  --navy: #071d41;
+  --cyan: #67dafd;
+
+  --bg: #f4f6fb;
   --surface: #ffffff;
-  --border: #e2e5ea;
-  --text: #1a1d21;
-  --muted: #6b7280;
-  --accent: #2563eb;
+  --border: rgba(7, 29, 65, 0.1);
+  --text: var(--navy);
+  --muted: rgba(7, 29, 65, 0.68);
+  --accent: #0284c7;
 
   --good-bg: #ecfdf3;
   --good-fg: #0f6c3d;
@@ -18,12 +39,12 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #14171a;
-    --surface: #1c2024;
-    --border: #2c3238;
-    --text: #e8eaed;
-    --muted: #9aa2ad;
-    --accent: #6ea8fe;
+    --bg: #050f28;
+    --surface: #071d41;
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #ffffff;
+    --muted: rgba(255, 255, 255, 0.62);
+    --accent: var(--cyan);
 
     --good-bg: #10291d;
     --good-fg: #6ee7a8;
@@ -46,9 +67,12 @@ body {
 }
 
 main {
+  flex-grow: 1;
   max-width: 760px;
+  width: 100%;
   margin: 0 auto;
   padding: 3rem 1.25rem 5rem;
+  box-sizing: border-box;
 }
 
 header h1 {
@@ -322,9 +346,10 @@ header p {
 
 /* --- the two sides ------------------------------------------------------- */
 
-.claimant-nav a,
 .back {
+  display: inline-block;
   padding: 0.45rem 0.9rem;
+  margin-bottom: 1.5rem;
   font: inherit;
   font-size: 0.9rem;
   color: var(--muted);
@@ -333,22 +358,6 @@ header p {
   border-radius: 999px;
   cursor: pointer;
   text-decoration: none;
-}
-
-.claimant-nav a.on {
-  color: var(--surface);
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.claimant-nav {
-  display: flex;
-  gap: 0.4rem;
-  margin-bottom: 2rem;
-}
-
-.back {
-  margin-bottom: 1.5rem;
 }
 
 /* --- choosing a case ----------------------------------------------------- */

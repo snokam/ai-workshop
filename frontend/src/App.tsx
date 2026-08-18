@@ -1,4 +1,5 @@
-import { Link, NavLink, Outlet, Route, Routes } from 'react-router-dom'
+import { Link, Outlet, Route, Routes } from 'react-router-dom'
+import { Layout } from './components/layout/Layout'
 import { ClaimantCase } from './routes/ClaimantCase'
 import { HandlerCase } from './routes/HandlerCase'
 import { HandlerCases } from './routes/HandlerCases'
@@ -17,7 +18,7 @@ import { NewCase } from './routes/NewCase'
  */
 export default function App() {
   return (
-    <main>
+    <Layout>
       <Routes>
         <Route path="/" element={<ClaimantShell />}>
           <Route index element={<NewCase />} />
@@ -28,25 +29,13 @@ export default function App() {
         <Route path="/casehandler/cases/:caseId" element={<HandlerCase />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </main>
+    </Layout>
   )
 }
 
-/** The claimant's two entry points share a nav; a case opened from either does not. */
+/** The claimant's screens; the nav that used to live here is now in the branded header. */
 function ClaimantShell() {
-  return (
-    <>
-      <nav className="claimant-nav">
-        <NavLink to="/" end className={({ isActive }) => (isActive ? 'on' : '')}>
-          Report a new case
-        </NavLink>
-        <NavLink to="/cases" className={({ isActive }) => (isActive ? 'on' : '')}>
-          My cases
-        </NavLink>
-      </nav>
-      <Outlet />
-    </>
-  )
+  return <Outlet />
 }
 
 function NotFound() {
