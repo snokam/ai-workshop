@@ -126,6 +126,11 @@ public class DocumentIntake {
     }
 
     private List<Content> promptFor(MultipartFile file, String mimeType) throws IOException {
+        return List.of(
+                TextContent.from(Guardrails.INTAKE_INSTRUCTION),
+                DocumentFiles.contentOf(file.getBytes(), mimeType));
+
+        // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 2, part 2. Turn an upload into what the model is sent.
         //
         // This is the whole of "give it a file": a list of Content, one text and one file. The text
@@ -134,14 +139,7 @@ public class DocumentIntake {
         //
         // DocumentFiles.contentOf(bytes, mimeType) decides between PdfFileContent and ImageContent
         // from the mime type resolved above. Nothing here reads the file: the bytes go as they are.
-        throw new TaskNotImplementedException(WorkshopTask.DOCUMENT_AGENT);
-
-        // ── One version of the answer ──────────────────────────────────────────────────────
-        // Try it yourself first. Uncomment this if you get stuck.
-        //
-        // return List.of(
-        //         TextContent.from(Guardrails.INTAKE_INSTRUCTION),
-        //         DocumentFiles.contentOf(file.getBytes(), mimeType));
+        // throw new TaskNotImplementedException(WorkshopTask.DOCUMENT_AGENT);
     }
 
     private String resolveMimeType(MultipartFile file) {

@@ -15,6 +15,17 @@ public class AddressedTheAgentCheck implements FraudCheck {
 
     @Override
     public List<Indicator> screen(Upload upload) {
+        ManipulationAttempt attempt = upload.analysis().manipulationAttempt();
+        if (attempt == null || attempt.attemptedInstruction() == null) {
+        return List.of();
+        }
+        return List.of(new Indicator(
+        Kind.ADDRESSED_THE_AGENT,
+        Weight.STRONG,
+        "The document contains text aimed at the software reading it: " + attempt.attemptedInstruction(),
+        attempt.quote() == null ? List.of() : List.of("The document says: " + attempt.quote())));
+
+        // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 4. The report the agent already made.
         //
         // The intake agent was asked to record any text in the document aimed at whatever software
@@ -23,20 +34,6 @@ public class AddressedTheAgentCheck implements FraudCheck {
         //
         // Throwing is how the screener knows: it logs, skips, and keeps the other checks running —
         // which is the rule this task is really about.
-        throw new TaskNotImplementedException(WorkshopTask.POSTPROCESSING);
-
-        // ── One version of the answer ──────────────────────────────────────────────────────
-        // Try it yourself first. Uncomment this a piece at a time if you get stuck, or write
-        // your own and read this after to argue with it.
-        //
-        // ManipulationAttempt attempt = upload.analysis().manipulationAttempt();
-        // if (attempt == null || attempt.attemptedInstruction() == null) {
-        // return List.of();
-        // }
-        // return List.of(new Indicator(
-        // Kind.ADDRESSED_THE_AGENT,
-        // Weight.STRONG,
-        // "The document contains text aimed at the software reading it: " + attempt.attemptedInstruction(),
-        // attempt.quote() == null ? List.of() : List.of("The document says: " + attempt.quote())));
+        // throw new TaskNotImplementedException(WorkshopTask.POSTPROCESSING);
     }
 }

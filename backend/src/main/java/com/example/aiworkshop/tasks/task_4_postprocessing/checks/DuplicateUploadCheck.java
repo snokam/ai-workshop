@@ -19,6 +19,13 @@ public class DuplicateUploadCheck implements FraudCheck {
 
     @Override
     public List<Indicator> screen(Upload upload) {
+        List<String> earlier = seenBefore.computeIfAbsent(upload.contentHash(), key -> new CopyOnWriteArrayList<>());
+
+        List<Indicator> found = earlier.isEmpty() ? List.of() : List.of(indicatorFor(upload, earlier));
+        earlier.add(upload.caseId() + " / " + upload.filename());
+        return found;
+
+        // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 4. The same bytes, seen before.
         //
         // upload.contentHash() is a SHA-256 of the file. Remember every hash you are given with the
@@ -27,17 +34,7 @@ public class DuplicateUploadCheck implements FraudCheck {
         //
         // Throwing is how the screener knows: it logs, skips, and keeps the other checks running —
         // which is the rule this task is really about.
-        throw new TaskNotImplementedException(WorkshopTask.POSTPROCESSING);
-
-        // ── One version of the answer ──────────────────────────────────────────────────────
-        // Try it yourself first. Uncomment this a piece at a time if you get stuck, or write
-        // your own and read this after to argue with it.
-        //
-        // List<String> earlier = seenBefore.computeIfAbsent(upload.contentHash(), key -> new CopyOnWriteArrayList<>());
-        //
-        // List<Indicator> found = earlier.isEmpty() ? List.of() : List.of(indicatorFor(upload, earlier));
-        // earlier.add(upload.caseId() + " / " + upload.filename());
-        // return found;
+        // throw new TaskNotImplementedException(WorkshopTask.POSTPROCESSING);
     }
 
     private static Indicator indicatorFor(Upload upload, List<String> earlier) {

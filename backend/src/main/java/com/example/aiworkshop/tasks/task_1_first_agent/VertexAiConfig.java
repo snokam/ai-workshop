@@ -15,6 +15,18 @@ import org.springframework.context.annotation.Configuration;
 class VertexAiConfig {
     @Bean(destroyMethod = "close")
     ChatModel chatModel(VertexAiProperties properties) {
+        return VertexAiGeminiChatModel.builder()
+                .project(properties.project())
+                .location(properties.location())
+                .modelName(properties.modelName())
+                .temperature(properties.temperature())
+                .maxOutputTokens(properties.maxOutputTokens())
+                .maxRetries(properties.maxRetries())
+                .logRequests(properties.logRequests())
+                .logResponses(properties.logResponses())
+                .build();
+
+        // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 1, part 1. Build the model.
         //
         // This is the connection every agent in the workshop runs on: which provider, which model,
@@ -24,20 +36,6 @@ class VertexAiConfig {
         //
         // Returning the stand-in is what no model looks like: the application starts, and anything
         // that needs a model says which file to open.
-        return UnfinishedTasks.notWrittenYet(ChatModel.class, WorkshopTask.FIRST_AGENT);
-
-        // ── One version of the answer ──────────────────────────────────────────────────────
-        // Try it yourself first. Uncomment this a piece at a time if you get stuck.
-        //
-        // return VertexAiGeminiChatModel.builder()
-        //         .project(properties.project())
-        //         .location(properties.location())
-        //         .modelName(properties.modelName())
-        //         .temperature(properties.temperature())
-        //         .maxOutputTokens(properties.maxOutputTokens())
-        //         .maxRetries(properties.maxRetries())
-        //         .logRequests(properties.logRequests())
-        //         .logResponses(properties.logResponses())
-        //         .build();
+        // return UnfinishedTasks.notWrittenYet(ChatModel.class, WorkshopTask.FIRST_AGENT);
     }
 }

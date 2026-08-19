@@ -15,18 +15,21 @@ public final class Guardrails {
     private Guardrails() {}
 
     public static InputGuardrail beforeTheCall() {
+        return new UploadedFileGuardrail();
+
+        // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 3. Hand back the guardrail that checks the message before it is sent.
         //
         // Until this returns one the intake agent is wired without guardrails: uploads still work,
         // and nothing is checked. Write UploadedFileGuardrail, then return it here.
-        throw new TaskNotImplementedException(WorkshopTask.GUARDRAILS);
-
-        // return new UploadedFileGuardrail();
+        // throw new TaskNotImplementedException(WorkshopTask.GUARDRAILS);
     }
 
     public static OutputGuardrail afterTheCall() {
+        return new AnalysisGuardrail();
+
+        // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 3. Hand back the guardrail that checks the reply before it is parsed.
-        // return new AnalysisGuardrail();
-        throw new TaskNotImplementedException(WorkshopTask.GUARDRAILS);
+        // throw new TaskNotImplementedException(WorkshopTask.GUARDRAILS);
     }
 }
