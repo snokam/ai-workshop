@@ -22,27 +22,28 @@ public enum WorkshopTask {
             "What the model cannot know",
             "tasks/task_4_postprocessing/FraudScreener.java",
             "Write the checks that run in Java after the agent has answered."),
-    CHAT(
+    SUMMARY(
             5,
+            "Across documents",
+            "tasks/task_5_summary/CaseSummarizer.java",
+            "Write the agent that reads every document on a case at once."),
+    CHAT(
+            6,
             "Tools and memory",
-            "tasks/task_5_chat/CaseChatAgent.java",
+            "tasks/task_6_chat/CaseChatAgent.java",
             "Write the chat agent and its tools."),
+    CREATE_CASE_CHAT(
+            7,
+            "Report with AI chat",
+            "tasks/task_7_create_case_chat/CaseIntakeInterviewer.java",
+            "Write the @SystemMessage in CaseIntakeInterviewer so it can ask before it commits."),
     EVALUATION(
             8,
             "How would you know?",
             "tasks/task_8_evaluation/",
             "Label the descriptions you would argue about, run the classifier over them, and decide"
-                    + " what the disagreements mean."),
-    SUMMARY(
-            6,
-            "Across documents",
-            "tasks/task_6_summary/CaseSummarizer.java",
-            "Write the agent that reads every document on a case at once."),
-    CREATE_CASE_CHAT(
-            7,
-            "Report with AI chat",
-            "tasks/task_7_create_case_chat/CaseIntakeInterviewer.java",
-            "Write the @SystemMessage in CaseIntakeInterviewer so it can ask before it commits.");
+                    + " what the disagreements mean.");
+
 
     private static final String SOURCE_ROOT = "backend/src/main/java/com/example/aiworkshop/";
 

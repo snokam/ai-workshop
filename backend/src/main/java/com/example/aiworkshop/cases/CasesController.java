@@ -8,6 +8,7 @@ import com.example.aiworkshop.cases.model.CreatedCase;
 import com.example.aiworkshop.cases.model.CaseType;
 import com.example.aiworkshop.cases.model.CaseOverview;
 import com.example.aiworkshop.cases.model.CaseDetail;
+import com.example.aiworkshop.tasks.task_6_chat.ChatDesk;
 import com.example.aiworkshop.cases.chat.ChatAnswer;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +30,12 @@ class CasesController {
     private static final Logger log = LoggerFactory.getLogger(CasesController.class);
 
     private final CaseDesk desk;
+    private final ChatDesk chat;
     private final CaseIntake intake;
 
-    CasesController(CaseDesk desk, CaseIntake intake) {
+    CasesController(CaseDesk desk, ChatDesk chat, CaseIntake intake) {
         this.desk = desk;
+        this.chat = chat;
         this.intake = intake;
     }
 
@@ -62,7 +65,7 @@ class CasesController {
 
     @GetMapping("/{id}")
     CaseDetail open(@PathVariable String id) {
-        return desk.open(id);
+        return desk.open(id, chat.proposalsOn(id), chat.turnsOn(id));
     }
 
     @PostMapping("/documents/{documentId}/review")
@@ -74,7 +77,7 @@ class CasesController {
 
     @PostMapping("/{id}/chat")
     ChatAnswer chat(@PathVariable String id, @RequestBody Question question) {
-        ChatAnswer answered = desk.chat(id, question.question());
+        ChatAnswer answered = chat.chat(id, question.question());
         log.info(
                 "Case chat on {}: {} tool call(s), {} proposal(s) raised",
                 id,
@@ -86,13 +89,13 @@ class CasesController {
     @PostMapping("/proposals/{proposalId}/confirm")
     ProposalCard confirm(@PathVariable String proposalId) {
         log.info("Proposal {} confirmed by a case handler", proposalId);
-        return desk.confirm(proposalId);
+        return chat.confirm(proposalId);
     }
 
     @PostMapping("/proposals/{proposalId}/decline")
     ProposalCard decline(@PathVariable String proposalId) {
         log.info("Proposal {} declined by a case handler", proposalId);
-        return desk.decline(proposalId);
+        return chat.decline(proposalId);
     }
 
     record Question(String question) {}

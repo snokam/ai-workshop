@@ -1,8 +1,10 @@
-package com.example.aiworkshop.cases;
+package com.example.aiworkshop.tasks.task_6_chat;
 
-import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
-import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
-import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_5_summary.SummaryDesk;
+import com.example.aiworkshop.cases.CaseDesk;
+import com.example.aiworkshop.tasks.task_5_summary.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_5_summary.CaseStatusWriter;
+import com.example.aiworkshop.tasks.task_6_chat.CaseChatAgent;
 import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
 import com.example.aiworkshop.documents.store.DocumentStore;
 import com.example.aiworkshop.documents.store.DocumentFiles;
@@ -10,8 +12,8 @@ import com.example.aiworkshop.documents.model.UploadedDocument;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment;
 import com.example.aiworkshop.documents.model.MatchConfidence;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;
-import com.example.aiworkshop.tasks.task_5_chat.DocumentReader;
-import com.example.aiworkshop.tasks.task_6_summary.CaseSummaryStore;
+import com.example.aiworkshop.tasks.task_6_chat.DocumentReader;
+import com.example.aiworkshop.tasks.task_5_summary.CaseSummaryStore;
 import com.example.aiworkshop.cases.store.CaseStore;
 import com.example.aiworkshop.cases.proposals.ProposalStore;
 import com.example.aiworkshop.cases.proposals.ProposalState;
@@ -25,7 +27,7 @@ import com.example.aiworkshop.cases.model.Case;
 import com.example.aiworkshop.cases.chat.ChatTurn;
 import com.example.aiworkshop.cases.chat.ChatAnswer;
 import com.example.aiworkshop.cases.chat.CaseChatStore;
-import com.example.aiworkshop.tasks.task_5_chat.model.CaseAtAGlance;
+import com.example.aiworkshop.tasks.task_6_chat.model.CaseAtAGlance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
@@ -52,7 +54,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.ArgumentCaptor;
 
-class CaseChatTest {
+class ChatDeskTest {
     private static final String CASE_ID = "c-1";
 
     private static final Instant AT_NINE = Instant.parse("2026-08-15T09:00:00Z");
@@ -75,7 +77,8 @@ class CaseChatTest {
     Path directory;
 
     private DocumentFiles files;
-    private CaseDesk desk;
+    private ChatDesk desk;
+    private CaseDesk caseDesk;
 
     @BeforeEach
     void aCaseHeldUpByOneUnreadableDocument() throws IOException {
@@ -84,26 +87,17 @@ class CaseChatTest {
         when(summarizer.summarise(anyString(), anyList()))
                 .thenReturn("What the documents say, taken together.");
         files = new DocumentFiles(directory);
-        desk = new CaseDesk(
-                cases,
-                documents,
-                summaries,
-                proposals,
-                requests,
-                chats,
-                files,
-                summarizer,
-                statusWriter,
-                new FraudScreener(List.of()),
-                chatAgent,
-                reader);
+        SummaryDesk summaryDesk = new SummaryDesk(summaries, summarizer, statusWriter);
+        caseDesk = new CaseDesk(cases, documents, requests, summaryDesk, new FraudScreener(List.of()));
+        desk = new ChatDesk(
+                cases, documents, files, proposals, requests, chats, chatAgent, reader, summaryDesk, caseDesk);
     }
 
     @Test
     void aProposedReviewIsRecordedAndMovesNothing() {
         ProposalCard proposed = desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
 
-        assertThat(desk.open(CASE_ID).proposals()).containsExactly(proposed);
+        assertThat(desk.proposalsOn(CASE_ID)).containsExactly(proposed);
         assertThat(proposed.state()).isEqualTo(ProposalState.PROPOSED);
         assertThat(statusOfTheCase()).isEqualTo(CaseStatus.NEEDS_REVIEW);
     }
@@ -115,7 +109,7 @@ class CaseChatTest {
         desk.confirm(proposed.id());
 
         assertThat(statusOfTheCase()).isEqualTo(CaseStatus.READY_FOR_DECISION);
-        assertThat(desk.open(CASE_ID).proposals())
+        assertThat(desk.proposalsOn(CASE_ID))
                 .extracting(ProposalCard::state)
                 .containsExactly(ProposalState.CONFIRMED);
     }
@@ -127,7 +121,7 @@ class CaseChatTest {
         desk.decline(proposed.id());
 
         assertThat(statusOfTheCase()).isEqualTo(CaseStatus.NEEDS_REVIEW);
-        assertThat(desk.open(CASE_ID).proposals())
+        assertThat(desk.proposalsOn(CASE_ID))
                 .extracting(ProposalCard::state)
                 .containsExactly(ProposalState.DECLINED);
     }
@@ -182,7 +176,7 @@ class CaseChatTest {
         desk.confirm(proposed.id());
 
         assertThat(statusOfTheCase()).isEqualTo(CaseStatus.NEEDS_REVIEW);
-        assertThat(desk.open(CASE_ID).proposals())
+        assertThat(desk.proposalsOn(CASE_ID))
                 .extracting(ProposalCard::state)
                 .containsExactly(ProposalState.DECLINED);
     }
@@ -200,7 +194,7 @@ class CaseChatTest {
     @Test
     void theChatReusesTheCaseSummaryTheHandlerHasAlreadyPaidFor() {
         theAgentReplies("Waiting on a review.");
-        desk.open(CASE_ID);
+        caseDesk.open(CASE_ID, List.of(), List.of());
 
         desk.chat(CASE_ID, "What is this waiting on?");
 
@@ -229,7 +223,7 @@ class CaseChatTest {
 
         desk.chat(CASE_ID, "What is this waiting on?");
 
-        assertThat(desk.open(CASE_ID).conversation())
+        assertThat(desk.turnsOn(CASE_ID))
                 .extracting(ChatTurn::question, ChatTurn::answer)
                 .containsExactly(tuple("What is this waiting on?", "It is waiting on a review of blurry.jpg."));
     }
@@ -307,14 +301,14 @@ class CaseChatTest {
     }
 
     private CaseOverview overviewOfTheCase() {
-        return desk.list().stream()
+        return caseDesk.list().stream()
                 .filter(overview -> overview.id().equals(CASE_ID))
                 .findFirst()
                 .orElseThrow();
     }
 
     private CaseStatus statusOfTheCase() {
-        return desk.list().stream()
+        return caseDesk.list().stream()
                 .filter(overview -> overview.id().equals(CASE_ID))
                 .findFirst()
                 .orElseThrow()

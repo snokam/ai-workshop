@@ -5,7 +5,7 @@ import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessmen
 import com.example.aiworkshop.documents.model.MatchConfidence;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.ExtractedField;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;
-import com.example.aiworkshop.tasks.task_5_chat.model.DocumentForChat;
+import com.example.aiworkshop.tasks.task_6_chat.model.DocumentForChat;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment.Quality;

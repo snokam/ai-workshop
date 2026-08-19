@@ -1,8 +1,9 @@
 package com.example.aiworkshop.cases;
 
-import com.example.aiworkshop.tasks.task_6_summary.CaseSummarizer;
-import com.example.aiworkshop.tasks.task_6_summary.CaseStatusWriter;
-import com.example.aiworkshop.tasks.task_5_chat.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_5_summary.SummaryDesk;
+import com.example.aiworkshop.tasks.task_5_summary.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_5_summary.CaseStatusWriter;
+import com.example.aiworkshop.tasks.task_6_chat.CaseChatAgent;
 import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
 import com.example.aiworkshop.documents.store.DocumentStore;
 import com.example.aiworkshop.documents.store.DocumentFiles;
@@ -10,12 +11,12 @@ import com.example.aiworkshop.documents.model.UploadedDocument;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment;
 import com.example.aiworkshop.documents.model.MatchConfidence;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;
-import com.example.aiworkshop.tasks.task_5_chat.DocumentReader;
-import com.example.aiworkshop.tasks.task_6_summary.CaseSummaryStore;
+import com.example.aiworkshop.tasks.task_6_chat.DocumentReader;
+import com.example.aiworkshop.tasks.task_5_summary.CaseSummaryStore;
 import com.example.aiworkshop.cases.store.CaseStore;
 import com.example.aiworkshop.cases.proposals.ProposalStore;
 import com.example.aiworkshop.cases.proposals.DocumentRequestStore;
-import com.example.aiworkshop.tasks.task_6_summary.DocumentForSummary;
+import com.example.aiworkshop.tasks.task_5_summary.DocumentForSummary;
 import com.example.aiworkshop.cases.model.CaseType;
 import com.example.aiworkshop.cases.model.CaseStatus;
 import com.example.aiworkshop.cases.model.CaseDetail;
@@ -54,19 +55,9 @@ class CaseDeskTest {
     private final CaseSummarizer summarizer = mock(CaseSummarizer.class);
     private final CaseStatusWriter statusWriter = mock(CaseStatusWriter.class);
     private final FraudScreener screener = new FraudScreener(List.of());
-    private final CaseDesk desk = new CaseDesk(
-            cases,
-            documents,
-            summaries,
-            proposals,
-            requests,
-            new CaseChatStore(),
-            mock(DocumentFiles.class),
-            summarizer,
-            statusWriter,
-            screener,
-            mock(CaseChatAgent.class),
-            mock(DocumentReader.class));
+    private final SummaryDesk summaryDesk = new SummaryDesk(summaries, summarizer, statusWriter);
+
+    private final CaseDesk desk = new CaseDesk(cases, documents, requests, summaryDesk, screener);
 
     @BeforeEach
     void aCaseWithOneUnreadableDocument() {
@@ -88,7 +79,7 @@ class CaseDeskTest {
     void theCaseDetailSaysWhichDocumentCounts() {
         documents.save(document("better.jpg", "receipt", Quality.GOOD, AT_TEN));
 
-        CaseDetail detail = desk.open(CASE_ID);
+        CaseDetail detail = desk.open(CASE_ID, List.of(), List.of());
 
         assertThat(detail.countingDocumentIds()).containsExactly("better.jpg");
         assertThat(detail.documents()).extracting(UploadedDocument::id).contains("blurry.jpg", "better.jpg");
@@ -99,7 +90,7 @@ class CaseDeskTest {
         documents.save(document("holiday-photo.png", null, Quality.POOR));
         documents.save(document("blurrier.jpg", "receipt", Quality.POOR, AT_TEN));
 
-        CaseDetail detail = desk.open(CASE_ID);
+        CaseDetail detail = desk.open(CASE_ID, List.of(), List.of());
 
         assertThat(detail.blockedDocumentIds()).containsExactly("blurrier.jpg");
         assertThat(detail.countingDocumentIds()).doesNotContain("holiday-photo.png");
@@ -109,7 +100,7 @@ class CaseDeskTest {
     void theSummarizerIsHandedTheCasesDocuments() {
         documents.save(document("better.jpg", "receipt", Quality.GOOD, AT_TEN));
 
-        desk.open(CASE_ID);
+        desk.open(CASE_ID, List.of(), List.of());
 
         assertThat(capturedProjections())
                 .extracting(DocumentForSummary::filename)
@@ -118,7 +109,7 @@ class CaseDeskTest {
 
     @Test
     void theStatusWriterIsHandedTheDerivedFactsAndNothingElse() {
-        desk.open(CASE_ID);
+        desk.open(CASE_ID, List.of(), List.of());
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<String>> blocked = ArgumentCaptor.forClass(List.class);
@@ -128,36 +119,36 @@ class CaseDeskTest {
 
     @Test
     void openingTheSameCaseTwiceWritesTheSummaryOnce() {
-        desk.open(CASE_ID);
-        desk.open(CASE_ID);
+        desk.open(CASE_ID, List.of(), List.of());
+        desk.open(CASE_ID, List.of(), List.of());
 
         verify(summarizer, times(1)).summarise(anyString(), anyList());
     }
 
     @Test
     void aNewDocumentMakesTheNextOpenWriteTheSummaryAgain() {
-        desk.open(CASE_ID);
+        desk.open(CASE_ID, List.of(), List.of());
 
         documents.save(document("better.jpg", "receipt", Quality.GOOD, AT_TEN));
-        desk.open(CASE_ID);
+        desk.open(CASE_ID, List.of(), List.of());
 
         verify(summarizer, times(2)).summarise(anyString(), anyList());
     }
 
     @Test
     void aReviewDoesNotMakeTheSummaryStale() {
-        desk.open(CASE_ID);
+        desk.open(CASE_ID, List.of(), List.of());
 
         desk.review("blurry.jpg");
-        desk.open(CASE_ID);
+        desk.open(CASE_ID, List.of(), List.of());
 
         verify(summarizer, times(1)).summarise(anyString(), anyList());
     }
 
     @Test
     void theStatusNoteIsWrittenOnEveryOpen() {
-        desk.open(CASE_ID);
-        desk.open(CASE_ID);
+        desk.open(CASE_ID, List.of(), List.of());
+        desk.open(CASE_ID, List.of(), List.of());
 
         verify(statusWriter, times(2)).write(anyString(), any(), anyList(), anyList());
     }

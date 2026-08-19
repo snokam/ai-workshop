@@ -1,14 +1,18 @@
-# Task 5 — Tools and memory
+# Task 6 — Tools and memory
 
 Every agent so far answered one question from what it was handed. This one holds a conversation
 about a case, looks things up while answering, and remembers what was already asked.
 
-**Time:** 60 minutes. **You need:** tasks 1 and 2 working, and a case with a document or two on it.
+**Time:** 60 minutes. **You need:** tasks 1, 2 and 5 working, and a case with a document or two on it.
+
+Task 5 came first for a reason: the agent's opening context includes the summary you wrote there.
+An agent that can look things up still does better when it starts out knowing what the documents say
+together.
 
 ## What changes
 
 Three things, and each is one line of wiring in
-`backend/src/main/java/com/example/aiworkshop/tasks/task_5_chat/`:
+`backend/src/main/java/com/example/aiworkshop/tasks/task_6_chat/`:
 
 **Tools.** `CaseChatTools` is four methods carrying `@Tool`. The model decides when to call them
 and LangChain4j does the calling. Read them: not one contains any logic. Every one hands straight to

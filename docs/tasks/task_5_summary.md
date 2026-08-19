@@ -1,4 +1,4 @@
-# Task 6 — Across documents
+# Task 5 — Across documents
 
 Every agent so far looked at one thing. This one reads every document on a case at once and says
 what they add up to.
@@ -25,7 +25,7 @@ That is why the case list does not run agents and opening one does.
 
 ## What to write
 
-Open `backend/src/main/java/com/example/aiworkshop/tasks/task_6_summary/CaseSummarizer.java` and
+Open `backend/src/main/java/com/example/aiworkshop/tasks/task_5_summary/CaseSummarizer.java` and
 write a system message for an agent that says, across all of them:
 
 - what is **established** — the facts more than one document agrees on

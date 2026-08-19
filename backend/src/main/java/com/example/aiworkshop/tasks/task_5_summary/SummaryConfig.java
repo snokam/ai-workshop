@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_6_summary;
+package com.example.aiworkshop.tasks.task_5_summary;
 
 import com.example.aiworkshop.workshop.UnfinishedTasks;
 import com.example.aiworkshop.workshop.WorkshopTask;

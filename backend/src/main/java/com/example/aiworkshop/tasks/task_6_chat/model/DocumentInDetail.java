@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_5_chat.model;
+package com.example.aiworkshop.tasks.task_6_chat.model;
 
 import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment;
 import com.example.aiworkshop.documents.model.UploadedDocument;

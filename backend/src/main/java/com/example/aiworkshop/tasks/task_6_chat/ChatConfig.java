@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_5_chat;
+package com.example.aiworkshop.tasks.task_6_chat;
 
 import com.example.aiworkshop.workshop.UnfinishedTasks;
 import com.example.aiworkshop.workshop.WorkshopTask;

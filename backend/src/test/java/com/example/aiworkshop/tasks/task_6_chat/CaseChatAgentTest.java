@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_5_chat;
+package com.example.aiworkshop.tasks.task_6_chat;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

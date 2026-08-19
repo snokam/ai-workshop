@@ -1,6 +1,6 @@
-package com.example.aiworkshop.tasks.task_6_summary;
+package com.example.aiworkshop.tasks.task_5_summary;
 
-import com.example.aiworkshop.tasks.task_6_summary.DocumentForSummary;
+import com.example.aiworkshop.tasks.task_5_summary.DocumentForSummary;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import dev.langchain4j.service.SystemMessage;

@@ -1,9 +1,8 @@
-package com.example.aiworkshop.tasks.task_5_chat;
+package com.example.aiworkshop.tasks.task_6_chat;
 
 import com.example.aiworkshop.cases.proposals.ProposalCard;
 import com.example.aiworkshop.cases.proposals.Proposal;
 import com.example.aiworkshop.cases.model.Case;
-import com.example.aiworkshop.cases.CaseDesk;
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolMemoryId;
@@ -28,9 +27,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class CaseChatTools {
 
-    private final CaseDesk desk;
+    private final ChatDesk desk;
 
-    CaseChatTools(CaseDesk desk) {
+    CaseChatTools(ChatDesk desk) {
         this.desk = desk;
     }
 
