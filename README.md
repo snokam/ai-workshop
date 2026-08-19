@@ -75,7 +75,7 @@ agent you write, the records it answers in, what is kept, and the endpoints the 
 | `task_5_summary/` | the expensive agent, across every document on a case |
 | `task_6_chat/` | tools and memory — the agent that suggests and never writes |
 | `task_7_create_case_chat/` | an interview instead of a form |
-| `task_8_evaluation/` | how you would know any of it works |
+| `task_8_evaluation/` | four ways of asking whether any of it works |
 
 Inside a task the shape is always the same:
 
@@ -118,6 +118,10 @@ and the agent starts filling it in. They all write in English; see
 | `task_6_chat/agent/CaseChatAgent.java` | memory id, tools, and a `Result` so tool calls survive |
 | `task_6_chat/agent/DocumentReader.java` | a second agent, given the file and no case context at all |
 | `task_7_create_case_chat/agent/CaseIntakeInterviewer.java` | asks until it has enough to open a case |
+
+An eighth lives in task 8, `SummaryJudge`, and is not part of the application. It is a model asked
+whether another model's answer holds up, which is the only way to score prose at any volume and the
+technique in here most easily used badly.
 
 Nothing in tasks 3 or 4 calls a model. Guardrails run around the call and the checks run after it,
 on bytes already in hand — no credentials, no network. The three layers are shown end to end in
