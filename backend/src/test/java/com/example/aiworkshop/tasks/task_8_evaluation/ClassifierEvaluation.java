@@ -1,7 +1,7 @@
 package com.example.aiworkshop.tasks.task_8_evaluation;
 
 import com.example.aiworkshop.cases.model.CaseType;
-import com.example.aiworkshop.cases.model.CaseTypeSuggestion;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseTypeSuggestion;
 import com.example.aiworkshop.tasks.task_1_first_agent.CaseTypeClassifier;
 import com.example.aiworkshop.tasks.task_8_evaluation.LabelledCase;
 import java.util.ArrayList;

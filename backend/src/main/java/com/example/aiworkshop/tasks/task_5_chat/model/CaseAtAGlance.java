@@ -1,4 +1,4 @@
-package com.example.aiworkshop.cases.chat;
+package com.example.aiworkshop.tasks.task_5_chat.model;
 
 import com.example.aiworkshop.cases.proposals.ProposalCard;
 import com.example.aiworkshop.cases.model.CaseStatus;

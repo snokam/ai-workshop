@@ -1,8 +1,10 @@
 package com.example.aiworkshop.tasks.task_4_postprocessing;
 
+import org.springframework.context.event.EventListener;
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentStored;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening;
 import com.example.aiworkshop.tasks.task_4_postprocessing.checks.FraudCheck;
-import com.example.aiworkshop.documents.model.DocumentAnalysis;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -25,6 +27,25 @@ public class FraudScreener {
 
     public FraudScreener(List<FraudCheck> checks) {
         this.checks = checks;
+    }
+
+    /**
+     * Runs when a document has been stored, which is the only time screening is allowed to happen.
+     *
+     * <p>Task 2 publishes and does not know this exists. That is the whole shape of the rule: a
+     * check cannot refuse an upload, because by the time any of this runs the upload is already
+     * kept.
+     */
+    @EventListener
+    public void onDocumentStored(DocumentStored stored) {
+        screen(new Upload(
+                stored.documentId(),
+                stored.caseId(),
+                stored.filename(),
+                stored.contentType(),
+                stored.content(),
+                stored.contentHash(),
+                stored.analysis()));
     }
 
     public FraudScreening screen(Upload upload) {

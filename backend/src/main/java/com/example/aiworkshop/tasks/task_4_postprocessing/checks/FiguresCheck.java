@@ -1,6 +1,6 @@
 package com.example.aiworkshop.tasks.task_4_postprocessing.checks;
 
-import com.example.aiworkshop.documents.model.ExtractedField;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.ExtractedField;
 import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Kind;

@@ -2,7 +2,7 @@ package com.example.aiworkshop.tasks.task_4_postprocessing.checks;
 
 import com.example.aiworkshop.workshop.WorkshopTask;
 import com.example.aiworkshop.workshop.TaskNotImplementedException;
-import com.example.aiworkshop.tasks.task_3_guardrails.model.ManipulationAttempt;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.ManipulationAttempt;
 import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Kind;

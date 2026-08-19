@@ -2,7 +2,7 @@ package com.example.aiworkshop.tasks.task_1_first_agent;
 
 import com.example.aiworkshop.cases.store.CaseStore;
 import com.example.aiworkshop.cases.model.CreatedCase;
-import com.example.aiworkshop.cases.model.CaseTypeSuggestion;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseTypeSuggestion;
 import com.example.aiworkshop.cases.model.CaseType;
 import com.example.aiworkshop.cases.model.Case;
 import java.time.Year;

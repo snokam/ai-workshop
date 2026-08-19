@@ -1,4 +1,4 @@
-package com.example.aiworkshop.cases.interview;
+package com.example.aiworkshop.tasks.task_7_create_case_chat.model;
 
 import com.example.aiworkshop.cases.model.CaseType;
 import java.util.LinkedHashMap;

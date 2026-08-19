@@ -10,7 +10,6 @@ import dev.langchain4j.guardrail.OutputGuardrail;
 public final class Guardrails {
 
 
-    public static final String INTAKE_INSTRUCTION = "Analyse the attached file.";
 
     private Guardrails() {}
 

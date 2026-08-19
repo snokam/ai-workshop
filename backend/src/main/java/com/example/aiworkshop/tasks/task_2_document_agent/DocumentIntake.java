@@ -2,16 +2,13 @@ package com.example.aiworkshop.tasks.task_2_document_agent;
 
 import com.example.aiworkshop.workshop.WorkshopTask;
 import com.example.aiworkshop.workshop.TaskNotImplementedException;
-import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
-import com.example.aiworkshop.tasks.task_3_guardrails.Guardrails;
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
 import com.example.aiworkshop.documents.store.DocumentStore;
 import com.example.aiworkshop.documents.store.DocumentFiles;
 import com.example.aiworkshop.documents.model.UploadedDocument;
-import com.example.aiworkshop.documents.model.DocumentAnalysis;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;
 import com.example.aiworkshop.cases.store.CaseStore;
 import com.example.aiworkshop.cases.model.Case;
-import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.TextContent;
 import java.io.IOException;
@@ -27,6 +24,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,19 +36,26 @@ public class DocumentIntake {
     private final DocumentStore store;
     private final CaseStore cases;
     private final Map<String, Object> arrivals = new ConcurrentHashMap<>();
-    private final FraudScreener screener;
+    /**
+     * The only text sent alongside the file. Task 3's input guardrail refuses a message carrying
+     * anything else, which is why it lives here rather than there: this is what intake sends, and a
+     * guardrail checks what it was given.
+     */
+    public static final String INTAKE_INSTRUCTION = "Analyse the attached file.";
+
+    private final ApplicationEventPublisher events;
     private final DocumentFiles files;
 
     DocumentIntake(
             DocumentAnalyzer analyzer,
             DocumentStore store,
             CaseStore cases,
-            FraudScreener screener,
+            ApplicationEventPublisher events,
             DocumentFiles files) {
         this.analyzer = analyzer;
         this.store = store;
         this.cases = cases;
-        this.screener = screener;
+        this.events = events;
         this.files = files;
     }
 
@@ -101,7 +106,7 @@ public class DocumentIntake {
                 false);
         store.save(document);
 
-        screener.screen(new Upload(
+        events.publishEvent(new DocumentStored(
                 id, caseId, file.getOriginalFilename(), mimeType, file.getBytes(), contentHash, analysis));
         return document;
     }
@@ -127,14 +132,14 @@ public class DocumentIntake {
 
     private List<Content> promptFor(MultipartFile file, String mimeType) throws IOException {
         return List.of(
-                TextContent.from(Guardrails.INTAKE_INSTRUCTION),
+                TextContent.from(INTAKE_INSTRUCTION),
                 DocumentFiles.contentOf(file.getBytes(), mimeType));
 
         // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 2, part 2. Turn an upload into what the model is sent.
         //
         // This is the whole of "give it a file": a list of Content, one text and one file. The text
-        // is Guardrails.INTAKE_INSTRUCTION and nothing else — task 3's input guardrail refuses
+        // is INTAKE_INSTRUCTION and nothing else — task 3's input guardrail refuses
         // anything more, and it is worth understanding why before you write past it.
         //
         // DocumentFiles.contentOf(bytes, mimeType) decides between PdfFileContent and ImageContent

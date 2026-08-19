@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_3_guardrails.model;
+package com.example.aiworkshop.tasks.task_2_document_agent.model;
 
 import dev.langchain4j.model.output.structured.Description;
 

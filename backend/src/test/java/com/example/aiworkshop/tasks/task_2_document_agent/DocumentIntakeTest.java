@@ -1,14 +1,14 @@
 package com.example.aiworkshop.tasks.task_2_document_agent;
 
-import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
+import org.springframework.context.ApplicationEventPublisher;
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
 import com.example.aiworkshop.documents.store.DocumentStore;
 import com.example.aiworkshop.documents.store.DocumentFiles;
 import com.example.aiworkshop.documents.model.UploadedDocument;
-import com.example.aiworkshop.documents.model.QualityAssessment;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment;
 import com.example.aiworkshop.documents.model.MatchConfidence;
-import com.example.aiworkshop.documents.model.ExtractedField;
-import com.example.aiworkshop.documents.model.DocumentAnalysis;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.ExtractedField;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;
 import com.example.aiworkshop.cases.store.CaseStore;
 import com.example.aiworkshop.cases.model.CaseType;
 import com.example.aiworkshop.cases.model.Case;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.aiworkshop.documents.model.QualityAssessment.Quality;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment.Quality;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;
@@ -57,7 +57,8 @@ class DocumentIntakeTest {
     private final DocumentAnalyzer analyzer = mock(DocumentAnalyzer.class);
     private final DocumentStore store = new DocumentStore();
     private final CaseStore cases = new CaseStore();
-    private final FraudScreener screener = new FraudScreener(List.of());
+    /** Intake announces that a document was stored; nothing in this test cares who hears it. */
+    private final ApplicationEventPublisher events = event -> {};
 
     @TempDir
     Path directory;
@@ -70,7 +71,7 @@ class DocumentIntakeTest {
         cases.save(new Case(
                 CASE_ID, "CASE-2026-001", CaseType.HOME_CONTENTS, List.of("proof of identity", "receipt")));
         files = new DocumentFiles(directory);
-        intake = new DocumentIntake(analyzer, store, cases, screener, files);
+        intake = new DocumentIntake(analyzer, store, cases, events, files);
     }
 
     @Test

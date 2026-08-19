@@ -1,5 +1,6 @@
 package com.example.aiworkshop.documents.model;
 
+import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;
 import java.time.Instant;
 
 public record UploadedDocument(

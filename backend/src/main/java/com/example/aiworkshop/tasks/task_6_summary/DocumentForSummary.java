@@ -1,8 +1,10 @@
 package com.example.aiworkshop.tasks.task_6_summary;
 
+import com.example.aiworkshop.tasks.task_5_chat.model.DocumentInDetail;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment;
 import com.example.aiworkshop.documents.model.UploadedDocument;
-import com.example.aiworkshop.documents.model.ExtractedField;
-import com.example.aiworkshop.documents.model.QualityAssessment.Quality;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.ExtractedField;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment.Quality;
 import java.util.List;
 import java.util.stream.Collectors;
 

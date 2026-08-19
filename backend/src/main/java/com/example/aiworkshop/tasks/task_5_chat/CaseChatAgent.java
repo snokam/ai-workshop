@@ -1,7 +1,7 @@
 package com.example.aiworkshop.tasks.task_5_chat;
 
 import com.example.aiworkshop.cases.model.Case;
-import com.example.aiworkshop.cases.chat.CaseAtAGlance;
+import com.example.aiworkshop.tasks.task_5_chat.model.CaseAtAGlance;
 import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.Result;
 import dev.langchain4j.service.SystemMessage;

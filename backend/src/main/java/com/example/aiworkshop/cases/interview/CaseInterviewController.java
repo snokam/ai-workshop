@@ -1,5 +1,8 @@
 package com.example.aiworkshop.cases.interview;
 
+import com.example.aiworkshop.tasks.task_7_create_case_chat.InterviewCaseOpener;
+import com.example.aiworkshop.tasks.task_7_create_case_chat.model.CaseScenario;
+import com.example.aiworkshop.tasks.task_7_create_case_chat.model.InterviewTurn;
 import com.example.aiworkshop.cases.model.CreatedCase;
 import com.example.aiworkshop.tasks.task_7_create_case_chat.CaseIntakeInterviewer;
 import com.example.aiworkshop.workshop.TaskNotImplementedAdvice;

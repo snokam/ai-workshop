@@ -1,7 +1,8 @@
 package com.example.aiworkshop.tasks.task_3_guardrails;
 
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
-import com.example.aiworkshop.documents.model.DocumentAnalysis;
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentIntake;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -97,7 +98,7 @@ class GuardrailTest {
 
     private static List<dev.langchain4j.data.message.Content> anUploadedFile() {
         return List.of(
-                TextContent.from(Guardrails.INTAKE_INSTRUCTION),
+                TextContent.from(DocumentIntake.INTAKE_INSTRUCTION),
                 ImageContent.from("aGVsbG8=", "image/png"));
     }
 

@@ -1,5 +1,6 @@
 package com.example.aiworkshop.tasks.task_3_guardrails.guardrails;
 
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentIntake;
 import com.example.aiworkshop.tasks.task_3_guardrails.Guardrails;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
@@ -25,7 +26,7 @@ public class UploadedFileGuardrail implements InputGuardrail {
         }
 
         for (Content content : contents) {
-        if (content instanceof TextContent text && !Guardrails.INTAKE_INSTRUCTION.equals(text.text())) {
+        if (content instanceof TextContent text && !DocumentIntake.INTAKE_INSTRUCTION.equals(text.text())) {
         return fatal("Only the intake instruction may accompany the file. Found: \"" + text.text() + "\"");
         }
         }
@@ -36,7 +37,7 @@ public class UploadedFileGuardrail implements InputGuardrail {
         //
         // request.userMessage().contents() is what is about to be sent. Exactly one PdfFileContent
         // or ImageContent belongs there, and the only text allowed beside it is
-        // Guardrails.INTAKE_INSTRUCTION. Return fatal(...) with a reason when it is anything else.
+        // DocumentIntake.INTAKE_INSTRUCTION. Return fatal(...) with a reason when it is anything else.
         //
         // Returning success() unconditionally is what an unwritten guardrail does: it lets
         // everything through, which is why the tests below are red.
