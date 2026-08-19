@@ -73,6 +73,23 @@ nothing that can disagree with what you actually wrote.
 Each task also has tests of its own next to the code, checking what it does rather than that it
 exists. `TaskCompletionTest` going green means you set a flag; those going green means it works.
 
+## Where the code for a task is
+
+Each task folder holds what you write: the agent, its wiring, and the records its agent defines the
+shape of. Every folder has a `README.md` saying which files are yours and which packages it reaches
+into.
+
+What it reaches into stays outside, and that is deliberate. `Case` and `UploadedDocument` and their
+stores are used by six of the eight tasks each — they are what the application *is*, and they would
+exist if there were no workshop. An agent is what a task *is*. Moving the domain inside the tasks
+would mean task 6 depending on task 1 for the idea of a case, which is not what it depends on at
+all.
+
+The one rule the layout does enforce: **a task may depend only on earlier tasks.** There are no
+exceptions, which is why task 3 contributes its guardrails to task 2's agent rather than task 2
+fetching them, and why task 4 listens for a document being stored rather than task 2 calling it.
+Both are better designs than the ones they replaced, and neither was chosen for tidiness.
+
 ## The finish line
 
 Green tests mean you wired it, not that it works. When you think you are done, do this, and do it
