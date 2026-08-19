@@ -53,7 +53,7 @@ of — your code, or this week's model?
 
 ## Part 1 — The input guardrail
 
-**Write:** `tasks/task_3_guardrails/UploadedFileGuardrail.java`, implementing `dev.langchain4j.guardrail.InputGuardrail`.
+**Write:** `tasks/task_3_guardrails/guardrails/UploadedFileGuardrail.java`, implementing `dev.langchain4j.guardrail.InputGuardrail`.
 
 **The rule:** the message intake sends contains exactly one file and exactly one piece of text — the
 fixed instruction this application wrote. Anything else fails the call.
@@ -68,7 +68,8 @@ public class UploadedFileGuardrail implements InputGuardrail {
 }
 ```
 
-Wire it up in `config/AiServiceConfig.java`. Note that this means abandoning `AiServices.create` for
+Wire it up in `tasks/task_3_guardrails/guardrails/GuardrailConfig.java`, which publishes it as a
+bean that task 2's `DocumentAgentConfig` collects. Note that this means abandoning `AiServices.create` for
 the builder:
 
 ```java
@@ -99,7 +100,7 @@ stranger chose is now part of your prompt. With it, the call never happens.
 
 ## Part 2 — The output guardrail
 
-**Write:** `tasks/task_3_guardrails/AnalysisGuardrail.java`, implementing `dev.langchain4j.guardrail.OutputGuardrail`.
+**Write:** `tasks/task_3_guardrails/guardrails/AnalysisGuardrail.java`, implementing `dev.langchain4j.guardrail.OutputGuardrail`.
 
 **The rule:** `matchedRequiredDocument` must be `null` or one of the Required Documents this Case
 actually asked for. Anything else did not match, whatever the model said and whatever the document
@@ -138,7 +139,7 @@ someone's insurance claim is a worse bug than the one it prevents.
 cd backend && ./mvnw test -Dtest=GuardrailTest
 ```
 
-Six tests. They build the analyzer through `AiServices` exactly as `AiServiceConfig` does and put a
+Six tests. They build the analyzer through `AiServices` exactly as `DocumentAgentConfig` does and put a
 scripted model behind it, so they test the wiring and not just your `validate` method — comment out
 `.outputGuardrails(...)` and they fail. No credentials, no network, 0.3 seconds.
 

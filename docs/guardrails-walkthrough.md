@@ -82,7 +82,7 @@ the documents this case needs".
 > ```
 >
 > Six tests, 0.3 seconds, no credentials. They build the analyzer through `AiServices` exactly as
-> `AiServiceConfig` does, so they prove the guardrails are wired in and not merely written. Delete
+> `DocumentAgentConfig` does, so they prove the guardrails are wired in and not merely written. Delete
 > the `.outputGuardrails(...)` line and `aMatchTheCaseNeverAskedForIsStruckOut` fails.
 
 One detail worth showing a room of Java developers: an output guardrail sees the model's **raw text**,

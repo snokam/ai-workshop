@@ -1,41 +1,44 @@
-import { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { openCase, reviewDocument } from '../../api'
-import type { CaseDetail } from '../../api'
-import { CaseChat } from '../../components/chat/CaseChat'
-import { Checklist } from '../../components/case/Checklist'
-import { DocumentCard } from '../../components/case/DocumentCard'
-import { previewOf, standingOf } from '../../components/case/standing'
-import { STATUS_LABEL } from '../../lib/labels'
-import { PageWait } from '../../components/feedback/Loader'
-import { Failure } from '../../components/feedback/Failure'
-import { TaskGate } from '../../components/workshop/TaskGate'
+import { useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { openCase, reviewDocument } from "../../api";
+import type { CaseDetail } from "../../api";
+import { CaseChat } from "../../components/task_6_chat/CaseChat";
+import { Checklist } from "../../components/task_1_first_agent/Checklist";
+import { DocumentCard } from "../../components/task_2_document_agent/DocumentCard";
+import {
+  previewOf,
+  standingOf,
+} from "../../components/task_2_document_agent/standing";
+import { STATUS_LABEL } from "../../lib/labels";
+import { PageWait } from "../../components/feedback/Loader";
+import { Failure } from "../../components/feedback/Failure";
+import { TaskGate } from "../../components/workshop/TaskGate";
 
 export function Case() {
-  const { caseId = '' } = useParams()
-  const [detail, setDetail] = useState<CaseDetail | null>(null)
-  const [error, setError] = useState<Error | null>(null)
+  const { caseId = "" } = useParams();
+  const [detail, setDetail] = useState<CaseDetail | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   const read = useCallback(async () => {
-    setError(null)
+    setError(null);
     try {
-      setDetail(await openCase(caseId))
+      setDetail(await openCase(caseId));
     } catch (e) {
-      setError(e as Error)
+      setError(e as Error);
     }
-  }, [caseId])
+  }, [caseId]);
 
   useEffect(() => {
-    void read()
-  }, [read])
+    void read();
+  }, [read]);
 
   async function review(documentId: string) {
-    setError(null)
+    setError(null);
     try {
-      await reviewDocument(documentId)
-      await read()
+      await reviewDocument(documentId);
+      await read();
     } catch (e) {
-      setError(e as Error)
+      setError(e as Error);
     }
   }
 
@@ -48,10 +51,10 @@ export function Case() {
           <PageWait>Reading the case…</PageWait>
         )}
       </>
-    )
+    );
   }
 
-  const { overview } = detail
+  const { overview } = detail;
 
   return (
     <>
@@ -72,7 +75,11 @@ export function Case() {
             <p>{detail.statusNote}</p>
           </section>
 
-          <Checklist chosen={overview} askedFor={detail.documentRequests} />
+          <Checklist
+            chosen={overview}
+            askedFor={detail.documentRequests}
+            askedForHeading="You have also asked for"
+          />
 
           <TaskGate
             task="SUMMARY"
@@ -84,28 +91,33 @@ export function Case() {
             </section>
           </TaskGate>
 
-          <section className="documents">
-            {detail.documents.length === 0 && (
-              <p className="empty">Nothing uploaded to this case yet.</p>
-            )}
-            {detail.documents.map((doc) => (
-              <DocumentCard
-                key={doc.id}
-                doc={doc}
-                preview={previewOf(doc)}
-                standing={standingOf(doc, detail)}
-                blocking={detail.blockedDocumentIds.includes(doc.id)}
-                screening={detail.screenings.find(
-                  (s) => s.documentId === doc.id,
-                )}
-                onReview={() => void review(doc.id)}
-              />
-            ))}
-          </section>
+          <TaskGate
+            task="POSTPROCESSING"
+            instead="Nothing below has been screened. The checks that catch a duplicate upload, an edited photo or a figure that does not add up are plain Java after the answer, and you have not written them yet."
+          >
+            <section className="documents">
+              {detail.documents.length === 0 && (
+                <p className="empty">Nothing uploaded to this case yet.</p>
+              )}
+              {detail.documents.map((doc) => (
+                <DocumentCard
+                  key={doc.id}
+                  doc={doc}
+                  preview={previewOf(doc)}
+                  standing={standingOf(doc, detail)}
+                  blocking={detail.blockedDocumentIds.includes(doc.id)}
+                  screening={detail.screenings.find(
+                    (s) => s.documentId === doc.id,
+                  )}
+                  onReview={() => void review(doc.id)}
+                />
+              ))}
+            </section>
+          </TaskGate>
         </div>
 
         <CaseChat detail={detail} onCaseChanged={read} />
       </div>
     </>
-  )
+  );
 }

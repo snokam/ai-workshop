@@ -1,24 +1,34 @@
-import { useEffect, useRef, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
-import { listCases, listDocumentRequests, listDocuments, uploadDocument } from '../../api'
-import type { CaseOverview, CreatedCase, DocumentRequest, UploadedDocument } from '../../api'
-import { Checklist } from '../../components/case/Checklist'
-import { DocumentCard } from '../../components/case/DocumentCard'
-import { CONFIDENCE_LABEL } from '../../lib/labels'
-import { previewOf } from '../../components/case/standing'
-import { Loader } from '../../components/feedback/Loader'
-import { Failure } from '../../components/feedback/Failure'
-import { TaskGate } from '../../components/workshop/TaskGate'
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import {
+  listCases,
+  listDocumentRequests,
+  listDocuments,
+  uploadDocument,
+} from "../../api";
+import type {
+  CaseOverview,
+  CreatedCase,
+  DocumentRequest,
+  UploadedDocument,
+} from "../../api";
+import { Checklist } from "../../components/task_1_first_agent/Checklist";
+import { DocumentCard } from "../../components/task_2_document_agent/DocumentCard";
+import { CONFIDENCE_LABEL } from "../../lib/labels";
+import { previewOf } from "../../components/task_2_document_agent/standing";
+import { Loader } from "../../components/feedback/Loader";
+import { Failure } from "../../components/feedback/Failure";
+import { TaskGate } from "../../components/workshop/TaskGate";
 
 export function Case() {
-  const { caseId = '' } = useParams()
-  const intro = (useLocation().state as { intro?: CreatedCase } | null)?.intro
-  const [overview, setOverview] = useState<CaseOverview | null>(null)
-  const [documents, setDocuments] = useState<UploadedDocument[]>([])
-  const [askedFor, setAskedFor] = useState<DocumentRequest[]>([])
-  const [busyWith, setBusyWith] = useState<string | null>(null)
-  const [error, setError] = useState<Error | null>(null)
-  const fileInput = useRef<HTMLInputElement>(null)
+  const { caseId = "" } = useParams();
+  const intro = (useLocation().state as { intro?: CreatedCase } | null)?.intro;
+  const [overview, setOverview] = useState<CaseOverview | null>(null);
+  const [documents, setDocuments] = useState<UploadedDocument[]>([]);
+  const [askedFor, setAskedFor] = useState<DocumentRequest[]>([]);
+  const [busyWith, setBusyWith] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
 
   const checklist: CaseOverview =
     overview ??
@@ -33,51 +43,51 @@ export function Case() {
         }
       : {
           id: caseId,
-          reference: '',
-          typeLabel: '',
-          status: 'AWAITING_DOCUMENTS',
+          reference: "",
+          typeLabel: "",
+          status: "AWAITING_DOCUMENTS",
           requiredDocuments: [],
           outstanding: [],
-        })
+        });
 
   async function refreshOverview() {
-    const all = await listCases()
-    setOverview(all.find((c) => c.id === caseId) ?? null)
-    setAskedFor(await listDocumentRequests(caseId))
+    const all = await listCases();
+    setOverview(all.find((c) => c.id === caseId) ?? null);
+    setAskedFor(await listDocumentRequests(caseId));
   }
 
   useEffect(() => {
     function refresh() {
-      refreshOverview().catch((e: Error) => setError(e))
+      refreshOverview().catch((e: Error) => setError(e));
     }
 
-    refresh()
+    refresh();
     listDocuments()
       .then((all) => setDocuments(all.filter((d) => d.caseId === caseId)))
-      .catch((e: Error) => setError(e))
+      .catch((e: Error) => setError(e));
 
-    const polling = setInterval(refresh, 5000)
-    return () => clearInterval(polling)
+    const polling = setInterval(refresh, 5000);
+    return () => clearInterval(polling);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [caseId])
+  }, [caseId]);
 
   async function handleFiles(files: FileList | null) {
-    if (!files?.length) return
-    setError(null)
+    if (!files?.length) return;
+    setError(null);
 
     for (const file of Array.from(files)) {
-      setBusyWith(file.name)
+      setBusyWith(file.name);
       try {
-        const uploaded = await uploadDocument(caseId, file)
-        setDocuments((current) => [uploaded, ...current])
-        await refreshOverview()
+        const uploaded = await uploadDocument(caseId, file);
+        setDocuments((current) => [uploaded, ...current]);
+        await refreshOverview();
       } catch (e) {
-        setError(e as Error)
+        setError(e as Error);
       } finally {
-        setBusyWith(null)
+        setBusyWith(null);
       }
     }
-    if (fileInput.current) fileInput.current.value = ''
+    if (fileInput.current) fileInput.current.value = "";
   }
 
   return (
@@ -88,7 +98,7 @@ export function Case() {
           <h1>{intro.typeLabel}</h1>
           <p className="reference">{intro.reference}</p>
           <p className="rationale">
-            {intro.rationale}{' '}
+            {intro.rationale}{" "}
             <span className="confidence-note">
               — the agent is {CONFIDENCE_LABEL[intro.confidence]}
             </span>
@@ -96,7 +106,7 @@ export function Case() {
         </section>
       ) : (
         <header>
-          <h1>{checklist.typeLabel || 'Your case'}</h1>
+          <h1>{checklist.typeLabel || "Your case"}</h1>
           <p className="case-reference-line">{checklist.reference}</p>
         </header>
       )}
@@ -125,37 +135,42 @@ export function Case() {
       )}
 
       <TaskGate
-        task="DOCUMENT_AGENT"
-        instead="A file can be dropped here, but the agent that reads an uploaded PDF or photo has not been written yet."
+        task="GUARDRAILS"
+        instead="Whatever is dropped here goes straight to the agent. Nothing yet refuses a file it cannot read, and nothing yet checks the answer that comes back — so a document that tells the agent what to write is believed."
       >
-        <label
-          className={`dropzone ${busyWith ? 'busy' : ''}`}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault()
-            void handleFiles(e.dataTransfer.files)
-          }}
+        <TaskGate
+          task="DOCUMENT_AGENT"
+          instead="A file can be dropped here, but the agent that reads an uploaded PDF or photo has not been written yet."
         >
-          <input
-            ref={fileInput}
-            type="file"
-            accept="application/pdf,image/*"
-            multiple
-            disabled={busyWith !== null}
-            onChange={(e) => void handleFiles(e.target.files)}
-          />
-          {busyWith ? (
-            <span className="reading">
-              <Loader />
-              Reading <strong>{busyWith}</strong>…
-            </span>
-          ) : (
-            <span>
-              <strong>Drop a PDF or a photo here</strong>
-              <small>or click to choose a file</small>
-            </span>
-          )}
-        </label>
+          <label
+            className={`dropzone ${busyWith ? "busy" : ""}`}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              void handleFiles(e.dataTransfer.files);
+            }}
+          >
+            <input
+              ref={fileInput}
+              type="file"
+              accept="application/pdf,image/*"
+              multiple
+              disabled={busyWith !== null}
+              onChange={(e) => void handleFiles(e.target.files)}
+            />
+            {busyWith ? (
+              <span className="reading">
+                <Loader />
+                Reading <strong>{busyWith}</strong>…
+              </span>
+            ) : (
+              <span>
+                <strong>Drop a PDF or a photo here</strong>
+                <small>or click to choose a file</small>
+              </span>
+            )}
+          </label>
+        </TaskGate>
       </TaskGate>
 
       {error && <Failure error={error} />}
@@ -169,5 +184,5 @@ export function Case() {
         ))}
       </section>
     </>
-  )
+  );
 }

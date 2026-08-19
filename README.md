@@ -6,15 +6,14 @@ of it, and whether the file is legible enough to work with.
 The domain language lives in [CONTEXT.md](./CONTEXT.md), and the workshop exercises in
 [docs/tasks/](./docs/tasks).
 
-**Nothing is finished, and it runs anyway.** Every agent is waiting to be written, and the
-application starts regardless: each screen works, and the ones needing a task you have not done say
-which file to open. Six exercises, in order, each one an agent. A worked version of all of them is
-on the `solutions` branch — look after you have tried.
+**Nothing is finished, and it runs anyway.** The application starts with every agent unwritten:
+each screen works, the controls stay live, and the ones needing a task you have not done say which
+file to open. Eight exercises, in order, each one an agent or the thing that keeps an agent honest.
 
 ## Layout
 
 ```
-backend/    Spring Boot, Java 25 — the API and every agent
+backend/    Spring Boot, Java 25 — the API and every agent, one folder per task
 frontend/   Vite and React — the two screens
 docs/       the task briefs, the walkthrough, and the ADRs
 assets/     files to drag into the app
@@ -61,86 +60,85 @@ gcloud auth application-default set-quota-project "$GOOGLE_CLOUD_PROJECT"
 Foundry needs `AZURE_OPENAI_API_KEY` exported. Both providers accept PDFs and images as inline data,
 so uploads are sent to the model as-is — nothing extracts text first.
 
-## Where the agents are
+## Where everything is
 
-Paths below are relative to `backend/src/main/java/com/example/aiworkshop/`.
-
-There are five, and each one is an interface, a system message and a return type. LangChain4j
-generates the implementation, so the return type *is* the output schema — add a component to
-`DocumentAnalysis` and the intake agent starts filling it in. Every agent is one line in
-`config/AiServiceConfig.java`, except the Case Chat, which is the only one with tools and a memory.
-
-They all write in English; see [ADR 0002](./docs/adr/0002-agents-write-in-english.md).
-
-Intake — runs once, when a file is uploaded:
+The backend is eight folders, one per task, under
+`backend/src/main/java/com/example/aiworkshop/tasks/`. Each holds everything that task is: the
+agent you write, the records it answers in, what is kept, and the endpoints the screen calls.
 
 | | |
 |---|---|
-| `tasks/task_2_document_agent/agent/DocumentAnalyzer.java` | the agent |
-| `documents/DocumentAnalysis.java` | what it returns, and therefore what it is asked for |
-| `documents/DocumentIntake.java` | turns an upload into the file content the model reads |
-| `documents/DocumentStore.java` | in-memory; everything is lost on restart |
-| `documents/DocumentFiles.java` | the bytes, on disk, so an agent can look again ([ADR 0004](./docs/adr/0004-uploaded-files-are-kept-on-disk.md)) |
+| `task_1_first_agent/` | the model itself, a classifier, and the case its answer opens |
+| `task_2_document_agent/` | the agent that reads an uploaded PDF or photo |
+| `task_3_guardrails/` | one guardrail on the way out, one on the way back |
+| `task_4_postprocessing/` | plain Java after the answer: what the model cannot know |
+| `task_5_summary/` | the expensive agent, across every document on a case |
+| `task_6_chat/` | tools and memory — the agent that suggests and never writes |
+| `task_7_create_case_chat/` | an interview instead of a form |
+| `task_8_evaluation/` | how you would know any of it works |
 
-Case handling — what the handler's screen runs against one Case:
+Inside a task the shape is always the same:
 
-| | |
-|---|---|
-| `cases/model/Case.java` | Case Status, derived in Java rather than by a model |
-| `cases/CaseSummarizer.java` | the expensive agent: what the Documents say, across all of them |
-| `cases/DocumentForSummary.java` | what that agent is shown — and, deliberately, what it is not |
-| `cases/CaseStatusWriter.java` | the cheap agent: derived facts in, one situation report out |
-| `cases/CaseSummaryStore.java` | caches a summary against the Documents it was written over |
-| `cases/CaseDesk.java` | the seam the screen talks to; the only caller of any handler-side agent |
+```
+task_2_document_agent/
+  DocumentsController.java     the endpoints
+  DocumentIntake.java          the code that calls the agent
+  agent/                       the agent and its wiring — this is what you write
+  model/                       the records it answers in
+  store/                       what is kept
+```
 
-Case Chat — one conversation per Case, with tools, that suggests and never writes:
+Each task has its own README naming what is yours to write and what it uses from the tasks before
+it. The test tree mirrors the same folders.
 
-| | |
-|---|---|
-| `cases/CaseChatAgent.java` | the agent: memory id, tools, and a `Result` so tool calls survive |
-| `cases/CaseChatTools.java` | four tools, no logic — every one hands straight to `CaseDesk` |
-| `cases/CaseAtAGlance.java` | what it starts with; `DocumentForChat` is one line of it |
-| `cases/DocumentInDetail.java` | what the detail tool fetches — the half the index leaves out |
-| `documents/DocumentReader.java` | a second agent, given the file and no Case context at all |
-| `cases/Proposal.java` | sealed: confirming one is a pattern switch that must stay exhaustive |
-| `cases/DocumentRequest.java` | what a confirmed Proposal produces, and what a Claimant sees |
+**A task may use the tasks before it and never the ones after it.** That is what lets you stop
+after any exercise and still have something that runs. When a later task needs to change how an
+earlier one behaves it contributes rather than calls: task 2 answers task 1's `CaseProgress`, task
+3 hands its guardrails to task 2 as beans, task 4 listens for task 2's event. `TaskDependencyTest`
+fails if the rule is ever broken, and `WorkshopTaskTest` fails if a brief points at a file that has
+moved.
 
-Guardrails and screening — what stops a Document talking the agent round. Both are workshop tasks,
-and the code sits under the task it belongs to:
+Outside the tasks there is only `workshop/`, which works out which exercises are done by probing
+your code rather than reading a flag, and `config/`, which is the Foundry provider Snokam staff
+use instead of Vertex.
 
-| | |
-|---|---|
-| `tasks/task_3_guardrails/Guardrails.java` | **entrypoint** — the pair the intake agent is wired with |
-| `tasks/task_3_guardrails/guardrails/` | the two guardrails: one on the way out, one on the way back |
-| `tasks/task_3_guardrails/model/` | what the agent returns when a Document tries to give it orders |
-| `tasks/task_4_postprocessing/FraudScreener.java` | **entrypoint** — runs every check; cannot refuse an upload and cannot throw |
-| `tasks/task_4_postprocessing/checks/` | the seam, and three checks: duplicate bytes, image metadata, the agent's own report |
-| `tasks/task_4_postprocessing/model/` | what a screening is, and the projection that keeps it off the upload screen |
+### The agents
 
-Each task is one folder with one entrypoint. Nothing outside a task calls past it.
-
-The briefs are [task 3](./docs/tasks/task_3_guardrails.md) and
-[task 4](./docs/tasks/task_4_postprocessing.md); the three layers are demonstrated end to end in
-[the walkthrough](./docs/guardrails-walkthrough.md), with drag-in files in [`assets/`](./assets).
-Who sees what is [ADR 0005](./docs/adr/0005-fraud-signals-are-handler-side.md).
-
-Nothing in either task needs credentials or a network: the checks read the bytes that are already in
-hand.
-
-The frontend is laid out like the pages, so where a file sits says who uses it:
+Seven, and each one is an interface, a system message and a return type. LangChain4j generates the
+implementation, so the return type *is* the output schema — add a component to `DocumentAnalysis`
+and the agent starts filling it in. They all write in English; see
+[ADR 0002](./docs/adr/0002-agents-write-in-english.md).
 
 | | |
 |---|---|
-| `frontend/src/App.tsx` | the route table, and nothing else |
-| `frontend/src/pages/claimant/` | `/`, `/cases`, `/cases/:caseId` |
-| `frontend/src/pages/handler/` | `/casehandler`, `/casehandler/cases/:caseId` |
-| `frontend/src/components/case/` | the pieces both Case screens are built from |
-| `frontend/src/components/chat/` | the chat, its turns, and the proposals it puts up |
-| `frontend/src/components/feedback/` | waiting, and everything that can come back wrong |
-| `frontend/src/components/workshop/` | which exercises are done, and what a screen says when one is not |
-| `frontend/src/components/layout/` | the snokam header and footer, and the router bridge they use |
-| `frontend/src/api/` | types, the fetch helpers, and one file per resource |
-| `frontend/src/lib/` | labels, and the task state every screen reads |
+| `task_1_first_agent/agent/CaseTypeClassifier.java` | a sentence in, a case type out |
+| `task_2_document_agent/agent/DocumentAnalyzer.java` | the file itself, sent as inline data |
+| `task_5_summary/agent/CaseSummarizer.java` | the expensive one: every document, in one prompt |
+| `task_5_summary/agent/CaseStatusWriter.java` | the cheap one: derived facts in, one situation report out |
+| `task_6_chat/agent/CaseChatAgent.java` | memory id, tools, and a `Result` so tool calls survive |
+| `task_6_chat/agent/DocumentReader.java` | a second agent, given the file and no case context at all |
+| `task_7_create_case_chat/agent/CaseIntakeInterviewer.java` | asks until it has enough to open a case |
 
-A screen that needs an unwritten task keeps working: the controls stay live, the
-explanation sits under them, and using them fails with the file to open.
+Nothing in tasks 3 or 4 calls a model. Guardrails run around the call and the checks run after it,
+on bytes already in hand — no credentials, no network. The three layers are shown end to end in
+[the walkthrough](./docs/guardrails-walkthrough.md), with files to drag in under
+[`assets/`](./assets). Who is allowed to see a fraud signal is
+[ADR 0005](./docs/adr/0005-fraud-signals-are-handler-side.md).
+
+### The frontend
+
+```
+frontend/src/
+  pages/                    one folder per person: file-claim/ and claim-handler/
+  components/task_*/        grouped by the task that brings them to life
+  components/{feedback,layout,workshop}/   scaffolding, belonging to no task
+  api/                      one file per group of endpoints, and the types they return
+  lib/                      labels, and the task state every screen reads
+```
+
+Components follow the tasks the way the backend does. Pages do not, because a page is a screen
+rather than a task: the handler's case screen shows the work of six of them at once.
+
+A screen that needs an unwritten task keeps working. The controls stay live, the explanation sits
+under them, and using them fails with the file to open — being told what to write is not the same
+as watching the thing you tried come back empty.

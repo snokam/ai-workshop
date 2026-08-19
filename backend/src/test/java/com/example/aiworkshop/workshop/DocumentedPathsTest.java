@@ -20,8 +20,16 @@ import org.junit.jupiter.api.Test;
  */
 class DocumentedPathsTest {
     private static final Path REPO = Path.of("..");
-    private static final Pattern PATH =
-            Pattern.compile("`?((?:backend|frontend|docs)/[\\w./@-]+\\.(?:java|tsx?|md))`?");
+    private static final Pattern PATH = Pattern.compile("`([\\w@/.-]+\\.(?:java|tsx?|md))`");
+
+    /**
+     * A path in the briefs is written from wherever makes it readable: from the repository root,
+     * from the Java source root, from the tasks folder, or from the folder the document is in. All
+     * four are fair, so a path counts as found if it resolves under any of them.
+     */
+    private static final List<String> ROOTS = List.of(
+            "", "backend/src/main/java/com/example/aiworkshop/",
+            "backend/src/main/java/com/example/aiworkshop/tasks/", "frontend/src/");
 
     @Test
     void everyPathNamedInTheWrittenMaterialExists() throws Exception {
@@ -30,13 +38,24 @@ class DocumentedPathsTest {
             for (Path doc : docs.filter(DocumentedPathsTest::isOurMarkdown).toList()) {
                 Matcher named = PATH.matcher(Files.readString(doc));
                 while (named.find()) {
-                    if (!Files.exists(REPO.resolve(named.group(1)))) {
-                        missing.add("%s points at %s".formatted(REPO.relativize(doc), named.group(1)));
+                    String path = named.group(1);
+                    if (!path.contains("/")) {
+                        continue; // a bare filename is prose, not a pointer
+                    }
+                    if (!resolvesSomewhere(doc, path)) {
+                        missing.add("%s points at %s".formatted(REPO.relativize(doc), path));
                     }
                 }
             }
         }
         assertThat(missing).as("the briefs must point at files that exist").isEmpty();
+    }
+
+    private static boolean resolvesSomewhere(Path doc, String path) {
+        if (Files.exists(doc.getParent().resolve(path))) {
+            return true;
+        }
+        return ROOTS.stream().anyMatch(root -> Files.exists(REPO.resolve(root + path)));
     }
 
     private static boolean isOurMarkdown(Path path) {
