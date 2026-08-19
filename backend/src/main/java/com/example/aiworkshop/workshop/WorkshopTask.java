@@ -1,5 +1,13 @@
 package com.example.aiworkshop.workshop;
 
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiConfig;
+import com.example.aiworkshop.tasks.task_2_document_agent.agent.DocumentAnalyzer;
+import com.example.aiworkshop.tasks.task_3_guardrails.guardrails.Guardrails;
+import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
+import com.example.aiworkshop.tasks.task_5_summary.agent.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_6_chat.agent.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_7_create_case_chat.agent.CaseIntakeInterviewer;
 
 public enum WorkshopTask {
     FIRST_AGENT(
@@ -10,12 +18,12 @@ public enum WorkshopTask {
     DOCUMENT_AGENT(
             2,
             "Give it a file",
-            "tasks/task_2_document_agent/DocumentAnalyzer.java",
+            "tasks/task_2_document_agent/agent/DocumentAnalyzer.java",
             "Write the agent that reads an uploaded PDF or photo."),
     GUARDRAILS(
             3,
             "Don't be talked round",
-            "tasks/task_3_guardrails/Guardrails.java",
+            "tasks/task_3_guardrails/guardrails/Guardrails.java",
             "Write the input and output guardrails."),
     POSTPROCESSING(
             4,
@@ -25,17 +33,17 @@ public enum WorkshopTask {
     SUMMARY(
             5,
             "Across documents",
-            "tasks/task_5_summary/CaseSummarizer.java",
+            "tasks/task_5_summary/agent/CaseSummarizer.java",
             "Write the agent that reads every document on a case at once."),
     CHAT(
             6,
             "Tools and memory",
-            "tasks/task_6_chat/CaseChatAgent.java",
+            "tasks/task_6_chat/agent/CaseChatAgent.java",
             "Write the chat agent and its tools."),
     CREATE_CASE_CHAT(
             7,
             "Report with AI chat",
-            "tasks/task_7_create_case_chat/CaseIntakeInterviewer.java",
+            "tasks/task_7_create_case_chat/agent/CaseIntakeInterviewer.java",
             "Write the @SystemMessage in CaseIntakeInterviewer so it can ask before it commits."),
     EVALUATION(
             8,

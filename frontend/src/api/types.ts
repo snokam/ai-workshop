@@ -97,7 +97,6 @@ export interface CaseOverview {
   status: CaseStatus
   requiredDocuments: string[]
   outstanding: string[]
-  documentRequests: DocumentRequest[]
 }
 
 export interface CreatedCase {
@@ -118,6 +117,7 @@ export interface CaseDetail {
   summary: string
   statusNote: string
   screenings: FraudScreening[]
+  documentRequests: DocumentRequest[]
   proposals: ProposalCard[]
   conversation: ChatTurn[]
 }

@@ -1,6 +1,6 @@
 package com.example.aiworkshop.tasks.task_2_document_agent.store;
 
-import com.example.aiworkshop.documents.model.UploadedDocument;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.UploadedDocument;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;

@@ -72,7 +72,7 @@ export function Case() {
             <p>{detail.statusNote}</p>
           </section>
 
-          <Checklist chosen={overview} />
+          <Checklist chosen={overview} askedFor={detail.documentRequests} />
 
           <TaskGate
             task="SUMMARY"

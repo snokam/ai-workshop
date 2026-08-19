@@ -1,5 +1,6 @@
 package com.example.aiworkshop.tasks.task_5_summary;
 
+import com.example.aiworkshop.tasks.task_5_summary.agent.CaseSummarizer;
 import com.example.aiworkshop.tasks.task_5_summary.DocumentForSummary;
 import static org.assertj.core.api.Assertions.assertThat;
 

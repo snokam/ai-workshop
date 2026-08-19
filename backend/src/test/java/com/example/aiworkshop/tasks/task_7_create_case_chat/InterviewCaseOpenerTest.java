@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CreatedCase;
 import com.example.aiworkshop.tasks.task_1_first_agent.store.CaseStore;
-import com.example.aiworkshop.documents.model.MatchConfidence;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.MatchConfidence;
 import org.junit.jupiter.api.Test;
 
 /**

@@ -1,7 +1,7 @@
 package com.example.aiworkshop.tasks.task_1_first_agent;
 
-import com.example.aiworkshop.cases.CaseDesk;
-import com.example.aiworkshop.cases.model.CaseOverview;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseOverview;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CreatedCase;
 import com.example.aiworkshop.workshop.TaskNotImplementedAdvice;
@@ -52,12 +52,6 @@ class CasesController {
 
     record NewCaseRequest(String description) {}
 
-    @PostMapping("/documents/{documentId}/review")
-    ResponseEntity<Void> review(@PathVariable String documentId) {
-        log.info("Document {} reviewed by a case handler", documentId);
-        desk.review(documentId);
-        return ResponseEntity.noContent().build();
-    }
 
 
     @ExceptionHandler({CaseDesk.UnknownCaseException.class, CaseDesk.UnknownProposalException.class})

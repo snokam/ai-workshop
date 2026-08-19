@@ -16,7 +16,7 @@ looks like what it claims to be. Run OCR first and a crisp scan and a blurry one
 text, and every one of those questions becomes unanswerable.
 
 Open
-`backend/src/main/java/com/example/aiworkshop/tasks/task_2_document_agent/DocumentAnalyzer.java`:
+`backend/src/main/java/com/example/aiworkshop/tasks/task_2_document_agent/agent/DocumentAnalyzer.java`:
 
 ```java
 DocumentAnalysis analyse(@UserMessage List<Content> document,

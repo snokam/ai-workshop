@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
-import { listCases, listDocuments, uploadDocument } from '../../api'
-import type { CaseOverview, CreatedCase, UploadedDocument } from '../../api'
+import { listCases, listDocumentRequests, listDocuments, uploadDocument } from '../../api'
+import type { CaseOverview, CreatedCase, DocumentRequest, UploadedDocument } from '../../api'
 import { Checklist } from '../../components/case/Checklist'
 import { DocumentCard } from '../../components/case/DocumentCard'
 import { CONFIDENCE_LABEL } from '../../lib/labels'
@@ -15,6 +15,7 @@ export function Case() {
   const intro = (useLocation().state as { intro?: CreatedCase } | null)?.intro
   const [overview, setOverview] = useState<CaseOverview | null>(null)
   const [documents, setDocuments] = useState<UploadedDocument[]>([])
+  const [askedFor, setAskedFor] = useState<DocumentRequest[]>([])
   const [busyWith, setBusyWith] = useState<string | null>(null)
   const [error, setError] = useState<Error | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
@@ -29,7 +30,6 @@ export function Case() {
           status: intro.status,
           requiredDocuments: intro.requiredDocuments,
           outstanding: intro.requiredDocuments,
-          documentRequests: [],
         }
       : {
           id: caseId,
@@ -38,12 +38,12 @@ export function Case() {
           status: 'AWAITING_DOCUMENTS',
           requiredDocuments: [],
           outstanding: [],
-          documentRequests: [],
         })
 
   async function refreshOverview() {
     const all = await listCases()
     setOverview(all.find((c) => c.id === caseId) ?? null)
+    setAskedFor(await listDocumentRequests(caseId))
   }
 
   useEffect(() => {
@@ -116,6 +116,7 @@ export function Case() {
           alsoSent={documents.filter(
             (d) => !d.analysis.matchedRequiredDocument,
           )}
+          askedFor={askedFor}
         />
       ) : (
         <p className="empty">

@@ -25,7 +25,7 @@ That is why the case list does not run agents and opening one does.
 
 ## What to write
 
-Open `backend/src/main/java/com/example/aiworkshop/tasks/task_5_summary/CaseSummarizer.java` and
+Open `backend/src/main/java/com/example/aiworkshop/tasks/task_5_summary/agent/CaseSummarizer.java` and
 write a system message for an agent that says, across all of them:
 
 - what is **established** — the facts more than one document agrees on

@@ -10,7 +10,7 @@ with no HTTP client, no JSON parsing and no prompt string concatenated by hand.
 
 An agent is two halves, and this is the first: without it nothing else in the workshop can run.
 
-Open `backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/VertexAiConfig.java`.
+Open `backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/agent/VertexAiConfig.java`.
 The bean is empty and returns a stand-in, which is why the application starts and then says which
 file to open the moment anything needs a model.
 
@@ -46,7 +46,7 @@ model and starts being about the agent, which is part 2.
 
 ## Part 2 — the agent
 
-Open `backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/CaseTypeClassifier.java`.
+Open `backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/agent/CaseTypeClassifier.java`.
 
 It is an interface, and it is the entire agent. There is no implementation to write:
 

@@ -1,5 +1,7 @@
 package com.example.aiworkshop.tasks.task_6_chat;
 
+import com.example.aiworkshop.tasks.task_6_chat.agent.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_6_chat.agent.CaseChatTools;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import dev.langchain4j.agent.tool.Tool;

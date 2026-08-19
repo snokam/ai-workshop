@@ -1,22 +1,26 @@
 package com.example.aiworkshop.tasks.task_6_chat;
 
-import com.example.aiworkshop.cases.CaseDesk;
-import com.example.aiworkshop.cases.chat.CaseChatStore;
-import com.example.aiworkshop.cases.chat.ChatAnswer;
-import com.example.aiworkshop.cases.chat.ChatTurn;
-import com.example.aiworkshop.cases.chat.ToolCall;
-import com.example.aiworkshop.cases.model.Case;
-import com.example.aiworkshop.cases.proposals.DocumentRequest;
-import com.example.aiworkshop.cases.proposals.DocumentRequestProposal;
-import com.example.aiworkshop.cases.proposals.DocumentRequestStore;
-import com.example.aiworkshop.cases.proposals.Proposal;
-import com.example.aiworkshop.cases.proposals.ProposalCard;
-import com.example.aiworkshop.cases.proposals.ProposalState;
-import com.example.aiworkshop.cases.proposals.ProposalStore;
-import com.example.aiworkshop.cases.proposals.ReviewProposal;
+import com.example.aiworkshop.tasks.task_6_chat.agent.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_6_chat.agent.DocumentReader;
+import com.example.aiworkshop.tasks.task_1_first_agent.CaseDesk;
+import com.example.aiworkshop.tasks.task_6_chat.store.CaseChatStore;
+import com.example.aiworkshop.tasks.task_6_chat.model.ChatAnswer;
+import com.example.aiworkshop.tasks.task_6_chat.model.ChatTurn;
+import com.example.aiworkshop.tasks.task_6_chat.model.ToolCall;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
+import com.example.aiworkshop.tasks.task_6_chat.proposals.DocumentRequest;
+import com.example.aiworkshop.tasks.task_6_chat.proposals.DocumentRequestProposal;
+import com.example.aiworkshop.tasks.task_6_chat.store.DocumentRequestStore;
+import com.example.aiworkshop.tasks.task_6_chat.proposals.Proposal;
+import com.example.aiworkshop.tasks.task_6_chat.proposals.ProposalCard;
+import com.example.aiworkshop.tasks.task_6_chat.proposals.ProposalState;
+import com.example.aiworkshop.tasks.task_6_chat.store.ProposalStore;
+import com.example.aiworkshop.tasks.task_6_chat.proposals.ReviewProposal;
 import com.example.aiworkshop.tasks.task_1_first_agent.store.CaseStore;
-import com.example.aiworkshop.documents.model.UploadedDocument;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.UploadedDocument;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentFiles;
+import com.example.aiworkshop.tasks.task_2_document_agent.CaseDocuments;
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentReview;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_5_summary.SummaryDesk;
 import com.example.aiworkshop.tasks.task_6_chat.model.CaseAtAGlance;
@@ -51,6 +55,7 @@ public class ChatDesk {
     private final DocumentReader reader;
     private final SummaryDesk summaries;
     private final CaseDesk desk;
+    private final DocumentReview review;
 
     public ChatDesk(
             CaseStore cases,
@@ -64,7 +69,8 @@ public class ChatDesk {
             @Lazy CaseChatAgent chatAgent,
             DocumentReader reader,
             SummaryDesk summaries,
-            CaseDesk desk) {
+            CaseDesk desk,
+            DocumentReview review) {
         this.cases = cases;
         this.documents = documents;
         this.files = files;
@@ -75,6 +81,7 @@ public class ChatDesk {
         this.reader = reader;
         this.summaries = summaries;
         this.desk = desk;
+        this.review = review;
     }
 
     public ChatAnswer chat(String caseId, String question) {
@@ -130,13 +137,17 @@ public class ChatDesk {
                 UUID.randomUUID().toString(), caseId, label, reason, ProposalState.PROPOSED));
     }
 
+    public List<DocumentRequest> requestsOn(String caseId) {
+        return requests.findByCaseId(caseId);
+    }
+
     public ProposalCard confirm(String proposalId) {
         Proposal proposal = answerable(proposalId);
         if (!proposal.isOutstanding()) {
             return ProposalCard.of(proposal);
         }
         switch (proposal) {
-            case ReviewProposal reviewProposal -> desk.review(reviewProposal.documentId());
+            case ReviewProposal reviewProposal -> review.markReviewed(reviewProposal.documentId());
             case DocumentRequestProposal requestProposal ->
                 requests.save(new DocumentRequest(
                         UUID.randomUUID().toString(),
@@ -157,13 +168,13 @@ public class ChatDesk {
     private CaseAtAGlance glanceAt(Case theCase) {
         List<UploadedDocument> attached = documents.findByCaseId(theCase.id());
         List<String> counting =
-                theCase.countingDocuments(attached).stream().map(UploadedDocument::id).toList();
+                CaseDocuments.countingDocuments(theCase, attached).stream().map(UploadedDocument::id).toList();
         return new CaseAtAGlance(
                 theCase.reference(),
                 theCase.type().label(),
-                theCase.status(attached),
+                CaseDocuments.statusOf(theCase, attached),
                 theCase.requiredDocuments(),
-                theCase.unmatchedRequiredDocuments(attached),
+                CaseDocuments.unmatchedRequiredDocuments(theCase, attached),
                 summaries.summaryOf(theCase, attached),
                 attached.stream()
                         .map(document -> DocumentForChat.of(document, counting.contains(document.id())))

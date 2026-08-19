@@ -1,7 +1,6 @@
 package com.example.aiworkshop.tasks.task_3_guardrails.guardrails;
 
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentIntake;
-import com.example.aiworkshop.tasks.task_3_guardrails.Guardrails;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;

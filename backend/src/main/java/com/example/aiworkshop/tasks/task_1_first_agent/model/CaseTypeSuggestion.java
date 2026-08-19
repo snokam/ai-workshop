@@ -1,7 +1,5 @@
 package com.example.aiworkshop.tasks.task_1_first_agent.model;
 
-import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
-import com.example.aiworkshop.documents.model.MatchConfidence;
 import dev.langchain4j.model.output.structured.Description;
 
 public record CaseTypeSuggestion(

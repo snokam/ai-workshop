@@ -2,20 +2,30 @@
 
 You write an agent that looks things up mid-answer and remembers the conversation.
 
-The brief is `docs/tasks/task_5_chat.md`, from the repository root.
+The brief is `docs/tasks/task_6_chat.md`, from the repository root.
 
 ## What is yours to write
 
 Each of these has the exercise parked in it as a comment headed `── To set this task again`.
 
-- `CaseChatAgent.java`
-- `CaseChatTools.java`
+- `agent/CaseChatAgent.java`
+- `agent/CaseChatTools.java`
 
-## What it reaches into
+## What is in this folder
 
-These live outside the task because more than one task uses them — they are what the application is, rather than what this exercise is.
+- at the top — `CaseChatController`, `CaseFile`, `ChatDesk`
+- `agent/` — `CaseChatAgent`, `CaseChatTools`, `ChatConfig`, `DocumentReader`
+- `model/` — `CaseAtAGlance`, `CaseDetail`, `ChatAnswer`, `ChatTurn`, `DocumentForChat`, `DocumentInDetail`, `ToolCall`
+- `proposals/` — `DocumentRequest`, `DocumentRequestProposal`, `Proposal`, `ProposalCard`, `ProposalKind`, `ProposalState`, `ReviewProposal`
+- `store/` — `CaseChatStore`, `DocumentRequestStore`, `ProposalStore`
 
-- `cases` — CaseDesk
-- `cases.model` — Case, CaseStatus
-- `cases.proposals` — Proposal, ProposalCard
-- `documents.model` — UploadedDocument
+## What it uses from the tasks before it
+
+- **task 1, Your first agent** — `Case`, `CaseDesk`, `CaseOverview`, `CaseStatus`, `CaseStore`
+- **task 2, Give it a file** — `CaseDocuments`, `DocumentFiles`, `DocumentReview`, `DocumentStore`, `ExtractedField`, `Quality` and 1 more
+- **task 4, What the model cannot know** — `FraudScreener`, `FraudScreening`
+- **task 5, Across documents** — `SummaryDesk`
+
+No task before this one refers to anything in here. That is the rule the workshop runs on —
+you can stop after any task and what you have still works — and `TaskDependencyTest` fails if
+it is ever broken.

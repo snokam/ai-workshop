@@ -8,12 +8,18 @@ The brief is `docs/tasks/task_7_create_case_chat.md`, from the repository root.
 
 Each of these has the exercise parked in it as a comment headed `── To set this task again`.
 
-- `CaseIntakeInterviewer.java`
+- `agent/CaseIntakeInterviewer.java`
 
-## What it reaches into
+## What is in this folder
 
-These live outside the task because more than one task uses them — they are what the application is, rather than what this exercise is.
+- at the top — `CaseInterviewController`, `InterviewCaseOpener`
+- `agent/` — `CaseIntakeInterviewer`, `CreateCaseChatConfig`
+- `model/` — `CaseScenario`, `InterviewTurn`
 
-- `cases.model` — Case, CaseType, CreatedCase
-- `cases.store` — CaseStore
-- `documents.model` — MatchConfidence
+## What it uses from the tasks before it
+
+- **task 1, Your first agent** — `Case`, `CaseStatus`, `CaseStore`, `CaseType`, `CreatedCase`, `MatchConfidence`
+
+No task before this one refers to anything in here. That is the rule the workshop runs on —
+you can stop after any task and what you have still works — and `TaskDependencyTest` fails if
+it is ever broken.

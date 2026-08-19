@@ -8,15 +8,21 @@ The brief is `docs/tasks/task_2_document_agent.md`, from the repository root.
 
 Each of these has the exercise parked in it as a comment headed `── To set this task again`.
 
-- `DocumentAnalyzer.java`
 - `DocumentIntake.java`
+- `agent/DocumentAnalyzer.java`
 - `model/DocumentAnalysis.java`
 
-## What it reaches into
+## What is in this folder
 
-These live outside the task because more than one task uses them — they are what the application is, rather than what this exercise is.
+- at the top — `CaseDocuments`, `DocumentIntake`, `DocumentProgress`, `DocumentReview`, `DocumentStored`, `DocumentsController`
+- `agent/` — `DocumentAgentConfig`, `DocumentAnalyzer`
+- `model/` — `DocumentAnalysis`, `DocumentForClaimant`, `ExtractedField`, `ManipulationAttempt`, `QualityAssessment`, `UploadedDocument`
+- `store/` — `DocumentFiles`, `DocumentStore`
 
-- `cases.model` — Case
-- `cases.store` — CaseStore
-- `documents.model` — MatchConfidence, UploadedDocument
-- `documents.store` — DocumentFiles, DocumentStore
+## What it uses from the tasks before it
+
+- **task 1, Your first agent** — `Case`, `CaseProgress`, `CaseStatus`, `CaseStore`, `MatchConfidence`
+
+No task before this one refers to anything in here. That is the rule the workshop runs on —
+you can stop after any task and what you have still works — and `TaskDependencyTest` fails if
+it is ever broken.

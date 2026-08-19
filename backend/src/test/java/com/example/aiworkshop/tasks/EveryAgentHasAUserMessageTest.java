@@ -2,12 +2,12 @@ package com.example.aiworkshop.tasks;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.example.aiworkshop.tasks.task_1_first_agent.CaseTypeClassifier;
-import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
-import com.example.aiworkshop.tasks.task_6_chat.CaseChatAgent;
-import com.example.aiworkshop.tasks.task_6_chat.DocumentReader;
-import com.example.aiworkshop.tasks.task_5_summary.CaseStatusWriter;
-import com.example.aiworkshop.tasks.task_5_summary.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
+import com.example.aiworkshop.tasks.task_2_document_agent.agent.DocumentAnalyzer;
+import com.example.aiworkshop.tasks.task_6_chat.agent.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_6_chat.agent.DocumentReader;
+import com.example.aiworkshop.tasks.task_5_summary.agent.CaseStatusWriter;
+import com.example.aiworkshop.tasks.task_5_summary.agent.CaseSummarizer;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import java.lang.reflect.Method;

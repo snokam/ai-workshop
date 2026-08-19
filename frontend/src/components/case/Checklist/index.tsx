@@ -1,6 +1,14 @@
-import type { CaseOverview, UploadedDocument } from '../../../api'
+import type { CaseOverview, DocumentRequest, UploadedDocument } from '../../../api'
 
-export function Checklist({ chosen, alsoSent = [] }: { chosen: CaseOverview; alsoSent?: UploadedDocument[] }) {
+export function Checklist({
+  chosen,
+  alsoSent = [],
+  askedFor = [],
+}: {
+  chosen: CaseOverview
+  alsoSent?: UploadedDocument[]
+  askedFor?: DocumentRequest[]
+}) {
   return (
     <div className="checklist">
       <ul>
@@ -27,11 +35,11 @@ export function Checklist({ chosen, alsoSent = [] }: { chosen: CaseOverview; als
           ))}
       </ul>
 
-      {chosen.documentRequests.length > 0 && (
+      {askedFor.length > 0 && (
         <div className="asked-for">
           <h3>Your case handler has also asked for</h3>
           <ul>
-            {chosen.documentRequests.map((request) => (
+            {askedFor.map((request) => (
               <li key={request.id}>
                 <span aria-hidden>✉</span>
                 <span>

@@ -1,17 +1,17 @@
 package com.example.aiworkshop.tasks.task_2_document_agent;
 
 import org.springframework.context.ApplicationEventPublisher;
-import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
+import com.example.aiworkshop.tasks.task_2_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentFiles;
-import com.example.aiworkshop.documents.model.UploadedDocument;
-import com.example.aiworkshop.documents.model.QualityAssessment;
-import com.example.aiworkshop.documents.model.MatchConfidence;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.UploadedDocument;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.MatchConfidence;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.ExtractedField;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;
 import com.example.aiworkshop.tasks.task_1_first_agent.store.CaseStore;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
-import com.example.aiworkshop.cases.model.Case;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.aiworkshop.documents.model.QualityAssessment.Quality;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment.Quality;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.PdfFileContent;

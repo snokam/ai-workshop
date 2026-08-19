@@ -1,6 +1,5 @@
 package com.example.aiworkshop.tasks.task_7_create_case_chat.model;
 
-import com.example.aiworkshop.cases.model.Case;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
 import java.util.LinkedHashMap;
 import java.util.List;

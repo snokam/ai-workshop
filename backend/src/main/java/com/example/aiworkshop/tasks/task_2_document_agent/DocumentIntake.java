@@ -1,14 +1,12 @@
 package com.example.aiworkshop.tasks.task_2_document_agent;
 
-import com.example.aiworkshop.workshop.WorkshopTask;
-import com.example.aiworkshop.workshop.TaskNotImplementedException;
-import com.example.aiworkshop.tasks.task_2_document_agent.DocumentAnalyzer;
+import com.example.aiworkshop.tasks.task_2_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentFiles;
-import com.example.aiworkshop.documents.model.UploadedDocument;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.UploadedDocument;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;
 import com.example.aiworkshop.tasks.task_1_first_agent.store.CaseStore;
-import com.example.aiworkshop.cases.model.Case;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.TextContent;
 import java.io.IOException;

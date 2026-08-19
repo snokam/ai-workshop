@@ -1,5 +1,6 @@
 package com.example.aiworkshop.tasks.task_2_document_agent;
 
+import com.example.aiworkshop.tasks.task_2_document_agent.agent.DocumentAnalyzer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import dev.langchain4j.data.message.Content;

@@ -1,7 +1,5 @@
 package com.example.aiworkshop.tasks.task_4_postprocessing.checks;
 
-import com.example.aiworkshop.workshop.WorkshopTask;
-import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifIFD0Directory;

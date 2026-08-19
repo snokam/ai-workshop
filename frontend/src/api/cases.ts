@@ -1,6 +1,6 @@
 
 import { failure, json } from './client'
-import type {
+import type { DocumentRequest,
   CaseDetail,
   CaseOverview,
   ChatAnswer,
@@ -47,7 +47,7 @@ export async function interviewIntake(
 }
 
 export async function reviewDocument(documentId: string): Promise<void> {
-  const response = await fetch(`/api/cases/documents/${documentId}/review`, { method: 'POST' })
+  const response = await fetch(`/api/documents/${documentId}/review`, { method: 'POST' })
   if (!response.ok) throw await failure(response)
 }
 
@@ -67,4 +67,10 @@ export async function confirmProposal(proposalId: string): Promise<ProposalCard>
 
 export async function declineProposal(proposalId: string): Promise<ProposalCard> {
   return json(await fetch(`/api/cases/proposals/${proposalId}/decline`, { method: 'POST' }))
+}
+
+export async function listDocumentRequests(caseId: string): Promise<DocumentRequest[]> {
+  const response = await fetch(`/api/cases/${caseId}/document-requests`)
+  if (!response.ok) return []
+  return response.json()
 }

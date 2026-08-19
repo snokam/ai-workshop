@@ -13,8 +13,16 @@ Each of these has the exercise parked in it as a comment headed `── To set t
 - `checks/FiguresCheck.java`
 - `checks/ImageMetadataCheck.java`
 
-## What it reaches into
+## What is in this folder
 
-These live outside the task because more than one task uses them — they are what the application is, rather than what this exercise is.
+- at the top — `FraudScreener`
+- `checks/` — `AddressedTheAgentCheck`, `DuplicateUploadCheck`, `FiguresCheck`, `FraudCheck`, `ImageMetadataCheck`
+- `model/` — `FraudScreening`
 
-- `documents.model` — MatchConfidence, UploadedDocument
+## What it uses from the tasks before it
+
+- **task 2, Give it a file** — `DocumentAnalysis`, `DocumentStored`, `ExtractedField`, `ManipulationAttempt`
+
+No task before this one refers to anything in here. That is the rule the workshop runs on —
+you can stop after any task and what you have still works — and `TaskDependencyTest` fails if
+it is ever broken.

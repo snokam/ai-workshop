@@ -1,8 +1,11 @@
 package com.example.aiworkshop.tasks.task_5_summary;
 
-import com.example.aiworkshop.cases.model.Case;
-import com.example.aiworkshop.cases.model.CaseStatus;
-import com.example.aiworkshop.documents.model.UploadedDocument;
+import com.example.aiworkshop.tasks.task_5_summary.agent.CaseStatusWriter;
+import com.example.aiworkshop.tasks.task_5_summary.agent.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_5_summary.store.CaseSummaryStore;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseStatus;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.UploadedDocument;
 import java.util.List;
 import org.springframework.stereotype.Service;
 

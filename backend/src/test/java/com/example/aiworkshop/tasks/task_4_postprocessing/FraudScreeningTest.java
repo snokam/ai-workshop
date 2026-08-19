@@ -5,12 +5,12 @@ import com.example.aiworkshop.tasks.task_4_postprocessing.checks.ImageMetadataCh
 import com.example.aiworkshop.tasks.task_4_postprocessing.checks.DuplicateUploadCheck;
 import com.example.aiworkshop.tasks.task_4_postprocessing.checks.AddressedTheAgentCheck;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.ManipulationAttempt;
-import com.example.aiworkshop.documents.model.QualityAssessment;
-import com.example.aiworkshop.documents.model.MatchConfidence;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.MatchConfidence;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.example.aiworkshop.documents.model.QualityAssessment.Quality;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment.Quality;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Kind;
 import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
 import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Weight;

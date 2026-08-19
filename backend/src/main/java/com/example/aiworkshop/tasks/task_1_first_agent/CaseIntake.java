@@ -1,15 +1,15 @@
 package com.example.aiworkshop.tasks.task_1_first_agent;
 
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
 import com.example.aiworkshop.tasks.task_1_first_agent.store.CaseStore;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CreatedCase;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseTypeSuggestion;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
-import com.example.aiworkshop.cases.model.Case;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseStatus;
 import java.time.Year;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import com.example.aiworkshop.workshop.TaskNotImplementedException;
-import com.example.aiworkshop.workshop.WorkshopTask;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,7 +43,7 @@ public class CaseIntake {
                 suggestion.confidence(),
                 suggestion.rationale(),
                 requiredDocuments,
-                theCase.status(List.of()));
+                CaseStatus.AWAITING_DOCUMENTS);
 
         // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 1, part 3. Turn the agent's answer into a Case.

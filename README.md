@@ -76,7 +76,7 @@ Intake — runs once, when a file is uploaded:
 
 | | |
 |---|---|
-| `tasks/task_2_document_agent/DocumentAnalyzer.java` | the agent |
+| `tasks/task_2_document_agent/agent/DocumentAnalyzer.java` | the agent |
 | `documents/DocumentAnalysis.java` | what it returns, and therefore what it is asked for |
 | `documents/DocumentIntake.java` | turns an upload into the file content the model reads |
 | `documents/DocumentStore.java` | in-memory; everything is lost on restart |

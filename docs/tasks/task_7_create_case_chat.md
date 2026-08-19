@@ -34,7 +34,7 @@ summariser in task 6 is handed a projection rather than fetching one.
 ## What to write
 
 Open
-`backend/src/main/java/com/example/aiworkshop/tasks/task_7_create_case_chat/CaseIntakeInterviewer.java`
+`backend/src/main/java/com/example/aiworkshop/tasks/task_7_create_case_chat/agent/CaseIntakeInterviewer.java`
 and write the `@SystemMessage`. It has to do two jobs well:
 
 - **Ask only what changes the answer.** A question is worth putting to a person only if two scenarios

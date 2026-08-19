@@ -1,0 +1,46 @@
+package com.example.aiworkshop.workshop;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Every file the written material points at has to be there.
+ *
+ * <p>The briefs send people to a specific file to write a specific thing, so a path that has moved
+ * costs a participant the worst ten minutes of the workshop: they cannot tell whether they have
+ * misread the instruction or the instruction is wrong. Cheaper to fail here.
+ */
+class DocumentedPathsTest {
+    private static final Path REPO = Path.of("..");
+    private static final Pattern PATH =
+            Pattern.compile("`?((?:backend|frontend|docs)/[\\w./@-]+\\.(?:java|tsx?|md))`?");
+
+    @Test
+    void everyPathNamedInTheWrittenMaterialExists() throws Exception {
+        List<String> missing = new ArrayList<>();
+        try (Stream<Path> docs = Files.walk(REPO)) {
+            for (Path doc : docs.filter(DocumentedPathsTest::isOurMarkdown).toList()) {
+                Matcher named = PATH.matcher(Files.readString(doc));
+                while (named.find()) {
+                    if (!Files.exists(REPO.resolve(named.group(1)))) {
+                        missing.add("%s points at %s".formatted(REPO.relativize(doc), named.group(1)));
+                    }
+                }
+            }
+        }
+        assertThat(missing).as("the briefs must point at files that exist").isEmpty();
+    }
+
+    private static boolean isOurMarkdown(Path path) {
+        String name = path.toString();
+        return name.endsWith(".md") && !name.contains("node_modules") && !name.contains("/target/");
+    }
+}

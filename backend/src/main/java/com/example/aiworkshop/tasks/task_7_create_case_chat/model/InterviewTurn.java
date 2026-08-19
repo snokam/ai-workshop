@@ -1,6 +1,6 @@
 package com.example.aiworkshop.tasks.task_7_create_case_chat.model;
 
-import com.example.aiworkshop.documents.model.MatchConfidence;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.MatchConfidence;
 import dev.langchain4j.model.output.structured.Description;
 import java.util.List;
 

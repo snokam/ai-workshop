@@ -1,12 +1,11 @@
 package com.example.aiworkshop.tasks.task_2_document_agent;
 
-import com.example.aiworkshop.tasks.task_2_document_agent.DocumentIntake;
 import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.workshop.TaskNotImplementedAdvice;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.DocumentForClaimant;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentForClaimant;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentFiles;
-import com.example.aiworkshop.documents.model.UploadedDocument;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.UploadedDocument;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +29,13 @@ class DocumentsController {
     private static final Logger log = LoggerFactory.getLogger(DocumentsController.class);
 
     private final DocumentIntake intake;
+    private final DocumentReview review;
     private final DocumentStore store;
     private final DocumentFiles files;
 
-    DocumentsController(DocumentIntake intake, DocumentStore store, DocumentFiles files) {
+    DocumentsController(DocumentIntake intake, DocumentStore store, DocumentFiles files, DocumentReview review) {
         this.intake = intake;
+        this.review = review;
         this.store = store;
         this.files = files;
     }
@@ -80,6 +81,13 @@ class DocumentsController {
                 .map(DocumentForClaimant::of)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/{documentId}/review")
+    ResponseEntity<Void> review(@PathVariable String documentId) {
+        log.info("Document {} reviewed by a case handler", documentId);
+        review.markReviewed(documentId);
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(DocumentIntake.UnsupportedDocumentException.class)

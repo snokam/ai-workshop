@@ -142,7 +142,7 @@ A worked version of all six is on the **`solutions`** branch, which is this repo
 task written.
 
 ```bash
-git show solutions:backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/CaseTypeClassifier.java
+git show solutions:backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/agent/CaseTypeClassifier.java
 ```
 
 Look after you have tried, not before. An afternoon lost to a compiler error teaches nobody anything

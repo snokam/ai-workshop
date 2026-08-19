@@ -1,32 +1,34 @@
 package com.example.aiworkshop.tasks.task_6_chat;
 
 import com.example.aiworkshop.tasks.task_5_summary.SummaryDesk;
-import com.example.aiworkshop.cases.CaseDesk;
-import com.example.aiworkshop.tasks.task_5_summary.CaseSummarizer;
-import com.example.aiworkshop.tasks.task_5_summary.CaseStatusWriter;
-import com.example.aiworkshop.tasks.task_6_chat.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_1_first_agent.CaseDesk;
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentReview;
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentProgress;
+import com.example.aiworkshop.tasks.task_5_summary.agent.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_5_summary.agent.CaseStatusWriter;
+import com.example.aiworkshop.tasks.task_6_chat.agent.CaseChatAgent;
 import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentFiles;
-import com.example.aiworkshop.documents.model.UploadedDocument;
-import com.example.aiworkshop.documents.model.QualityAssessment;
-import com.example.aiworkshop.documents.model.MatchConfidence;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.UploadedDocument;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.MatchConfidence;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;
-import com.example.aiworkshop.tasks.task_6_chat.DocumentReader;
-import com.example.aiworkshop.tasks.task_5_summary.CaseSummaryStore;
+import com.example.aiworkshop.tasks.task_6_chat.agent.DocumentReader;
+import com.example.aiworkshop.tasks.task_5_summary.store.CaseSummaryStore;
 import com.example.aiworkshop.tasks.task_1_first_agent.store.CaseStore;
-import com.example.aiworkshop.cases.proposals.ProposalStore;
-import com.example.aiworkshop.cases.proposals.ProposalState;
-import com.example.aiworkshop.cases.proposals.ProposalCard;
-import com.example.aiworkshop.cases.proposals.DocumentRequestStore;
-import com.example.aiworkshop.cases.proposals.DocumentRequest;
+import com.example.aiworkshop.tasks.task_6_chat.store.ProposalStore;
+import com.example.aiworkshop.tasks.task_6_chat.proposals.ProposalState;
+import com.example.aiworkshop.tasks.task_6_chat.proposals.ProposalCard;
+import com.example.aiworkshop.tasks.task_6_chat.store.DocumentRequestStore;
+import com.example.aiworkshop.tasks.task_6_chat.proposals.DocumentRequest;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
-import com.example.aiworkshop.cases.model.CaseStatus;
-import com.example.aiworkshop.cases.model.CaseOverview;
-import com.example.aiworkshop.cases.model.Case;
-import com.example.aiworkshop.cases.chat.ChatTurn;
-import com.example.aiworkshop.cases.chat.ChatAnswer;
-import com.example.aiworkshop.cases.chat.CaseChatStore;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseStatus;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseOverview;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
+import com.example.aiworkshop.tasks.task_6_chat.model.ChatTurn;
+import com.example.aiworkshop.tasks.task_6_chat.model.ChatAnswer;
+import com.example.aiworkshop.tasks.task_6_chat.store.CaseChatStore;
 import com.example.aiworkshop.tasks.task_6_chat.model.CaseAtAGlance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -41,7 +43,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import com.example.aiworkshop.documents.model.QualityAssessment.Quality;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment.Quality;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.service.Result;
@@ -79,6 +81,7 @@ class ChatDeskTest {
     private DocumentFiles files;
     private ChatDesk desk;
     private CaseDesk caseDesk;
+    private CaseFile caseFile;
 
     @BeforeEach
     void aCaseHeldUpByOneUnreadableDocument() throws IOException {
@@ -88,9 +91,20 @@ class ChatDeskTest {
                 .thenReturn("What the documents say, taken together.");
         files = new DocumentFiles(directory);
         SummaryDesk summaryDesk = new SummaryDesk(summaries, summarizer, statusWriter);
-        caseDesk = new CaseDesk(cases, documents, requests, summaryDesk, new FraudScreener(List.of()));
+        caseDesk = new CaseDesk(cases, new DocumentProgress(documents));
+        caseFile = new CaseFile(caseDesk, documents, requests, summaryDesk, new FraudScreener(List.of()));
         desk = new ChatDesk(
-                cases, documents, files, proposals, requests, chats, chatAgent, reader, summaryDesk, caseDesk);
+                cases,
+                documents,
+                files,
+                proposals,
+                requests,
+                chats,
+                chatAgent,
+                reader,
+                summaryDesk,
+                caseDesk,
+                new DocumentReview(documents));
     }
 
     @Test
@@ -133,7 +147,7 @@ class ChatDeskTest {
 
         desk.confirm(proposed.id());
 
-        assertThat(overviewOfTheCase().documentRequests())
+        assertThat(caseFile.open(CASE_ID, List.of(), List.of()).documentRequests())
                 .extracting(DocumentRequest::label)
                 .containsExactly("the second page of the receipt");
     }
@@ -142,7 +156,7 @@ class ChatDeskTest {
     void anUnconfirmedDocumentRequestReachesNobody() {
         desk.proposeDocumentRequest(CASE_ID, "the second page of the receipt", "The total did not arrive.");
 
-        assertThat(overviewOfTheCase().documentRequests()).isEmpty();
+        assertThat(caseFile.open(CASE_ID, List.of(), List.of()).documentRequests()).isEmpty();
     }
 
     @Test
@@ -165,7 +179,7 @@ class ChatDeskTest {
         desk.confirm(proposed.id());
         desk.confirm(proposed.id());
 
-        assertThat(overviewOfTheCase().documentRequests()).hasSize(1);
+        assertThat(caseFile.open(CASE_ID, List.of(), List.of()).documentRequests()).hasSize(1);
     }
 
     @Test
@@ -194,7 +208,7 @@ class ChatDeskTest {
     @Test
     void theChatReusesTheCaseSummaryTheHandlerHasAlreadyPaidFor() {
         theAgentReplies("Waiting on a review.");
-        caseDesk.open(CASE_ID, List.of(), List.of());
+        caseFile.open(CASE_ID, List.of(), List.of());
 
         desk.chat(CASE_ID, "What is this waiting on?");
 

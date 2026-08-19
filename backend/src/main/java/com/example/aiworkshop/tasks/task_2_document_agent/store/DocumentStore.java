@@ -1,6 +1,6 @@
 package com.example.aiworkshop.tasks.task_2_document_agent.store;
 
-import com.example.aiworkshop.documents.model.UploadedDocument;
+import com.example.aiworkshop.tasks.task_2_document_agent.model.UploadedDocument;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
