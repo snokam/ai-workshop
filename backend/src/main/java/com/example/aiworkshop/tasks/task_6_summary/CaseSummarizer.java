@@ -63,6 +63,13 @@ public interface CaseSummarizer {
             Write in English, whatever language the documents themselves are in. Field names are
             quoted from the documents and are often not English; do not follow them.
             """)
+    @UserMessage(
+            """
+            Case type: {{caseType}}
 
+            The documents attached to this case:
+
+            {{documents}}
+            """)
     String summarise(@V("caseType") String caseType, @V("documents") List<DocumentForSummary> documents);
 }
