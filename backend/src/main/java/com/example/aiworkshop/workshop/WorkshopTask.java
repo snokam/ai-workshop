@@ -27,6 +27,12 @@ public enum WorkshopTask {
             "Tools and memory",
             "tasks/task_5_chat/CaseChatAgent.java",
             "Write the chat agent and its tools."),
+    EVALUATION(
+            8,
+            "How would you know?",
+            "tasks/task_8_evaluation/",
+            "Label the descriptions you would argue about, run the classifier over them, and decide"
+                    + " what the disagreements mean."),
     SUMMARY(
             6,
             "Across documents",

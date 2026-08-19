@@ -25,7 +25,7 @@ public class FiguresCheck implements FraudCheck {
         List<ExtractedField> amounts = new ArrayList<>();
         ExtractedField total = null;
         for (ExtractedField field : upload.analysis().fields()) {
-            if (amountIn(field).isEmpty()) {
+            if (!looksLikeMoney(field) || amountIn(field).isEmpty()) {
                 continue;
             }
             if (looksLikeATotal(field.name())) {
@@ -56,6 +56,29 @@ public class FiguresCheck implements FraudCheck {
                 amounts.stream()
                         .map(field -> field.name() + ": " + field.value())
                         .toList()));
+    }
+
+    /**
+     * Whether this field is money at all.
+     *
+     * <p>A receipt is covered in numbers that are not amounts — an organisation number, a receipt
+     * number, a date, a phone number — and summing those produces a confident accusation about a
+     * document nobody has looked at. So an amount has to say it is one: a currency, or two decimal
+     * places. Anything that names itself an identifier is out regardless.
+     */
+    private static boolean looksLikeMoney(ExtractedField field) {
+        String name = field.name().toLowerCase();
+        for (String identifier : List.of("nr", "no.", "number", "nummer", "dato", "date", "tlf", "phone")) {
+            if (name.contains(identifier)) {
+                return false;
+            }
+        }
+        String value = field.value() == null ? "" : field.value().toLowerCase();
+        boolean saysCurrency = value.contains("kr") || value.contains("nok") || value.contains("€")
+                || value.contains("$") || name.contains("beløp") || name.contains("amount")
+                || name.contains("total") || name.contains("sum") || name.contains("pris");
+        boolean hasØre = value.matches(".*[.,]\\d{2}\\b.*");
+        return saysCurrency || hasØre;
     }
 
     private static boolean looksLikeATotal(String name) {

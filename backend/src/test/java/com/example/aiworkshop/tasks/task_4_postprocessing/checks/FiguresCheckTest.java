@@ -57,6 +57,22 @@ class FiguresCheckTest {
                 .isEmpty();
     }
 
+    @Test
+    void ignoresTheNumbersOnAReceiptThatAreNotMoney() {
+        List<Indicator> found = check.screen(receiptWith(
+                field("Org.nr", "912 345 678"),
+                field("Kvittering No.", "40219"),
+                field("Dato", "12.03.2026"),
+                field("Delsum", "16375,00 kr"),
+                field("MVA", "4093,75 kr"),
+                field("Totalt", "20468,75 kr")));
+
+        assertThat(found)
+                .describedAs("an organisation number is not an amount, and summing it accuses a document"
+                        + " nobody has read")
+                .isEmpty();
+    }
+
     private static ExtractedField field(String name, String value) {
         return new ExtractedField(name, value);
     }

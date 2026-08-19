@@ -79,6 +79,26 @@ text — someone can write anything in that box, including instructions aimed at
 the user turn and the rules in the system turn is the first and cheapest defence. Task 3 is about
 what to do when that is not enough.
 
+### Which half of this is LangChain4j
+
+Worth separating now, because everything after this task builds on it and the two are easy to
+confuse.
+
+**The idea, which every framework has:** you describe a call in terms the model understands
+(instructions, a turn, a shape for the answer), something turns that into an HTTP request, and
+something turns the reply back into a typed object — rejecting it if it does not fit. Python's
+Pydantic-based frameworks do exactly this. So does the OpenAI SDK's structured output. So would
+sixty lines you wrote yourself.
+
+**LangChain4j, which is one way of spelling it:** `@SystemMessage`, `@V`, `@UserMessage`,
+`AiServices.create`, and the choice to make the interface itself the definition rather than a
+builder you call. Those are conventions. A different library would put the same ideas in a different
+place, and moving to one is a day's work, not a rewrite.
+
+The reason to care: when something misbehaves, knowing which half you are in tells you where to
+look. A model ignoring an instruction is the first kind of problem. A file that never arrived
+because an annotation was missing is the second.
+
 ### What to write
 
 A system message that:

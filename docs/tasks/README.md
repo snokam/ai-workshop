@@ -10,8 +10,10 @@ Six exercises, in order. Each one is an agent, and each adds exactly one idea to
 | 4 | [Post-processing](./task_4_postprocessing.md) | what the model cannot know, in plain Java after the answer — and one check written from nothing |
 | 5 | [Tools and memory](./task_5_chat.md) | an agent that looks things up mid-answer, and the tool descriptions that decide when it does |
 | 6 | [Across documents](./task_6_summary.md) | the expensive agent: every document at once, what it is shown, and what that costs |
+| 8 | [How would you know?](./task_8_evaluation.md) | whether any of it is any good — the question that separates a demo from something you would ship |
 
-1 and 2 build an agent. 3 and 4 contain one. 5 and 6 grow one.
+1 and 2 build an agent. 3 and 4 contain one. 5 and 6 grow one. 8 asks whether it works, and can be
+done any time after task 1 — it is last in the list and nowhere near last in importance.
 
 There is also an extra, optional seventh, for anyone who finishes early:
 
@@ -60,7 +62,7 @@ what a task is for.
 cd backend && ./mvnw test -Dtest=TaskCompletionTest
 ```
 
-Six tests, one per exercise, red until you write it. That is the progress bar: run it whenever you
+One test per exercise, red until you write it. That is the progress bar: run it whenever you
 want to know what is left.
 
 Nothing marks a task done. An agent is unwritten while its `@SystemMessage` still holds the
@@ -70,6 +72,52 @@ nothing that can disagree with what you actually wrote.
 
 Each task also has tests of its own next to the code, checking what it does rather than that it
 exists. `TaskCompletionTest` going green means you set a flag; those going green means it works.
+
+## The finish line
+
+Green tests mean you wired it, not that it works. When you think you are done, do this, and do it
+with the application running:
+
+1. Open a motor claim: *"Someone reversed into my parked car outside the shop and I paid for the
+   repair myself."* You want `Motor insurance claim`, `HIGH`, and a checklist of three.
+2. Upload `assets/repair-receipt.pdf` to it. The card should name the amount that is actually on the
+   receipt, in the currency it is printed in, and say something specific about the scan.
+3. Open a second, unrelated case — a theft, say — and upload **the same receipt** to it. The case
+   handler's screen must say the same file has been seen on another case. One expense, two claims,
+   which is the oldest trick there is.
+4. Upload `assets/document-that-gives-orders.pdf` anywhere. The claimant's screen must not tell them
+   which of their tricks was noticed; the handler's must.
+5. Ask the chat *"what is the total on the receipt?"* on a case that has no receipt, and read what
+   it says rather than what you hoped it would say.
+6. Run [task 8](./task_8_evaluation.md) and sort the disagreements.
+
+Steps 3 and 4 are the ones worth caring about. They are the two places where this application does
+something a model cannot do for you, and if either is wrong the rest being right does not help.
+
+## What is not here
+
+Named on purpose, because "AI workshop" sets expectations and it is better to say than to let you
+notice halfway through.
+
+**No RAG, and no vector search.** Not an oversight and not a shortcut: the documents in this
+application arrive with the request. Someone uploads a file and the agent is handed that file. There
+is nothing to retrieve, so a retrieval step would be ceremony added to teach a technique rather than
+to solve the problem in front of it. If your documents are already somewhere and have to be found
+first, that is a different application and RAG is where you would start.
+
+**No fine-tuning.** Everything here is a prompt and a schema against a general model, which is where
+almost every application should start and where a good many should stop.
+
+**No streaming, no async.** Both matter for how an agent feels to use, and neither changes what it
+is.
+
+**One provider, one framework.** You will see Vertex and LangChain4j and nothing else, which is the
+cost of three hours. [Task 1](./task_1_first_agent.md) has a section on which half of what you are
+looking at is LangChain4j and which half is the idea — read it, because that is the part that
+transfers.
+
+**Evaluation gets twenty-five minutes**, in [task 8](./task_8_evaluation.md), which is enough to see
+why it matters and nowhere near enough to do it properly.
 
 ## The answers
 
