@@ -73,7 +73,11 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font: 16px/1.55 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font:
+    16px/1.55 system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
 }
 
 /* A whole-screen wait: the loader claims the height, the caption sits under it. */
@@ -97,7 +101,6 @@ body {
 main {
   flex-grow: 1;
 }
-
 
 header h1 {
   margin: 0 0 0.35rem;
@@ -124,7 +127,9 @@ header p {
   background: var(--surface);
   cursor: pointer;
   text-align: center;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 
 .dropzone:hover {
@@ -171,6 +176,37 @@ header p {
   border: 1px solid var(--border);
   border-left: 4px solid var(--accent);
   border-radius: 12px;
+}
+
+/*
+ * Someone has just pressed the button this explanation is about. The panel is already on screen,
+ * so it answers rather than a second copy appearing underneath: a brief lift, and one line saying
+ * the press landed here. Still not error styling — nothing has gone wrong.
+ */
+.task-todo.just-tried {
+  border-left-color: var(--accent-strong, var(--accent));
+  box-shadow: 0 0 0 1px var(--accent);
+  transition: box-shadow 0.2s ease;
+}
+
+.task-todo-tried {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .task-todo.just-tried {
+    animation: task-todo-noticed 0.4s ease;
+  }
+}
+
+@keyframes task-todo-noticed {
+  from {
+    transform: translateY(-2px);
+  }
+  to {
+    transform: none;
+  }
 }
 
 .task-todo-label {

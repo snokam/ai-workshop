@@ -14,7 +14,8 @@ public enum WorkshopTask {
             1,
             "Your first agent",
             "tasks/task_1_first_agent/",
-            "Build the ChatModel in VertexAiConfig, write the @SystemMessage in CaseTypeClassifier,"),
+            "Build the ChatModel in VertexAiConfig, write the @SystemMessage in CaseTypeClassifier,"
+                    + " and open the case its answer describes in CaseIntake."),
     DOCUMENT_AGENT(
             2,
             "Give it a file",

@@ -33,6 +33,16 @@ class WorkshopTaskTest {
     }
 
     @Test
+    void everyTaskSaysWhatToDoInAFinishedSentence() {
+        for (WorkshopTask task : WorkshopTask.values()) {
+            assertThat(task.todo())
+                    .as("task %d (%s) is the first thing a participant reads", task.number(), task.title())
+                    .isNotBlank()
+                    .endsWith(".");
+        }
+    }
+
+    @Test
     void theTasksAreNumberedInOrderWithNoGaps() {
         int expected = 1;
         for (WorkshopTask task : WorkshopTask.values()) {
