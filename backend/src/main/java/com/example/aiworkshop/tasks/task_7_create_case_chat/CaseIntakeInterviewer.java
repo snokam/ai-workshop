@@ -1,5 +1,6 @@
 package com.example.aiworkshop.tasks.task_7_create_case_chat;
 
+import com.example.aiworkshop.cases.model.Case;
 import com.example.aiworkshop.tasks.task_7_create_case_chat.model.CaseScenario;
 import com.example.aiworkshop.tasks.task_7_create_case_chat.model.InterviewTurn;
 import dev.langchain4j.service.SystemMessage;

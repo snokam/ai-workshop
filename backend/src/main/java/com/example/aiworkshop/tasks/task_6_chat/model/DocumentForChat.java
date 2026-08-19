@@ -1,8 +1,8 @@
 package com.example.aiworkshop.tasks.task_6_chat.model;
 
-import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment;
+import com.example.aiworkshop.documents.model.QualityAssessment;
 import com.example.aiworkshop.documents.model.UploadedDocument;
-import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment.Quality;
+import com.example.aiworkshop.documents.model.QualityAssessment.Quality;
 
 public record DocumentForChat(
         String filename,

@@ -1,5 +1,6 @@
 package com.example.aiworkshop.tasks.task_6_chat.model;
 
+import com.example.aiworkshop.cases.model.Case;
 import com.example.aiworkshop.cases.proposals.ProposalCard;
 import com.example.aiworkshop.cases.model.CaseStatus;
 import java.util.List;

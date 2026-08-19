@@ -1,4 +1,4 @@
-package com.example.aiworkshop.cases.model;
+package com.example.aiworkshop.tasks.task_1_first_agent.model;
 
 import java.util.List;
 import java.util.stream.Collectors;

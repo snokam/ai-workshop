@@ -1,7 +1,7 @@
 package com.example.aiworkshop.tasks.task_4_postprocessing.model;
 
 import com.example.aiworkshop.documents.model.UploadedDocument;
-import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment;
+import com.example.aiworkshop.documents.model.QualityAssessment;
 import com.example.aiworkshop.documents.model.MatchConfidence;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.ExtractedField;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;

@@ -1,4 +1,4 @@
-package com.example.aiworkshop.cases.store;
+package com.example.aiworkshop.tasks.task_1_first_agent.store;
 
 import com.example.aiworkshop.cases.model.Case;
 import java.util.Comparator;

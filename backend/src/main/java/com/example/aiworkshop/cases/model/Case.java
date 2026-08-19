@@ -1,7 +1,8 @@
 package com.example.aiworkshop.cases.model;
 
+import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
 import com.example.aiworkshop.documents.model.UploadedDocument;
-import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment;
+import com.example.aiworkshop.documents.model.QualityAssessment;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;

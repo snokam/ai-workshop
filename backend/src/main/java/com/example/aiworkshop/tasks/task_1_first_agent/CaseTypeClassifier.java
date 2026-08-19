@@ -1,5 +1,6 @@
 package com.example.aiworkshop.tasks.task_1_first_agent;
 
+import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseTypeSuggestion;
 import com.example.aiworkshop.cases.model.Case;
 import dev.langchain4j.service.SystemMessage;

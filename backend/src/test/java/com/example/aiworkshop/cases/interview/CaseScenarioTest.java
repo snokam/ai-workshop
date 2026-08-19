@@ -1,5 +1,6 @@
 package com.example.aiworkshop.cases.interview;
 
+import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
 import com.example.aiworkshop.tasks.task_7_create_case_chat.model.CaseScenario;
 import static org.assertj.core.api.Assertions.assertThat;
 

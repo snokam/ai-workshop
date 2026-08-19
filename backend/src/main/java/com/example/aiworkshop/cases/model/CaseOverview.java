@@ -1,5 +1,6 @@
 package com.example.aiworkshop.cases.model;
 
+import com.example.aiworkshop.cases.model.CaseStatus;
 import com.example.aiworkshop.cases.proposals.DocumentRequest;
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.aiworkshop.documents.store;
+package com.example.aiworkshop.tasks.task_2_document_agent.store;
 
 import com.example.aiworkshop.documents.model.UploadedDocument;
 import java.util.List;

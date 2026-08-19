@@ -4,8 +4,8 @@ import com.example.aiworkshop.tasks.task_7_create_case_chat.InterviewCaseOpener;
 import com.example.aiworkshop.tasks.task_7_create_case_chat.model.CaseScenario;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.example.aiworkshop.cases.model.CreatedCase;
-import com.example.aiworkshop.cases.store.CaseStore;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.CreatedCase;
+import com.example.aiworkshop.tasks.task_1_first_agent.store.CaseStore;
 import com.example.aiworkshop.documents.model.MatchConfidence;
 import org.junit.jupiter.api.Test;
 
