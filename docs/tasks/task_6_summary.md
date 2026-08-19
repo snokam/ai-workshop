@@ -3,7 +3,7 @@
 Every agent so far looked at one thing. This one reads every document on a case at once and says
 what they add up to.
 
-**Time:** 30 minutes. **You need:** tasks 1 and 2 working, and a case with at least three documents.
+**Time:** 40 minutes. **You need:** tasks 1 and 2 working, and a case with at least three documents.
 
 ## The expensive one
 
@@ -38,6 +38,19 @@ restates them it has earned nothing.
 `CaseStatusWriter` sits beside it and is the cheap counterpart: derived facts in, one short
 situation report out, no documents at all. Read both and note that they are not the same kind of
 thing, though both are "the agent that writes prose".
+
+## Part 2 — decide what it is shown
+
+Delete the components of `DocumentForSummary` and write them from what the summariser needs.
+
+It is handed one of these per document, in one prompt, on every screen load. Every field is paid for
+once per document per open, so the ones nobody reads are the whole of the cost with none of the
+value.
+
+Notice what is deliberately absent before you add anything: there are no bytes. The file was read in
+task 2, and reading it again would pay twice for one answer and risk two descriptions of one
+document on the same screen. Compare it with `DocumentInDetail`, which the chat fetches for a single
+document when someone actually asks.
 
 ## How you know it worked
 

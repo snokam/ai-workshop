@@ -19,7 +19,7 @@ import com.example.aiworkshop.cases.proposals.Proposal;
 import com.example.aiworkshop.cases.proposals.DocumentRequestStore;
 import com.example.aiworkshop.cases.proposals.DocumentRequestProposal;
 import com.example.aiworkshop.cases.proposals.DocumentRequest;
-import com.example.aiworkshop.cases.model.DocumentForSummary;
+import com.example.aiworkshop.tasks.task_6_summary.DocumentForSummary;
 import com.example.aiworkshop.cases.model.CaseOverview;
 import com.example.aiworkshop.cases.model.CaseDetail;
 import com.example.aiworkshop.cases.model.Case;

@@ -60,6 +60,21 @@ public class CaseChatTools {
         return desk.readDocument(caseId, filename, question);
     }
 
+
+    // ── To set this task again ────────────────────────────────────────────────────────
+    // TODO — task 5, part 2. Write these two tools.
+    //
+    // Delete the two methods above and write them from their signatures. The @Tool text is the
+    // exercise: it is not documentation, it is what the model reads to decide whether to call this
+    // rather than answer from what it already has. Say when to use it, and say what it costs —
+    // readDocument sends a file to a second agent, and an agent that reaches for it on every
+    // question is slow and expensive for no gain.
+    //
+    // @ToolMemoryId is the case the conversation is about. @P describes one argument to the model,
+    // and a filename it cannot guess is a tool call that fails.
+    //
+    // The two tools below are left whole as a reference for the shape.
+
     @Tool(
             """
             Suggest that a case handler review a document — that it is workable despite a poor \

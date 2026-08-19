@@ -3,7 +3,7 @@
 Every agent so far answered one question from what it was handed. This one holds a conversation
 about a case, looks things up while answering, and remembers what was already asked.
 
-**Time:** 45 minutes. **You need:** tasks 1 and 2 working, and a case with a document or two on it.
+**Time:** 60 minutes. **You need:** tasks 1 and 2 working, and a case with a document or two on it.
 
 ## What changes
 
@@ -34,6 +34,18 @@ A system message for an agent that:
 
 That last one matters more here than anywhere else in the workshop. This agent talks to the person
 deciding the claim.
+
+## Part 2 — write two tools
+
+Two of the four in `CaseChatTools` are yours; the other two are left whole for the shape.
+
+The `@Tool` text is the exercise, and it is not documentation. It is what the model reads to decide
+whether to call this rather than answer from what it already has — so say when to use it, and say
+what it costs. `readDocument` sends a file to a second agent; an agent that reaches for it on every
+question is slow and expensive for nothing.
+
+`@ToolMemoryId` is the case the conversation is about. `@P` describes one argument to the model, and
+a filename it cannot guess is a tool call that fails.
 
 ## Why it never writes
 

@@ -15,7 +15,8 @@ public record FraudScreening(String documentId, List<Indicator> indicators) {
         EDITED_IN_SOFTWARE,
         NO_CAMERA_ORIGIN,
         DATE_OUT_OF_PLACE,
-        ADDRESSED_THE_AGENT
+        ADDRESSED_THE_AGENT,
+        FIGURES_DISAGREE
     }
 
     public enum Weight {

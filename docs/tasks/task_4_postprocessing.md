@@ -6,7 +6,7 @@ Task 1 was about not being talked into things. This one is about the work that h
 answer is accepted — in plain Java, with no model involved, no network, and no credentials. It is the
 cheapest code in the application and it catches things the agent structurally cannot.
 
-**Time:** 30 minutes. **You need:** the app running, and task 1 read (this uses what it produced).
+**Time:** 45 minutes. **You need:** the app running, and task 1 read (this uses what it produced).
 
 ## The idea
 
@@ -119,6 +119,20 @@ Telling someone which of their tricks was noticed is free coaching in the ones t
 [ADR 0005](../adr/0005-fraud-signals-are-handler-side.md) and decide whether you agree — including
 the part where it admits there is no login here, so this is the shape of the API rather than an
 authorisation boundary.
+
+## Part 2 — a check from nothing
+
+Delete `FiguresCheck` and write it again. There is no registration: implement `FraudCheck`, annotate
+the class `@Component`, and the screener finds it.
+
+It is unlike the other three. They read the bytes or the file's metadata; this one reads what the
+*agent* extracted, so a model's answer becomes the input to code that cannot be talked round. Do the
+numbers on the receipt add up?
+
+`upload.analysis().fields()` is name/value pairs in the document's own wording — no fixed schema,
+values exactly as printed, and a Norwegian receipt writing `1 234,50` where you expected `1234.50`.
+Decide what to do about that, and about the case where nothing parses at all. A check that throws is
+caught, logged and skipped, so the wrong answer here is a confident one.
 
 ## How you know it worked
 

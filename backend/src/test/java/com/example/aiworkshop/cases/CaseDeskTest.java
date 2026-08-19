@@ -15,7 +15,7 @@ import com.example.aiworkshop.tasks.task_6_summary.CaseSummaryStore;
 import com.example.aiworkshop.cases.store.CaseStore;
 import com.example.aiworkshop.cases.proposals.ProposalStore;
 import com.example.aiworkshop.cases.proposals.DocumentRequestStore;
-import com.example.aiworkshop.cases.model.DocumentForSummary;
+import com.example.aiworkshop.tasks.task_6_summary.DocumentForSummary;
 import com.example.aiworkshop.cases.model.CaseType;
 import com.example.aiworkshop.cases.model.CaseStatus;
 import com.example.aiworkshop.cases.model.CaseDetail;

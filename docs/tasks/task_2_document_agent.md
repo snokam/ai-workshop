@@ -3,7 +3,7 @@
 Task 1's agent read a sentence someone typed. This one is handed a PDF or a photograph and has to
 say what it is looking at.
 
-**Time:** 50 minutes. **You need:** task 1 working, and the files in [`assets/`](../../assets).
+**Time:** 60 minutes. **You need:** task 1 working, and the files in [`assets/`](../../assets).
 
 ## The one idea
 
@@ -68,6 +68,18 @@ One system message asking for five things in a single pass:
 
 Read `DocumentAnalysis` before you start. That record is the contract, and the five jobs above are
 its five components.
+
+## Part 3 — the record is the contract
+
+`DocumentAnalysis` arrives with three of its five components. Add the other two.
+
+Run it first without them. The agent answers, nothing complains, and you have a reading of every
+document with no way to know whether the file was legible — the failure is silent, which is the
+point. Then add `quality` and `manipulationAttempt` back one at a time and watch them fill in with
+no other change: no parser, no mapping, no second place to update.
+
+`@Description` is not documentation. It is what the model is told each field means, which is why
+those sentences read like instructions to someone who cannot ask a follow-up question.
 
 ## How you know it worked
 

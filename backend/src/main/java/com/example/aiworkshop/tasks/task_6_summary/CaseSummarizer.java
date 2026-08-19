@@ -1,6 +1,6 @@
 package com.example.aiworkshop.tasks.task_6_summary;
 
-import com.example.aiworkshop.cases.model.DocumentForSummary;
+import com.example.aiworkshop.tasks.task_6_summary.DocumentForSummary;
 import com.example.aiworkshop.cases.model.Case;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
