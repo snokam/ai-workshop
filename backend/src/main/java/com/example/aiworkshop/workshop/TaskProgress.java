@@ -35,10 +35,10 @@ public class TaskProgress {
             case CHAT -> UnfinishedTasks.promptWritten(CaseChatAgent.class);
             case SUMMARY -> UnfinishedTasks.promptWritten(CaseSummarizer.class);
             case CREATE_CASE_CHAT -> UnfinishedTasks.promptWritten(CaseIntakeInterviewer.class);
-            // Task 8 has no code to gate: nothing on a screen waits on it. It counts as done once
-            // the labelled set has grown, because the ten that ship are a demonstration and the ones
-            // you argue about are the exercise.
-            case EVALUATION -> LabelledCase.all().size() > 10;
+            // Task 8 has no code to gate: nothing on a screen waits on it, and there is no prompt to
+            // write. It counts as done when there is a set to run — the ten that ship are the worked
+            // example, and adding the ones you would argue about is the exercise.
+            case EVALUATION -> !LabelledCase.all().isEmpty();
             case GUARDRAILS -> UnfinishedTasks.written(Guardrails::beforeTheCall);
             case POSTPROCESSING -> checks.stream().anyMatch(check -> UnfinishedTasks.written(() -> check.screen(null)));
         };

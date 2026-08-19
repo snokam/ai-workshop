@@ -59,4 +59,16 @@ public record LabelledCase(String description, CaseType expected, String why) {
                         CaseType.OTHER,
                         "Nothing to go on. OTHER with LOW confidence is the only honest answer."));
     }
+
+    // ── To set this task again ────────────────────────────────────────────────────────
+    // TODO — task 8. Write the cases you would argue about.
+    //
+    // The ten above are a worked example and the easy half of them proves nothing. Add your own
+    // until the set contains descriptions you genuinely cannot call, then run
+    // ClassifierEvaluation and sort every disagreement into two piles: the model was wrong, or the
+    // label was an opinion. Only the first is a bug.
+    //
+    // Worth trying: a description in Norwegian; two claims in one sentence; something written
+    // angrily; something so short it says nothing; a description that names one category outright
+    // and is plainly about another.
 }
