@@ -159,6 +159,10 @@ public class DocumentIntake {
             case "jpg", "jpeg" -> "image/jpeg";
             case "webp" -> "image/webp";
             case "gif" -> "image/gif";
+            // Every photo taken on an iPhone since 2017. Browsers vary on whether they declare a
+            // type for it, so the extension has to be enough — and the model reads it as it is,
+            // which is the point: nothing here converts a file before the model sees it.
+            case "heic", "heif" -> "image/heic";
             default -> throw new UnsupportedDocumentException(
                     "Only PDFs and images can be analysed. Received: " + declared);
         };

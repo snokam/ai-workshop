@@ -201,6 +201,17 @@ class DocumentIntakeTest {
     }
 
     @Test
+    void aPhotoFromAnIPhoneIsAcceptedWhateverTheBrowserCallsIt() throws IOException {
+        when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
+
+        UploadedDocument document = intake.accept(
+                CASE_ID,
+                new MockMultipartFile("file", "IMG_4021.heic", "application/octet-stream", new byte[] {1, 2, 3}));
+
+        assertThat(document.contentType()).isEqualTo("image/heic");
+    }
+
+    @Test
     void aFileTheModelCannotLookAtIsRejected() {
         assertThatThrownBy(() ->
                         intake.accept(CASE_ID, new MockMultipartFile("file", "notes.docx", null, "irrelevant".getBytes())))
