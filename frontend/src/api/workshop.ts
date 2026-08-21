@@ -6,8 +6,8 @@ export type TaskKey =
   | 'DOCUMENT_AGENT'
   | 'GUARDRAILS'
   | 'FRAUD_DETECTION'
-  | 'CHAT'
-  | 'SUMMARY'
+  | 'ADVISOR_CHAT'
+  | 'CASE_SUMMARY'
   | 'CREATE_CASE_CHAT'
 
 export interface TaskState {

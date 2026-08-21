@@ -5,8 +5,8 @@ import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiConfig;
 import com.example.aiworkshop.tasks.task_2_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_3_guardrails.guardrails.Guardrails;
 import com.example.aiworkshop.tasks.task_4_fraud_detection.FraudScreener;
-import com.example.aiworkshop.tasks.task_5_summary.agent.CaseSummarizer;
-import com.example.aiworkshop.tasks.task_6_chat.agent.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_5_case_summary.agent.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.CaseChatAgent;
 import com.example.aiworkshop.tasks.task_7_create_case_chat.agent.CaseIntakeInterviewer;
 
 public enum WorkshopTask {
@@ -31,15 +31,15 @@ public enum WorkshopTask {
             "What the model cannot know",
             "tasks/task_4_fraud_detection/FraudScreener.java",
             "Write the checks that run in Java after the agent has answered."),
-    SUMMARY(
+    CASE_SUMMARY(
             5,
             "Across documents",
-            "tasks/task_5_summary/agent/CaseSummarizer.java",
+            "tasks/task_5_case_summary/agent/CaseSummarizer.java",
             "Write the agent that reads every document on a case at once."),
-    CHAT(
+    ADVISOR_CHAT(
             6,
             "Tools and memory",
-            "tasks/task_6_chat/agent/CaseChatAgent.java",
+            "tasks/task_6_advisor_chat/agent/CaseChatAgent.java",
             "Write the chat agent and its tools."),
     CREATE_CASE_CHAT(
             7,

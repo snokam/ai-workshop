@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { openCase, reviewDocument } from "../../api";
 import type { CaseDetail } from "../../api";
-import { CaseChat } from "../../components/task_6_chat/CaseChat";
+import { CaseChat } from "../../components/task_6_advisor_chat/CaseChat";
 import { Checklist } from "../../components/task_1_first_agent/Checklist";
 import { DocumentCard } from "../../components/task_2_document_agent/DocumentCard";
 import {
@@ -82,7 +82,7 @@ export function Case() {
           />
 
           <TaskGate
-            task="SUMMARY"
+            task="CASE_SUMMARY"
             instead="This is what every document on the case says when read together, which is its own agent and has not been written yet."
           >
             <section className="agent-prose">

@@ -16,7 +16,7 @@ src/
     task_1_first_agent/       Checklist
     task_2_document_agent/    DocumentCard, standing
     task_4_fraud_detection/    Screening
-    task_6_chat/              CaseChat, Turn, ProposalCard
+    task_6_advisor_chat/              CaseChat, Turn, ProposalCard
     feedback/                 Loader, Failure, TaskNotDone
     layout/                   Layout, framework
     workshop/                 TaskGate, TasksProvider
