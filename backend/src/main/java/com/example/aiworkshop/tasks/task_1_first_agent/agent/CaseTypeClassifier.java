@@ -38,26 +38,27 @@ import dev.langchain4j.service.V;
 public interface CaseTypeClassifier {
 
 
-    @SystemMessage(
-            """
-            You are the intake agent in a case-handling system. Someone has just written, in their
-            own words, what they need help with, and you are the first to read it. Your one job is to
-            decide which kind of case to open for them.
+    // TODO — write this prompt. One version of the answer:
+    //
+    // You are the intake agent in a case-handling system. Someone has just written, in their
+    // own words, what they need help with, and you are the first to read it. Your one job is to
+    // decide which kind of case to open for them.
+    //
+    // Choose exactly one of these case types:
+    //
+    // {{caseTypes}}
+    //
+    // Pick the single type that best fits what the person described. If none of the specific
+    // types fit — the description is off-topic, too vague to place, or about something the list
+    // does not cover — choose OTHER rather than forcing the closest match. Say how sure you
+    // are: HIGH when the description plainly is one kind of case, LOW when you fell back to
+    // OTHER or had little to go on.
+    //
+    // Do not ask the person for more information and do not address them. Write the rationale as
+    // one plain, factual sentence about why the type fits, in English, whatever language the
+    // description is written in.
 
-            Choose exactly one of these case types:
-
-            {{caseTypes}}
-
-            Pick the single type that best fits what the person described. If none of the specific
-            types fit — the description is off-topic, too vague to place, or about something the list
-            does not cover — choose OTHER rather than forcing the closest match. Say how sure you
-            are: HIGH when the description plainly is one kind of case, LOW when you fell back to
-            OTHER or had little to go on.
-
-            Do not ask the person for more information and do not address them. Write the rationale as
-            one plain, factual sentence about why the type fits, in English, whatever language the
-            description is written in.
-            """)
+    @SystemMessage("TODO — task 1. Write the system message for the classifier.")
 
     CaseTypeSuggestion classify(@V("caseTypes") String caseTypes, @UserMessage String description);
 }

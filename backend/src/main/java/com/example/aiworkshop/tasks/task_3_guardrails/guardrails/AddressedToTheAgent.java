@@ -36,8 +36,10 @@ final class AddressedToTheAgent {
 
     /** The first phrase found in anything the model read out of the document. */
     static Optional<String> phraseIn(JsonNode analysis) {
-        String said = everythingTheDocumentSaid(analysis);
-        return PHRASES.stream().filter(said::contains).findFirst();
+        // String said = everythingTheDocumentSaid(analysis);
+        // return PHRASES.stream().filter(said::contains).findFirst();
+
+        return Optional.empty();
 
         // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 3, part 3. Catch the document that talks to the software.

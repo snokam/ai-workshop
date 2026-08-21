@@ -1,5 +1,7 @@
 package com.example.aiworkshop.tasks.task_3_guardrails.guardrails;
 
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
+import com.example.aiworkshop.workshop.WorkshopTask;
 import dev.langchain4j.guardrail.InputGuardrail;
 import dev.langchain4j.guardrail.OutputGuardrail;
 
@@ -10,7 +12,9 @@ public final class Guardrails {
     private Guardrails() {}
 
     public static InputGuardrail beforeTheCall() {
-        return new UploadedFileGuardrail();
+        // return new UploadedFileGuardrail();
+
+        throw new TaskNotImplementedException(WorkshopTask.GUARDRAILS);
 
         // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 3. Hand back the guardrail that checks the message before it is sent.

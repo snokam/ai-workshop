@@ -38,35 +38,36 @@ import dev.langchain4j.service.V;
  */
 public interface CaseIntakeInterviewer {
 
-    @SystemMessage(
-            """
-            You are the intake agent in a case-handling system. Someone has written, in their own
-            words, what they need help with. Your job is to open the right case for them — but unlike
-            a plain classifier, you may ask a few follow-up questions first when the answer would
-            change which scenario applies.
+    // TODO — write this prompt. One version of the answer:
+    //
+    // You are the intake agent in a case-handling system. Someone has written, in their own
+    // words, what they need help with. Your job is to open the right case for them — but unlike
+    // a plain classifier, you may ask a few follow-up questions first when the answer would
+    // change which scenario applies.
+    //
+    // The scenarios you can open, grouped by the kind of insurance:
+    //
+    // {{scenarios}}
+    //
+    // Read the whole conversation so far and make one move:
+    //
+    // - NEEDS_INFO — you cannot yet tell which scenario fits, and a short answer would settle
+    // it. Give one to three plain questions, each asking exactly one thing. Ask only what
+    // changes which scenario applies: if two scenarios need different documents and you cannot
+    // yet tell them apart, that is what to ask about. Leave the scenario empty.
+    //
+    // - DECIDED — one scenario clearly fits. Return it, with the confidence you have: HIGH when
+    // the situation is plain, LOW when you are largely guessing.
+    //
+    // Be economical. Never ask about something the person has already told you, and never ask
+    // more than three questions in total across the whole conversation — if the transcript
+    // already shows you asked before, lean towards deciding now. If nothing fits even after
+    // asking, decide on OTHER rather than forcing a poor match.
+    //
+    // Address the claimant directly and plainly in the questions. Write the rationale as one
+    // factual sentence, in English, whatever language the conversation is written in.
 
-            The scenarios you can open, grouped by the kind of insurance:
-
-            {{scenarios}}
-
-            Read the whole conversation so far and make one move:
-
-            - NEEDS_INFO — you cannot yet tell which scenario fits, and a short answer would settle
-              it. Give one to three plain questions, each asking exactly one thing. Ask only what
-              changes which scenario applies: if two scenarios need different documents and you cannot
-              yet tell them apart, that is what to ask about. Leave the scenario empty.
-
-            - DECIDED — one scenario clearly fits. Return it, with the confidence you have: HIGH when
-              the situation is plain, LOW when you are largely guessing.
-
-            Be economical. Never ask about something the person has already told you, and never ask
-            more than three questions in total across the whole conversation — if the transcript
-            already shows you asked before, lean towards deciding now. If nothing fits even after
-            asking, decide on OTHER rather than forcing a poor match.
-
-            Address the claimant directly and plainly in the questions. Write the rationale as one
-            factual sentence, in English, whatever language the conversation is written in.
-            """)
+    @SystemMessage("TODO — task 7. Write the system message for the interviewer.")
     @UserMessage("The conversation so far:\n\n{{transcript}}")
     InterviewTurn next(@V("scenarios") String scenarios, @V("transcript") String transcript);
 }

@@ -15,20 +15,24 @@ public class UploadedFileGuardrail implements InputGuardrail {
 
     @Override
     public InputGuardrailResult validate(InputGuardrailRequest request) {
-        List<Content> contents = request.userMessage().contents();
+        // List<Content> contents = request.userMessage().contents();
+        //
+        // long files = contents.stream()
+        // .filter(content -> content instanceof PdfFileContent || content instanceof ImageContent)
+        // .count();
+        // if (files != 1) {
+        // return fatal("Intake sends exactly one file to the model; this message carries " + files + ".");
+        // }
+        //
+        // for (Content content : contents) {
+        // if (content instanceof TextContent text && !DocumentIntake.INTAKE_INSTRUCTION.equals(text.text())) {
+        // return fatal("Only the intake instruction may accompany the file. Found: \"" + text.text() + "\"");
+        // }
+        // }
+        // return success();
+        //
+        // 
 
-        long files = contents.stream()
-        .filter(content -> content instanceof PdfFileContent || content instanceof ImageContent)
-        .count();
-        if (files != 1) {
-        return fatal("Intake sends exactly one file to the model; this message carries " + files + ".");
-        }
-
-        for (Content content : contents) {
-        if (content instanceof TextContent text && !DocumentIntake.INTAKE_INSTRUCTION.equals(text.text())) {
-        return fatal("Only the intake instruction may accompany the file. Found: \"" + text.text() + "\"");
-        }
-        }
         return success();
 
         // ── To set this task again ────────────────────────────────────────────────────────

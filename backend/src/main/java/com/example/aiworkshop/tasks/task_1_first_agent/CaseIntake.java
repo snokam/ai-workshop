@@ -1,5 +1,7 @@
 package com.example.aiworkshop.tasks.task_1_first_agent;
 
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
+import com.example.aiworkshop.workshop.WorkshopTask;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
 import com.example.aiworkshop.tasks.task_1_first_agent.store.CaseStore;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CreatedCase;
@@ -25,25 +27,27 @@ public class CaseIntake {
     }
 
     public CreatedCase open(String description) {
-        CaseTypeSuggestion suggestion = classifier.classify(CaseType.catalog(), description);
-        CaseType type = suggestion.type();
+        // CaseTypeSuggestion suggestion = classifier.classify(CaseType.catalog(), description);
+        // CaseType type = suggestion.type();
+        //
+        // int number = nextReference.getAndIncrement();
+        // String id = String.valueOf(number);
+        // String reference = "CASE-%d-%d".formatted(Year.now().getValue(), number);
+        // List<String> requiredDocuments = type.requiredDocuments();
+        //
+        // Case theCase = new Case(id, reference, type, requiredDocuments);
+        // cases.save(theCase);
+        //
+        // return new CreatedCase(
+        //         id,
+        //         reference,
+        //         type.label(),
+        //         suggestion.confidence(),
+        //         suggestion.rationale(),
+        //         requiredDocuments,
+        //         CaseStatus.AWAITING_DOCUMENTS);
 
-        int number = nextReference.getAndIncrement();
-        String id = String.valueOf(number);
-        String reference = "CASE-%d-%d".formatted(Year.now().getValue(), number);
-        List<String> requiredDocuments = type.requiredDocuments();
-
-        Case theCase = new Case(id, reference, type, requiredDocuments);
-        cases.save(theCase);
-
-        return new CreatedCase(
-                id,
-                reference,
-                type.label(),
-                suggestion.confidence(),
-                suggestion.rationale(),
-                requiredDocuments,
-                CaseStatus.AWAITING_DOCUMENTS);
+        throw new TaskNotImplementedException(WorkshopTask.FIRST_AGENT);
 
         // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 1, part 3. Turn the agent's answer into a Case.
