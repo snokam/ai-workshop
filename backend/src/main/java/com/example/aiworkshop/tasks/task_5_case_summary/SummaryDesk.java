@@ -5,6 +5,7 @@ import com.example.aiworkshop.tasks.task_5_case_summary.agent.CaseSummarizer;
 import com.example.aiworkshop.tasks.task_5_case_summary.store.CaseSummaryStore;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseStatus;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.UploadedDocument;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -44,8 +45,31 @@ public class SummaryDesk {
     }
 
     /** The cheap agent beside the expensive one: derived facts in, one short report out. */
+    /**
+     * The line at the top of the handler's screen.
+     *
+     * <p>The screenings are here because without them this sentence once read "ready for decision"
+     * on a case whose only document had been flagged as sent twice. A status note that recommends
+     * deciding, while something sits unlooked-at underneath it, is worse than no status note: it is
+     * the one part of the screen a handler is entitled to read instead of the rest.
+     *
+     * <p>Passed as sentences rather than as the screening records themselves, so the agent is given
+     * facts already worked out — the same way it is given the status and the outstanding list, and
+     * for the same reason.
+     */
     public String statusNote(
-            String caseType, CaseStatus status, List<String> outstanding, List<String> blockedReasons) {
-        return statusWriter.write(caseType, status, outstanding, blockedReasons);
+            String caseType,
+            CaseStatus status,
+            List<String> outstanding,
+            List<String> blockedReasons,
+            List<FraudScreening> screenings) {
+        return statusWriter.write(caseType, status, outstanding, blockedReasons, whatWasFlagged(screenings));
+    }
+
+    private static List<String> whatWasFlagged(List<FraudScreening> screenings) {
+        return screenings.stream()
+                .flatMap(screening -> screening.indicators().stream()
+                        .map(indicator -> "%s (%s): %s".formatted(indicator.kind(), indicator.weight(), indicator.detail())))
+                .toList();
     }
 }

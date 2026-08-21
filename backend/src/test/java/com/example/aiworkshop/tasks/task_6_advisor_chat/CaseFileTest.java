@@ -9,6 +9,10 @@ import com.example.aiworkshop.tasks.task_5_case_summary.agent.CaseSummarizer;
 import com.example.aiworkshop.tasks.task_5_case_summary.agent.CaseStatusWriter;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.CaseChatAgent;
 import com.example.aiworkshop.tasks.task_4_fraud_detection.FraudScreener;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Weight;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Kind;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Indicator;
+import com.example.aiworkshop.tasks.task_2_document_agent.DocumentStored;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentFiles;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.UploadedDocument;
@@ -121,7 +125,8 @@ class CaseFileTest {
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<String>> blocked = ArgumentCaptor.forClass(List.class);
-        verify(statusWriter).write(anyString(), eq(CaseStatus.NEEDS_REVIEW), eq(List.of()), blocked.capture());
+        verify(statusWriter)
+                .write(anyString(), eq(CaseStatus.NEEDS_REVIEW), eq(List.of()), blocked.capture(), anyList());
         assertThat(blocked.getValue()).singleElement(as(STRING)).contains("blurry.jpg");
     }
 
@@ -153,12 +158,43 @@ class CaseFileTest {
         verify(summarizer, times(1)).summarise(anyString(), anyList());
     }
 
+    /**
+     * The status note once read "ready for decision" on a case whose only document had been flagged
+     * as sent twice, because the screening never reached the agent that writes that sentence.
+     */
+    @Test
+    void whatTheScreeningFlaggedReachesTheStatusWriter() {
+        FraudScreener flagsEverything = new FraudScreener(List.of(upload -> List.of(new Indicator(
+                Kind.ALREADY_UPLOADED, Weight.STRONG, "Seen on another case entirely.", List.of()))));
+        UploadedDocument blurry = documents.findById("blurry.jpg").orElseThrow();
+        flagsEverything.onDocumentStored(new DocumentStored(
+                blurry.id(),
+                blurry.caseId(),
+                blurry.filename(),
+                blurry.contentType(),
+                new byte[0],
+                blurry.contentHash(),
+                blurry.analysis()));
+
+        new CaseFile(desk, documents, requests, summaryDesk, flagsEverything)
+                .open(CASE_ID, List.of(), List.of());
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<String>> flagged = ArgumentCaptor.forClass(List.class);
+        verify(statusWriter).write(anyString(), any(), anyList(), anyList(), flagged.capture());
+        assertThat(flagged.getValue())
+                .singleElement(as(STRING))
+                .contains("ALREADY_UPLOADED")
+                .contains("STRONG")
+                .contains("Seen on another case entirely.");
+    }
+
     @Test
     void theStatusNoteIsWrittenOnEveryOpen() {
         file.open(CASE_ID, List.of(), List.of());
         file.open(CASE_ID, List.of(), List.of());
 
-        verify(statusWriter, times(2)).write(anyString(), any(), anyList(), anyList());
+        verify(statusWriter, times(2)).write(anyString(), any(), anyList(), anyList(), anyList());
     }
 
     private List<DocumentForSummary> capturedProjections() {

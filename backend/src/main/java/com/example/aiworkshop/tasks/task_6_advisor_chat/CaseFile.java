@@ -7,6 +7,7 @@ import com.example.aiworkshop.tasks.task_2_document_agent.CaseDocuments;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.UploadedDocument;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_4_fraud_detection.FraudScreener;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening;
 import com.example.aiworkshop.tasks.task_5_case_summary.SummaryDesk;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.model.CaseDetail;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.model.ChatTurn;
@@ -53,6 +54,8 @@ public class CaseFile {
         List<UploadedDocument> attached = documents.findByCaseId(caseId);
         CaseOverview overview = cases.overviewOf(theCase);
 
+        List<FraudScreening> screenings = screener.findAllFor(idsOf(attached));
+
         return new CaseDetail(
                 overview,
                 attached,
@@ -63,8 +66,9 @@ public class CaseFile {
                         theCase.type().label(),
                         overview.status(),
                         overview.outstanding(),
-                        whyEachBlockedDocumentIsBlocked(theCase, attached)),
-                screener.findAllFor(idsOf(attached)),
+                        whyEachBlockedDocumentIsBlocked(theCase, attached),
+                        screenings),
+                screenings,
                 requests.findByCaseId(caseId),
                 proposals,
                 conversation);

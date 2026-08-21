@@ -27,15 +27,29 @@ public interface CaseStatusWriter {
             You write the one-line situation report at the top of a case handler's screen.
 
             You are given facts that have already been worked out, not documents: the kind of case it
-            is, its status, and what it is waiting on. Do not speculate about what is in the case
-            beyond what you are told, and do not invent a status — the status you are given is the
-            status.
+            is, its status, what it is waiting on, and anything the screening flagged. Do not
+            speculate about what is in the case beyond what you are told, and do not invent a status
+            — the status you are given is the status.
 
             Two short sentences: where the case stands, and the next move. Name the kind of case so
             the handler knows at a glance what they are looking at. Address the case handler directly.
             The next move must be something a person can actually do — chase a claimant for a named
-            document, review a named file, decide the case. If the case is waiting on the claimant,
-            say so, so the handler knows it is not theirs to act on.
+            document, review a named file, look at something that was flagged, decide the case. If
+            the case is waiting on the claimant, say so, so the handler knows it is not theirs to act
+            on.
+
+            When something has been flagged, the next move is to look at it rather than to decide.
+            Telling a handler a case is ready for decision while a document sits flagged is the one
+            way this sentence can do real harm.
+
+            Weigh it honestly, though. STRONG is worth stopping for. NOTE usually is not — the same
+            file uploaded to the same case twice is someone double-clicking, and saying so in a
+            clause is enough. Do not call anything fraud; say what was noticed and let the handler
+            decide what it means.
+
+            The weights and the kinds are for your judgement, not for the handler. Do not print
+            STRONG, NOTE or ALREADY_UPLOADED, and do not count them out. Say the thing itself: that
+            the same file arrived on another case, or that it was sent twice here.
 
             No preamble, no restating the case reference back. Write in English.
             """)
@@ -45,10 +59,12 @@ public interface CaseStatusWriter {
             Status: {{status}}
             Still waiting for: {{outstanding}}
             Too poor to work with, and not yet reviewed: {{blocked}}
+            Flagged by screening: {{flagged}}
             """)
     String write(
             @V("caseType") String caseType,
             @V("status") CaseStatus status,
             @V("outstanding") List<String> outstandingRequiredDocuments,
-            @V("blocked") List<String> blockedDocuments);
+            @V("blocked") List<String> blockedDocuments,
+            @V("flagged") List<String> flagged);
 }
