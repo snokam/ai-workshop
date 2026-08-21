@@ -1,7 +1,5 @@
 package com.example.aiworkshop.tasks.task_2_document_agent;
 
-import com.example.aiworkshop.workshop.TaskNotImplementedException;
-import com.example.aiworkshop.workshop.WorkshopTask;
 import com.example.aiworkshop.tasks.task_2_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentFiles;
@@ -131,11 +129,9 @@ public class DocumentIntake {
     }
 
     private List<Content> promptFor(MultipartFile file, String mimeType) throws IOException {
-        // return List.of(
-        //         TextContent.from(INTAKE_INSTRUCTION),
-        //         DocumentFiles.contentOf(file.getBytes(), mimeType));
-
-        throw new TaskNotImplementedException(WorkshopTask.DOCUMENT_AGENT);
+        return List.of(
+                TextContent.from(INTAKE_INSTRUCTION),
+                DocumentFiles.contentOf(file.getBytes(), mimeType));
 
         // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 2, part 2. Turn an upload into what the model is sent.

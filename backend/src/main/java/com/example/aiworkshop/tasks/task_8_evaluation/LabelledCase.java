@@ -13,56 +13,51 @@ import java.util.List;
 public record LabelledCase(String description, CaseType expected, String why) {
 
     public static List<LabelledCase> all() {
-        // TODO — task 8. Label the descriptions you would argue about. One version:
-        //
-        // return List.of(
-        //         new LabelledCase(
-        //                 "Someone reversed into my parked car outside the shop and I paid for the repair myself.",
-        //                 CaseType.MOTOR,
-        //                 "Unambiguous. If this one is wrong, something is broken rather than debatable."),
-        //         new LabelledCase(
-        //                 "My suitcase never turned up after my flight home and I had to buy clothes and toiletries.",
-        //                 CaseType.TRAVEL,
-        //                 "Unambiguous."),
-        //         new LabelledCase(
-        //                 "There was a break-in at my flat last week and my laptop and camera are gone.",
-        //                 CaseType.HOME_CONTENTS,
-        //                 "Unambiguous."),
-        //         new LabelledCase(
-        //                 "I have been signed off work for four months with a back injury and my pay has stopped.",
-        //                 CaseType.DISABILITY,
-        //                 "Unambiguous."),
-        //         new LabelledCase(
-        //                 "I need to see a specialist about my knee and the waiting list is nine months.",
-        //                 CaseType.HEALTH_TREATMENT,
-        //                 "Unambiguous."),
-        //         new LabelledCase(
-        //                 "My laptop was stolen from my car while it was parked at the airport.",
-        //                 CaseType.HOME_CONTENTS,
-        //                 "Contents or motor? Nothing happened to the car. Argue about it before you accept"
-        //                         + " whatever the model said."),
-        //         new LabelledCase(
-        //                 "I broke my ankle on holiday in Spain and paid a private clinic to treat it.",
-        //                 CaseType.TRAVEL,
-        //                 "Travel or health treatment? Both are true. The label here is a policy decision, not a"
-        //                         + " fact about the sentence."),
-        //         new LabelledCase(
-        //                 "Water came through the ceiling from the flat upstairs and ruined the carpet and a sofa.",
-        //                 CaseType.HOME_CONTENTS,
-        //                 "Contents, though someone will argue it is the building's problem and not a contents"
-        //                         + " claim at all."),
-        //         new LabelledCase(
-        //                 "My neighbour keeps parking across my drive and I want to make a complaint.",
-        //                 CaseType.OTHER,
-        //                 "Nothing on the list covers it. A model that answers MOTOR here is matching words, not"
-        //                         + " reading."),
-        //         new LabelledCase(
-        //                 "hi",
-        //                 CaseType.OTHER,
-        //                 "Nothing to go on. OTHER with LOW confidence is the only honest answer."));
-        //
-
-        return List.of();
+        return List.of(
+                new LabelledCase(
+                        "Someone reversed into my parked car outside the shop and I paid for the repair myself.",
+                        CaseType.MOTOR,
+                        "Unambiguous. If this one is wrong, something is broken rather than debatable."),
+                new LabelledCase(
+                        "My suitcase never turned up after my flight home and I had to buy clothes and toiletries.",
+                        CaseType.TRAVEL,
+                        "Unambiguous."),
+                new LabelledCase(
+                        "There was a break-in at my flat last week and my laptop and camera are gone.",
+                        CaseType.HOME_CONTENTS,
+                        "Unambiguous."),
+                new LabelledCase(
+                        "I have been signed off work for four months with a back injury and my pay has stopped.",
+                        CaseType.DISABILITY,
+                        "Unambiguous."),
+                new LabelledCase(
+                        "I need to see a specialist about my knee and the waiting list is nine months.",
+                        CaseType.HEALTH_TREATMENT,
+                        "Unambiguous."),
+                new LabelledCase(
+                        "My laptop was stolen from my car while it was parked at the airport.",
+                        CaseType.HOME_CONTENTS,
+                        "Contents or motor? Nothing happened to the car. Argue about it before you accept"
+                                + " whatever the model said."),
+                new LabelledCase(
+                        "I broke my ankle on holiday in Spain and paid a private clinic to treat it.",
+                        CaseType.TRAVEL,
+                        "Travel or health treatment? Both are true. The label here is a policy decision, not a"
+                                + " fact about the sentence."),
+                new LabelledCase(
+                        "Water came through the ceiling from the flat upstairs and ruined the carpet and a sofa.",
+                        CaseType.HOME_CONTENTS,
+                        "Contents, though someone will argue it is the building's problem and not a contents"
+                                + " claim at all."),
+                new LabelledCase(
+                        "My neighbour keeps parking across my drive and I want to make a complaint.",
+                        CaseType.OTHER,
+                        "Nothing on the list covers it. A model that answers MOTOR here is matching words, not"
+                                + " reading."),
+                new LabelledCase(
+                        "hi",
+                        CaseType.OTHER,
+                        "Nothing to go on. OTHER with LOW confidence is the only honest answer."));
     }
 
     // ── To set this task again ────────────────────────────────────────────────────────

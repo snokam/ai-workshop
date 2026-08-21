@@ -1,7 +1,5 @@
 package com.example.aiworkshop.tasks.task_4_fraud_detection.checks;
 
-import com.example.aiworkshop.workshop.TaskNotImplementedException;
-import com.example.aiworkshop.workshop.WorkshopTask;
 import com.example.aiworkshop.tasks.task_4_fraud_detection.FraudScreener.Upload;
 import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Indicator;
 import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Kind;
@@ -19,13 +17,11 @@ public class DuplicateUploadCheck implements FraudCheck {
 
     @Override
     public List<Indicator> screen(Upload upload) {
-        // List<String> earlier = seenBefore.computeIfAbsent(upload.contentHash(), key -> new CopyOnWriteArrayList<>());
-        //
-        // List<Indicator> found = earlier.isEmpty() ? List.of() : List.of(indicatorFor(upload, earlier));
-        // earlier.add(upload.caseId() + " / " + upload.filename());
-        // return found;
+        List<String> earlier = seenBefore.computeIfAbsent(upload.contentHash(), key -> new CopyOnWriteArrayList<>());
 
-        throw new TaskNotImplementedException(WorkshopTask.FRAUD_DETECTION);
+        List<Indicator> found = earlier.isEmpty() ? List.of() : List.of(indicatorFor(upload, earlier));
+        earlier.add(upload.caseId() + " / " + upload.filename());
+        return found;
 
         // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 4. The same bytes, seen before.

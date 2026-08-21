@@ -10,18 +10,6 @@ The domain language lives in [CONTEXT.md](./CONTEXT.md), and the workshop exerci
 each screen works, the controls stay live, and the ones needing a task you have not done say which
 file to open. Eight exercises, in order, each one an agent or the thing that keeps an agent honest.
 
-## Two branches
-
-| | |
-|---|---|
-| `main` | the workshop. Clone this. Every task is waiting to be written. |
-| `solutions` | the same repository with all eight written. Look after you have tried, not before. |
-
-Each exercise sits in the file you will write it in, under a comment headed `TODO`, with one version
-of the answer parked just above it as a comment. So the answer is never far away — which is the
-point. Nobody learns anything from being stuck for forty minutes on a missing import, and nobody
-learns anything from copying either.
-
 ## Layout
 
 ```
