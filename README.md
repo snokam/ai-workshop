@@ -23,6 +23,32 @@ The two halves are built and run separately. Maven does not build the frontend a
 Vite proxies `/api` to Spring Boot, so the browser sees a single origin and there is no CORS
 configuration anywhere.
 
+## Before the day
+
+Four things, and one of them you may already have.
+
+| | |
+|---|---|
+| Java 25 | `java -version` should say 25. Most machines are still on 17 or 21. |
+| Node 20 or newer | for the frontend |
+| A terminal each | the two halves run separately |
+| Google Cloud credentials | see below — Storebrand developers already have these |
+
+**If you are at Storebrand and use Storecode**, sign in to Claude Code the way you always do. That
+sign-in leaves Application Default Credentials on your machine, which is exactly what this workshop
+authenticates with — so there is nothing else to set up and nothing to paste. Clone, run, and it
+works.
+
+**If you are not**, one command, once:
+
+```bash
+gcloud auth application-default login
+```
+
+Google asks for this again every day or two. When it expires the application says
+`UNAUTHENTICATED: Failed computing credential metadata` — run the command again and **restart the
+backend**, because credentials are read once at startup.
+
 ## Running it
 
 Two terminals.
@@ -30,7 +56,6 @@ Two terminals.
 ```bash
 # terminal 1 — backend on :8080
 cd backend
-export AZURE_OPENAI_API_KEY=...        # or use the Vertex provider, see below
 ./mvnw spring-boot:run
 
 # terminal 2 — frontend on :5173
@@ -38,27 +63,29 @@ cd frontend
 npm install && npm run dev
 ```
 
-Then open http://localhost:5173.
+Then open http://localhost:5173. No environment variables, no API keys: Vertex AI is the default
+and it finds your credentials on its own.
 
 ## Choosing a provider
 
-`aiworkshop.model.provider` picks which `ChatModel` bean is built. Override per run:
+`aiworkshop.model.provider` picks which `ChatModel` bean is built. Vertex is the default, so the
+only reason to touch this is if you are Snokam staff on Foundry:
 
 ```bash
 cd backend
-AI_PROVIDER=vertex ./mvnw spring-boot:run    # Gemini on Vertex AI
-AI_PROVIDER=foundry ./mvnw spring-boot:run   # a deployment on Azure AI Foundry
+AI_PROVIDER=foundry AZURE_OPENAI_API_KEY=... ./mvnw spring-boot:run
 ```
 
-Vertex authenticates with Application Default Credentials, not an API key:
+Vertex authenticates with Application Default Credentials rather than an API key, and takes the
+project from those same credentials — which is why nothing has to be exported. To bill a different
+project than the one you signed in against, say so:
 
 ```bash
-gcloud auth application-default login
-gcloud auth application-default set-quota-project "$GOOGLE_CLOUD_PROJECT"
+GOOGLE_CLOUD_PROJECT=your-project ./mvnw spring-boot:run
 ```
 
-Foundry needs `AZURE_OPENAI_API_KEY` exported. Both providers accept PDFs and images as inline data,
-so uploads are sent to the model as-is — nothing extracts text first.
+Both providers accept PDFs and images as inline data, so uploads are sent to the model as-is —
+nothing extracts text first.
 
 ## Where everything is
 

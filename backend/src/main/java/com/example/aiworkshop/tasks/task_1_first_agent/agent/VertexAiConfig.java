@@ -14,7 +14,7 @@ public class VertexAiConfig {
     @Bean(destroyMethod = "close")
     ChatModel chatModel(VertexAiProperties properties) {
         return VertexAiGeminiChatModel.builder()
-                .project(properties.project())
+                .project(properties.projectId())
                 .location(properties.location())
                 .modelName(properties.modelName())
                 .temperature(properties.temperature())
