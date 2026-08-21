@@ -8,6 +8,7 @@ import dev.langchain4j.guardrail.OutputGuardrailRequest;
 import dev.langchain4j.guardrail.OutputGuardrailResult;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,18 +50,25 @@ public class AnalysisGuardrail implements OutputGuardrail {
         }
 
         List<String> allowed = requiredDocumentsIn(request);
-        if (allowed.contains(claimed)) {
-        return success();
-        }
-
+        if (!allowed.contains(claimed)) {
         log.warn(
         "Guardrail: the agent matched '{}', which is not one of {}. Recording no match instead.",
         claimed,
         allowed);
-        ObjectNode corrected = ((ObjectNode) analysis).deepCopy();
-        corrected.putNull("matchedRequiredDocument");
-        corrected.put("matchConfidence", "LOW");
-        return successWith(corrected.toString());
+        return strikeOut(analysis);
+        }
+
+        Optional<String> aimedAtUs = AddressedToTheAgent.phraseIn(analysis);
+        if (aimedAtUs.isPresent()) {
+        log.warn(
+        "Guardrail: the document says \"{}\", which is addressed to the software rather than to a"
+        + " person. Striking out its claim to be '{}'.",
+        aimedAtUs.get(),
+        claimed);
+        return strikeOut(analysis);
+        }
+
+        return success();
 
         // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 3. Check what came back before anyone downstream sees it.
@@ -75,7 +83,24 @@ public class AnalysisGuardrail implements OutputGuardrail {
         // return success();
     }
 
-    private static String jsonIn(String reply) {
+    /**
+     * Both rules end the same way: the claim is removed and the confidence dropped. The document is
+     * still stored, still shown, still summarised — it simply does not get to satisfy anything the
+     * case asked for.
+     *
+     * <p>One guardrail owns the rewrite on purpose. This started as two, and the second one's plain
+     * success() handed back the original reply and quietly undid the first one's correction. Output
+     * guardrails that rewrite do not chain: whichever runs last decides, and one that has nothing to
+     * say says "use what the model sent".
+     */
+    private OutputGuardrailResult strikeOut(JsonNode analysis) {
+        ObjectNode corrected = ((ObjectNode) analysis).deepCopy();
+        corrected.putNull("matchedRequiredDocument");
+        corrected.put("matchConfidence", "LOW");
+        return successWith(corrected.toString());
+    }
+
+    static String jsonIn(String reply) {
         int start = reply.indexOf('{');
         int end = reply.lastIndexOf('}');
         return start < 0 || end < start ? reply : reply.substring(start, end + 1);
