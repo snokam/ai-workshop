@@ -110,4 +110,4 @@ everything the agent *writes* is in English. That split is deliberate; see
 - **Add a component to `DocumentAnalysis`** — whether the document is signed, say — and watch it get
   filled in with no other change.
 - **Ask for the same file twice** and compare the two answers. Then read why intake hashes the bytes
-  before it calls the model at all, in [task 4](./task_4_postprocessing.md).
+  before it calls the model at all, in [task 4](./task_4_fraud_detection.md).

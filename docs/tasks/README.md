@@ -7,7 +7,7 @@ Six exercises, in order. Each one is an agent, and each adds exactly one idea to
 | 1 | [Your first agent](./task_1_first_agent.md) | the SDK wiring, and an agent that reads a sentence and decides which case to open |
 | 2 | [Give it a file](./task_2_document_agent.md) | an agent handed a PDF or a photograph, and a record that is its output schema |
 | 3 | [Guardrails](./task_3_guardrails.md) | two checks on the way out and back, now there is an agent worth guarding |
-| 4 | [Post-processing](./task_4_postprocessing.md) | what the model cannot know, in plain Java after the answer — and one check written from nothing |
+| 4 | [Fraud detection](./task_4_fraud_detection.md) | what the model cannot know, in plain Java after the answer — and one check written from nothing |
 | 5 | [Across documents](./task_5_summary.md) | the expensive agent: every document at once, what it is shown, and what that costs |
 | 6 | [Tools and memory](./task_6_chat.md) | an agent that looks things up mid-answer, and the tool descriptions that decide when it does |
 | 8 | [How would you know?](./task_8_evaluation.md) | whether any of it is any good — the question that separates a demo from something you would ship |
@@ -35,7 +35,7 @@ are ordered so that stopping anywhere leaves something whole:
 | 1:15 | **task 2** — the same again with a file, and the record that is its contract |
 | 2:15 | break |
 | 2:25 | **task 3** — what happens when a document argues back |
-| 3:00 | where this goes: post-processing, tools, memory, reading across documents |
+| 3:00 | where this goes: fraud detection, tools, memory, reading across documents |
 
 That is 1 to 3 done properly. Tasks 4 to 7 are read rather than written, and left for afterwards —
 the repository is theirs to finish in their own time, and the briefs assume no one is standing over

@@ -1,4 +1,4 @@
-# Task 4 — Post-processing
+# Task 4 — Fraud detection
 
 The model has answered. Now what?
 
@@ -24,7 +24,7 @@ None of that is a language problem, so none of it should cost a model call.
 ## What to build
 
 ```
-task_2_postprocessing/
+task_4_fraud_detection/
   FraudScreener.java              the entrypoint: runs the checks, keeps what they found,
                                   and defines the Upload a check is given
   checks/

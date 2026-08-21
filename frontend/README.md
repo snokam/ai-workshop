@@ -15,7 +15,7 @@ src/
   components/
     task_1_first_agent/       Checklist
     task_2_document_agent/    DocumentCard, standing
-    task_4_postprocessing/    Screening
+    task_4_fraud_detection/    Screening
     task_6_chat/              CaseChat, Turn, ProposalCard
     feedback/                 Loader, Failure, TaskNotDone
     layout/                   Layout, framework

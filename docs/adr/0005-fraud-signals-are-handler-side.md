@@ -11,7 +11,7 @@ Three consequences follow, and each is load-bearing rather than incidental:
 - The Claimant's endpoints answer with **`DocumentForClaimant`**, a projection that leaves out the
   agent's `ManipulationAttempt` — the one part of the analysis written for somebody else.
 - `Case.status` is **untouched**. A Case is held at `NEEDS_REVIEW` by a Quality Assessment a Review
-  can clear, and by nothing in `task_2_postprocessing`.
+  can clear, and by nothing in `task_4_fraud_detection`.
 
 ## What prompted it
 

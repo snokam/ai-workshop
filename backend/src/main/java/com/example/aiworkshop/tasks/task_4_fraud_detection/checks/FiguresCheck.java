@@ -1,10 +1,10 @@
-package com.example.aiworkshop.tasks.task_4_postprocessing.checks;
+package com.example.aiworkshop.tasks.task_4_fraud_detection.checks;
 
 import com.example.aiworkshop.tasks.task_2_document_agent.model.ExtractedField;
-import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Kind;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Weight;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.FraudScreener.Upload;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Indicator;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Kind;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Weight;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

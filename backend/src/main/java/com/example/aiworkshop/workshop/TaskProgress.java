@@ -3,7 +3,7 @@ package com.example.aiworkshop.workshop;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
 import com.example.aiworkshop.tasks.task_2_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_3_guardrails.guardrails.Guardrails;
-import com.example.aiworkshop.tasks.task_4_postprocessing.checks.FraudCheck;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.checks.FraudCheck;
 import com.example.aiworkshop.tasks.task_6_chat.agent.CaseChatAgent;
 import com.example.aiworkshop.tasks.task_5_summary.agent.CaseSummarizer;
 import com.example.aiworkshop.tasks.task_8_evaluation.LabelledCase;
@@ -40,7 +40,7 @@ public class TaskProgress {
             // example, and adding the ones you would argue about is the exercise.
             case EVALUATION -> !LabelledCase.all().isEmpty();
             case GUARDRAILS -> UnfinishedTasks.written(Guardrails::beforeTheCall);
-            case POSTPROCESSING -> checks.stream().anyMatch(check -> UnfinishedTasks.written(() -> check.screen(null)));
+            case FRAUD_DETECTION -> checks.stream().anyMatch(check -> UnfinishedTasks.written(() -> check.screen(null)));
         };
     }
 }

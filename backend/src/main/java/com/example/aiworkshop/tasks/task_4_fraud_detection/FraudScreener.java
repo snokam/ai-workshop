@@ -1,11 +1,11 @@
-package com.example.aiworkshop.tasks.task_4_postprocessing;
+package com.example.aiworkshop.tasks.task_4_fraud_detection;
 
 import org.springframework.context.event.EventListener;
 import com.example.aiworkshop.tasks.task_2_document_agent.DocumentStored;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening;
-import com.example.aiworkshop.tasks.task_4_postprocessing.checks.FraudCheck;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.checks.FraudCheck;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.DocumentAnalysis;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Indicator;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

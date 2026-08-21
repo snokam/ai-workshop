@@ -1,10 +1,10 @@
-package com.example.aiworkshop.tasks.task_4_postprocessing.checks;
+package com.example.aiworkshop.tasks.task_4_fraud_detection.checks;
 
 import com.example.aiworkshop.tasks.task_2_document_agent.model.ManipulationAttempt;
-import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Kind;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Weight;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.FraudScreener.Upload;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Indicator;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Kind;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Weight;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +32,6 @@ public class AddressedTheAgentCheck implements FraudCheck {
         //
         // Throwing is how the screener knows: it logs, skips, and keeps the other checks running —
         // which is the rule this task is really about.
-        // throw new TaskNotImplementedException(WorkshopTask.POSTPROCESSING);
+        // throw new TaskNotImplementedException(WorkshopTask.FRAUD_DETECTION);
     }
 }

@@ -10,10 +10,10 @@ third are properties you can rely on.
 |---|---|---|---|
 | Input guardrail | before the call | the message you assembled | block it, for free |
 | Output guardrail | on the reply, before parsing | the model's raw text | correct it, or reprompt |
-| Post-processing | after the answer is accepted | the answer, the bytes, everything stored | anything Java can do |
+| Fraud detection | after the answer is accepted | the answer, the bytes, everything stored | anything Java can do |
 
 Files to drag in live are in [`assets/`](../assets). The exercises behind it are
-[task 1](./tasks/task_1_guardrails.md) and [task 2](./tasks/task_2_postprocessing.md).
+[task 3](./tasks/task_3_guardrails.md) and [task 4](./tasks/task_4_fraud_detection.md).
 
 ## Beat 1 — the input guardrail: what leaves the building
 
@@ -90,7 +90,7 @@ not the parsed object — it runs first, which is the whole point of it. Gemini 
 in a ```json fence, so the first version of this guardrail failed to parse every reply and turned
 every upload into a 502. `aReplyWrappedInAMarkdownFenceIsStillRead` pins that bug.
 
-## Beat 3 — post-processing: what you do with the answer
+## Beat 3 — fraud detection: what you do with the answer
 
 Upload [`assets/repair-receipt.pdf`](../assets/repair-receipt.pdf) to case 1001. Then upload the very
 same file to case 1002:
@@ -104,10 +104,10 @@ The same file, byte for byte, has already been uploaded to a different case.
 No model, no network, no prompt. A SHA-256 and a map. One expense, two claims — the oldest trick
 there is, and the LLM is the wrong tool for catching it.
 
-The other checks in `tasks/task_2_postprocessing/checks/` are the same shape: EXIF says an image came
+The other checks in `tasks/task_4_fraud_detection/checks/` are the same shape: EXIF says an image came
 out of Photoshop, or carries no camera metadata at all, or was taken in the future. Nothing here
 needs a key or a network, which is deliberate — see the end of
-[task 2](./tasks/task_2_postprocessing.md) for the one check that was left out for exactly that
+[task 4](./tasks/task_4_fraud_detection.md) for the one check that was left out for exactly that
 reason.
 
 **The lesson:** a lot of what people reach for an LLM to do is a hash, a date comparison, and an API

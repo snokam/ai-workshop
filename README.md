@@ -98,7 +98,7 @@ agent you write, the records it answers in, what is kept, and the endpoints the 
 | `task_1_first_agent/` | the model itself, a classifier, and the case its answer opens |
 | `task_2_document_agent/` | the agent that reads an uploaded PDF or photo |
 | `task_3_guardrails/` | one guardrail on the way out, one on the way back |
-| `task_4_postprocessing/` | plain Java after the answer: what the model cannot know |
+| `task_4_fraud_detection/` | plain Java after the answer: what the model cannot know |
 | `task_5_summary/` | the expensive agent, across every document on a case |
 | `task_6_chat/` | tools and memory — the agent that suggests and never writes |
 | `task_7_create_case_chat/` | an interview instead of a form |

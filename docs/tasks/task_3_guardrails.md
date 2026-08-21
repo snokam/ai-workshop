@@ -13,7 +13,7 @@ first, then compare. The point of the exercise is the reasoning, not the typing.
 | Part 1 — input guardrail | before the call | the message you assembled | block it, for free |
 | Part 2 — output guardrail | on the reply, before parsing | the model's raw text | correct it, or reprompt |
 
-What happens *after* the answer is accepted is [task 4](./task_4_postprocessing.md).
+What happens *after* the answer is accepted is [task 4](./task_4_fraud_detection.md).
 
 **Time:** 45 minutes. **You need:** the app running (see the [README](../../README.md)).
 

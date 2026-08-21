@@ -1,7 +1,7 @@
 import type { FraudScreening, UploadedDocument } from '../../../api'
 import { CONFIDENCE_LABEL, QUALITY_LABEL } from '../../../lib/labels'
 import type { Standing } from '../standing'
-import { Screening } from '../../task_4_postprocessing/Screening'
+import { Screening } from '../../task_4_fraud_detection/Screening'
 
 export function DocumentCard({
   doc,

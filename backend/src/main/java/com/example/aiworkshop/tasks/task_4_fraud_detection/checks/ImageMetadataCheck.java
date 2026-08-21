@@ -1,13 +1,13 @@
-package com.example.aiworkshop.tasks.task_4_postprocessing.checks;
+package com.example.aiworkshop.tasks.task_4_fraud_detection.checks;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
-import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Kind;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Weight;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.FraudScreener.Upload;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Indicator;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Kind;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Weight;
 import java.io.ByteArrayInputStream;
 import java.time.Duration;
 import java.time.Instant;
@@ -62,7 +62,7 @@ public class ImageMetadataCheck implements FraudCheck {
         //
         // Throwing is how the screener knows: it logs, skips, and keeps the other checks running —
         // which is the rule this task is really about.
-        // throw new TaskNotImplementedException(WorkshopTask.POSTPROCESSING);
+        // throw new TaskNotImplementedException(WorkshopTask.FRAUD_DETECTION);
     }
 
     private static Optional<Indicator> editedInSoftware(ExifIFD0Directory exif) {

@@ -2,7 +2,7 @@
 
 You write plain Java after the answer, and one check written from nothing.
 
-The brief is `docs/tasks/task_4_postprocessing.md`, from the repository root.
+The brief is `docs/tasks/task_4_fraud_detection.md`, from the repository root.
 
 ## What is yours to write
 

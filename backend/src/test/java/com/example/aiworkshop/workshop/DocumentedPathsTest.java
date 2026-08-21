@@ -20,7 +20,13 @@ import org.junit.jupiter.api.Test;
  */
 class DocumentedPathsTest {
     private static final Path REPO = Path.of("..");
-    private static final Pattern PATH = Pattern.compile("`([\\w@/.-]+\\.(?:java|tsx?|md))`");
+    /**
+     * Two ways a document points at a file: in backticks as prose, and as the target of a markdown
+     * link. Only the first was checked here, which is how [task 2](./tasks/task_2_postprocessing.md)
+     * survived two renumberings — the file it named had not existed for months and nothing said so.
+     */
+    private static final Pattern PATH =
+            Pattern.compile("`([\\w@/.-]+\\.(?:java|tsx?|md))`|\\]\\(([\\w@/.-]+\\.(?:java|tsx?|md))[)#]");
 
     /**
      * A path in the briefs is written from wherever makes it readable: from the repository root,
@@ -38,7 +44,7 @@ class DocumentedPathsTest {
             for (Path doc : docs.filter(DocumentedPathsTest::isOurMarkdown).toList()) {
                 Matcher named = PATH.matcher(Files.readString(doc));
                 while (named.find()) {
-                    String path = named.group(1);
+                    String path = named.group(1) != null ? named.group(1) : named.group(2);
                     if (!path.contains("/")) {
                         continue; // a bare filename is prose, not a pointer
                     }

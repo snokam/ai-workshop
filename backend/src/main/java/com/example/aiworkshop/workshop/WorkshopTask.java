@@ -4,7 +4,7 @@ import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiConfig;
 import com.example.aiworkshop.tasks.task_2_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_3_guardrails.guardrails.Guardrails;
-import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.FraudScreener;
 import com.example.aiworkshop.tasks.task_5_summary.agent.CaseSummarizer;
 import com.example.aiworkshop.tasks.task_6_chat.agent.CaseChatAgent;
 import com.example.aiworkshop.tasks.task_7_create_case_chat.agent.CaseIntakeInterviewer;
@@ -26,10 +26,10 @@ public enum WorkshopTask {
             "Don't be talked round",
             "tasks/task_3_guardrails/guardrails/Guardrails.java",
             "Write the input and output guardrails."),
-    POSTPROCESSING(
+    FRAUD_DETECTION(
             4,
             "What the model cannot know",
-            "tasks/task_4_postprocessing/FraudScreener.java",
+            "tasks/task_4_fraud_detection/FraudScreener.java",
             "Write the checks that run in Java after the agent has answered."),
     SUMMARY(
             5,

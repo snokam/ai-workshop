@@ -8,7 +8,7 @@ import com.example.aiworkshop.tasks.task_5_summary.SummaryDesk;
 import com.example.aiworkshop.tasks.task_5_summary.agent.CaseSummarizer;
 import com.example.aiworkshop.tasks.task_5_summary.agent.CaseStatusWriter;
 import com.example.aiworkshop.tasks.task_6_chat.agent.CaseChatAgent;
-import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.FraudScreener;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_2_document_agent.store.DocumentFiles;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.UploadedDocument;

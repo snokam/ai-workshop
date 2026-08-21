@@ -5,7 +5,7 @@ export type TaskKey =
   | 'FIRST_AGENT'
   | 'DOCUMENT_AGENT'
   | 'GUARDRAILS'
-  | 'POSTPROCESSING'
+  | 'FRAUD_DETECTION'
   | 'CHAT'
   | 'SUMMARY'
   | 'CREATE_CASE_CHAT'

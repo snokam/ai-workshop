@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_4_postprocessing.model;
+package com.example.aiworkshop.tasks.task_4_fraud_detection.model;
 
 import java.util.List;
 

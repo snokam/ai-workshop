@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_4_postprocessing.checks;
+package com.example.aiworkshop.tasks.task_4_fraud_detection.checks;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,9 +7,9 @@ import com.example.aiworkshop.tasks.task_2_document_agent.model.ExtractedField;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.MatchConfidence;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment;
 import com.example.aiworkshop.tasks.task_2_document_agent.model.QualityAssessment.Quality;
-import com.example.aiworkshop.tasks.task_4_postprocessing.FraudScreener.Upload;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Indicator;
-import com.example.aiworkshop.tasks.task_4_postprocessing.model.FraudScreening.Kind;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.FraudScreener.Upload;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Indicator;
+import com.example.aiworkshop.tasks.task_4_fraud_detection.model.FraudScreening.Kind;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
