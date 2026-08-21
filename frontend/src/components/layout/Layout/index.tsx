@@ -6,6 +6,7 @@ import { FooterBase, FooterTheme } from '@snokam/footer/v1/base'
 import type { ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import { framework } from '../framework'
+import { useDarkMode } from '../useDarkMode'
 
 function backFrom(pathname: string): { url: string; text: string } | null {
   if (/^\/casehandler\/cases\/[^/]+$/.test(pathname)) {
@@ -19,6 +20,10 @@ function backFrom(pathname: string): { url: string; text: string } | null {
 
 export function Layout({ children }: { children: ReactNode }) {
   const back = backFrom(useLocation().pathname)
+  const logo = {
+    url: useDarkMode() ? '/snokam-logo-white.svg' : '/snokam-logo.svg',
+    alt: 'Snøkam',
+  }
 
   return (
     <Theme.Provider>
@@ -26,7 +31,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <div className="page">
           <SimpleHeaderBase
             theme={HeaderTheme.Light}
-            logo={{ url: '/snokam-logo.svg', alt: 'Snøkam' }}
+            logo={logo}
             homeUrl="/"
             backUrl={back?.url}
             backText={back?.text}
@@ -40,7 +45,7 @@ export function Layout({ children }: { children: ReactNode }) {
           </Snokam.Container>
           <FooterBase
             theme={FooterTheme.Light}
-            logo={{ url: '/snokam-logo.svg', alt: 'Snøkam' }}
+            logo={logo}
             content={
               <p>
                 A workshop on document handling with LLMs. Everything you upload
