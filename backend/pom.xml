@@ -65,6 +65,12 @@
         <!-- Azure AI Foundry: the /openai/v1 endpoint is OpenAI-compatible -->
         <dependency>
             <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-anthropic</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-open-ai</artifactId>
         </dependency>
 

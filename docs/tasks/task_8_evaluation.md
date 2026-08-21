@@ -103,6 +103,28 @@ layer rather than pass or fail, because the first version was not that precise a
 confident five out of five while every reply was in fact unusable. An evaluation can be wrong in
 exactly the way the thing it is testing can.
 
+## Will it run on a different model?
+
+A fifth evaluation, and the only one that holds the task still and changes the model instead:
+
+```bash
+./mvnw test -Dtest=ModelComparison -Dsurefire.failIfNoSpecifiedTests=false
+```
+
+Every evaluation above asks how good an answer is. This asks whether an answer is possible at all,
+which is a different kind of failure. A model that classifies a little worse costs you an argument
+about labels. A model that cannot return JSON in the shape it was asked for costs you the exercise,
+and you find out in front of the room.
+
+Three probes, one per thing the workshop cannot do without: an answer that parses into a record
+(task 1 onwards), a file the model will actually look at (task 2 onwards), and a tool it calls
+without being nagged (task 6). Add a model to `CandidateModel.all()` and run it again — that is the
+whole of what it takes to answer "can we use X instead" before the day rather than during it.
+
+Two things already found by running it. `gemini-2.5-pro` passes all three but takes about four times
+as long as flash, which turns a sixty-minute task into something else. And `gemini-2.0-flash` is not
+available in this project at all, which is the kind of thing worth knowing before someone pins it.
+
 ## What this is not
 
 This is a smoke test you can run in a coffee break, not an evaluation suite. What is missing from it
