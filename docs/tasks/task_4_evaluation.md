@@ -1,10 +1,12 @@
-# Task 8 — How would you know?
+# Task 4 — How would you know?
 
 Every other task asks you to build something. This one asks whether what you built is any good, and
 it is the question that separates a demo from something you would put in front of a case handler.
 
 **Time:** 25 minutes for the exercise, plus about 15 to run and read the others.
 **You need:** task 1 working. The extraction and attack-set runs want tasks 2 and 3 as well.
+
+The parts, in order, are in `backend/src/main/java/com/example/aiworkshop/tasks/task_4_evaluation/README.md` — each one names the file, what it is for, and what to reach for.
 
 ## The problem with "it works"
 
@@ -109,7 +111,7 @@ about labels. A model that cannot return JSON in the shape it was asked for cost
 and you find out in front of the room.
 
 Three probes, one per thing the workshop cannot do without: an answer that parses into a record
-(task 1 onwards), a file the model will actually look at (task 2 onwards), and a tool it calls
+(task 1 onwards), a file the model will actually look at (task 3 onwards), and a tool it calls
 without being nagged (task 6). Add a model to `CandidateModel.all()` and run it again — that is the
 whole of what it takes to answer "can we use X instead" before the day rather than during it.
 

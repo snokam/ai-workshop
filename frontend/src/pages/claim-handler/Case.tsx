@@ -92,12 +92,12 @@ export function Case() {
           </TaskGate>
 
           <TaskGate
-            task="DOCUMENT_AGENT"
-            instead="Anything listed below was read by task 3's agent. Until that is written no documents reach a case, so this list stays empty."
+            task="FRAUD_DETECTION"
+            instead="Nothing below has been screened. The checks that catch a duplicate upload, an edited photo or a figure that does not add up are plain Java after the answer, and you have not written them yet."
           >
             <TaskGate
-              task="FRAUD_DETECTION"
-              instead="Nothing below has been screened. The checks that catch a duplicate upload, an edited photo or a figure that does not add up are plain Java after the answer, and you have not written them yet."
+              task="DOCUMENT_AGENT"
+              instead="Anything listed below was read by task 3's agent. Until that is written no documents reach a case, so this list stays empty."
             >
               <section className="documents">
                 {detail.documents.length === 0 && (

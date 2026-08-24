@@ -31,12 +31,12 @@ export function MyCases() {
       {error && <Failure error={error} />}
 
       <TaskGate
-        task="FIRST_AGENT"
-        instead="This list is the cases task 1's agent opened. Until it is written there is nothing to list, however many times you try to report one."
+        task="DOCUMENT_AGENT"
+        instead="Opening a case works, but sending documents into one does not yet — so every case here will sit at awaiting documents."
       >
         <TaskGate
-          task="DOCUMENT_AGENT"
-          instead="Opening a case works, but sending documents into one does not yet — so every case here will sit at awaiting documents."
+          task="FIRST_AGENT"
+          instead="This list is the cases task 1's agent opened. Until it is written there is nothing to list, however many times you try to report one."
         >
           <section className="cases">
             {cases !== null && cases.length === 0 && (

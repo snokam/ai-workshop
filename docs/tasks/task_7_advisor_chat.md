@@ -1,11 +1,13 @@
-# Task 6 — Tools and memory
+# Task 7 — Case: Advisor chat
 
 Every agent so far answered one question from what it was handed. This one holds a conversation
 about a case, looks things up while answering, and remembers what was already asked.
 
 **Time:** 60 minutes. **You need:** tasks 1, 2 and 5 working, and a case with a document or two on it.
 
-Task 5 came first for a reason: the agent's opening context includes the summary you wrote there.
+The parts, in order, are in `backend/src/main/java/com/example/aiworkshop/tasks/task_7_advisor_chat/README.md` — each one names the file, what it is for, and what to reach for.
+
+Task 6 came first for a reason: the agent's opening context includes the summary you wrote there.
 An agent that can look things up still does better when it starts out knowing what the documents say
 together.
 

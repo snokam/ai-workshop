@@ -1,7 +1,7 @@
 package com.example.aiworkshop.tasks.task_5_fraud_detection.checks;
 
-import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.workshop.WorkshopTask;
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.tasks.task_5_fraud_detection.FraudScreener.Upload;
 import com.example.aiworkshop.tasks.task_5_fraud_detection.model.FraudScreening.Indicator;
 import com.example.aiworkshop.tasks.task_5_fraud_detection.model.FraudScreening.Kind;
@@ -19,26 +19,21 @@ public class DuplicateUploadCheck implements FraudCheck {
 
     @Override
     public List<Indicator> screen(Upload upload) {
-        // List<String> earlier = seenBefore.computeIfAbsent(upload.contentHash(), key -> new CopyOnWriteArrayList<>());
+        // TODO — task 5, part 1. The same bytes, seen before.
         //
-        // List<Indicator> found = earlier.isEmpty() ? List.of() : List.of(indicatorFor(upload, earlier));
-        // earlier.add(upload.caseId() + " / " + upload.filename());
-        // return found;
+        // Return the indicators for this upload, or List.of() when there is nothing to say.
         //
-        // 
+        //   upload.contentHash()  the file's fingerprint, already computed at intake
+        //   upload.caseId()       which case it arrived on
+        //   upload.filename()
+        //
+        // Keep what you have seen across calls — a Map from hash to where it was seen is enough — and flag
+        // anything that arrives twice.
+        //
+        // Weigh it. The same file twice on one case is someone double-clicking: Weight.NOTE. The same file
+        // on a different case is something else entirely: Weight.STRONG. Kind.ALREADY_UPLOADED for both.
 
         throw new TaskNotImplementedException(WorkshopTask.FRAUD_DETECTION);
-
-        // ── To set this task again ────────────────────────────────────────────────────────
-        // TODO — task 4. The same bytes, seen before.
-        //
-        // upload.contentHash() is a SHA-256 of the file. Remember every hash you are given with the
-        // case it arrived on; when one turns up again on a different case, that is one expense
-        // being claimed twice. The same hash on the same case is a double-click, not a signal.
-        //
-        // Throwing is how the screener knows: it logs, skips, and keeps the other checks running —
-        // which is the rule this task is really about.
-        // throw new TaskNotImplementedException(WorkshopTask.FRAUD_DETECTION);
     }
 
     private static Indicator indicatorFor(Upload upload, List<String> earlier) {

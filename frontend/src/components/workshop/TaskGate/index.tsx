@@ -3,6 +3,13 @@ import { TASK_ATTEMPTED } from "../../../api/client";
 import type { TaskKey } from "../../../api/workshop";
 import { useTask } from "../../../lib/task-state";
 
+/**
+ * Wraps a control and, while its task is unwritten, explains what is missing underneath it.
+ *
+ * Children render before the panel, so a nested gate's panel appears above its parent's. When two
+ * gates stack around the same control, put the *higher* task number on the outside — the boxes then
+ * read 1, 2, 3 down the page rather than in the order somebody happened to nest them.
+ */
 export function TaskGate({
   task: key,
   children,

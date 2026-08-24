@@ -1,9 +1,11 @@
-# Task 7 — Report with AI chat
+# Task 8 — Case: File claim with AI chat
 
 An extra, and optional. Task 1 read one sentence and committed to a case type on the spot. This one
 is allowed to ask first.
 
-**Time:** 30 minutes. **You need:** task 1 read for comparison, and task 2 working if you want to
+**Time:** 30 minutes. **You need:** task 1 read for comparison, and task 3 working if you want to
+
+The parts, in order, are in `backend/src/main/java/com/example/aiworkshop/tasks/task_8_create_case_chat/README.md` — each one names the file, what it is for, and what to reach for.
 follow a chat all the way to uploading. Nothing here touches task 1 — it lives beside it.
 
 ## The one difference that matters
@@ -44,7 +46,8 @@ and write the `@SystemMessage`. It has to do two jobs well:
 - **Decide cleanly.** When one scenario fits, return it with honest confidence, and fall back to
   `OTHER` rather than forcing a poor match.
 
-A version of the answer is commented out beneath the message. Try yours first, then argue with it.
+The README beside the file breaks this into parts and says what each one is for. There is no
+answer in the file to peek at — the finished version is on the `solutions` branch, for afterwards.
 
 Then set `IMPLEMENTED = true`. That is the only file this task asks you to touch.
 

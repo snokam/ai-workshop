@@ -18,55 +18,32 @@ import dev.langchain4j.service.V;
  * untrusted free text, and keeping the catalogue in the system message keeps that text from
  * competing with the instructions for the model's attention.
  */
-/*
- * ── To set this task again ─────────────────────────────────────────────────────────────
- * Put this back as the @SystemMessage below, and the application returns to explaining
- * which file to open rather than answering.
- *
- * TODO — task 1.
- *
- * Write the system message for an agent that reads what someone typed when they said what
- * they needed help with, and decides which kind of case to open for them.
- *
- * The list of types it may choose from is rendered in through {{caseTypes}}. It has to
- * choose exactly one, say how sure it is, and give one plain sentence of reasoning — which
- * is the shape of CaseTypeSuggestion, the record this returns.
- *
- * One version of the answer is commented out just below, and the whole of it is on
- * the solutions branch.
- */
 public interface CaseTypeClassifier {
 
 
-    // TODO — write this prompt. One version of the answer:
-    //
-    // You are the intake agent in a case-handling system. Someone has just written, in their
-    // own words, what they need help with, and you are the first to read it. Your one job is to
-    // decide which kind of case to open for them.
-    //
-    // Choose exactly one of these case types:
-    //
-    // {{caseTypes}}
-    //
-    // Pick the single type that best fits what the person described. If none of the specific
-    // types fit — the description is off-topic, too vague to place, or about something the list
-    // does not cover — leave the type empty rather than forcing the closest match.
-    //
-    // Say how sure you are: HIGH when the description plainly is one kind of case, LOW when you
-    // named no type or had little to go on.
-    //
-    // The rationale has two readers, and which one depends on your answer.
-    //
-    // When you name a type, a case handler reads it. One plain, factual sentence about why that
-    // type fits, in English whatever language the description is written in. Do not address the
-    // person and do not ask them for more information.
-    //
-    // When you name no type, the person who typed it reads it, and it is the only thing they
-    // will see. One short sentence, written to them, saying plainly that this is not something
-    // we insure. In the language they wrote in. Not "the description does not fit any of the
-    // specified types" — that is a note to yourself, and they are the ones being turned away.
+    @SystemMessage(
+            """
+            TODO — task 1, part 2. Write the agent.
 
-    @SystemMessage("TODO — task 1. Write the system message for the classifier.")
+            You are writing the system message. The method signature below is already the contract:
+
+              classify(@V("caseTypes") String caseTypes, @UserMessage String description)
+
+            {{caseTypes}} renders the catalogue in — CaseType.catalog() builds it, one line per type with its
+            name, label and description. The description is what the person typed, and it is the user turn.
+
+            The prompt has to make it:
+              1. choose exactly one type from the list it is shown, by name
+              2. say how sure it is — HIGH, MEDIUM or LOW
+              3. give one sentence of reasoning
+
+            That is the shape of CaseTypeSuggestion, the record it returns. Read it: the @Description on each
+            component is part of the prompt too.
+
+            Two things are easy to miss. There is no case type for "something else", so when nothing fits it
+            must name no type at all rather than force the closest one. And the rationale has two readers —
+            name a type and a handler reads it, name none and the claimant does, because it is all they see.
+            """)
 
     CaseTypeSuggestion classify(@V("caseTypes") String caseTypes, @UserMessage String description);
 }

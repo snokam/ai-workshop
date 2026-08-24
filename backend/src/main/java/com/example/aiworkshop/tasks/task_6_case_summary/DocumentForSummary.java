@@ -6,6 +6,17 @@ import com.example.aiworkshop.tasks.task_3_document_agent.model.QualityAssessmen
 import java.util.List;
 import java.util.stream.Collectors;
 
+// TODO — task 6, part 2. Decide what it is shown.
+//
+// This record is what the summariser is shown, once per document, on every open. Every component is
+// paid for every time, and the ones nobody reads are the whole of the cost with none of the value.
+//
+// Look at what is deliberately missing before adding anything. There are no bytes: the file was read
+// in task 3, and reading it again would pay twice for one answer and risk two descriptions of one
+// document on the same screen.
+//
+// Add a component and watch the summary change. That is the trade this task is about.
+
 public record DocumentForSummary(
         String filename, String category, String summary, List<ExtractedField> fields, Quality quality) {
     public static DocumentForSummary of(UploadedDocument document) {
@@ -28,19 +39,4 @@ public record DocumentForSummary(
                 .collect(Collectors.joining(" | "));
     }
 
-    // ── To set this task again ────────────────────────────────────────────────────────
-    // TODO — task 6, part 2. Decide what the expensive agent is shown.
-    //
-    // Delete the components of this record and write them again from what the summariser needs. It
-    // is handed one of these per document, in one prompt, on every screen load — so every field is
-    // paid for once per document per open, and the ones nobody reads are the whole of the cost with
-    // none of the value.
-    //
-    // Look at what is deliberately missing before you add it back. There are no bytes here: the
-    // file was read in task 2 and reading it again would pay twice for one answer and risk two
-    // descriptions of one document on the same screen. Compare it with DocumentInDetail, which the
-    // chat's tool fetches for a single document when someone actually asks.
-    //
-    // Then add a component and watch the summary change. That is the whole trade: this is the one
-    // agent whose prompt grows with the case.
 }

@@ -1,9 +1,11 @@
-# Task 5 — Across documents
+# Task 6 — Case: Claim summary
 
 Every agent so far looked at one thing. This one reads every document on a case at once and says
 what they add up to.
 
 **Time:** 40 minutes. **You need:** tasks 1 and 2 working, and a case with at least three documents.
+
+The parts, in order, are in `backend/src/main/java/com/example/aiworkshop/tasks/task_6_case_summary/README.md` — each one names the file, what it is for, and what to reach for.
 
 ## The expensive one
 
@@ -16,7 +18,7 @@ write against.
 
 **It is not shown the files.** `DocumentForSummary` is a projection — read it and note what it
 leaves out. The summariser gets each document's *reading*, not its bytes. The reading already
-happened in task 2; doing it again here would be paying twice for the same answer, and the two could
+happened in task 3; doing it again here would be paying twice for the same answer, and the two could
 disagree.
 
 **It is cached against what it was written over.** `CaseSummaryStore` keys a summary by the

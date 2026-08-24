@@ -17,17 +17,16 @@ public final class Guardrails {
     private Guardrails() {}
 
     public static InputGuardrail beforeTheCall(ClaimCheck check) {
-        // return new ClaimDescriptionGuardrail(check);
+        // TODO — task 2, part 3. Hand it back.
         //
-        // 
+        // Return new ClaimDescriptionGuardrail(check).
+        //
+        // GuardrailConfig calls this and publishes the result as a bean. Task 1's agent takes whichever
+        // InputGuardrails exist and knows nothing about who wrote them, which is why task 1 can be finished
+        // and run before this task is started.
+        //
+        // Until this returns one, anything typed into the box reaches the model, including an empty one.
 
         throw new TaskNotImplementedException(WorkshopTask.GUARDRAILS);
-
-        // ── To set this task again ────────────────────────────────────────────────────────
-        // TODO — task 2. Hand back the guardrail that reads what the person typed.
-        //
-        // Until this returns one the classifier is wired without guardrails: anything typed into the
-        // box reaches the model, including an empty one.
-        // throw new TaskNotImplementedException(WorkshopTask.GUARDRAILS);
     }
 }

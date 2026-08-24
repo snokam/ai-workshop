@@ -1,9 +1,11 @@
-# Task 2 — Give it a file
+# Task 3 — Give it a file
 
 Task 1's agent read a sentence someone typed. This one is handed a PDF or a photograph and has to
 say what it is looking at.
 
 **Time:** 60 minutes. **You need:** task 1 working, and the files in [`assets/`](../../assets).
+
+The parts, in order, are in `backend/src/main/java/com/example/aiworkshop/tasks/task_3_document_agent/README.md` — each one names the file, what it is for, and what to reach for.
 
 ## The one idea
 
@@ -110,4 +112,4 @@ everything the agent *writes* is in English. That split is deliberate; see
 - **Add a component to `DocumentAnalysis`** — whether the document is signed, say — and watch it get
   filled in with no other change.
 - **Ask for the same file twice** and compare the two answers. Then read why intake hashes the bytes
-  before it calls the model at all, in [task 4](./task_5_fraud_detection.md).
+  before it calls the model at all, in [task 5](./task_5_fraud_detection.md).

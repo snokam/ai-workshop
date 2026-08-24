@@ -1,4 +1,4 @@
-# Task 4 — Fraud detection
+# Task 5 — Case: Fraud detection
 
 The model has answered. Now what?
 
@@ -7,6 +7,8 @@ answer is accepted — in plain Java, with no model involved, no network, and no
 cheapest code in the application and it catches things the agent structurally cannot.
 
 **Time:** 45 minutes. **You need:** the app running, and task 1 read (this uses what it produced).
+
+The parts, in order, are in `backend/src/main/java/com/example/aiworkshop/tasks/task_5_fraud_detection/README.md` — each one names the file, what it is for, and what to reach for.
 
 ## The idea
 

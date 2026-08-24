@@ -18,57 +18,27 @@ import dev.langchain4j.service.V;
  * <p>Stateless by design: the whole conversation is handed in as {@code {{transcript}}} each turn, so
  * the agent holds no memory between calls and the caller owns the history.
  */
-/*
- * ── To set this task again ─────────────────────────────────────────────────────────────
- * Put this back as the @SystemMessage below, and the application returns to explaining
- * which file to open rather than asking the claimant anything.
- *
- * TODO — task 7.
- *
- * Write the system message for a conversational intake agent. Unlike the one-shot classifier
- * of task 1, this one may ask the claimant a few follow-up questions before it commits, when
- * the answer would change which scenario applies.
- *
- * The scenarios it may choose from are rendered in through {{scenarios}}. Each turn it makes
- * one move: ask one to three plain questions (NEEDS_INFO), or settle on exactly one
- * CaseScenario (DECIDED) — which is the shape of InterviewTurn, the record this returns.
- *
- * One version of the answer is commented out just below, and the whole of it is on
- * the solutions branch.
- */
 public interface CaseIntakeInterviewer {
 
-    // TODO — write this prompt. One version of the answer:
-    //
-    // You are the intake agent in a case-handling system. Someone has written, in their own
-    // words, what they need help with. Your job is to open the right case for them — but unlike
-    // a plain classifier, you may ask a few follow-up questions first when the answer would
-    // change which scenario applies.
-    //
-    // The scenarios you can open, grouped by the kind of insurance:
-    //
-    // {{scenarios}}
-    //
-    // Read the whole conversation so far and make one move:
-    //
-    // - NEEDS_INFO — you cannot yet tell which scenario fits, and a short answer would settle
-    // it. Give one to three plain questions, each asking exactly one thing. Ask only what
-    // changes which scenario applies: if two scenarios need different documents and you cannot
-    // yet tell them apart, that is what to ask about. Leave the scenario empty.
-    //
-    // - DECIDED — one scenario clearly fits. Return it, with the confidence you have: HIGH when
-    // the situation is plain, LOW when you are largely guessing.
-    //
-    // Be economical. Never ask about something the person has already told you, and never ask
-    // more than three questions in total across the whole conversation — if the transcript
-    // already shows you asked before, lean towards deciding now. If nothing fits even after
-    // asking, say so rather than forcing a poor match — there is no scenario for
-    // "something else", and opening the wrong kind of case is worse than opening none.
-    //
-    // Address the claimant directly and plainly in the questions. Write the rationale as one
-    // factual sentence, in English, whatever language the conversation is written in.
+    @SystemMessage(
+            """
+            TODO — task 8, part 1. Write the interviewer.
 
-    @SystemMessage("TODO — task 8. Write the system message for the interviewer.")
+            An interview instead of a form. It reads a transcript and either asks for what is missing or
+            decides.
+
+              next(@V("scenarios") String scenarios, @UserMessage String transcript)
+
+            It returns an InterviewTurn: a Decision of NEEDS_INFO or DECIDED, the questions to ask, the
+            scenario it settled on, a confidence and a rationale.
+
+            The hard part is when to stop asking. Too eager and it opens the wrong case; too cautious and it
+            interrogates somebody who has already said enough. Two or three questions is usually the whole
+            budget before a person gives up.
+
+            There is no scenario for "something else", so when nothing fits it must say so rather than force a
+            poor match.
+            """)
     @UserMessage("The conversation so far:\n\n{{transcript}}")
     InterviewTurn next(@V("scenarios") String scenarios, @V("transcript") String transcript);
 }

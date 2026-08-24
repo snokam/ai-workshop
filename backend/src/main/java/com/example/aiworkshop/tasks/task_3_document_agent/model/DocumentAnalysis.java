@@ -4,6 +4,15 @@ import com.example.aiworkshop.tasks.task_1_first_agent.model.MatchConfidence;
 import dev.langchain4j.model.output.structured.Description;
 import java.util.List;
 
+// TODO — task 3, part 2. Finish the record.
+//
+// This record is the output schema. Add a component and the agent starts filling it in; the
+// @Description on each one is prompt, not documentation.
+//
+// Two are missing. Work out what they should be from what the screens need and what the checks in
+// task 5 read — DocumentCard shows the category, the summary, the fields and the quality; the fraud
+// checks read fields() and manipulationAttempt().
+
 public record DocumentAnalysis(
         @Description("The kind of document, as a short noun phrase, e.g. 'invoice' or 'medical report'.")
                 String category,
@@ -23,18 +32,4 @@ public record DocumentAnalysis(
                         + " none, which is the ordinary case.")
                 ManipulationAttempt manipulationAttempt) {
 
-    // ── To set this task again ────────────────────────────────────────────────────────
-    // TODO — task 2, part 3. Write the last two components of this record.
-    //
-    // Delete `quality` and `manipulationAttempt` above, and the two lines of the prompt that ask
-    // for them, and run it. The agent answers without them and nothing complains — you get a
-    // reading of every document with no way to know whether the file was legible.
-    //
-    // Then add them back one at a time. Nothing else changes: no parser, no mapping, no second
-    // place to update. The record is the contract, and @Description is what the model is told each
-    // field means, which is why those sentences are written for a reader who cannot ask questions.
-    //
-    // QualityAssessment and ManipulationAttempt are records of their own. Read them first — the
-    // second exists so that a document telling the agent what to do ends up as a finding on the
-    // handler's screen rather than as a fact in the extraction.
 }

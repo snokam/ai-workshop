@@ -19,46 +19,22 @@ import java.util.List;
 public record ExtractedFacts(String file, List<String> mustFind, List<String> mustNotSay, String why) {
 
     public static List<ExtractedFacts> all() {
-        // TODO — task 4, part 2. Write down what a handler needs from each file. One version:
+        // TODO — task 4, part 2. Write down what a handler needs.
         //
-        // return List.of(
-        //         new ExtractedFacts(
-        //                 "repair-receipt.pdf",
-        //                 List.of("20 468,75", "2026-07-14", "NORDIC BIL"),
-        //                 List.of("covered by your policy", "claim approved", "we will reimburse"),
-        //                 "The total, the date and who issued it are what a handler needs. Note that the total"
-        //                         + " is written the way the document writes it, spaces and comma and all —"
-        //                         + " the first version of this file said 20468 and scored a miss against a"
-        //                         + " document that plainly contains the number. The phrases it must not say are"
-        //                         + " the ones a helpful model adds when it starts deciding the claim instead of"
-        //                         + " reading the paper. 'Approved' alone is not one of them: the receipt says it"
-        //                         + " about the card payment, and a check that looks for it fails honestly."),
-        //         new ExtractedFacts(
-        //                 "receipt.png",
-        //                 List.of(),
-        //                 List.of("claim", "policy"),
-        //                 "A photograph rather than a PDF, and the same agent has to read it. Fill mustFind in"
-        //                         + " yourself from what you can see in the image — doing that by hand is most of"
-        //                         + " what building an evaluation set actually is."),
-        //         new ExtractedFacts(
-        //                 "driving_licence.png",
-        //                 List.of(),
-        //                 List.of("policy number", "claim number"),
-        //                 "An identity document, where inventing a field is far worse than missing one. What"
-        //                         + " should it refuse to guess at?"));
+        // Return a List.of(new ExtractedFacts(file, mustFind, mustNotSay, why), ...) for the files in
+        // assets/ — repair-receipt.pdf, receipt.png, driving_licence.png.
         //
+        // The two lists are not the same measurement and must never be added together:
+        //
+        //   mustFind    what a handler would be annoyed to have missed
+        //   mustNotSay  what the document does not contain — an agent that produces one of these has not
+        //               misread anything, it has made it up
+        //
+        // Open the files and write down what you see. You will invent scoring rules as you go: is
+        // "20 468,75" the same answer as "20468"? Deciding that is most of what building an evaluation
+        // set actually is.
 
         return List.of();
     }
 
-    // ── To set this task again ────────────────────────────────────────────────────────
-    // TODO — task 8, part 2. Fill in the two empty mustFind lists.
-    //
-    // Open the files in assets/, read them the way a case handler would, and write down the facts
-    // you would be annoyed to find missing. Then run ExtractionEvaluation and see how much of it
-    // the agent found.
-    //
-    // Notice what you had to decide while doing it. Is "20 468,75" the same answer as "20468.75"?
-    // Is a vendor named in full the same as its trading name? Every one of those is a scoring rule
-    // you have just invented, and the reason extraction evaluations are harder than they look.
 }

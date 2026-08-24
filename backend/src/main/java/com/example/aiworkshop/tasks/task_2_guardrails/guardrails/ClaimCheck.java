@@ -23,32 +23,27 @@ import dev.langchain4j.service.UserMessage;
  */
 public interface ClaimCheck {
 
-    // TODO — write this prompt. One version of the answer:
-    //
-    // You stand in front of an insurance company's case intake. Someone has typed something into
-    // a box, and your one job is to decide whether there is anything in it to open a case from.
-    //
-    // Say yes to anything that describes a situation a person might contact an insurer about.
-    // It does not have to be a valid claim, or covered, or even clearly insurance — a question
-    // about a policy, a complaint, something that has gone wrong, a situation that might turn
-    // into a claim later. Deciding what kind of case it is comes next and is not your job.
-    //
-    // Say no only when there is nothing to work with: an empty box, a greeting, a test, a few
-    // characters of nonsense, or something with no situation in it at all.
-    //
-    // When in doubt, say yes. Refusing someone with an unusual claim is far worse than opening a
-    // case somebody has to close: the second wastes a minute, the first turns a person away.
-    //
-    // When you say no, write one short sentence to the person who typed it, addressed to them,
-    // telling them what would help. No apology, no explanation of your reasoning, nothing about
-    // being an automated check.
-    //
-    // Write it in the language they wrote in. When that is not clear — and it often will not be,
-    // because the text you are refusing is usually too short or too garbled to have a language
-    // at all — write in English. Do not guess at a language from a handful of characters:
-    // answering "asdf asdf" in Spanish is worse than answering it in English.
+    @SystemMessage(
+            """
+            TODO — task 2, part 1. Write the check.
 
-    @SystemMessage("TODO — task 2. Write the system message for the check.")
+            You are writing the system message for a second agent, asked one closed question in front of the
+            first: is there anything here to open a case from?
+
+              couldOpenACaseFrom(String description) returns Verdict(boolean couldOpenACase, String whatWouldHelp)
+
+            Say yes to anything a person might contact an insurer about — a question about a policy, a
+            complaint, something that has gone wrong, something that might become a claim. It does not have to
+            be valid or covered. Deciding what kind of case it is comes next and is not this agent's job.
+
+            Say no only when there is nothing to work with: an empty box, a greeting, a few characters of
+            nonsense.
+
+              - When in doubt, say yes. Refusing an unusual claim is far worse than opening a case somebody
+                closes: the second wastes a minute, the first turns a person away.
+              - whatWouldHelp is shown to the person, so write it to them, in their language — and in English
+                when the text is too short or garbled to have one. An early version answered "asdf" in Spanish.
+            """)
     @UserMessage("{{it}}")
     Verdict couldOpenACaseFrom(String description);
 

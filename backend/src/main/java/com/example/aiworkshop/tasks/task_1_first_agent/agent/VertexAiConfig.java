@@ -15,31 +15,22 @@ import org.springframework.context.annotation.Configuration;
 public class VertexAiConfig {
     @Bean(destroyMethod = "close")
     ChatModel chatModel(VertexAiProperties properties) {
-        // return VertexAiGeminiChatModel.builder()
-        //         .project(properties.projectId())
-        //         .location(properties.location())
-        //         .modelName(properties.modelName())
-        //         .temperature(properties.temperature())
-        //         .maxOutputTokens(properties.maxOutputTokens())
-        //         .maxRetries(properties.maxRetries())
-        //         .logRequests(properties.logRequests())
-        //         .logResponses(properties.logResponses())
-        //         .build();
-        //
-        // 
-
-        return UnfinishedTasks.notWrittenYet(ChatModel.class, WorkshopTask.FIRST_AGENT);
-
-        // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 1, part 1. Build the model.
         //
-        // This is the connection every agent in the workshop runs on: which provider, which model,
-        // which credentials. VertexAiGeminiChatModel.builder() takes the values already
-        // bound in VertexAiProperties — read that record to see what is
-        // configurable, and application.properties to see where it comes from.
+        // VertexAiGeminiChatModel.builder() is the builder. Every value it needs is already bound in
+        // VertexAiProperties, which is a record beside this file:
         //
-        // Returning the stand-in is what no model looks like: the application starts, and anything
-        // that needs a model says which file to open.
-        // return UnfinishedTasks.notWrittenYet(ChatModel.class, WorkshopTask.FIRST_AGENT);
+        //   .project(properties.projectId())        which project to bill and authorise against
+        //   .location(properties.location())        europe-west4 unless something says otherwise
+        //   .modelName(properties.modelName())      gemini-2.5-flash by default
+        //   .temperature(properties.temperature())  .maxOutputTokens(properties.maxOutputTokens())
+        //   .maxRetries(properties.maxRetries())    .logRequests(...) .logResponses(...)
+        //
+        // Use projectId() rather than project(): it falls back to the credentials already on the machine
+        // when GOOGLE_CLOUD_PROJECT is not set, which is why nothing has to be exported.
+        //
+        // Nothing else in the workshop works until this returns a model.
+
+        return UnfinishedTasks.notWrittenYet(ChatModel.class, WorkshopTask.FIRST_AGENT);
     }
 }

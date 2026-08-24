@@ -5,6 +5,8 @@ model to read.
 
 **Time:** 30 minutes. **You need:** task 1 working.
 
+The parts, in order, are in `backend/src/main/java/com/example/aiworkshop/tasks/task_2_guardrails/README.md` — each one names the file, what it is for, and what to reach for.
+
 ## The problem
 
 Type `hi` into the box on the report screen and press the button. A case opens. The classifier

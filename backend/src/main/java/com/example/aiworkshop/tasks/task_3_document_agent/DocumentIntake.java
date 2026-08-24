@@ -1,7 +1,7 @@
 package com.example.aiworkshop.tasks.task_3_document_agent;
 
-import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.workshop.WorkshopTask;
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentFiles;
@@ -60,22 +60,18 @@ public class DocumentIntake {
     }
 
     public UploadedDocument accept(String caseId, MultipartFile file) throws IOException {
-        // Case theCase =
-        //         cases.findById(caseId).orElseThrow(() -> new UnknownCaseException("No such case: " + caseId));
-        // String mimeType = resolveMimeType(file);
-        // String id = UUID.randomUUID().toString();
-        // files.save(id, file.getBytes());
-        // String contentHash = hashOf(file.getBytes());
-        //
-        // synchronized (arrivalOf(caseId, contentHash)) {
-        //     DocumentAnalysis analysis = analysisFor(theCase, file, mimeType, contentHash);
-        //     return store(id, caseId, file, mimeType, contentHash, analysis);
-        // }
-        //
+        Case theCase =
+                cases.findById(caseId).orElseThrow(() -> new UnknownCaseException("No such case: " + caseId));
+        String mimeType = resolveMimeType(file);
+        String id = UUID.randomUUID().toString();
+        files.save(id, file.getBytes());
+        String contentHash = hashOf(file.getBytes());
 
-        throw new TaskNotImplementedException(WorkshopTask.DOCUMENT_AGENT);
-
+        synchronized (arrivalOf(caseId, contentHash)) {
+            DocumentAnalysis analysis = analysisFor(theCase, file, mimeType, contentHash);
+            return store(id, caseId, file, mimeType, contentHash, analysis);
         }
+    }
 
     private DocumentAnalysis analysisFor(Case theCase, MultipartFile file, String mimeType, String contentHash)
             throws IOException {
@@ -135,20 +131,19 @@ public class DocumentIntake {
     }
 
     private List<Content> promptFor(MultipartFile file, String mimeType) throws IOException {
-        return List.of(
-                TextContent.from(INTAKE_INSTRUCTION),
-                DocumentFiles.contentOf(file.getBytes(), mimeType));
+        // TODO — task 3, part 3. Send the file as itself.
+        //
+        // Return the List<Content> the model is sent. Two elements, in this order:
+        //
+        //   1. TextContent.from(INTAKE_INSTRUCTION)
+        //   2. DocumentFiles.contentOf(file.getBytes(), mimeType)
+        //
+        // contentOf decides between PdfFileContent and ImageContent from the mime type. Nothing extracts
+        // text first — the model is handed the document itself, which is the whole idea of the task.
+        //
+        // The text has to be exactly INTAKE_INSTRUCTION and nothing else.
 
-        // ── To set this task again ────────────────────────────────────────────────────────
-        // TODO — task 2, part 2. Turn an upload into what the model is sent.
-        //
-        // This is the whole of "give it a file": a list of Content, one text and one file. The text
-        // is INTAKE_INSTRUCTION and nothing else — task 3's input guardrail refuses
-        // anything more, and it is worth understanding why before you write past it.
-        //
-        // DocumentFiles.contentOf(bytes, mimeType) decides between PdfFileContent and ImageContent
-        // from the mime type resolved above. Nothing here reads the file: the bytes go as they are.
-        // throw new TaskNotImplementedException(WorkshopTask.DOCUMENT_AGENT);
+        throw new TaskNotImplementedException(WorkshopTask.DOCUMENT_AGENT);
     }
 
     private String resolveMimeType(MultipartFile file) {
