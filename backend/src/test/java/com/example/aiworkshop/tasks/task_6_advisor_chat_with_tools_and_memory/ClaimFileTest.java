@@ -161,9 +161,25 @@ class ClaimFileTest {
     }
 
 
+    /**
+     * A claim screen is opened dozens of times a day and nothing about it has usually changed. This
+     * used to assert the opposite — that the note was written on every open — which is what it did,
+     * and it cost a model call every time somebody looked.
+     */
     @Test
-    void theStatusNoteIsWrittenOnEveryOpen() {
+    void theStatusNoteIsWrittenOnceForFactsThatHaveNotChanged() {
         file.open(CLAIM_ID, List.of(), List.of());
+        file.open(CLAIM_ID, List.of(), List.of());
+
+        verify(statusWriter, times(1)).write(anyString(), any(), anyList(), anyList());
+    }
+
+    /** And written again the moment they do. */
+    @Test
+    void aDocumentArrivingGetsTheStatusNoteWrittenAgain() {
+        file.open(CLAIM_ID, List.of(), List.of());
+
+        documents.save(document("receipt.jpg", "receipt", Quality.GOOD, AT_TEN));
         file.open(CLAIM_ID, List.of(), List.of());
 
         verify(statusWriter, times(2)).write(anyString(), any(), anyList(), anyList());

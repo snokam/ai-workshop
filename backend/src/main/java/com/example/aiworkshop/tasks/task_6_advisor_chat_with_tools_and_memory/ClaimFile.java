@@ -56,6 +56,7 @@ public class ClaimFile {
                 idsOf(ClaimDocuments.blockedDocuments(theClaim, attached)),
                 summaries.summaryOf(theClaim, attached),
                 summaries.statusNote(
+                        claimId,
                         theClaim.type().label(),
                         overview.status(),
                         overview.outstanding(),

@@ -61,11 +61,18 @@ public class SummaryDesk {
      * check.
      */
     public String statusNote(
+            String claimId,
             String claimType,
             ClaimStatus status,
             List<String> outstanding,
             List<String> blockedReasons) {
-        return costOf("status line", () -> statusWriter.write(claimType, status, outstanding, blockedReasons));
+        List<String> derivedFrom = List.of(claimType, status.name(), outstanding.toString(), blockedReasons.toString());
+
+        return summaries.findStatusNote(claimId, derivedFrom).orElseGet(() -> {
+            String note = costOf("status line", () -> statusWriter.write(claimType, status, outstanding, blockedReasons));
+            summaries.saveStatusNote(claimId, derivedFrom, note);
+            return note;
+        });
     }
 
     /**
