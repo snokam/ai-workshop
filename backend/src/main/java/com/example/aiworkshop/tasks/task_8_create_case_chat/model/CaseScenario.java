@@ -83,13 +83,7 @@ public enum CaseScenario {
             CaseType.MOTOR,
             "Motor claim",
             "Damage to, a collision involving, or theft of a car or other motor vehicle.",
-            CaseType.MOTOR.requiredDocuments()),
-
-    OTHER(
-            CaseType.OTHER,
-            "Something else",
-            "None of the specific scenarios fit what the person is describing.",
-            List.of());
+            CaseType.MOTOR.requiredDocuments());
 
     private final CaseType caseType;
     private final String label;

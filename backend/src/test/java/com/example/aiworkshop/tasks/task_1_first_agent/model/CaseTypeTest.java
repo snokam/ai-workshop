@@ -14,18 +14,16 @@ class CaseTypeTest {
         }
     }
 
+    /**
+     * There is no longer a type that catches everything else, so there is no longer a type allowed an
+     * empty checklist. Every case this insurer opens is a case it knows what to ask for.
+     */
     @Test
-    void everySpecificTypeCarriesAChecklist() {
+    void everyTypeCarriesAChecklist() {
         Arrays.stream(CaseType.values())
-                .filter(type -> type != CaseType.OTHER)
                 .forEach(type -> assertThat(type.requiredDocuments())
                         .as("required documents of %s", type)
                         .isNotEmpty());
-    }
-
-    @Test
-    void onlyOtherIsAllowedAnEmptyChecklist() {
-        assertThat(CaseType.OTHER.requiredDocuments()).isEmpty();
     }
 
     @Test

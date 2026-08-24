@@ -37,7 +37,6 @@ class CasesController {
     @GetMapping("/types")
     List<SupportedType> types() {
         return java.util.Arrays.stream(CaseType.values())
-                .filter(type -> type != CaseType.OTHER)
                 .map(type -> new SupportedType(type.label(), type.description()))
                 .toList();
     }
@@ -76,6 +75,20 @@ class CasesController {
                 .body(Map.of(
                         "message",
                         said < 0 ? reason : reason.substring(said + "failed with this message: ".length())));
+    }
+
+    /**
+     * We read it, and it is not something this insurer covers.
+     *
+     * <p>422 rather than 502: nothing failed. The agent did its job and the answer was no, and the
+     * sentence it wrote is the reason, addressed to the person who typed it. Telling them costs a
+     * moment; opening a case that somebody closes in silence costs them the chance to take it
+     * somewhere that can help.
+     */
+    @ExceptionHandler(CaseIntake.NothingWeCoverException.class)
+    ResponseEntity<Map<String, String>> nothingWeCover(CaseIntake.NothingWeCoverException e) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(Map.of("message", e.getMessage()));
     }
 
     @ExceptionHandler(TaskNotImplementedException.class)

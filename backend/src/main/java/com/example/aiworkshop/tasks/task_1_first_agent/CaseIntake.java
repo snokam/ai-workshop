@@ -26,6 +26,9 @@ public class CaseIntake {
 
     public CreatedCase open(String description) {
         CaseTypeSuggestion suggestion = classifier.classify(CaseType.catalog(), description);
+        if (suggestion.type() == null) {
+            throw new NothingWeCoverException(suggestion.rationale());
+        }
         CaseType type = suggestion.type();
 
         int number = nextReference.getAndIncrement();
@@ -55,5 +58,21 @@ public class CaseIntake {
         // the model's answer stops being a suggestion and starts being the shape of someone's case.
         // Give it a reference, save it, and return the CreatedCase the screen shows.
         // throw new TaskNotImplementedException(WorkshopTask.FIRST_AGENT);
+    }
+
+    /**
+     * The description was clear enough to read and describes nothing this insurer covers.
+     *
+     * <p>There used to be a case type called "General enquiry" that caught these, which meant every
+     * unhelpful answer became a case somebody had to close, and the claimant was told nothing. It is
+     * better to say so: the person can then take it somewhere that can help, which they cannot do
+     * while a reference number is telling them it is in hand.
+     */
+    public static class NothingWeCoverException extends RuntimeException {
+        public NothingWeCoverException(String rationale) {
+            super(rationale == null || rationale.isBlank()
+                    ? "We could not match this to any of the insurance we handle."
+                    : rationale);
+        }
     }
 }

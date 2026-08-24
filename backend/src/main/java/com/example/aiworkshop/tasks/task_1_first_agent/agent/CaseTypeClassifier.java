@@ -50,13 +50,21 @@ public interface CaseTypeClassifier {
 
             Pick the single type that best fits what the person described. If none of the specific
             types fit — the description is off-topic, too vague to place, or about something the list
-            does not cover — choose OTHER rather than forcing the closest match. Say how sure you
-            are: HIGH when the description plainly is one kind of case, LOW when you fell back to
-            OTHER or had little to go on.
+            does not cover — leave the type empty rather than forcing the closest match.
 
-            Do not ask the person for more information and do not address them. Write the rationale as
-            one plain, factual sentence about why the type fits, in English, whatever language the
-            description is written in.
+            Say how sure you are: HIGH when the description plainly is one kind of case, LOW when you
+            named no type or had little to go on.
+
+            The rationale has two readers, and which one depends on your answer.
+
+            When you name a type, a case handler reads it. One plain, factual sentence about why that
+            type fits, in English whatever language the description is written in. Do not address the
+            person and do not ask them for more information.
+
+            When you name no type, the person who typed it reads it, and it is the only thing they
+            will see. One short sentence, written to them, saying plainly that this is not something
+            we insure. In the language they wrote in. Not "the description does not fit any of the
+            specified types" — that is a note to yourself, and they are the ones being turned away.
             """)
 
     CaseTypeSuggestion classify(@V("caseTypes") String caseTypes, @UserMessage String description);

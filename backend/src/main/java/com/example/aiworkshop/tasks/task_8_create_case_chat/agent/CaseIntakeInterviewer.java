@@ -62,7 +62,8 @@ public interface CaseIntakeInterviewer {
             Be economical. Never ask about something the person has already told you, and never ask
             more than three questions in total across the whole conversation — if the transcript
             already shows you asked before, lean towards deciding now. If nothing fits even after
-            asking, decide on OTHER rather than forcing a poor match.
+            asking, say so rather than forcing a poor match — there is no scenario for
+            "something else", and opening the wrong kind of case is worse than opening none.
 
             Address the claimant directly and plainly in the questions. Write the rationale as one
             factual sentence, in English, whatever language the conversation is written in.

@@ -9,8 +9,8 @@ import dev.langchain4j.service.UserMessage;
  *
  * <p>This is an agent guarding an agent, and the shape is worth noticing. The classifier is asked
  * something open — which of these case types fits? — and it will answer whatever it is given, because
- * that is what it was built to do. Ask it about "hi" and you get OTHER, LOW confidence, and a
- * courteous sentence, which costs a call and leaves a handler a case to close.
+ * that is what it was built to do. Ask it about "hi" and it will pick something, or refuse and say
+ * why — either way you have paid for a call to find out there was nothing there.
  *
  * <p>This one is asked something closed, with one job and no catalogue to choose from: is there
  * anything here to open a case from? A narrow question is a cheaper question, and it is much harder

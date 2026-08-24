@@ -51,17 +51,19 @@ public record LabelledCase(String description, CaseType expected, String why) {
                                 + " claim at all."),
                 new LabelledCase(
                         "My neighbour keeps parking across my drive and I want to make a complaint.",
-                        CaseType.OTHER,
-                        "Nothing on the list covers it. A model that answers MOTOR here is matching words, not"
-                                + " reading."),
+                        null,
+                        "Nothing on the list covers it, and there is no longer a case type that catches"
+                                + " everything else — so the honest answer is no type at all. A model that"
+                                + " answers MOTOR here is matching words rather than reading."),
                 new LabelledCase(
                         "hi",
-                        CaseType.OTHER,
-                        "Nothing to go on. OTHER with LOW confidence is the only honest answer."));
+                        null,
+                        "Nothing to go on. This one should never reach the classifier at all — task 2's"
+                                + " guardrail refuses it first — so if it does, something upstream is off."));
     }
 
     // ── To set this task again ────────────────────────────────────────────────────────
-    // TODO — task 8. Write the cases you would argue about.
+    // TODO — task 4. Write the cases you would argue about.
     //
     // The ten above are a worked example and the easy half of them proves nothing. Add your own
     // until the set contains descriptions you genuinely cannot call, then run

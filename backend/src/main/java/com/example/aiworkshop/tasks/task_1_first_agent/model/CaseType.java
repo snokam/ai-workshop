@@ -40,12 +40,7 @@ public enum CaseType {
     MOTOR(
             "Motor insurance claim",
             "Damage to, a collision involving, or theft of a car or other motor vehicle.",
-            List.of("completed claim form", "photos of the damage", "police report")),
-
-    OTHER(
-            "General enquiry",
-            "None of the specific case types fit what the person is describing.",
-            List.of());
+            List.of("completed claim form", "photos of the damage", "police report"));
 
     private final String label;
     private final String description;

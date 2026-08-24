@@ -2,6 +2,7 @@ package com.example.aiworkshop.tasks.task_8_create_case_chat;
 
 import com.example.aiworkshop.tasks.task_8_create_case_chat.model.CaseScenario;
 import com.example.aiworkshop.tasks.task_8_create_case_chat.model.InterviewTurn;
+import com.example.aiworkshop.tasks.task_1_first_agent.CaseIntake;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CreatedCase;
 import com.example.aiworkshop.tasks.task_8_create_case_chat.agent.CaseIntakeInterviewer;
 import com.example.aiworkshop.workshop.TaskNotImplementedAdvice;
@@ -50,7 +51,10 @@ class CaseInterviewController {
             return InterviewResponse.needsInfo(questions, turn.rationale());
         }
 
-        CaseScenario scenario = turn.scenario() == null ? CaseScenario.OTHER : turn.scenario();
+        if (turn.scenario() == null) {
+            throw new CaseIntake.NothingWeCoverException(turn.rationale());
+        }
+        CaseScenario scenario = turn.scenario();
         CreatedCase created = opener.open(scenario, turn.confidence(), turn.rationale());
         log.info("Interview opened case {} as '{}' ({})", created.reference(), created.typeLabel(), created.confidence());
         return InterviewResponse.decided(created);
@@ -92,6 +96,20 @@ class CaseInterviewController {
     }
 
     /** Until task 7 is written the agent is a stub; surface that as the 501 the screen knows how to show. */
+    /**
+     * We read it, and it is not something this insurer covers.
+     *
+     * <p>422 rather than 502: nothing failed. The agent did its job and the answer was no, and the
+     * sentence it wrote is the reason, addressed to the person who typed it. Telling them costs a
+     * moment; opening a case that somebody closes in silence costs them the chance to take it
+     * somewhere that can help.
+     */
+    @ExceptionHandler(CaseIntake.NothingWeCoverException.class)
+    ResponseEntity<Map<String, String>> nothingWeCover(CaseIntake.NothingWeCoverException e) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(Map.of("message", e.getMessage()));
+    }
+
     @ExceptionHandler(TaskNotImplementedException.class)
     ResponseEntity<Map<String, Object>> taskNotDone(TaskNotImplementedException e) {
         return TaskNotImplementedAdvice.response(e);
