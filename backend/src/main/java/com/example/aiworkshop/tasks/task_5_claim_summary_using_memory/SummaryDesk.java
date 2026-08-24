@@ -1,8 +1,8 @@
-package com.example.aiworkshop.tasks.task_5_claim_summary;
+package com.example.aiworkshop.tasks.task_5_claim_summary_using_memory;
 
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimStatusWriter;
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
-import com.example.aiworkshop.tasks.task_5_claim_summary.store.ClaimSummaryStore;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.agent.ClaimStatusWriter;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.agent.ClaimSummarizer;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.store.ClaimSummaryStore;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.Claim;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimStatus;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.UploadedDocument;

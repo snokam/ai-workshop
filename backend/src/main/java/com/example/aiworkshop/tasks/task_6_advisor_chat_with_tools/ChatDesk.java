@@ -22,7 +22,7 @@ import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentFiles;
 import com.example.aiworkshop.tasks.task_3_document_agent.progress.ClaimDocuments;
 import com.example.aiworkshop.tasks.task_3_document_agent.progress.DocumentReview;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
-import com.example.aiworkshop.tasks.task_5_claim_summary.SummaryDesk;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.SummaryDesk;
 import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.model.ClaimAtAGlance;
 import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.model.DocumentForChat;
 import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.model.DocumentInDetail;

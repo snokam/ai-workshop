@@ -1,11 +1,11 @@
-package com.example.aiworkshop.tasks.task_5_claim_summary;
+package com.example.aiworkshop.tasks.task_5_claim_summary_using_memory;
 
-import com.example.aiworkshop.tasks.task_5_claim_summary.evaluation.SummaryJudge;
-import com.example.aiworkshop.tasks.task_5_claim_summary.evaluation.SummaryRubric;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.evaluation.SummaryJudge;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.evaluation.SummaryRubric;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimType;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.ExtractedField;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.QualityAssessment.Quality;
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.agent.ClaimSummarizer;
 import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.service.AiServices;
@@ -42,10 +42,6 @@ class SummaryEvaluation {
 
     @Test
     void scoreTheSummary() {
-        if (SummaryRubric.yours().isEmpty()) {
-            System.out.println("\nThe rubric has only its worked examples — task 5, part 2 is adding to it.\n");
-        }
-
         List<DocumentForSummary> documents = twoDocumentsOnAClaim();
         String summary;
         try {

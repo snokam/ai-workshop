@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_5_claim_summary.agent;
+package com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.agent;
 
 import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimStatus;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.Claim;

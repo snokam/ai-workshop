@@ -6,7 +6,7 @@ import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimOverview;
 import com.example.aiworkshop.tasks.task_3_document_agent.progress.ClaimDocuments;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.UploadedDocument;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
-import com.example.aiworkshop.tasks.task_5_claim_summary.SummaryDesk;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.SummaryDesk;
 import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.model.ClaimDetail;
 import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.model.ChatTurn;
 import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.proposals.ProposalCard;

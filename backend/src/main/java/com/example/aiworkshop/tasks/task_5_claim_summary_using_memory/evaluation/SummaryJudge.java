@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_5_claim_summary.evaluation;
+package com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.evaluation;
 
 import dev.langchain4j.model.output.structured.Description;
 import dev.langchain4j.service.SystemMessage;

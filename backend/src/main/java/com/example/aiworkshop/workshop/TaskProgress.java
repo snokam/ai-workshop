@@ -4,9 +4,7 @@ import com.example.aiworkshop.tasks.task_1_first_agent.agent.ClaimTypeClassifier
 import com.example.aiworkshop.tasks.task_3_document_agent.model.DocumentAnalysis;
 import com.example.aiworkshop.tasks.task_2_guardrails.Guardrails;
 import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.agent.ClaimChatTools;
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.SummaryConfig;
-import com.example.aiworkshop.tasks.task_5_claim_summary.evaluation.SummaryRubric;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.agent.SummaryConfig;
 import com.example.aiworkshop.tasks.task_4_evaluation.GuardrailProbe;
 import com.example.aiworkshop.tasks.task_4_evaluation.LabelledClaim;
 import com.example.aiworkshop.tasks.task_7_streaming_file_claim_chat.InterviewNarration;
@@ -45,9 +43,9 @@ public class TaskProgress {
             // agent wired without tools is not broken — it answers, it just never looks anything up,
             // which is the point of part 2 and something you see rather than something a gate reports.
             case ADVISOR_CHAT_WITH_TOOLS -> UnfinishedTasks.toolDescriptionsWritten(ClaimChatTools.class);
-            case CLAIM_SUMMARY -> UnfinishedTasks.promptWritten(ClaimSummarizer.class)
-                    && UnfinishedTasks.written(SummaryConfig::summaryMemory)
-                    && !SummaryRubric.yours().isEmpty();
+            // Task 5's prompts and its rubric are given; the exercise is the memory, and asking
+            // whether it exists is free — the provider is a lambda, not a call to anything.
+            case CLAIM_SUMMARY_USING_MEMORY -> UnfinishedTasks.written(SummaryConfig::summaryMemory);
             // Task 7's prompts are both given. What is written is the join between a TokenStream
             // and an open HTTP response, and asking whether it exists costs nothing: narrate()
             // returns before a single token has arrived, which is the whole point of it.

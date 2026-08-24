@@ -82,7 +82,7 @@ export function Claim() {
           />
 
           <TaskGate
-            task="CLAIM_SUMMARY"
+            task="CLAIM_SUMMARY_USING_MEMORY"
             instead="This is what every document on the claim says when read together, which is its own agent and has not been written yet."
           >
             <section className="agent-prose">

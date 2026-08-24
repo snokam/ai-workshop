@@ -1,7 +1,6 @@
-package com.example.aiworkshop.tasks.task_5_claim_summary.evaluation;
+package com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.evaluation;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Questions to ask about a summary, when there is no right answer to compare it with.
@@ -26,38 +25,8 @@ import java.util.stream.Stream;
  */
 public record SummaryRubric(String question, String whyItMatters) {
 
-    /** What the evaluation runs over: the worked examples, then yours. */
+    /** What the evaluation runs over. Given — the exercise in this task is the memory. */
     public static List<SummaryRubric> all() {
-        return Stream.concat(examples().stream(), yours().stream()).toList();
-    }
-
-    public static List<SummaryRubric> yours() {
-        // TODO — task 5, part 2. Add the questions the examples do not cover.
-        //
-        // Return a List.of(new SummaryRubric(question, whyItMatters), ...). Three or four on top of the
-        // two examples is plenty.
-        //
-        // Read a summary the agent actually wrote first — run the application, open a claim with two
-        // documents on it, and read what comes back. Write down what would have to be wrong with it for
-        // you to refuse to show it to a claim handler. Those are the questions.
-        //
-        // Things worth a question, if you want somewhere to start:
-        //
-        //   - is it written about the documents, or to the reader? The claimant and the handler both see
-        //     this, and "you should send us the receipt" is addressed to one of them.
-        //   - does it say whether the claim should be paid? Deciding is the handler's job, and an agent
-        //     that volunteers a verdict is answering a question nobody asked it.
-        //   - would a handler who read only this know what to do next? A summary that is accurate and
-        //     useless has still failed.
-        //   - does it mention every document, or quietly drop the one it found hardest to read?
-        //
-        // whyItMatters is printed when a question fails, for whoever reads the run later. Say what goes
-        // wrong in the world when it fails, not what the question means.
-
-        return List.of();
-    }
-
-    private static List<SummaryRubric> examples() {
         return List.of(
                 // The failure that matters most, and the one a rubric can actually catch. Note it is
                 // answerable by reading: a figure is either in the documents or it is not.
@@ -71,6 +40,21 @@ public record SummaryRubric(String question, String whyItMatters) {
                 new SummaryRubric(
                         "Is it under six sentences?",
                         "It sits at the top of a screen a handler reads forty times a day. A summary long"
-                                + " enough to skip is one that gets skipped."));
+                                + " enough to skip is one that gets skipped."),
+                new SummaryRubric(
+                        "Does it describe the documents rather than address the reader?",
+                        "The claimant and the handler both read this. 'You should send us the receipt' is"
+                                + " written to one of them and is wrong for the other."),
+                new SummaryRubric(
+                        "Does it avoid saying whether the claim should be paid?",
+                        "Deciding is the handler's job. An agent that volunteers a verdict is answering a"
+                                + " question nobody asked it, and someone will act on it."),
+                new SummaryRubric(
+                        "Would a handler who read only this know what to do next?",
+                        "The point of it. A summary that is accurate and useless has still failed."),
+                new SummaryRubric(
+                        "Is every document it was shown accounted for?",
+                        "The one it leaves out is the one it found hardest to read, which is the one worth"
+                                + " looking at. A summary that quietly drops a document reads as complete."));
     }
 }

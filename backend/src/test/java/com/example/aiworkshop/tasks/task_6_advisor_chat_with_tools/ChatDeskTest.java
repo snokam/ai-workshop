@@ -1,11 +1,11 @@
 package com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools;
 
-import com.example.aiworkshop.tasks.task_5_claim_summary.SummaryDesk;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.SummaryDesk;
 import com.example.aiworkshop.tasks.task_1_first_agent.ClaimDesk;
 import com.example.aiworkshop.tasks.task_3_document_agent.progress.DocumentReview;
 import com.example.aiworkshop.tasks.task_3_document_agent.progress.DocumentProgress;
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimStatusWriter;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.agent.ClaimSummarizer;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.agent.ClaimStatusWriter;
 import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.agent.ClaimChatAgent;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentFiles;
@@ -14,7 +14,7 @@ import com.example.aiworkshop.tasks.task_3_document_agent.model.QualityAssessmen
 import com.example.aiworkshop.tasks.task_1_first_agent.model.MatchConfidence;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.DocumentAnalysis;
 import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.agent.DocumentReader;
-import com.example.aiworkshop.tasks.task_5_claim_summary.store.ClaimSummaryStore;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.store.ClaimSummaryStore;
 import com.example.aiworkshop.tasks.task_1_first_agent.store.ClaimStore;
 import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.store.ProposalStore;
 import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.proposals.ProposalState;

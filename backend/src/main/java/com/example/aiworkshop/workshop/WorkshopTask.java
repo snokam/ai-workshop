@@ -6,7 +6,7 @@ import com.example.aiworkshop.tasks.task_1_first_agent.agent.ClaimTypeClassifier
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiConfig;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_2_guardrails.Guardrails;
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.agent.ClaimSummarizer;
 import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.agent.ClaimChatAgent;
 import com.example.aiworkshop.tasks.task_7_streaming_file_claim_chat.agent.ClaimIntakeInterviewer;
 
@@ -34,12 +34,12 @@ public enum WorkshopTask {
             "tasks/task_4_evaluation/",
             "Build the two sets, then run ./mvnw test -Pevaluate and read what it says about the"
                     + " classifier from task 1 and the guardrails from task 2."),
-    CLAIM_SUMMARY(
+    CLAIM_SUMMARY_USING_MEMORY(
             5,
-            "Claim summary",
-            "tasks/task_5_claim_summary/agent/ClaimSummarizer.java",
-            "Write the agent that reads every document on a claim at once, give it a memory of what it"
-                    + " said last time, then the rubric that says whether its answer holds up."),
+            "Claim summary using memory",
+            "tasks/task_5_claim_summary_using_memory/agent/SummaryConfig.java",
+            "Give the summariser a memory, so a handler coming back to a claim is told what changed"
+                    + " rather than the same thing again."),
     ADVISOR_CHAT_WITH_TOOLS(
             6,
             "Advisor chat with tools",

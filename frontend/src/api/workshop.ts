@@ -6,7 +6,7 @@ export type TaskKey =
   | 'DOCUMENT_AGENT'
   | 'GUARDRAILS'
   | 'ADVISOR_CHAT_WITH_TOOLS'
-  | 'CLAIM_SUMMARY'
+  | 'CLAIM_SUMMARY_USING_MEMORY'
   | 'STREAMING_FILE_CLAIM_CHAT'
 
 export interface TaskState {

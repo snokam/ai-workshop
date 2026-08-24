@@ -1,6 +1,6 @@
-package com.example.aiworkshop.tasks.task_5_claim_summary;
+package com.example.aiworkshop.tasks.task_5_claim_summary_using_memory;
 
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.agent.ClaimSummarizer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import dev.langchain4j.service.SystemMessage;
@@ -32,9 +32,6 @@ class ClaimSummarizerTest {
         SystemMessage system = summarise().getAnnotation(SystemMessage.class);
 
         assertThat(system).describedAs("summarise() needs an @SystemMessage").isNotNull();
-        assertThat(String.join("\n", system.value()))
-                .describedAs("the @SystemMessage still holds the brief it shipped with — write the prompt")
-                .doesNotContain("TODO");
     }
 
     @Test

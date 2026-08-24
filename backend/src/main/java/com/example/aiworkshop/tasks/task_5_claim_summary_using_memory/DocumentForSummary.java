@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_5_claim_summary;
+package com.example.aiworkshop.tasks.task_5_claim_summary_using_memory;
 
 import com.example.aiworkshop.tasks.task_3_document_agent.model.UploadedDocument;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.ExtractedField;

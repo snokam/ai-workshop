@@ -1,8 +1,8 @@
-package com.example.aiworkshop.tasks.task_5_claim_summary;
+package com.example.aiworkshop.tasks.task_5_claim_summary_using_memory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.SummaryConfig;
+import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.agent.SummaryConfig;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import org.junit.jupiter.api.Test;

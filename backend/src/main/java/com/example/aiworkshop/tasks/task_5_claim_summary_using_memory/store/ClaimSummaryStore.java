@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_5_claim_summary.store;
+package com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.store;
 
 import java.util.List;
 import java.util.Optional;
