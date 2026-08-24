@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_2_guardrails.guardrails;
+package com.example.aiworkshop.tasks.task_2_guardrails.claim_description;
 
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.guardrail.InputGuardrail;

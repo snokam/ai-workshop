@@ -2,7 +2,7 @@ package com.example.aiworkshop.workshop;
 
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
-import com.example.aiworkshop.tasks.task_2_guardrails.guardrails.Guardrails;
+import com.example.aiworkshop.tasks.task_2_guardrails.Guardrails;
 import com.example.aiworkshop.tasks.task_5_fraud_detection.checks.FraudCheck;
 import com.example.aiworkshop.tasks.task_7_advisor_chat.agent.CaseChatAgent;
 import com.example.aiworkshop.tasks.task_6_case_summary.agent.CaseSummarizer;
@@ -39,7 +39,8 @@ public class TaskProgress {
             // write. It counts as done when there is a set to run — the ten that ship are the worked
             // example, and adding the ones you would argue about is the exercise.
             case EVALUATION -> !LabelledCase.all().isEmpty();
-            case GUARDRAILS -> UnfinishedTasks.written(() -> Guardrails.beforeTheCall(null));
+            case GUARDRAILS -> UnfinishedTasks.written(() -> Guardrails.againstPromptInjection(null))
+                    && UnfinishedTasks.written(() -> Guardrails.againstWastedCalls(null));
             case FRAUD_DETECTION -> checks.stream().anyMatch(check -> UnfinishedTasks.written(() -> check.screen(null)));
         };
     }

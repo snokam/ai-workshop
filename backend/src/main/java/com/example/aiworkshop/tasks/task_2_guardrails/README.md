@@ -1,6 +1,6 @@
 # Task 2 — Is this even a claim?
 
-You write one guardrail, and it runs before the model does.
+You write two guardrails, and they run before the model does.
 
 The brief is `docs/tasks/task_2_guardrails.md`, from the repository root.
 
@@ -10,6 +10,11 @@ Do them in this order. Each is one file, and the `TODO` at the top of it has the
 
 | | File | What it is for |
 |---|---|---|
-| 1 | [`guardrails/ClaimCheck.java`](./guardrails/ClaimCheck.java) | Write the check |
-| 2 | [`guardrails/ClaimDescriptionGuardrail.java`](./guardrails/ClaimDescriptionGuardrail.java) | Ask it, and refuse |
-| 3 | [`guardrails/Guardrails.java`](./guardrails/Guardrails.java) | Hand it back |
+| 1 | [`claim_description/ClaimCheck.java`](./claim_description/ClaimCheck.java) | Write the check |
+| 2 | [`claim_description/ClaimDescriptionGuardrail.java`](./claim_description/ClaimDescriptionGuardrail.java) | Ask it, and refuse |
+| 3 | [`prompt_injection/InjectionCheck.java`](./prompt_injection/InjectionCheck.java) | Write the injection check |
+| 4 | [`prompt_injection/PromptInjectionGuardrail.java`](./prompt_injection/PromptInjectionGuardrail.java) | Refuse without explaining |
+| 5 | [`Guardrails.java`](./Guardrails.java) | Hand back both, in order |
+
+One folder per guardrail. Each holds the check that does the judging and the guardrail that
+acts on it; `Guardrails.java` above them is the only thing the rest of the application sees.

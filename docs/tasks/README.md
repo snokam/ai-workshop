@@ -6,7 +6,7 @@ order to do them in.
 | | | you write |
 |---|---|---|
 | 1 | [Your first agent](./task_1_first_agent.md) | the SDK wiring, and an agent that reads a sentence and decides which case to open |
-| 2 | [Is this even a claim?](./task_2_guardrails.md) | one guardrail, before the call — refusing text nobody could open a case from |
+| 2 | [Is this even a claim?](./task_2_guardrails.md) | two guardrails, before the call — refusing text with no case in it, and text addressed to the software |
 | 3 | [Give it a file](./task_3_document_agent.md) | an agent handed a PDF or a photograph, and a record that is its output schema |
 | 4 | [How would you know?](./task_4_evaluation.md) | the sets four evaluations run over — one per shape of answer, because no single technique scores them all |
 | 5 | [Case: Fraud detection](./task_5_fraud_detection.md) | what the model cannot know, in plain Java after the answer |

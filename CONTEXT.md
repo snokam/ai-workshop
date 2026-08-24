@@ -123,15 +123,20 @@ _Avoid_: chase, reminder, task
 ## Guardrails
 
 Two, both on the intake agent, because it is the only agent an outsider can put anything in front of.
-Both are LangChain4j guardrails, so they run inside the call rather than around it — see
-[the walkthrough](./docs/guardrails-walkthrough.md).
+Both are LangChain4j input guardrails, so they run inside the call rather than around it, and both
+ask a model rather than applying a rule — whether text has a situation in it, and whether text is
+addressed to the software, are questions about meaning.
 
-- **Input guardrail** (`tasks/task_2_guardrails/guardrails/UploadedFileGuardrail`) — one file and one sentence of ours reach the model.
-  Nothing a Claimant typed, the filename above all, becomes part of a prompt. It cannot see inside
-  the file and is not a defence against what is printed on the page.
-- **Output guardrail** (`tasks/task_2_guardrails/guardrails/AnalysisGuardrail`) — a match must name a Required Document this Case
-  actually asked for. A label that is not on the list is struck out, whether the agent paraphrased
-  it, invented it, or was talked into it by the Document.
+- **Prompt injection** (`tasks/task_2_guardrails/prompt_injection/`) — refuses text that is
+  instructing whatever reads it next rather than describing something that happened. Runs first, so
+  manipulated text never reaches the second check, which is itself a model. The person is told
+  nothing about why: the refusal is a constant, and what was found goes to the log instead.
+- **Claim description** (`tasks/task_2_guardrails/claim_description/`) — refuses text nobody could
+  open a Case from: an empty box, a greeting, a few characters of nonsense. Biased towards saying
+  yes, because refusing an unusual Claim is worse than opening a Case somebody closes.
+
+Neither can see inside an uploaded Document. What is printed on the page reaches the agent in task 3
+untouched, and the only thing that catches it there is the model noticing and saying so.
 
 ## Not settled yet
 

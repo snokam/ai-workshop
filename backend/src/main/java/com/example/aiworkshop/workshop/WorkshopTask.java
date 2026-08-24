@@ -5,7 +5,7 @@ import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiConfig;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
-import com.example.aiworkshop.tasks.task_2_guardrails.guardrails.Guardrails;
+import com.example.aiworkshop.tasks.task_2_guardrails.Guardrails;
 import com.example.aiworkshop.tasks.task_5_fraud_detection.FraudScreener;
 import com.example.aiworkshop.tasks.task_6_case_summary.agent.CaseSummarizer;
 import com.example.aiworkshop.tasks.task_7_advisor_chat.agent.CaseChatAgent;
@@ -21,8 +21,9 @@ public enum WorkshopTask {
     GUARDRAILS(
             2,
             "Is this even a claim?",
-            "tasks/task_2_guardrails/guardrails/Guardrails.java",
-            "Refuse text that nobody could open a case from, before it reaches the model."),
+            "tasks/task_2_guardrails/Guardrails.java",
+            "Refuse text nobody could open a case from, and text that is instructing the system"
+                    + " rather than describing a situation, before either reaches the model."),
     DOCUMENT_AGENT(
             3,
             "Give it a file",
