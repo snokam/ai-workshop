@@ -13,9 +13,9 @@ import type {
   UploadedDocument,
 } from "../../api";
 import { Checklist } from "../../components/task_1_first_agent/Checklist";
-import { DocumentCard } from "../../components/task_2_document_agent/DocumentCard";
+import { DocumentCard } from "../../components/task_3_document_agent/DocumentCard";
 import { CONFIDENCE_LABEL } from "../../lib/labels";
-import { previewOf } from "../../components/task_2_document_agent/standing";
+import { previewOf } from "../../components/task_3_document_agent/standing";
 import { Loader } from "../../components/feedback/Loader";
 import { Failure } from "../../components/feedback/Failure";
 import { TaskGate } from "../../components/workshop/TaskGate";
@@ -135,42 +135,37 @@ export function Case() {
       )}
 
       <TaskGate
-        task="GUARDRAILS"
-        instead="Whatever is dropped here goes straight to the agent. Nothing yet refuses a file it cannot read, and nothing yet checks the answer that comes back — so a document that tells the agent what to write is believed."
+        task="DOCUMENT_AGENT"
+        instead="A file can be dropped here, but the agent that reads an uploaded PDF or photo has not been written yet."
       >
-        <TaskGate
-          task="DOCUMENT_AGENT"
-          instead="A file can be dropped here, but the agent that reads an uploaded PDF or photo has not been written yet."
+        <label
+          className={`dropzone ${busyWith ? "busy" : ""}`}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            void handleFiles(e.dataTransfer.files);
+          }}
         >
-          <label
-            className={`dropzone ${busyWith ? "busy" : ""}`}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault();
-              void handleFiles(e.dataTransfer.files);
-            }}
-          >
-            <input
-              ref={fileInput}
-              type="file"
-              accept="application/pdf,image/*"
-              multiple
-              disabled={busyWith !== null}
-              onChange={(e) => void handleFiles(e.target.files)}
-            />
-            {busyWith ? (
-              <span className="reading">
-                <Loader />
-                Reading <strong>{busyWith}</strong>…
-              </span>
-            ) : (
-              <span>
-                <strong>Drop a PDF or a photo here</strong>
-                <small>or click to choose a file</small>
-              </span>
-            )}
-          </label>
-        </TaskGate>
+          <input
+            ref={fileInput}
+            type="file"
+            accept="application/pdf,image/*"
+            multiple
+            disabled={busyWith !== null}
+            onChange={(e) => void handleFiles(e.target.files)}
+          />
+          {busyWith ? (
+            <span className="reading">
+              <Loader />
+              Reading <strong>{busyWith}</strong>…
+            </span>
+          ) : (
+            <span>
+              <strong>Drop a PDF or a photo here</strong>
+              <small>or click to choose a file</small>
+            </span>
+          )}
+        </label>
       </TaskGate>
 
       {error && <Failure error={error} />}

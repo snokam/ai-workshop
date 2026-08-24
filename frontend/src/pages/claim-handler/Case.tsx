@@ -2,13 +2,13 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { openCase, reviewDocument } from "../../api";
 import type { CaseDetail } from "../../api";
-import { CaseChat } from "../../components/task_6_advisor_chat/CaseChat";
+import { CaseChat } from "../../components/task_7_advisor_chat/CaseChat";
 import { Checklist } from "../../components/task_1_first_agent/Checklist";
-import { DocumentCard } from "../../components/task_2_document_agent/DocumentCard";
+import { DocumentCard } from "../../components/task_3_document_agent/DocumentCard";
 import {
   previewOf,
   standingOf,
-} from "../../components/task_2_document_agent/standing";
+} from "../../components/task_3_document_agent/standing";
 import { STATUS_LABEL } from "../../lib/labels";
 import { PageWait } from "../../components/feedback/Loader";
 import { Failure } from "../../components/feedback/Failure";

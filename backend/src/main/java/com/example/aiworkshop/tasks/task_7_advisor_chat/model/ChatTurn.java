@@ -1,0 +1,5 @@
+package com.example.aiworkshop.tasks.task_7_advisor_chat.model;
+
+import java.util.List;
+
+public record ChatTurn(String question, String answer, List<ToolCall> toolCalls, List<String> proposalIds) {}

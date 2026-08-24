@@ -6,6 +6,7 @@ import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CreatedCase;
 import com.example.aiworkshop.workshop.TaskNotImplementedAdvice;
 import com.example.aiworkshop.workshop.TaskNotImplementedException;
+import dev.langchain4j.guardrail.InputGuardrailException;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -57,6 +58,24 @@ class CasesController {
     @ExceptionHandler({CaseDesk.UnknownCaseException.class, CaseDesk.UnknownProposalException.class})
     ResponseEntity<Map<String, String>> notFound(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
+    }
+
+    /**
+     * A guardrail said no, and what it said is for the person who typed the text.
+     *
+     * <p>400 rather than 502: nothing failed. The request was refused, deliberately, before anything
+     * was spent on it, and the reason is written to be read by a claimant. Without this the refusal
+     * fell to the catch-all below and arrived as "The case could not be read:" followed by the
+     * guardrail's internal class name.
+     */
+    @ExceptionHandler(InputGuardrailException.class)
+    ResponseEntity<Map<String, String>> refused(InputGuardrailException e) {
+        String reason = e.getMessage() == null ? "" : e.getMessage();
+        int said = reason.indexOf("failed with this message: ");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of(
+                        "message",
+                        said < 0 ? reason : reason.substring(said + "failed with this message: ".length())));
     }
 
     @ExceptionHandler(TaskNotImplementedException.class)

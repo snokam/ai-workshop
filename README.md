@@ -96,18 +96,18 @@ agent you write, the records it answers in, what is kept, and the endpoints the 
 | | |
 |---|---|
 | `task_1_first_agent/` | the model itself, a classifier, and the case its answer opens |
-| `task_2_document_agent/` | the agent that reads an uploaded PDF or photo |
-| `task_3_guardrails/` | one guardrail on the way out, one on the way back |
-| `task_4_fraud_detection/` | plain Java after the answer: what the model cannot know |
-| `task_5_case_summary/` | the expensive agent, across every document on a case |
-| `task_6_advisor_chat/` | tools and memory — the agent that suggests and never writes |
-| `task_7_create_case_chat/` | an interview instead of a form |
-| `task_8_evaluation/` | four ways of asking whether any of it works |
+| `task_2_guardrails/` | one guardrail, before the call — refusing text nobody could open a case from |
+| `task_3_document_agent/` | the agent that reads an uploaded PDF or photo |
+| `task_4_evaluation/` | four ways of asking whether any of it works |
+| `task_5_fraud_detection/` | plain Java after the answer: what the model cannot know |
+| `task_6_case_summary/` | the expensive agent, across every document on a case |
+| `task_7_advisor_chat/` | tools and memory — the agent that suggests and never writes |
+| `task_8_create_case_chat/` | an interview instead of a form |
 
 Inside a task the shape is always the same:
 
 ```
-task_2_document_agent/
+task_3_document_agent/
   DocumentsController.java     the endpoints
   DocumentIntake.java          the code that calls the agent
   agent/                       the agent and its wiring — this is what you write
@@ -139,14 +139,14 @@ and the agent starts filling it in. They all write in English; see
 | | |
 |---|---|
 | `task_1_first_agent/agent/CaseTypeClassifier.java` | a sentence in, a case type out |
-| `task_2_document_agent/agent/DocumentAnalyzer.java` | the file itself, sent as inline data |
-| `task_5_case_summary/agent/CaseSummarizer.java` | the expensive one: every document, in one prompt |
-| `task_5_case_summary/agent/CaseStatusWriter.java` | the cheap one: derived facts in, one situation report out |
-| `task_6_advisor_chat/agent/CaseChatAgent.java` | memory id, tools, and a `Result` so tool calls survive |
-| `task_6_advisor_chat/agent/DocumentReader.java` | a second agent, given the file and no case context at all |
-| `task_7_create_case_chat/agent/CaseIntakeInterviewer.java` | asks until it has enough to open a case |
+| `task_3_document_agent/agent/DocumentAnalyzer.java` | the file itself, sent as inline data |
+| `task_6_case_summary/agent/CaseSummarizer.java` | the expensive one: every document, in one prompt |
+| `task_6_case_summary/agent/CaseStatusWriter.java` | the cheap one: derived facts in, one situation report out |
+| `task_7_advisor_chat/agent/CaseChatAgent.java` | memory id, tools, and a `Result` so tool calls survive |
+| `task_7_advisor_chat/agent/DocumentReader.java` | a second agent, given the file and no case context at all |
+| `task_8_create_case_chat/agent/CaseIntakeInterviewer.java` | asks until it has enough to open a case |
 
-An eighth lives in task 8, `SummaryJudge`, and is not part of the application. It is a model asked
+An eighth lives in task 6, `SummaryJudge`, and is not part of the application. It is a model asked
 whether another model's answer holds up, which is the only way to score prose at any volume and the
 technique in here most easily used badly.
 

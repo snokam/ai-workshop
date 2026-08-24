@@ -1,13 +1,13 @@
 package com.example.aiworkshop.workshop;
 
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
-import com.example.aiworkshop.tasks.task_2_document_agent.agent.DocumentAnalyzer;
-import com.example.aiworkshop.tasks.task_3_guardrails.guardrails.Guardrails;
-import com.example.aiworkshop.tasks.task_4_fraud_detection.checks.FraudCheck;
-import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.CaseChatAgent;
-import com.example.aiworkshop.tasks.task_5_case_summary.agent.CaseSummarizer;
-import com.example.aiworkshop.tasks.task_8_evaluation.LabelledCase;
-import com.example.aiworkshop.tasks.task_7_create_case_chat.agent.CaseIntakeInterviewer;
+import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
+import com.example.aiworkshop.tasks.task_2_guardrails.guardrails.Guardrails;
+import com.example.aiworkshop.tasks.task_5_fraud_detection.checks.FraudCheck;
+import com.example.aiworkshop.tasks.task_7_advisor_chat.agent.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_6_case_summary.agent.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_4_evaluation.LabelledCase;
+import com.example.aiworkshop.tasks.task_8_create_case_chat.agent.CaseIntakeInterviewer;
 import java.util.List;
 import org.springframework.stereotype.Component;
 

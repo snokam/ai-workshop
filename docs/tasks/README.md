@@ -1,27 +1,26 @@
 # Tasks
 
-Six exercises, in order. Each one is an agent, and each adds exactly one idea to the one before it.
+Eight exercises, in order. Each adds one idea to the one before it, and the numbering is the
+order to do them in.
 
 | | | you write |
 |---|---|---|
 | 1 | [Your first agent](./task_1_first_agent.md) | the SDK wiring, and an agent that reads a sentence and decides which case to open |
-| 2 | [Give it a file](./task_2_document_agent.md) | an agent handed a PDF or a photograph, and a record that is its output schema |
-| 3 | [Guardrails](./task_3_guardrails.md) | two checks on the way out and back, now there is an agent worth guarding |
-| 4 | [Fraud detection](./task_4_fraud_detection.md) | what the model cannot know, in plain Java after the answer — and one check written from nothing |
-| 5 | [Across documents](./task_5_case_summary.md) | the expensive agent: every document at once, what it is shown, and what that costs |
-| 6 | [Tools and memory](./task_6_advisor_chat.md) | an agent that looks things up mid-answer, and the tool descriptions that decide when it does |
-| 8 | [How would you know?](./task_8_evaluation.md) | whether any of it is any good — the question that separates a demo from something you would ship |
+| 2 | [Is this even a claim?](./task_2_guardrails.md) | one guardrail, before the call — refusing text nobody could open a case from |
+| 3 | [Give it a file](./task_3_document_agent.md) | an agent handed a PDF or a photograph, and a record that is its output schema |
+| 4 | [How would you know?](./task_4_evaluation.md) | whether any of it works — four ways of asking, because each kind of answer needs a different one |
+| 5 | [Case: Fraud detection](./task_5_fraud_detection.md) | what the model cannot know, in plain Java after the answer |
+| 6 | [Case: Claim summary](./task_6_case_summary.md) | the expensive agent: every document at once, what it is shown, and what that costs |
+| 7 | [Case: Advisor chat](./task_7_advisor_chat.md) | an agent that looks things up mid-answer, and the tool descriptions that decide when it does |
+| 8 | [Case: File claim with AI chat](./task_8_create_case_chat.md) | an intake agent that may ask before it commits |
 
-1 and 2 build an agent. 3 and 4 contain one. 5 and 6 grow one — in that order, because the chat in 6 is shown the summary written in 5. 8 asks whether it works, and can be
-done any time after task 1 — it is last in the list and nowhere near last in importance.
 
-There is also an extra, optional seventh, for anyone who finishes early:
+The first four build and check a single agent: write one, put a guardrail in front of it, hand it a
+file, then ask whether any of it works. Tasks 5 to 8 are the case itself — what happens to a claim
+once documents start arriving, and the agents a handler needs once there is something to handle.
 
-| | | you write |
-|---|---|---|
-| 7 | [Report with AI chat](./task_7_create_case_chat.md) | an intake agent that may ask before it commits, deciding the exact documents a situation needs |
-
-It stands beside task 1 rather than after it — the quick report still works untouched.
+Six is written before seven because the advisor chat is shown the summary the claim summary writes.
+Eight stands beside task 1 rather than after it: the quick report screen keeps working untouched.
 
 ## Three hours
 
@@ -32,10 +31,10 @@ are ordered so that stopping anywhere leaves something whole:
 |---|---|
 | 0:00 | set up, and run both halves with nothing written |
 | 0:15 | **task 1** — the model, the agent, and the case its answer opens |
-| 1:15 | **task 2** — the same again with a file, and the record that is its contract |
+| 1:15 | **task 2** — one guardrail, before the call, and what it saves |
 | 2:15 | break |
-| 2:25 | **task 3** — what happens when a document argues back |
-| 3:00 | where this goes: fraud detection, tools, memory, reading across documents |
+| 2:25 | **task 3** — the same again with a file |
+| 3:00 | where this goes: evaluation, fraud detection, tools, memory, reading across documents |
 
 That is 1 to 3 done properly. Tasks 4 to 7 are read rather than written, and left for afterwards —
 the repository is theirs to finish in their own time, and the briefs assume no one is standing over
@@ -106,7 +105,7 @@ with the application running:
    which of their tricks was noticed; the handler's must.
 5. Ask the chat *"what is the total on the receipt?"* on a case that has no receipt, and read what
    it says rather than what you hoped it would say.
-6. Run [task 8](./task_8_evaluation.md) and sort the disagreements.
+6. Run [task 8](./task_4_evaluation.md) and sort the disagreements.
 
 Steps 3 and 4 are the ones worth caring about. They are the two places where this application does
 something a model cannot do for you, and if either is wrong the rest being right does not help.
@@ -133,7 +132,7 @@ cost of three hours. [Task 1](./task_1_first_agent.md) has a section on which ha
 looking at is LangChain4j and which half is the idea — read it, because that is the part that
 transfers.
 
-**Evaluation gets twenty-five minutes**, in [task 8](./task_8_evaluation.md), which is enough to see
+**Evaluation gets twenty-five minutes**, in [task 8](./task_4_evaluation.md), which is enough to see
 why it matters and nowhere near enough to do it properly.
 
 ## The answers

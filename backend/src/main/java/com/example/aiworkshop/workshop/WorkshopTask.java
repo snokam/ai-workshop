@@ -1,13 +1,15 @@
 package com.example.aiworkshop.workshop;
 
+import com.example.aiworkshop.tasks.task_1_first_agent.CaseIntake;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiConfig;
-import com.example.aiworkshop.tasks.task_2_document_agent.agent.DocumentAnalyzer;
-import com.example.aiworkshop.tasks.task_3_guardrails.guardrails.Guardrails;
-import com.example.aiworkshop.tasks.task_4_fraud_detection.FraudScreener;
-import com.example.aiworkshop.tasks.task_5_case_summary.agent.CaseSummarizer;
-import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.CaseChatAgent;
-import com.example.aiworkshop.tasks.task_7_create_case_chat.agent.CaseIntakeInterviewer;
+import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
+import com.example.aiworkshop.tasks.task_2_guardrails.guardrails.Guardrails;
+import com.example.aiworkshop.tasks.task_5_fraud_detection.FraudScreener;
+import com.example.aiworkshop.tasks.task_6_case_summary.agent.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_7_advisor_chat.agent.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_8_create_case_chat.agent.CaseIntakeInterviewer;
 
 public enum WorkshopTask {
     FIRST_AGENT(
@@ -16,42 +18,42 @@ public enum WorkshopTask {
             "tasks/task_1_first_agent/",
             "Build the ChatModel in VertexAiConfig, write the @SystemMessage in CaseTypeClassifier,"
                     + " and open the case its answer describes in CaseIntake."),
-    DOCUMENT_AGENT(
-            2,
-            "Give it a file",
-            "tasks/task_2_document_agent/agent/DocumentAnalyzer.java",
-            "Write the agent that reads an uploaded PDF or photo."),
     GUARDRAILS(
+            2,
+            "Is this even a claim?",
+            "tasks/task_2_guardrails/guardrails/Guardrails.java",
+            "Refuse text that nobody could open a case from, before it reaches the model."),
+    DOCUMENT_AGENT(
             3,
-            "Don't be talked round",
-            "tasks/task_3_guardrails/guardrails/Guardrails.java",
-            "Write the input and output guardrails."),
-    FRAUD_DETECTION(
+            "Give it a file",
+            "tasks/task_3_document_agent/agent/DocumentAnalyzer.java",
+            "Write the agent that reads an uploaded PDF or photo."),
+    EVALUATION(
             4,
-            "What the model cannot know",
-            "tasks/task_4_fraud_detection/FraudScreener.java",
+            "How would you know?",
+            "tasks/task_4_evaluation/",
+            "Label the descriptions you would argue about, run the classifier over them, and decide"
+                    + " what the disagreements mean."),
+    FRAUD_DETECTION(
+            5,
+            "Case: Fraud detection",
+            "tasks/task_5_fraud_detection/FraudScreener.java",
             "Write the checks that run in Java after the agent has answered."),
     CASE_SUMMARY(
-            5,
-            "Across documents",
-            "tasks/task_5_case_summary/agent/CaseSummarizer.java",
+            6,
+            "Case: Claim summary",
+            "tasks/task_6_case_summary/agent/CaseSummarizer.java",
             "Write the agent that reads every document on a case at once."),
     ADVISOR_CHAT(
-            6,
-            "Tools and memory",
-            "tasks/task_6_advisor_chat/agent/CaseChatAgent.java",
+            7,
+            "Case: Advisor chat",
+            "tasks/task_7_advisor_chat/agent/CaseChatAgent.java",
             "Write the chat agent and its tools."),
     CREATE_CASE_CHAT(
-            7,
-            "Report with AI chat",
-            "tasks/task_7_create_case_chat/agent/CaseIntakeInterviewer.java",
-            "Write the @SystemMessage in CaseIntakeInterviewer so it can ask before it commits."),
-    EVALUATION(
             8,
-            "How would you know?",
-            "tasks/task_8_evaluation/",
-            "Label the descriptions you would argue about, run the classifier over them, and decide"
-                    + " what the disagreements mean.");
+            "Case: File claim with AI chat",
+            "tasks/task_8_create_case_chat/agent/CaseIntakeInterviewer.java",
+            "Write the @SystemMessage in CaseIntakeInterviewer so it can ask before it commits.");
 
 
     private static final String SOURCE_ROOT = "backend/src/main/java/com/example/aiworkshop/";

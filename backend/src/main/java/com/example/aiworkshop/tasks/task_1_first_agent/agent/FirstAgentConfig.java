@@ -2,8 +2,10 @@ package com.example.aiworkshop.tasks.task_1_first_agent.agent;
 
 import com.example.aiworkshop.workshop.WorkshopTask;
 import com.example.aiworkshop.workshop.UnfinishedTasks;
+import dev.langchain4j.guardrail.InputGuardrail;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.service.AiServices;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,12 +25,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 class FirstAgentConfig {
 
-    /** The case intake agent: reads what a Claimant typed and picks which case type to open. */
+    /**
+     * The case intake agent: reads what a claimant typed and picks which case type to open.
+     *
+     * <p>The guardrails arrive rather than being fetched. This agent takes whichever ones exist and
+     * knows nothing about who wrote them — task 2 publishes one as a bean and it turns up here. Task
+     * 1 has no idea task 2 exists, which is what lets the workshop be done in order.
+     */
     @Bean
-    CaseTypeClassifier caseTypeClassifier(ChatModel chatModel) {
-        return UnfinishedTasks.wire(
-                CaseTypeClassifier.class,
-                WorkshopTask.FIRST_AGENT,
-                () -> AiServices.create(CaseTypeClassifier.class, chatModel));
+    CaseTypeClassifier caseTypeClassifier(ChatModel chatModel, List<InputGuardrail> beforeTheCall) {
+        return UnfinishedTasks.wire(CaseTypeClassifier.class, WorkshopTask.FIRST_AGENT, () -> {
+            AiServices<CaseTypeClassifier> agent =
+                    AiServices.builder(CaseTypeClassifier.class).chatModel(chatModel);
+            if (!beforeTheCall.isEmpty()) {
+                agent.inputGuardrails(beforeTheCall);
+            }
+            return agent.build();
+        });
     }
 }

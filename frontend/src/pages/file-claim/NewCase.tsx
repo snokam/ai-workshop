@@ -1,46 +1,46 @@
-import { useState } from 'react'
-import { useNavigate, type NavigateFunction } from 'react-router-dom'
-import { createCase, listCaseTypes } from '../../api'
-import type { CreatedCase, SupportedCaseType } from '../../api'
-import { rememberCase } from './openedCases'
-import { useEffect } from 'react'
-import { Loader } from '../../components/feedback/Loader'
-import { Failure } from '../../components/feedback/Failure'
-import { TaskGate } from '../../components/workshop/TaskGate'
+import { useState } from "react";
+import { useNavigate, type NavigateFunction } from "react-router-dom";
+import { createCase, listCaseTypes } from "../../api";
+import type { CreatedCase, SupportedCaseType } from "../../api";
+import { rememberCase } from "./openedCases";
+import { useEffect } from "react";
+import { Loader } from "../../components/feedback/Loader";
+import { Failure } from "../../components/feedback/Failure";
+import { TaskGate } from "../../components/workshop/TaskGate";
 
 function openCreated(navigate: NavigateFunction, created: CreatedCase) {
-  rememberCase(created.id)
-  navigate(`/cases/${created.id}`, { state: { intro: created } })
+  rememberCase(created.id);
+  navigate(`/cases/${created.id}`, { state: { intro: created } });
 }
 
 export function NewCase() {
-  const navigate = useNavigate()
-  const [description, setDescription] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
-  const [types, setTypes] = useState<SupportedCaseType[]>([])
+  const navigate = useNavigate();
+  const [description, setDescription] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [types, setTypes] = useState<SupportedCaseType[]>([]);
 
   useEffect(() => {
-    let live = true
+    let live = true;
     listCaseTypes()
       .then((t) => live && setTypes(t))
-      .catch(() => {})
+      .catch(() => {});
     return () => {
-      live = false
-    }
-  }, [])
+      live = false;
+    };
+  }, []);
 
   async function submit() {
-    const text = description.trim()
-    if (!text || submitting) return
-    setSubmitting(true)
-    setError(null)
+    const text = description.trim();
+    if (!text || submitting) return;
+    setSubmitting(true);
+    setError(null);
     try {
-      openCreated(navigate, await createCase(text))
+      openCreated(navigate, await createCase(text));
     } catch (e) {
-      setError(e as Error)
+      setError(e as Error);
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
   }
 
@@ -56,43 +56,48 @@ export function NewCase() {
       </header>
 
       <TaskGate
-        task="FIRST_AGENT"
-        instead="Describing a situation is how a case gets opened, and the agent that reads it has not been written yet."
+        task="GUARDRAILS"
+        instead="Anything typed here reaches the model, including a greeting or an empty box. Nothing yet refuses text nobody could open a case from."
       >
-        <form
-          className="describe"
-          onSubmit={(e) => {
-            e.preventDefault()
-            void submit()
-          }}
+        <TaskGate
+          task="FIRST_AGENT"
+          instead="Describing a situation is how a case gets opened, and the agent that reads it has not been written yet."
         >
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="For example: my suitcase never turned up after my flight home, and I had to buy clothes and toiletries."
-            rows={5}
-            disabled={submitting}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault()
-                void submit()
-              }
+          <form
+            className="describe"
+            onSubmit={(e) => {
+              e.preventDefault();
+              void submit();
             }}
-          />
-          <button
-            type="submit"
-            disabled={submitting || description.trim().length === 0}
           >
-            {submitting ? (
-              <span className="reading">
-                <Loader />
-                Opening your case…
-              </span>
-            ) : (
-              'Open the case'
-            )}
-          </button>
-        </form>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="For example: my suitcase never turned up after my flight home, and I had to buy clothes and toiletries."
+              rows={5}
+              disabled={submitting}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  void submit();
+                }
+              }}
+            />
+            <button
+              type="submit"
+              disabled={submitting || description.trim().length === 0}
+            >
+              {submitting ? (
+                <span className="reading">
+                  <Loader />
+                  Opening your case…
+                </span>
+              ) : (
+                "Open the case"
+              )}
+            </button>
+          </form>
+        </TaskGate>
       </TaskGate>
 
       {error && <Failure error={error} />}
@@ -111,5 +116,5 @@ export function NewCase() {
         </section>
       )}
     </>
-  )
+  );
 }

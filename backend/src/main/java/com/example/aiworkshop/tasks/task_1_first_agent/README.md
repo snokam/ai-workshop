@@ -21,7 +21,7 @@ Each of these has the exercise parked in it as a comment headed `── To set t
 
 ## What it uses from the tasks before it
 
-Nothing. This is the first task, and it stands on its own.
+Nothing. It stands on its own.
 
 No task before this one refers to anything in here. That is the rule the workshop runs on —
 you can stop after any task and what you have still works — and `TaskDependencyTest` fails if
