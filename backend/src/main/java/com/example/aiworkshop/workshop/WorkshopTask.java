@@ -6,10 +6,9 @@ import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiConfig;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_2_guardrails.Guardrails;
-import com.example.aiworkshop.tasks.task_5_fraud_detection.FraudScreener;
-import com.example.aiworkshop.tasks.task_6_case_summary.agent.CaseSummarizer;
-import com.example.aiworkshop.tasks.task_7_advisor_chat.agent.CaseChatAgent;
-import com.example.aiworkshop.tasks.task_8_create_case_chat.agent.CaseIntakeInterviewer;
+import com.example.aiworkshop.tasks.task_5_claim_summary.agent.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_7_create_case_chat.agent.CaseIntakeInterviewer;
 
 public enum WorkshopTask {
     FIRST_AGENT(
@@ -35,25 +34,20 @@ public enum WorkshopTask {
             "tasks/task_4_evaluation/",
             "Build the two sets, then run ./mvnw test -Pevaluate and read what it says about the"
                     + " classifier from task 1 and the guardrails from task 2."),
-    FRAUD_DETECTION(
+    CLAIM_SUMMARY(
             5,
-            "Case: Fraud detection",
-            "tasks/task_5_fraud_detection/FraudScreener.java",
-            "Write the checks that run in Java after the agent has answered."),
-    CASE_SUMMARY(
-            6,
             "Case: Claim summary",
-            "tasks/task_6_case_summary/agent/CaseSummarizer.java",
+            "tasks/task_5_claim_summary/agent/CaseSummarizer.java",
             "Write the agent that reads every document on a case at once."),
     ADVISOR_CHAT(
-            7,
+            6,
             "Case: Advisor chat",
-            "tasks/task_7_advisor_chat/agent/CaseChatAgent.java",
+            "tasks/task_6_advisor_chat/agent/CaseChatAgent.java",
             "Write the chat agent and its tools."),
     CREATE_CASE_CHAT(
-            8,
+            7,
             "Case: File claim with AI chat",
-            "tasks/task_8_create_case_chat/agent/CaseIntakeInterviewer.java",
+            "tasks/task_7_create_case_chat/agent/CaseIntakeInterviewer.java",
             "Write the @SystemMessage in CaseIntakeInterviewer so it can ask before it commits.");
 
 

@@ -52,7 +52,7 @@ public class DocumentFiles {
 
     /**
      * The bytes, as a hex SHA-256. Two uploads of the same file have the same hash whatever they
-     * were named, which is how intake spots a re-upload and how task 5 spots a duplicate.
+     * were named, so a file sent twice is recognisable however it was named the second time.
      */
     public static String hashOf(byte[] content) {
         try {

@@ -1,21 +1,18 @@
-import type { FraudScreening, UploadedDocument } from '../../../api'
+import type { UploadedDocument } from '../../../api'
 import { CONFIDENCE_LABEL, QUALITY_LABEL } from '../../../lib/labels'
 import type { Standing } from '../standing'
-import { Screening } from '../../task_5_fraud_detection/Screening'
 
 export function DocumentCard({
   doc,
   preview,
   standing,
   blocking,
-  screening,
   onReview,
 }: {
   doc: UploadedDocument
   preview?: string
   standing?: Standing
   blocking?: boolean
-  screening?: FraudScreening
   onReview?: () => void
 }) {
   const { analysis } = doc
@@ -79,8 +76,6 @@ export function DocumentCard({
             ))}
           </dl>
         )}
-
-        {screening && screening.indicators.length > 0 && <Screening screening={screening} />}
       </div>
     </article>
   )

@@ -77,24 +77,9 @@ A Case Handler's confirmation that a Document is good enough to work with despit
 Assessment. A Claimant sending a better Document clears the same block.
 _Avoid_: approval, sign-off
 
-**Fraud Screening**:
-The checks that run over an uploaded file at intake, asking whether it is what it appears to be. Runs
-over the bytes and over what the intake agent already noticed — never over whether the Case deserves
-to be paid. Read by a Case Handler and by nobody else; never a gate on anything (see
-[ADR 0005](./docs/adr/0005-fraud-signals-are-handler-side.md)).
-_Avoid_: fraud detection, risk scoring, verification
-
-**Fraud Indicator**:
-One thing a check noticed. An observation a Case Handler can go and check for themselves — "this
-image is published on four pages" — and never a conclusion about the person who sent it. Carries a
-Weight (`NOTE`, `CONCERN`, `STRONG`) saying how much attention it deserves before a handler has seen
-the rest.
-_Avoid_: red flag, fraud score, alert
-
 **Manipulation Attempt**:
 Text inside a Document addressed to the agent reading it rather than to a person. A component of what
 the intake agent returns, and the only part of it a Claimant never sees — it reaches the Case
-Handler as a Fraud Indicator instead.
 _Avoid_: prompt injection (accurate, but it names the mechanism rather than the thing a handler reads)
 
 **Case Summary**:

@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,8 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * <p>Every upload is analysed, including one that is byte-identical to a file already on the case.
  * Skipping the second call would be cheaper and it is what you would do for real, but it puts a
- * cache in front of the one thing here worth reading. The hash is still recorded — task 5 uses it to
- * notice the same file arriving twice — it just does not change what happens here.
+ * cache in front of the one thing here worth reading. The hash is recorded on the document either
+ * way, so a duplicate is still recognisable later.
  */
 @Service
 public class DocumentIntake {
@@ -43,19 +42,16 @@ public class DocumentIntake {
     private final DocumentAnalyzer analyzer;
     private final DocumentStore store;
     private final CaseStore cases;
-    private final ApplicationEventPublisher events;
     private final DocumentFiles files;
 
     DocumentIntake(
             DocumentAnalyzer analyzer,
             DocumentStore store,
             CaseStore cases,
-            ApplicationEventPublisher events,
             DocumentFiles files) {
         this.analyzer = analyzer;
         this.store = store;
         this.cases = cases;
-        this.events = events;
         this.files = files;
     }
 
@@ -79,8 +75,6 @@ public class DocumentIntake {
                 id, caseId, file.getOriginalFilename(), mimeType,
                 file.getSize(), Instant.now(), contentHash, analysis, false);
         store.save(document);
-        events.publishEvent(new DocumentStored(
-                id, caseId, file.getOriginalFilename(), mimeType, content, contentHash, analysis));
         return document;
     }
 

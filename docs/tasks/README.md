@@ -9,22 +9,21 @@ order to do them in.
 | 2 | [Is this even a claim?](./task_2_guardrails.md) | two guardrails, before the call — refusing text with no case in it, and text addressed to the software |
 | 3 | [Give it a file](./task_3_document_agent.md) | an agent handed a PDF or a photograph, and a record that is its output schema |
 | 4 | [How would you know?](./task_4_evaluation.md) | two sets, two evaluations — one over the classifier from task 1, one over the guardrails from task 2 |
-| 5 | [Case: Fraud detection](./task_5_fraud_detection.md) | what the model cannot know, in plain Java after the answer |
-| 6 | [Case: Claim summary](./task_6_case_summary.md) | the expensive agent: every document at once, what it is shown, and what that costs |
-| 7 | [Case: Advisor chat](./task_7_advisor_chat.md) | an agent that looks things up mid-answer, and the tool descriptions that decide when it does |
-| 8 | [Case: File claim with AI chat](./task_8_create_case_chat.md) | an intake agent that may ask before it commits |
+| 5 | [Case: Claim summary](./task_5_claim_summary.md) | the expensive agent: every document at once, what it is shown, and what that costs |
+| 6 | [Case: Advisor chat](./task_6_advisor_chat.md) | an agent that looks things up mid-answer, and the tool descriptions that decide when it does |
+| 7 | [Case: File claim with AI chat](./task_7_create_case_chat.md) | an intake agent that may ask before it commits |
 
 
 The first four build and check a single agent: write one, put a guardrail in front of it, hand it a
-file, then ask whether any of it works. Tasks 5 to 8 are the case itself — what happens to a claim
+file, then ask whether any of it works. Tasks 5 to 7 are the case itself — what happens to a claim
 once documents start arriving, and the agents a handler needs once there is something to handle.
 
-Six is written before seven because the advisor chat is shown the summary the claim summary writes.
-Eight stands beside task 1 rather than after it: the quick report screen keeps working untouched.
+Five comes before six because the advisor chat is shown the summary the claim summary writes.
+Seven stands beside task 1 rather than after it: the quick report screen keeps working untouched.
 
 ## Three hours
 
-The seven add up to about five and a half hours of writing, which is more than a session holds. They
+The seven add up to about five hours of writing, which is more than a session holds. They
 are ordered so that stopping anywhere leaves something whole:
 
 | | |
@@ -34,7 +33,7 @@ are ordered so that stopping anywhere leaves something whole:
 | 1:15 | **task 2** — one guardrail, before the call, and what it saves |
 | 2:15 | break |
 | 2:25 | **task 3** — the same again with a file |
-| 3:00 | where this goes: evaluation, fraud detection, tools, memory, reading across documents |
+| 3:00 | where this goes: evaluation, reading across documents, tools, memory |
 
 That is 1 to 3 done properly. Tasks 4 to 7 are read rather than written, and left for afterwards —
 the repository is theirs to finish in their own time, and the briefs assume no one is standing over
@@ -79,15 +78,16 @@ shape of. Every folder has a `README.md` saying which files are yours and which 
 into.
 
 What it reaches into stays outside, and that is deliberate. `Case` and `UploadedDocument` and their
-stores are used by six of the eight tasks each — they are what the application *is*, and they would
+stores are used by most of the seven tasks each — they are what the application *is*, and they would
 exist if there were no workshop. An agent is what a task *is*. Moving the domain inside the tasks
-would mean task 6 depending on task 1 for the idea of a case, which is not what it depends on at
+would mean task 5 depending on task 1 for the idea of a case, which is not what it depends on at
 all.
 
 The one rule the layout does enforce: **a task may depend only on earlier tasks.** There are no
 exceptions, which is why task 2 contributes its guardrail to task 1's agent rather than task 1
-fetching it, and why task 5 listens for a document being stored rather than task 3 calling it.
-Both are better designs than the ones they replaced, and neither was chosen for tidiness.
+fetching it, and why task 5's summary is handed to task 6's chat rather than the chat reaching back
+for documents. Both are better designs than the ones they replaced, and neither was chosen for
+tidiness.
 
 ## The finish line
 

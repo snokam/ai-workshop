@@ -1,5 +1,5 @@
 
-import type { CaseStatus, FraudScreening, MatchConfidence, Quality, ToolCall } from '../api'
+import type { CaseStatus, MatchConfidence, Quality, ToolCall } from '../api'
 
 export const QUALITY_LABEL: Record<Quality, string> = {
   GOOD: 'Looks good',
@@ -17,14 +17,6 @@ export const CONFIDENCE_LABEL: Record<MatchConfidence, string> = {
   HIGH: 'confident',
   MEDIUM: 'fairly sure',
   LOW: 'unsure',
-}
-
-export const INDICATOR_LABEL: Record<FraudScreening['indicators'][number]['kind'], string> = {
-  ALREADY_UPLOADED: 'Sent before',
-  EDITED_IN_SOFTWARE: 'Touched by an editor',
-  NO_CAMERA_ORIGIN: 'No camera metadata',
-  DATE_OUT_OF_PLACE: 'Capture date',
-  ADDRESSED_THE_AGENT: 'Tried to instruct the agent',
 }
 
 export const TOOL_LABEL: Record<string, string> = {

@@ -51,30 +51,34 @@ class GuardrailEvaluation {
             return;
         }
 
+        // Every probe is run first and the table printed afterwards. The injection guardrail logs a
+        // warning on each refusal, by design, and those lines land in the middle of a table that is
+        // being printed as it goes — which makes the one artefact of this exercise unreadable.
+        List<String> rows = new ArrayList<>();
         List<String> wrong = new ArrayList<>();
         int held = 0;
-
-        System.out.printf("%n%-58s %-24s %-24s %s%n", "typed into the box", "expected", "happened", "");
-        System.out.println("-".repeat(118));
 
         for (GuardrailProbe probe : GuardrailProbe.all()) {
             Expected happened = whatHappensTo(probe.text());
             boolean agreed = happened == probe.expected();
             held += agreed ? 1 : 0;
 
-            System.out.printf(
-                    "%-58s %-24s %-24s %s%n",
+            rows.add("%-58s %-24s %-24s %s".formatted(
                     shortened(probe.text()),
                     probe.expected(),
                     happened,
-                    agreed ? "" : "   <-- " + howItWentWrong(probe.expected(), happened));
+                    agreed ? "" : "   <-- " + howItWentWrong(probe.expected(), happened)));
 
             if (!agreed) {
-                wrong.add("%s%n    expected %s, got %s%n    the label says: %s%n    %s"
-                        .formatted(probe.text(), probe.expected(), happened, probe.why(),
+                wrong.add("%s%n    expected %s, got %s%n    %s"
+                        .formatted(probe.text(), probe.expected(), happened,
                                 howItWentWrong(probe.expected(), happened)));
             }
         }
+
+        System.out.printf("%n%-58s %-24s %-24s %s%n", "typed into the box", "expected", "happened", "");
+        System.out.println("-".repeat(118));
+        rows.forEach(System.out::println);
 
         System.out.printf("%n%d of %d behaved.%n", held, GuardrailProbe.all().size());
         if (!wrong.isEmpty()) {

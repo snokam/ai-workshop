@@ -256,10 +256,10 @@ anything requiring a live model call.
 
 - **Streaming.** Every model call in this application blocks, and this one does too. It is the change
   most likely to be wanted next.
-- **Prompt injection and fraud.** A Document is Claimant-supplied text that reaches a model, and the
+- **Prompt injection.** A Document is Claimant-supplied text that reaches a model, and the
   reader agent relays it. The mitigation here is structural — the agent cannot write, only propose,
   and a Case Handler confirms everything — and that is the whole of what this spec covers. Injection
-  and fraud handling are being worked separately.
+  handling of it is worked separately.
 - **Guardrails.** No input or output guardrail is added.
 - **Cross-Case reach.** No tool spans Cases, and there is no desk-level assistant.
 - **Recording a decision.** Deciding a Case stays entirely a Case Handler's act, with no agent

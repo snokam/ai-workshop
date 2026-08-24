@@ -52,7 +52,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * <ul>
  *   <li><b>structured output</b> — the classifier answers into a record. Task 1 onwards.
  *   <li><b>a file it will read</b> — an image sent as inline data. Task 3 onwards.
- *   <li><b>a tool it will call</b> — not merely can, but does, unprompted. Task 7.
+ *   <li><b>a tool it will call</b> — not merely can, but does, unprompted. Task 6.
  * </ul>
  *
  * <p>A model missing any of the three is not a slower workshop, it is a different one.
@@ -130,7 +130,7 @@ class ModelComparison {
                 """
 
                 A model that fails "structured" cannot do task 1, so nothing after it runs either.
-                "reads file" is task 2 onwards, "calls tool" is task 6.
+                "reads file" is task 3 onwards, "calls tool" is task 6.
 
                 Timing is one call each and proves nothing about a room of twenty people, but a model
                 three times slower than the default turns a sixty-minute task into something else.

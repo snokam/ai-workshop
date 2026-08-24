@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { openCase, reviewDocument } from "../../api";
 import type { CaseDetail } from "../../api";
-import { CaseChat } from "../../components/task_7_advisor_chat/CaseChat";
+import { CaseChat } from "../../components/task_6_advisor_chat/CaseChat";
 import { Checklist } from "../../components/task_1_first_agent/Checklist";
 import { DocumentCard } from "../../components/task_3_document_agent/DocumentCard";
 import {
@@ -82,7 +82,7 @@ export function Case() {
           />
 
           <TaskGate
-            task="CASE_SUMMARY"
+            task="CLAIM_SUMMARY"
             instead="This is what every document on the case says when read together, which is its own agent and has not been written yet."
           >
             <section className="agent-prose">
@@ -92,32 +92,24 @@ export function Case() {
           </TaskGate>
 
           <TaskGate
-            task="FRAUD_DETECTION"
-            instead="Nothing below has been screened. The checks that catch a duplicate upload, an edited photo or a figure that does not add up are plain Java after the answer, and you have not written them yet."
+            task="DOCUMENT_AGENT"
+            instead="Anything listed below was read by task 3's agent. Until that is written no documents reach a case, so this list stays empty."
           >
-            <TaskGate
-              task="DOCUMENT_AGENT"
-              instead="Anything listed below was read by task 3's agent. Until that is written no documents reach a case, so this list stays empty."
-            >
-              <section className="documents">
-                {detail.documents.length === 0 && (
-                  <p className="empty">Nothing uploaded to this case yet.</p>
-                )}
-                {detail.documents.map((doc) => (
-                  <DocumentCard
-                    key={doc.id}
-                    doc={doc}
-                    preview={previewOf(doc)}
-                    standing={standingOf(doc, detail)}
-                    blocking={detail.blockedDocumentIds.includes(doc.id)}
-                    screening={detail.screenings.find(
-                      (s) => s.documentId === doc.id,
-                    )}
-                    onReview={() => void review(doc.id)}
-                  />
-                ))}
-              </section>
-            </TaskGate>
+            <section className="documents">
+              {detail.documents.length === 0 && (
+                <p className="empty">Nothing uploaded to this case yet.</p>
+              )}
+              {detail.documents.map((doc) => (
+                <DocumentCard
+                  key={doc.id}
+                  doc={doc}
+                  preview={previewOf(doc)}
+                  standing={standingOf(doc, detail)}
+                  blocking={detail.blockedDocumentIds.includes(doc.id)}
+                  onReview={() => void review(doc.id)}
+                />
+              ))}
+            </section>
           </TaskGate>
         </div>
 

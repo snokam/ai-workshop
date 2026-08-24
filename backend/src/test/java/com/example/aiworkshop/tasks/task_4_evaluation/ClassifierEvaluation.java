@@ -65,13 +65,12 @@ class ClassifierEvaluation {
                     same ? "" : "   <-- disagrees");
 
             if (!same) {
-                disagreements.add("%s%n    expected %s, answered %s (%s)%n    the label says: %s%n    the agent says: %s"
+                disagreements.add("%s%n    expected %s, answered %s (%s)%n    the agent says: %s"
                         .formatted(
                                 example.description(),
                                 example.expected(),
                                 answer.type(),
                                 answer.confidence(),
-                                example.why(),
                                 answer.rationale()));
             }
         }

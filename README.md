@@ -99,10 +99,9 @@ agent you write, the records it answers in, what is kept, and the endpoints the 
 | `task_2_guardrails/` | one guardrail, before the call — refusing text nobody could open a case from |
 | `task_3_document_agent/` | the agent that reads an uploaded PDF or photo |
 | `task_4_evaluation/` | the two sets the evaluations run over: `./mvnw test -Pevaluate` |
-| `task_5_fraud_detection/` | plain Java after the answer: what the model cannot know |
-| `task_6_case_summary/` | the expensive agent, across every document on a case |
-| `task_7_advisor_chat/` | tools and memory — the agent that suggests and never writes |
-| `task_8_create_case_chat/` | an interview instead of a form |
+| `task_5_claim_summary/` | the expensive agent, across every document on a case |
+| `task_6_advisor_chat/` | tools and memory — the agent that suggests and never writes |
+| `task_7_create_case_chat/` | an interview instead of a form |
 
 Inside a task the shape is always the same:
 
@@ -140,21 +139,19 @@ and the agent starts filling it in. They all write in English; see
 |---|---|
 | `task_1_first_agent/agent/CaseTypeClassifier.java` | a sentence in, a case type out |
 | `task_3_document_agent/agent/DocumentAnalyzer.java` | the file itself, sent as inline data |
-| `task_6_case_summary/agent/CaseSummarizer.java` | the expensive one: every document, in one prompt |
-| `task_6_case_summary/agent/CaseStatusWriter.java` | the cheap one: derived facts in, one situation report out |
-| `task_7_advisor_chat/agent/CaseChatAgent.java` | memory id, tools, and a `Result` so tool calls survive |
-| `task_7_advisor_chat/agent/DocumentReader.java` | a second agent, given the file and no case context at all |
-| `task_8_create_case_chat/agent/CaseIntakeInterviewer.java` | asks until it has enough to open a case |
+| `task_5_claim_summary/agent/CaseSummarizer.java` | the expensive one: every document, in one prompt |
+| `task_5_claim_summary/agent/CaseStatusWriter.java` | the cheap one: derived facts in, one situation report out |
+| `task_6_advisor_chat/agent/CaseChatAgent.java` | memory id, tools, and a `Result` so tool calls survive |
+| `task_6_advisor_chat/agent/DocumentReader.java` | a second agent, given the file and no case context at all |
+| `task_7_create_case_chat/agent/CaseIntakeInterviewer.java` | asks until it has enough to open a case |
 
-An eighth lives in task 6, `SummaryJudge`, and is not part of the application. It is a model asked
+An eighth lives in task 5, `SummaryJudge`, and is not part of the application. It is a model asked
 whether another model's answer holds up, which is the only way to score prose at any volume and the
 technique in here most easily used badly.
 
 Nothing in tasks 3 or 4 calls a model. Guardrails run around the call and the checks run after it,
 on bytes already in hand — no credentials, no network. The three layers are shown end to end in
-[the walkthrough](./docs/guardrails-walkthrough.md), with files to drag in under
-[`assets/`](./assets). Who is allowed to see a fraud signal is
-[ADR 0005](./docs/adr/0005-fraud-signals-are-handler-side.md).
+[`assets/`](./assets).
 
 ### The frontend
 

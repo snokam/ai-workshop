@@ -52,8 +52,6 @@ class CasesController {
 
     record NewCaseRequest(String description) {}
 
-
-
     @ExceptionHandler({CaseDesk.UnknownCaseException.class, CaseDesk.UnknownProposalException.class})
     ResponseEntity<Map<String, String>> notFound(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));

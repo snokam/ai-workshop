@@ -55,8 +55,8 @@ export function Layout({ children }: { children: ReactNode }) {
             links={[
               { href: '/', text: 'Report a case (task 1, 2)' },
               { href: '/cases', text: 'My cases (task 1, 3)' },
-              { href: '/casehandler', text: 'Case handler (task 3, 5, 6, 7)' },
-              { href: '/chat', text: 'Report with AI chat (task 8)' },
+              { href: '/casehandler', text: 'Case handler (task 3, 5, 6)' },
+              { href: '/chat', text: 'Report with AI chat (task 7)' },
             ]}
           />
         </div>

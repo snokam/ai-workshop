@@ -74,7 +74,7 @@ The three left to you are the ones with a decision in them:
 |---|---|
 | `fields` | the model chooses what to extract. Say whose words the names should be in, and what to do with a document that has nothing worth extracting — say nothing about the empty case and you get invented facts, because answering is what a model is for. |
 | `matchedRequiredDocument` | the list it may choose from is rendered in as `{{requiredDocuments}}`. Say the answer must be copied from it exactly, and say what it should be when none of them fit. A receipt for the wrong thing is still a real document. |
-| `manipulationAttempt` | text in the file addressed to the agent rather than to a person. Say what to record about it **and** what to do about it — two different instructions. Task 5's `AddressedTheAgentCheck` reads this. |
+| `manipulationAttempt` | text in the file addressed to the agent rather than to a person. Say what to record about it **and** what to do about it — two different instructions. |
 
 Change one, upload `assets/receipt.png`, and watch that field on the card change with nothing else
 touched: no parser, no mapping, no second place to update. `DocumentAnalysisTest` is red until all
@@ -101,7 +101,7 @@ be helpful and include it.
 
 There is no cache. The same file uploaded twice is read twice, which is not what you would ship —
 but a cache in front of those two lines is a cache in front of the only thing here worth reading.
-The content hash is still recorded, and task 5 uses it to notice the same file arriving twice.
+The content hash is recorded on the document either way, so a duplicate stays recognisable.
 
 ## How you know it worked
 
@@ -132,4 +132,3 @@ everything the agent *writes* is in English. That split is deliberate; see
 - **Add a component to `DocumentAnalysis`** — whether the document is signed, say — and watch it get
   filled in with no other change.
 - **Ask for the same file twice** and compare the two answers. Then read why intake hashes the bytes
-  before it calls the model at all, in [task 5](./task_5_fraud_detection.md).

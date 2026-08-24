@@ -25,23 +25,6 @@ export interface DocumentAnalysis {
   quality: QualityAssessment
 }
 
-export interface FraudIndicator {
-  kind:
-    | 'ALREADY_UPLOADED'
-    | 'EDITED_IN_SOFTWARE'
-    | 'NO_CAMERA_ORIGIN'
-    | 'DATE_OUT_OF_PLACE'
-    | 'ADDRESSED_THE_AGENT'
-  weight: 'NOTE' | 'CONCERN' | 'STRONG'
-  detail: string
-  evidence: string[]
-}
-
-export interface FraudScreening {
-  documentId: string
-  indicators: FraudIndicator[]
-}
-
 export interface UploadedDocument {
   id: string
   caseId: string
@@ -116,7 +99,6 @@ export interface CaseDetail {
   blockedDocumentIds: string[]
   summary: string
   statusNote: string
-  screenings: FraudScreening[]
   documentRequests: DocumentRequest[]
   proposals: ProposalCard[]
   conversation: ChatTurn[]

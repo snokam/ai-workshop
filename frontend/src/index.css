@@ -360,21 +360,6 @@ header p {
   margin: 0 0 0.75rem;
 }
 
-.screening {
-  margin: 0.9rem 0 0;
-  padding-top: 0.75rem;
-  border-top: 1px dashed var(--border);
-}
-
-.screening h3 {
-  margin: 0 0 0.5rem;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
 .indicator {
   margin: 0 0 0.5rem;
   padding: 0.55rem 0.7rem;

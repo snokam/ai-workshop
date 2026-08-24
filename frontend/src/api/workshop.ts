@@ -5,9 +5,8 @@ export type TaskKey =
   | 'FIRST_AGENT'
   | 'DOCUMENT_AGENT'
   | 'GUARDRAILS'
-  | 'FRAUD_DETECTION'
   | 'ADVISOR_CHAT'
-  | 'CASE_SUMMARY'
+  | 'CLAIM_SUMMARY'
   | 'CREATE_CASE_CHAT'
 
 export interface TaskState {
