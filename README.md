@@ -22,37 +22,6 @@ file to open. Seven exercises, in order, each one an agent or the thing that kee
 | 6 | [Advisor chat with tools](./backend/src/main/java/com/example/aiworkshop/tasks/task_6_advisor_chat_with_tools/README.md) | tool descriptions that decide when a tool is called, and the call that hands them over |
 | 7 | [File a claim with a streaming chat](./backend/src/main/java/com/example/aiworkshop/tasks/task_7_streaming_file_claim_chat/README.md) | an intake agent that may ask before it commits, and its answer arriving as it is written |
 
-Each task's README sits in its own folder, beside the code, and names the files to open in order.
-The `TODO` at the top of each of those files has the steps.
-
-The first four build and check a single agent: write one, put a guardrail in front of it, hand it a
-file, then ask whether any of it works. Tasks 5 to 7 are the claim itself — what happens once
-documents start arriving, and the agents a handler needs once there is something to handle.
-
-Five comes before six because the advisor chat is shown the summary the claim summary writes. Seven
-stands beside task 1 rather than after it: the quick report screen keeps working untouched.
-
-### Three hours
-
-The seven add up to about five hours of writing, which is more than a session holds. They are
-ordered so that stopping anywhere leaves something whole:
-
-| | |
-|---|---|
-| 0:00 | set up, and run both halves with nothing written |
-| 0:15 | **task 1** — the model, the agent, and the claim its answer opens |
-| 1:15 | **task 2** — two guardrails, before the call, and what they save |
-| 2:15 | break |
-| 2:25 | **task 3** — the same again with a file |
-| 3:00 | where this goes: evaluation, reading across documents, tools, memory |
-
-That is 1 to 3 done properly. Tasks 4 to 7 are read rather than written, and left for afterwards —
-the repository is theirs to finish in their own time.
-
-Do not try to fit more in. Tasks 1 and 2 are where the ideas are: an interface that is an agent, a
-record that is the schema, a file that goes to the model as itself, and the moment a model's answer
-becomes the shape of someone's claim.
-
 ## Layout
 
 ```
