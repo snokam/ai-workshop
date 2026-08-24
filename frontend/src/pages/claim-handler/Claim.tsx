@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { openClaim, reviewDocument } from "../../api";
 import type { ClaimDetail } from "../../api";
-import { ClaimChat } from "../../components/task_6_advisor_chat_with_tools/ClaimChat";
+import { ClaimChat } from "../../components/task_6_advisor_chat_with_tools_and_memory/ClaimChat";
 import { Checklist } from "../../components/task_1_first_agent/Checklist";
 import { DocumentCard } from "../../components/task_3_document_agent/DocumentCard";
 import {
@@ -82,7 +82,7 @@ export function Claim() {
           />
 
           <TaskGate
-            task="CLAIM_SUMMARY_USING_MEMORY"
+            task="CLAIM_SUMMARY_CHOOSING_MODELS"
             instead="This is what every document on the claim says when read together, which is its own agent and has not been written yet."
           >
             <section className="agent-prose">

@@ -10,6 +10,7 @@ public record VertexAiProperties(
         String project,
         String location,
         String modelName,
+        @DefaultValue("gemini-2.5-flash-lite") String cheaperModelName,
         @DefaultValue("0.2") Float temperature,
         @DefaultValue("1024") Integer maxOutputTokens,
         @DefaultValue("3") Integer maxRetries,

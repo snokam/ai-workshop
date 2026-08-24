@@ -3,8 +3,8 @@ package com.example.aiworkshop.workshop;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.ClaimTypeClassifier;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.DocumentAnalysis;
 import com.example.aiworkshop.tasks.task_2_guardrails.Guardrails;
-import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.agent.ClaimChatTools;
-import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.agent.SummaryConfig;
+import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools_and_memory.agent.ClaimChatTools;
+import com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models.agent.SummaryConfig;
 import com.example.aiworkshop.tasks.task_4_evaluation.GuardrailProbe;
 import com.example.aiworkshop.tasks.task_4_evaluation.LabelledClaim;
 import com.example.aiworkshop.tasks.task_7_streaming_file_claim_chat.InterviewNarration;
@@ -42,10 +42,11 @@ public class TaskProgress {
             // call that hands them over. Only the first can be read without building the agent, and an
             // agent wired without tools is not broken — it answers, it just never looks anything up,
             // which is the point of part 2 and something you see rather than something a gate reports.
-            case ADVISOR_CHAT_WITH_TOOLS -> UnfinishedTasks.toolDescriptionsWritten(ClaimChatTools.class);
-            // Task 5's prompts and its rubric are given; the exercise is the memory, and asking
-            // whether it exists is free — the provider is a lambda, not a call to anything.
-            case CLAIM_SUMMARY_USING_MEMORY -> UnfinishedTasks.written(SummaryConfig::summaryMemory);
+            case ADVISOR_CHAT_WITH_TOOLS_AND_MEMORY -> UnfinishedTasks.toolDescriptionsWritten(ClaimChatTools.class);
+            // Task 5's prompts and its rubric are given; what is written is which model does which
+            // job, and asking costs nothing — modelFor only chooses between two it was handed.
+            case CLAIM_SUMMARY_CHOOSING_MODELS ->
+                    UnfinishedTasks.written(() -> SummaryConfig.modelFor(SummaryConfig.Job.READING_EVERY_DOCUMENT, null, null));
             // Task 7's prompts are both given. What is written is the join between a TokenStream
             // and an open HTTP response, and asking whether it exists costs nothing: narrate()
             // returns before a single token has arrived, which is the whole point of it.

@@ -6,8 +6,8 @@ import com.example.aiworkshop.tasks.task_1_first_agent.agent.ClaimTypeClassifier
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiConfig;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_2_guardrails.Guardrails;
-import com.example.aiworkshop.tasks.task_5_claim_summary_using_memory.agent.ClaimSummarizer;
-import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.agent.ClaimChatAgent;
+import com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models.agent.ClaimSummarizer;
+import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools_and_memory.agent.ClaimChatAgent;
 import com.example.aiworkshop.tasks.task_7_streaming_file_claim_chat.agent.ClaimIntakeInterviewer;
 
 public enum WorkshopTask {
@@ -34,18 +34,18 @@ public enum WorkshopTask {
             "tasks/task_4_evaluation/",
             "Build the two sets, then run ./mvnw test -Pevaluate and read what it says about the"
                     + " classifier from task 1 and the guardrails from task 2."),
-    CLAIM_SUMMARY_USING_MEMORY(
+    CLAIM_SUMMARY_CHOOSING_MODELS(
             5,
-            "Claim summary using memory",
-            "tasks/task_5_claim_summary_using_memory/agent/SummaryConfig.java",
-            "Give the summariser a memory, so a handler coming back to a claim is told what changed"
-                    + " rather than the same thing again."),
-    ADVISOR_CHAT_WITH_TOOLS(
+            "Claim summary, and which model each job needs",
+            "tasks/task_5_claim_summary_choosing_models/agent/SummaryConfig.java",
+            "Two agents, two jobs of very different difficulty. Decide which model each one needs,"
+                    + " and read what the calls cost before you do."),
+    ADVISOR_CHAT_WITH_TOOLS_AND_MEMORY(
             6,
-            "Advisor chat with tools",
-            "tasks/task_6_advisor_chat_with_tools/agent/ClaimChatTools.java",
-            "Describe two of the tools so the model knows when to reach for them, then hand the tools"
-                    + " to the agent."),
+            "Advisor chat with tools and memory",
+            "tasks/task_6_advisor_chat_with_tools_and_memory/agent/ClaimChatTools.java",
+            "Describe two of the tools so the model knows when to reach for them, hand the tools to the"
+                    + " agent, and give each claim its own conversation."),
     STREAMING_FILE_CLAIM_CHAT(
             7,
             "File a claim with a streaming chat",

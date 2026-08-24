@@ -3,6 +3,7 @@ package com.example.aiworkshop.tasks.task_1_first_agent.agent;
 import com.example.aiworkshop.workshop.UnfinishedTasks;
 import com.example.aiworkshop.workshop.WorkshopTask;
 import dev.langchain4j.model.chat.ChatModel;
+import org.springframework.beans.factory.annotation.Qualifier;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiChatModel;
 import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiStreamingChatModel;
@@ -10,12 +11,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
 @EnableConfigurationProperties(VertexAiProperties.class)
 @ConditionalOnProperty(name = "aiworkshop.model.provider", havingValue = "vertex", matchIfMissing = true)
 public class VertexAiConfig {
     @Bean(destroyMethod = "close")
+    @Primary
     ChatModel chatModel(VertexAiProperties properties) {
         // TODO — task 1, part 1. Build the model.
         //
@@ -34,6 +37,25 @@ public class VertexAiConfig {
         // Nothing else in the workshop works until this returns a model.
 
         return UnfinishedTasks.notWrittenYet(ChatModel.class, WorkshopTask.FIRST_AGENT);
+    }
+
+    /**
+     * A smaller, cheaper, faster model. Given — task 5 decides what to do with it.
+     *
+     * <p>Published here beside the good one because the connection belongs to task 1 wherever it is
+     * used. Nothing is on it until task 5 puts something there.
+     */
+    @Bean(destroyMethod = "close")
+    @Qualifier("cheaper")
+    ChatModel cheaperChatModel(VertexAiProperties properties) {
+        return VertexAiGeminiChatModel.builder()
+                .project(properties.projectId())
+                .location(properties.location())
+                .modelName(properties.cheaperModelName())
+                .temperature(properties.temperature())
+                .maxOutputTokens(properties.maxOutputTokens())
+                .maxRetries(properties.maxRetries())
+                .build();
     }
 
     /**

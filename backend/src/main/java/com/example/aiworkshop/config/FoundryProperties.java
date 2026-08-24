@@ -9,6 +9,7 @@ public record FoundryProperties(
         String endpoint,
         String apiKey,
         String deploymentName,
+        String cheaperDeploymentName,
         Double temperature,
         @DefaultValue("1024") Integer maxCompletionTokens,
         @DefaultValue("60s") Duration timeout,

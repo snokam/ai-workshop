@@ -41,8 +41,7 @@ class VertexProjectTest {
     }
 
     private static VertexAiProperties propertiesFor(String project) {
-        return new VertexAiProperties(
-                project, "europe-west4", "gemini-2.5-flash", 0.2f, 16384, 3, false, false);
+        return new VertexAiProperties(project, "europe-west4", "gemini-2.5-flash", "gemini-2.5-flash-lite", 0.2f, 16384, 3, false, false);
     }
 
     private static boolean applicationDefaultCredentialsExist() {
