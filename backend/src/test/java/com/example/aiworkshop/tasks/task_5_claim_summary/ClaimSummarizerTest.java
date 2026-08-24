@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.V;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -40,10 +41,17 @@ class ClaimSummarizerTest {
     void readsTheReadingsRatherThanTheFiles() {
         Method summarise = summarise();
 
-        assertThat(summarise.getParameters()[1].getParameterizedType().getTypeName())
-                .describedAs("the summariser is given what task 2 already worked out, not the files again")
-                .contains(DocumentForSummary.class.getName())
-                .contains(List.class.getName());
-        assertThat(summarise.getParameters()[1].getAnnotation(V.class)).isNotNull();
+        // By type rather than by position: the memory id was added in front of these later, and a
+        // test that counts parameters breaks on a change that is not about what it is testing.
+        Parameter documents = Arrays.stream(summarise.getParameters())
+                .filter(p -> p.getParameterizedType().getTypeName().contains(DocumentForSummary.class.getName()))
+                .findFirst()
+                .orElse(null);
+
+        assertThat(documents)
+                .describedAs("the summariser is given what task 3 already worked out, not the files again")
+                .isNotNull();
+        assertThat(documents.getParameterizedType().getTypeName()).contains(List.class.getName());
+        assertThat(documents.getAnnotation(V.class)).isNotNull();
     }
 }
