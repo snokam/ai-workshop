@@ -33,8 +33,8 @@ public enum WorkshopTask {
             4,
             "How would you know?",
             "tasks/task_4_evaluation/",
-            "Build the sets four evaluations run over, then read what they say: a category is a"
-                    + " comparison, facts are coverage, an attack set has a right answer."),
+            "Build the two sets, then run ./mvnw test -Pevaluate and read what it says about the"
+                    + " classifier from task 1 and the guardrails from task 2."),
     FRAUD_DETECTION(
             5,
             "Case: Fraud detection",

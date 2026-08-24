@@ -29,6 +29,8 @@
     <properties>
         <java.version>25</java.version>
         <langchain4j.version>1.18.1</langchain4j.version>
+        <test.groups.excluded>evaluation,portability</test.groups.excluded>
+        <test.groups.included/>
     </properties>
 
     <dependencyManagement>
@@ -94,7 +96,74 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <!--
+                The evaluations call a real model, so they are kept out of the ordinary test run:
+                `./mvnw test` needs no credentials and costs nothing. They are tagged rather than
+                @Disabled so that one command can turn them on, and the tags are driven by properties
+                because a profile overriding a plugin's <excludedGroups> in place does not take.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludedGroups>${test.groups.excluded}</excludedGroups>
+                    <groups>${test.groups.included}</groups>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!--
+            ./mvnw test -Pevaluate — task 4's two evaluations, and only those.
+
+            The <includes> matters as much as the tag: surefire's default patterns are *Test / Tests
+            / TestCase, so a class called SomethingEvaluation is never even scanned. Widening the
+            scan and letting the tag do the selecting is what makes one command enough.
+        -->
+        <profile>
+            <id>evaluate</id>
+            <properties>
+                <test.groups.excluded>none</test.groups.excluded>
+                <test.groups.included>evaluation</test.groups.included>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- ./mvnw test -Pcheck-models — will the workshop run on a model other than the default? -->
+        <profile>
+            <id>check-models</id>
+            <properties>
+                <test.groups.excluded>none</test.groups.excluded>
+                <test.groups.included>portability</test.groups.included>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

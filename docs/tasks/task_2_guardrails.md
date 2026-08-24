@@ -110,9 +110,9 @@ refused here is told nothing that helps them, which is a reason to bias the chec
 things through, and a reason to read the log.
 
 **And the honest limit.** A model deciding whether text is manipulative is still a model reading
-attacker-controlled text. This raises the cost of an attack; it does not end it. `Attack.java` in
-task 4 holds four worked examples — three give orders and the fourth just asks nicely, and the
-fourth is the one that gets through.
+attacker-controlled text. This raises the cost of an attack; it does not end it. Task 4 is where you
+find out how far it holds: you write the probes, and `./mvnw test -Pevaluate` runs both guardrails
+over them in the real order.
 
 Two things the prompt has to get right, and both are easier to see once it is wrong:
 

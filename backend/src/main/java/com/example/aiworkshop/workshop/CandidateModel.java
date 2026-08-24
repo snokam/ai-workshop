@@ -1,13 +1,13 @@
-package com.example.aiworkshop.tasks.task_4_evaluation;
+package com.example.aiworkshop.workshop;
 
 import java.util.List;
 
 /**
  * A model somebody might run this workshop on.
  *
- * <p>The other four evaluations ask how well one model does the job. This one asks a different
- * question — whether the job can be done on a given model at all — and it is the question a
- * facilitator has the day before, when someone says they only have access to a different one.
+ * <p>Task 4's evaluations ask how well one model does the job. This asks a different question —
+ * whether the job can be done on a given model at all — and it is the one a facilitator has the
+ * day before, when somebody says they only have access to a different one.
  *
  * <p>Three capabilities decide it, and the workshop stops dead without any of them: an answer that
  * parses into a record, a file the model will look at, and a tool it will actually call. A model

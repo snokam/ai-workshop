@@ -59,8 +59,9 @@ public interface InjectionCheck {
               - When in doubt, say false. A false positive here refuses a real claim and the person is
                 told nothing useful, because the refusal deliberately explains nothing.
 
-            Attack.java in task 4 has four worked examples, written as they would arrive. Three give
-            orders and the fourth just asks nicely, and the fourth is the hard one.
+            Task 4 is where you measure this. GuardrailProbe there has three worked examples and you
+            add the rest — including the hard one, a claim that mentions instructions without
+            giving any.
             """)
     @UserMessage(
             """

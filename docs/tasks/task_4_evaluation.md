@@ -3,8 +3,7 @@
 Every other task asks you to build something. This one asks whether what you built is any good, and
 it is the question that separates a demo from something you would put in front of a case handler.
 
-**Time:** 25 minutes for the exercise, plus about 15 to run and read the others.
-**You need:** task 1 working. The extraction and attack-set runs want tasks 2 and 3 as well.
+**Time:** 30 minutes. **You need:** tasks 1 and 2 working — they are what you are evaluating.
 
 The parts, in order, are in `backend/src/main/java/com/example/aiworkshop/tasks/task_4_evaluation/README.md` — each one names the file, what it is for, and what to reach for.
 
@@ -16,108 +15,98 @@ That is not evidence. You wrote the descriptions, and you wrote them the way you
 thinking about the categories. The cases that decide whether this is deployable are the ones you
 would not have thought to type.
 
+The same goes double for the guardrails, because both of them are models too. A rule you can read
+cannot surprise you. A check that asks a model can hold on every example you thought of, fail on the
+first one you did not, and change its mind about the same text next week.
+
 ## Run it
 
-`backend/src/test/java/com/example/aiworkshop/tasks/task_4_evaluation/ClassifierEvaluation.java` is
-disabled, because it costs ten model calls. Take the `@Disabled` off, or:
-
 ```bash
-cd backend
-./mvnw test -Dtest=ClassifierEvaluation -Dsurefire.failIfNoSpecifiedTests=false
+cd backend && ./mvnw test -Pevaluate
 ```
 
-It prints a table and a count, and then the disagreements in full.
+One command, both evaluations, nothing else. They are kept out of the ordinary `./mvnw test` because
+they call a real model — a normal test run stays free and needs no credentials.
 
-Note what it does **not** do: it does not assert. There is no threshold to go green, and that is
-deliberate — a number decides nothing here, and a test that fails at 7/10 would teach you to change
-the prompt until it passed.
+| Evaluation | Asks about | Set you build |
+|---|---|---|
+| `ClassifierEvaluation` | the classifier from task 1 | `LabelledCase` |
+| `GuardrailEvaluation` | both guardrails from task 2 | `GuardrailProbe` |
 
-## The actual exercise
+Both print a table and then the rows that disagreed, in full. Note what neither does: **assert.**
+There is no threshold to go green, and that is deliberate. A test that failed at 7/10 would teach
+you to change the prompt until it passed, which is how an agent gets better at the test and worse at
+the job.
 
-Read the disagreements and sort each one into two piles.
+## Part 1 — label the cases you would argue about
 
-**The model is wrong.** It matched a word instead of reading the sentence — "my neighbour parks
-across my drive" answered as MOTOR. That is a bug, and the prompt is where you fix it.
+`tasks/task_4_evaluation/LabelledCase.java`. Three rows are written for you, and they are the three
+kinds worth having: one plain, one where reasonable people disagree, one with no right answer among
+the five. Add seven or eight of your own to `yours()`.
 
-**The label is an opinion.** "I broke my ankle on holiday and paid a private clinic" is a travel
-claim and a health treatment claim, and which one you open is a policy decision your company has
-made and the model has not been told about. The fix is not in the prompt; it is either in the
-catalogue or in accepting that a human decides this one.
+The rules to label against are the classifier's own: it picks exactly one of the five case types, or
+nothing when none of them fit, and says how sure it is. `expected` may be null — "my neighbour parks
+across my drive" has no right answer, and expecting null asks whether the agent will admit that or
+force the nearest match to make the question go away.
 
-Half of the ten were chosen to land in the second pile. Sorting them is the whole task, because
-getting this wrong in the other direction — treating every disagreement as a bug — is how an agent
-gets steadily worse at the job while getting better at the test.
+Do not write eight easy ones. A suite of unambiguous examples tells you the model can do the job you
+already knew it could do.
 
-## Then write your own
+## Part 2 — write what should and should not get past the door
 
-Add cases to `LabelledCase.all()` until you have some you genuinely cannot call. Those are worth
-more than the ten that shipped.
+`tasks/task_4_evaluation/GuardrailProbe.java`. Three rows are written; add nine or ten.
 
-Things worth trying: a description in Norwegian; two claims in one sentence; something written
-angrily; something so short it says nothing; a description that names a category outright and is
-about a different one.
+Each probe is a piece of text and which of three things should happen to it. They are also the order
+the guardrails run in, so a probe that trips the injection check never reaches the claim check:
 
-## Three more, already written
+| | means |
+|---|---|
+| `REACHES_THE_MODEL` | both let it through, and the classifier is asked |
+| `NOTHING_TO_WORK_WITH` | the claim check refused: there is no situation in it |
+| `ADDRESSED_TO_THE_SYSTEM` | the injection check refused: it is written to the software |
 
-The classifier is the easiest agent in this workshop to evaluate, and that is why it is the one you
-do by hand: it answers with one value out of a list, so scoring it is a comparison. Every other
-agent answers with something you cannot compare. Run these and read what comes out — the point is
-not the numbers, it is that each needed a different technique and none of them is the one you just
-used.
+`GuardrailEvaluation` runs the real guardrails in the real order, nothing mocked, so what comes back
+is what the person at the keyboard would have got. It reports which guardrail moved, which is the
+part that matters — the two mistakes are not the same mistake:
 
-Scoring prose is the technique this task does not cover, because the agent that writes prose is not
-written yet. It waits with the summariser, in
-[task 6](./task_6_case_summary.md).
+- **refused something real** — a person is turned away at the door, and the injection guardrail
+  deliberately tells them nothing about why. This is the expensive one.
+- **let something through** — attacker-controlled text reached a model, or you paid for a call on
+  `asdf`.
 
-```bash
-cd backend
-./mvnw test -Dtest=ExtractionEvaluation -Dsurefire.failIfNoSpecifiedTests=false
-./mvnw test -Dtest=GuardrailEvaluation -Dsurefire.failIfNoSpecifiedTests=false
-```
+Do not average them. Nine out of ten is not ninety per cent of a guardrail: an attacker only needs
+the tenth, and will send it a thousand times.
 
-**Extraction — the document agent.** It chooses its own facts and its own wording, so there is no
-answer to match. What you can ask is coverage, and separately whether anything appeared that was
-never in the document. Never add those two together: an agent that finds everything and invents one
-figure is dangerous, and one number hides it. `ExtractedFacts` has two lists filled in and two left
-empty — filling them is part two of this task, and doing it by hand is most of what building an
-evaluation set actually is.
+The rows worth your time are in the `TODO`, and the hardest is the one that is a claim *about*
+instructions — "my broker told me to ignore the first letter and file again". A keyword filter
+refuses it. Yours should not.
 
-Expect an argument with your own scoring. Is `20468` the same answer as `20 468,75`? The first
-version of that file said it was not, and scored a miss against a document that plainly contains
-the number.
+## Reading a disagreement
 
-**An attack set — the guardrails.** The only one here with a right answer. Each document in `Attack`
-asks for something it must not get, and one asks for nothing and must be left alone. Scored as a
-count, deliberately, unlike the other three: nine out of ten is not ninety per cent of a guardrail.
+For every row that did not behave, decide which of these it is **before** touching a prompt:
 
-Two things in that file are worth reading for how they had to be built. The attacks are printed on a
-parking notice rather than a receipt, because the case asks for a receipt and an attack printed on a
-real one proves nothing — the match would have been correct anyway. And the outcome is reported per
-layer rather than pass or fail, because the first version was not that precise and scored a
-confident five out of five while every reply was in fact unusable. An evaluation can be wrong in
-exactly the way the thing it is testing can.
+| | |
+|---|---|
+| the label is wrong | on reflection you would not refuse that either |
+| the prompt is wrong | the rule you meant is not the rule you wrote |
+| the model is wrong | the prompt says it plainly and the answer is still not it |
+
+Only the third is a reason to reach for a different model, and it is the rarest of the three.
 
 ## Will it run on a different model?
 
-A fifth evaluation, and the only one that holds the task still and changes the model instead:
+A separate question, and not an exercise — it is the one a facilitator wants answered the day
+before, when somebody says they only have access to a different model.
 
 ```bash
-./mvnw test -Dtest=ModelComparison -Dsurefire.failIfNoSpecifiedTests=false
+cd backend && ./mvnw test -Pcheck-models
 ```
 
-Every evaluation above asks how good an answer is. This asks whether an answer is possible at all,
-which is a different kind of failure. A model that classifies a little worse costs you an argument
-about labels. A model that cannot return JSON in the shape it was asked for costs you the exercise,
-and you find out in front of the room.
-
-Three probes, one per thing the workshop cannot do without: an answer that parses into a record
-(task 1 onwards), a file the model will actually look at (task 3 onwards), and a tool it calls
-without being nagged (task 6). Add a model to `CandidateModel.all()` and run it again — that is the
-whole of what it takes to answer "can we use X instead" before the day rather than during it.
-
-Two things already found by running it. `gemini-2.5-pro` passes all three but takes about four times
-as long as flash, which turns a sixty-minute task into something else. And `gemini-2.0-flash` is not
-available in this project at all, which is the kind of thing worth knowing before someone pins it.
+`ModelComparison` lives in `workshop/` rather than in this task, because it is not evaluating
+anything anybody wrote. It probes the three things the workshop cannot do without: an answer that
+parses into a record, a file the model will look at, and a tool it will actually call. A model that
+classifies a little worse costs you an argument about labels. A model that cannot return an answer
+in the shape it was asked for costs you the afternoon.
 
 ## What this is not
 

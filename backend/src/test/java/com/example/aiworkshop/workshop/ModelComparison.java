@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_4_evaluation;
+package com.example.aiworkshop.workshop;
 
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiProperties;
@@ -25,15 +25,21 @@ import java.io.ByteArrayOutputStream;
 import java.time.Duration;
 import java.util.List;
 import javax.imageio.ImageIO;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * Task 8, the portability question: will this workshop run on a model that is not the default?
+ * The facilitator's question, not an exercise: will this workshop run on a model that is not the
+ * default?
  *
- * <pre>./mvnw test -Dtest=ModelComparison -Dsurefire.failIfNoSpecifiedTests=false</pre>
+ * <pre>cd backend && ./mvnw test -Pcheck-models</pre>
+ *
+ * <p>It lives outside task 4 because it is not an evaluation of anything anybody wrote. Task 4's
+ * two evaluations ask whether the agents you built are any good; this asks whether the room can
+ * build them at all on the model it has been given, and it is the question to have answered the
+ * day before rather than during.
  *
  * <p>Every other evaluation here holds the model still and asks how good the answer is. This one
  * holds the task still and changes the model, because the failure it is looking for is different in
@@ -45,14 +51,14 @@ import org.springframework.boot.test.context.SpringBootTest;
  *
  * <ul>
  *   <li><b>structured output</b> — the classifier answers into a record. Task 1 onwards.
- *   <li><b>a file it will read</b> — an image sent as inline data. Task 2 onwards.
- *   <li><b>a tool it will call</b> — not merely can, but does, unprompted. Task 6.
+ *   <li><b>a file it will read</b> — an image sent as inline data. Task 3 onwards.
+ *   <li><b>a tool it will call</b> — not merely can, but does, unprompted. Task 7.
  * </ul>
  *
  * <p>A model missing any of the three is not a slower workshop, it is a different one.
  */
 @SpringBootTest
-@Disabled("builds every candidate model and calls each three times — run it deliberately")
+@Tag("portability")
 class ModelComparison {
 
     /** The same settings the application runs on, including how it finds the project. */

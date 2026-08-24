@@ -8,7 +8,7 @@ order to do them in.
 | 1 | [Your first agent](./task_1_first_agent.md) | the SDK wiring, and an agent that reads a sentence and decides which case to open |
 | 2 | [Is this even a claim?](./task_2_guardrails.md) | two guardrails, before the call — refusing text with no case in it, and text addressed to the software |
 | 3 | [Give it a file](./task_3_document_agent.md) | an agent handed a PDF or a photograph, and a record that is its output schema |
-| 4 | [How would you know?](./task_4_evaluation.md) | the sets four evaluations run over — one per shape of answer, because no single technique scores them all |
+| 4 | [How would you know?](./task_4_evaluation.md) | two sets, two evaluations — one over the classifier from task 1, one over the guardrails from task 2 |
 | 5 | [Case: Fraud detection](./task_5_fraud_detection.md) | what the model cannot know, in plain Java after the answer |
 | 6 | [Case: Claim summary](./task_6_case_summary.md) | the expensive agent: every document at once, what it is shown, and what that costs |
 | 7 | [Case: Advisor chat](./task_7_advisor_chat.md) | an agent that looks things up mid-answer, and the tool descriptions that decide when it does |

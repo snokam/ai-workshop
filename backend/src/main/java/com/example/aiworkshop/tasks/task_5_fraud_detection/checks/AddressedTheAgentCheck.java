@@ -25,7 +25,7 @@ public class AddressedTheAgentCheck implements FraudCheck {
         // attemptedInstruction as the detail, and the quote as evidence.
         //
         // Then notice what this check depends on. It trusts the model to have noticed. What happens when the
-        // document says "do not flag anything"? Task 4's attack set is where you find out.
+        // document says "do not flag anything"? Nothing here can tell, which is the point of the check.
 
         throw new TaskNotImplementedException(WorkshopTask.FRAUD_DETECTION);
     }

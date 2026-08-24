@@ -1,6 +1,7 @@
 # Task 3 — Give it a file
 
-You write the agent that is handed a file, and the record that is its output schema.
+You write the agent that is handed a file, and the part of its output schema that has a
+decision in it.
 
 The brief is `docs/tasks/task_3_document_agent.md`, from the repository root.
 
@@ -11,16 +12,15 @@ Do them in this order. Each is one file, and the `TODO` at the top of it has the
 | | File | What it is for |
 |---|---|---|
 | 1 | [`agent/DocumentAnalyzer.java`](./agent/DocumentAnalyzer.java) | Write the agent |
-| 2 | [`model/DocumentAnalysis.java`](./model/DocumentAnalysis.java) | Say what each field means |
-| 3 | [`DocumentIntake.java`](./DocumentIntake.java) | Do not pay twice for the same file |
+| 2 | [`model/DocumentAnalysis.java`](./model/DocumentAnalysis.java) | Say what three of the fields mean |
 
 ## Everything else
 
-Three files sit at the top of the folder, and only one of them is yours to edit.
+Three files sit at the top of the folder, and none of them is yours to edit.
 
-- [`DocumentIntake.java`](./DocumentIntake.java) — part 3. One method does the work: save the bytes,
-  show them to the agent, write down what it said, announce it. `promptFor` in it is given — it is
-  the two lines that hand the model the file itself, and worth reading before part 3.
+- [`DocumentIntake.java`](./DocumentIntake.java) — given, and the first thing to read. One method:
+  save the bytes, show them to the agent, write down what it said, announce it. The two lines in the
+  middle are the whole idea of the task — the file goes to the model as a file.
 - [`DocumentsController.java`](./DocumentsController.java) — the HTTP surface. Upload, list, fetch
   the file back, mark one reviewed.
 - [`DocumentStored.java`](./DocumentStored.java) — what intake announces once an upload is safely

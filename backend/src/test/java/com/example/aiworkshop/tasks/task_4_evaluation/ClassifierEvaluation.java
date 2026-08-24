@@ -3,30 +3,32 @@ package com.example.aiworkshop.tasks.task_4_evaluation;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseTypeSuggestion;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * Task 8. The only thing here that calls a model, and the only thing that asks whether the agent is
- * any good rather than whether it is wired up.
+ * The first evaluation: is the classifier you wrote in task 1 any good?
  *
- * <p>Disabled on purpose. It costs ten calls and needs credentials, so it runs when you ask for it:
+ * <pre>cd backend && ./mvnw test -Pevaluate</pre>
  *
- * <pre>./mvnw test -Dtest=ClassifierEvaluation -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false</pre>
+ * <p>Kept out of the ordinary test run by its tag, because it calls a real model once per row.
+ * {@code ./mvnw test} stays free and needs no credentials; this costs about ten calls.
  *
- * <p>Take the {@code @Disabled} off to run it from an IDE.
+ * <p>The rules it is scored against are the classifier's own: it picks exactly one of the five case
+ * types, or nothing at all when none of them fit, and says how sure it is. Those are the rules to
+ * label against in {@link LabelledCase}.
  *
- * <p>It prints rather than asserts, and that is the exercise. A number on its own decides nothing:
- * the useful part is reading the disagreements and working out which of them are the model being
- * wrong and which are the label being an opinion. Half of the set was chosen to be arguable for
- * exactly that reason.
+ * <p>It prints rather than asserts, and that is the exercise. A number on its own decides nothing —
+ * the useful part is reading the disagreements and working out which are the model being wrong and
+ * which are the label being an opinion. Half of the set should be arguable for exactly that reason.
  */
 @SpringBootTest
-@Disabled("calls the model ten times — run it deliberately, see the class comment")
+@Tag("evaluation")
 class ClassifierEvaluation {
 
     @Autowired
@@ -34,6 +36,13 @@ class ClassifierEvaluation {
 
     @Test
     void scoreTheClassifier() {
+        try {
+            classifier.classify(CaseType.catalog(), "a warm-up call, to fail early if task 1 is not written");
+        } catch (TaskNotImplementedException notYet) {
+            System.out.println("\nThere is nothing to evaluate yet — task 1's classifier is not written.\n");
+            return;
+        }
+
         List<String> disagreements = new ArrayList<>();
         int agreed = 0;
 

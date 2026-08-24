@@ -140,27 +140,22 @@ class DocumentIntakeTest {
         assertThat(store.findByCaseId(CASE_ID)).containsExactly(document);
     }
 
+    /**
+     * There is no cache. The same file uploaded twice is read twice, deliberately — skipping the
+     * second call would be cheaper, and it would put a cache in front of the one line in this class
+     * worth reading. What the second upload does record is the same content hash, which is how task
+     * 5 notices it.
+     */
     @Test
-    void theSameFileUploadedTwiceToACaseIsOnlyReadOnce() throws IOException {
+    void everyUploadIsRead() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(MATCHED_RECEIPT);
 
         UploadedDocument first = intake.accept(CASE_ID, image("receipt.jpg"));
         UploadedDocument second = intake.accept(CASE_ID, image("receipt.jpg"));
 
-        verify(analyzer, times(1)).analyse(anyList(), anyList());
-        assertThat(second.analysis()).isEqualTo(first.analysis());
-        assertThat(store.findByCaseId(CASE_ID)).hasSize(2);
-    }
-
-    @Test
-    void theSameFileOnADifferentCaseIsReadAgain() throws IOException {
-        cases.save(new Case("c-2", "CASE-2026-002", CaseType.HOME_CONTENTS, List.of("receipt")));
-        when(analyzer.analyse(anyList(), anyList())).thenReturn(MATCHED_RECEIPT);
-
-        intake.accept(CASE_ID, image("receipt.jpg"));
-        intake.accept("c-2", image("receipt.jpg"));
-
         verify(analyzer, times(2)).analyse(anyList(), anyList());
+        assertThat(second.contentHash()).isEqualTo(first.contentHash());
+        assertThat(store.findByCaseId(CASE_ID)).hasSize(2);
     }
 
     @Test

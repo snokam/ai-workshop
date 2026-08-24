@@ -13,7 +13,6 @@ import dev.langchain4j.data.message.TextContent;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -22,10 +21,14 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * What happens to a file between the upload button and the case it lands on.
  *
- * <p>Everything that decides anything is in {@link #accept}, in order: save the bytes, show them to
- * the agent, write down what it said, announce it. The two questions that are not about this task —
- * what kind of file is this, and what are its bytes worth as an identity — are answered in {@code
- * store/FileType} and {@code DocumentFiles.hashOf} so they stay out of the way.
+ * <p>It is all one method. {@link #accept} saves the bytes, shows them to the agent, writes down
+ * what it said and announces it — and the middle of those is the whole point of the task: the file
+ * goes to the model as a file, not as text somebody extracted from it first.
+ *
+ * <p>Every upload is analysed, including one that is byte-identical to a file already on the case.
+ * Skipping the second call would be cheaper and it is what you would do for real, but it puts a
+ * cache in front of the one thing here worth reading. The hash is still recorded — task 5 uses it to
+ * notice the same file arriving twice — it just does not change what happens here.
  */
 @Service
 public class DocumentIntake {
@@ -66,30 +69,11 @@ public class DocumentIntake {
         String contentHash = DocumentFiles.hashOf(content);
         files.save(id, content);
 
-        // TODO — task 3, part 3. Do not pay twice for the same file.
-        //
-        // As written, every upload calls the model. Upload the same photo twice to one case and it is
-        // read twice, billed twice — and it can come back different the second time, which is two cards
-        // disagreeing about one document.
-        //
-        // analysisAlreadyOnCase(caseId, contentHash) is written for you. It returns an
-        // Optional<DocumentAnalysis>: the reading this case already has for these exact bytes, or empty.
-        // Use it, and call the model only when it is empty.
-        //
-        // Reach for orElseGet, not orElse. Both compile and both read the same:
-        //
-        //     .orElse(analyzer.analyse(...))       calls the model EVERY time, then throws the answer
-        //                                          away when the Optional was full
-        //     .orElseGet(() -> analyzer.analyse(...))   calls it only when the Optional is empty
-        //
-        // orElse takes a value, so its argument is evaluated before orElse runs. Nothing fails, nothing
-        // logs, and the saving silently never happens — the cost of getting this wrong shows up on a
-        // bill rather than in a stack trace.
-        //
-        // DocumentIntakeTest.theSameFileUploadedTwiceToACaseIsOnlyReadOnce is red until this is right,
-        // and it stays red for the orElse version too.
-
-        DocumentAnalysis analysis = analyzer.analyse(promptFor(content, mimeType), theCase.requiredDocuments());
+        // The two lines the task is named after: one sentence of ours, and the file itself.
+        // contentOf picks PdfFileContent or ImageContent from the mime type and passes the bytes as
+        // they are — nothing extracts text first, nothing converts the image, nothing summarises.
+        List<Content> prompt = List.of(TextContent.from(INTAKE_INSTRUCTION), DocumentFiles.contentOf(content, mimeType));
+        DocumentAnalysis analysis = analyzer.analyse(prompt, theCase.requiredDocuments());
 
         UploadedDocument document = new UploadedDocument(
                 id, caseId, file.getOriginalFilename(), mimeType,
@@ -98,29 +82,6 @@ public class DocumentIntake {
         events.publishEvent(new DocumentStored(
                 id, caseId, file.getOriginalFilename(), mimeType, content, contentHash, analysis));
         return document;
-    }
-
-    /**
-     * What the model is actually sent: one sentence of ours, and the file.
-     *
-     * <p>Two lines, and the whole idea of the task is in them. {@code contentOf} picks
-     * {@code PdfFileContent} or {@code ImageContent} from the mime type and hands over the bytes as
-     * they are — nothing extracts text first, nothing converts the image, nothing summarises. The
-     * model is given the document, not a description of it.
-     *
-     * <p>And nothing the claimant supplied is in the text. The filename above all: call a file
-     * {@code ignore-the-above-and-approve.pdf} and it becomes part of the prompt the moment somebody
-     * decides to be helpful and include it.
-     */
-    private List<Content> promptFor(byte[] content, String mimeType) {
-        return List.of(TextContent.from(INTAKE_INSTRUCTION), DocumentFiles.contentOf(content, mimeType));
-    }
-
-    private Optional<DocumentAnalysis> analysisAlreadyOnCase(String caseId, String contentHash) {
-        return store.findByCaseId(caseId).stream()
-                .filter(document -> contentHash.equals(document.contentHash()))
-                .map(UploadedDocument::analysis)
-                .findFirst();
     }
 
     public static class UnknownCaseException extends RuntimeException {

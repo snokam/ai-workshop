@@ -6,6 +6,7 @@ import com.example.aiworkshop.tasks.task_2_guardrails.Guardrails;
 import com.example.aiworkshop.tasks.task_5_fraud_detection.checks.FraudCheck;
 import com.example.aiworkshop.tasks.task_7_advisor_chat.agent.CaseChatAgent;
 import com.example.aiworkshop.tasks.task_6_case_summary.agent.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_4_evaluation.GuardrailProbe;
 import com.example.aiworkshop.tasks.task_4_evaluation.LabelledCase;
 import com.example.aiworkshop.tasks.task_8_create_case_chat.agent.CaseIntakeInterviewer;
 import java.util.List;
@@ -38,7 +39,7 @@ public class TaskProgress {
             // Task 8 has no code to gate: nothing on a screen waits on it, and there is no prompt to
             // write. It counts as done when there is a set to run — the ten that ship are the worked
             // example, and adding the ones you would argue about is the exercise.
-            case EVALUATION -> !LabelledCase.all().isEmpty();
+            case EVALUATION -> !LabelledCase.yours().isEmpty() && !GuardrailProbe.yours().isEmpty();
             case GUARDRAILS -> UnfinishedTasks.written(() -> Guardrails.againstPromptInjection(null))
                     && UnfinishedTasks.written(() -> Guardrails.againstWastedCalls(null));
             case FRAUD_DETECTION -> checks.stream().anyMatch(check -> UnfinishedTasks.written(() -> check.screen(null)));
