@@ -8,7 +8,7 @@ order to do them in.
 | 1 | [Your first agent](./task_1_first_agent.md) | the SDK wiring, and an agent that reads a sentence and decides which case to open |
 | 2 | [Is this even a claim?](./task_2_guardrails.md) | one guardrail, before the call — refusing text nobody could open a case from |
 | 3 | [Give it a file](./task_3_document_agent.md) | an agent handed a PDF or a photograph, and a record that is its output schema |
-| 4 | [How would you know?](./task_4_evaluation.md) | whether any of it works — four ways of asking, because each kind of answer needs a different one |
+| 4 | [How would you know?](./task_4_evaluation.md) | the sets four evaluations run over — one per shape of answer, because no single technique scores them all |
 | 5 | [Case: Fraud detection](./task_5_fraud_detection.md) | what the model cannot know, in plain Java after the answer |
 | 6 | [Case: Claim summary](./task_6_case_summary.md) | the expensive agent: every document at once, what it is shown, and what that costs |
 | 7 | [Case: Advisor chat](./task_7_advisor_chat.md) | an agent that looks things up mid-answer, and the tool descriptions that decide when it does |
@@ -85,8 +85,8 @@ would mean task 6 depending on task 1 for the idea of a case, which is not what 
 all.
 
 The one rule the layout does enforce: **a task may depend only on earlier tasks.** There are no
-exceptions, which is why task 3 contributes its guardrails to task 2's agent rather than task 2
-fetching them, and why task 4 listens for a document being stored rather than task 2 calling it.
+exceptions, which is why task 2 contributes its guardrail to task 1's agent rather than task 1
+fetching it, and why task 5 listens for a document being stored rather than task 3 calling it.
 Both are better designs than the ones they replaced, and neither was chosen for tidiness.
 
 ## The finish line
@@ -105,7 +105,7 @@ with the application running:
    which of their tricks was noticed; the handler's must.
 5. Ask the chat *"what is the total on the receipt?"* on a case that has no receipt, and read what
    it says rather than what you hoped it would say.
-6. Run [task 8](./task_4_evaluation.md) and sort the disagreements.
+6. Run [task 4](./task_4_evaluation.md) and sort the disagreements.
 
 Steps 3 and 4 are the ones worth caring about. They are the two places where this application does
 something a model cannot do for you, and if either is wrong the rest being right does not help.
@@ -132,7 +132,7 @@ cost of three hours. [Task 1](./task_1_first_agent.md) has a section on which ha
 looking at is LangChain4j and which half is the idea — read it, because that is the part that
 transfers.
 
-**Evaluation gets twenty-five minutes**, in [task 8](./task_4_evaluation.md), which is enough to see
+**Evaluation gets twenty-five minutes**, in [task 4](./task_4_evaluation.md), which is enough to see
 why it matters and nowhere near enough to do it properly.
 
 ## The answers

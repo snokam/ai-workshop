@@ -32,8 +32,8 @@ public enum WorkshopTask {
             4,
             "How would you know?",
             "tasks/task_4_evaluation/",
-            "Label the descriptions you would argue about, run the classifier over them, and decide"
-                    + " what the disagreements mean."),
+            "Build the sets four evaluations run over, then read what they say: a category is a"
+                    + " comparison, facts are coverage, an attack set has a right answer."),
     FRAUD_DETECTION(
             5,
             "Case: Fraud detection",

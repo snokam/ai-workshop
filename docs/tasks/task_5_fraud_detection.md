@@ -31,7 +31,7 @@ task_5_fraud_detection/
     FraudCheck.java               the seam: one method
     DuplicateUploadCheck.java     the same bytes, seen before
     ImageMetadataCheck.java       what EXIF says about where the image came from
-    AddressedTheAgentCheck.java   the report task 1's agent already made
+    AddressedTheAgentCheck.java   the report task 3's agent already made
   model/
     FraudScreening.java           the result: Indicators, each with a Kind and a Weight
     DocumentForClaimant.java      the projection that decides who sees any of it
