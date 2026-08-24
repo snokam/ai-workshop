@@ -7,17 +7,17 @@ import dev.langchain4j.guardrail.InputGuardrail;
 /**
  * What guards the first agent.
  *
- * <p>One guardrail, and it runs before the call. That is not a simplification for the workshop — it
- * is the order things belong in. A check that decides on the text alone costs nothing when it
- * refuses, cannot be talked round by what it is reading, and is the only kind you can put in front
- * of a model rather than behind it.
+ * <p>One guardrail, and it runs before the call. Not a simplification for the workshop — it is the
+ * order things belong in. A check in front of a model can refuse before anything is spent, and is
+ * much harder to talk round than one standing behind it, because it decides on the request rather
+ * than on an answer the request has already shaped.
  */
 public final class Guardrails {
 
     private Guardrails() {}
 
-    public static InputGuardrail beforeTheCall() {
-        return new ClaimDescriptionGuardrail();
+    public static InputGuardrail beforeTheCall(ClaimCheck check) {
+        return new ClaimDescriptionGuardrail(check);
 
         // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 2. Hand back the guardrail that reads what the person typed.

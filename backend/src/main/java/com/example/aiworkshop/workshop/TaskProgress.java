@@ -39,7 +39,7 @@ public class TaskProgress {
             // write. It counts as done when there is a set to run — the ten that ship are the worked
             // example, and adding the ones you would argue about is the exercise.
             case EVALUATION -> !LabelledCase.all().isEmpty();
-            case GUARDRAILS -> UnfinishedTasks.written(Guardrails::beforeTheCall);
+            case GUARDRAILS -> UnfinishedTasks.written(() -> Guardrails.beforeTheCall(null));
             case FRAUD_DETECTION -> checks.stream().anyMatch(check -> UnfinishedTasks.written(() -> check.screen(null)));
         };
     }

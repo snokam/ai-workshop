@@ -20,38 +20,58 @@ The agent is not wrong. Nothing told it that some inputs are not worth an answer
 
 LangChain4j gives you two places to stand:
 
-| | when it runs | what it can see | what it costs when it refuses |
-|---|---|---|---|
-| **Input guardrail** | before the request is sent | the message about to go | nothing |
-| **Output guardrail** | after the reply comes back | the reply, and the request | a full call |
+| | when it runs | what it can see |
+|---|---|---|
+| **Input guardrail** | before the request is sent | the message about to go |
+| **Output guardrail** | after the reply comes back | the reply, and the request |
 
-This task is the first kind, and the difference is worth sitting with. An input guardrail is the
-only check in this workshop that is free when it says no. It is also the only one that cannot be
-talked round by what it is reading, because it is not reading for meaning — a document full of
-instructions aimed at the software gets nowhere against a rule that counts characters.
+This task is the first kind. A check in front of a model decides on the request rather than on an
+answer the request has already shaped, which makes it much harder to talk round — and it can refuse
+before the expensive thing happens.
+
+## The check is a model too
+
+The obvious first instinct is a rule: refuse anything under fifteen characters, refuse a list of
+greetings. Write that and it refuses `Bilen ble stjålet` while letting `asdf asdf asdf asdf`
+through. Both of those are the wrong way round, and no amount of tuning fixes it, because whether
+there is a situation in a piece of text is a question about meaning.
+
+So the guardrail asks a model. Not the classifier — a second, narrower one, with a single closed
+question and no catalogue to choose from: **is there anything here to open a case from?**
+
+That is `ClaimCheck`, and it is an agent exactly like the one in task 1: an interface, a system
+message, a return type. The difference is the shape of the question. Open questions get answers
+whatever you ask; closed ones are much harder to argue with.
+
+**This costs a call to save a call.** Worth saying out loud, because "put a guardrail in front of
+it" is often heard as "make it free". It is worth it here because the call it saves is the more
+expensive of the two, and because nothing cheaper can answer the question at all — but it is a
+trade, not a win.
 
 ## Write it
 
-**Write:** `tasks/task_2_guardrails/guardrails/ClaimDescriptionGuardrail.java`, implementing
-`dev.langchain4j.guardrail.InputGuardrail`.
+**Write:** `tasks/task_2_guardrails/guardrails/ClaimCheck.java` — the system message for a check
+that says yes to anything a person might contact an insurer about, and no only when there is nothing
+to work with.
 
-`message.singleText()` is what the person typed. Return `fatal(...)` with something they can act on
-when there is nothing to work with, and `success()` otherwise. Two rules are enough:
+**Write:** `tasks/task_2_guardrails/guardrails/ClaimDescriptionGuardrail.java` — ask the check, and
+turn a no into `fatal(...)` carrying the sentence it wrote.
 
-- **enough to go on** — a handful of characters cannot describe anything that happened
-- **more than a greeting** — `hei`, `hello there`, `test`. How a message opens, not what it says
-
-Then hand it back from `Guardrails.beforeTheCall()`. `GuardrailConfig` publishes it as a bean and
-task 1's agent picks it up — task 1 knows nothing about task 2, which is what lets the workshop be
+Then hand it back from `Guardrails.beforeTheCall(...)`. `GuardrailConfig` publishes it as a bean and
+task 1's agent picks it up. Task 1 knows nothing about task 2, which is what lets the workshop be
 done in order.
 
-`GuardrailTest` is red until both rules are in. None of it needs a model, credentials or a network,
-which is the property that makes this kind of check worth having.
+Two things the prompt has to get right, and both are easier to see once it is wrong:
+
+- **When in doubt, say yes.** Refusing someone with an unusual claim is far worse than opening a
+  case somebody has to close. The second wastes a minute; the first turns a person away.
+- **Write the refusal to the claimant**, in their language — and in English when the text is too
+  short or too garbled to have one. The first version of this answered `asdf asdf` in Spanish.
 
 ## What not to do
 
-Do not try to decide whether the situation is insurable. It is tempting — "is this really a claim?"
-is the obvious reading of the task title — and it is the wrong instinct.
+Do not decide whether the situation is insurable. It is tempting — "is this really a claim?" is the
+obvious reading of the title — and it is the wrong instinct.
 
 A guardrail that judged the subject would be a second, worse classifier standing in front of the
 first, disagreeing with it occasionally, and refusing people whose claims are unusual rather than
@@ -62,9 +82,10 @@ The guardrail decides whether there is anything to read. The agent decides what 
 
 ## If you finish early
 
-- **Refuse the same text twice in a row.** Someone pressing the button again because nothing seemed
-  to happen is not a new case.
+- **Try to get past it.** Then decide whether the rule you would add to stop yourself is worth what
+  it would refuse by mistake.
+- **Time it.** How long does the check add to opening a case, and would you notice on the screen?
+- **Try a smaller model for the check.** The question is narrow, so it may not need the good one —
+  and task 4 has the harness to tell you whether it holds up.
 - **Count what it saves.** Log every refusal for an afternoon and multiply by what a call costs. The
   argument for input guardrails is usually financial before it is anything else.
-- **Try to get something past it that should not be.** Then decide whether the rule you would add to
-  stop it is worth what it would refuse by mistake.
