@@ -131,84 +131,18 @@ nothing extracts text first.
 
 ## Where everything is
 
-The backend is eight folders, one per task, under
-`backend/src/main/java/com/example/aiworkshop/tasks/`. Each holds everything that task is: the
-agent you write, the records it answers in, what is kept, and the endpoints the screen calls.
-
-| | |
-|---|---|
-| `task_1_first_agent/` | the model itself, a classifier, and the claim its answer opens |
-| `task_2_guardrails/` | one guardrail, before the call — refusing text nobody could open a claim from |
-| `task_3_document_agent/` | the agent that reads an uploaded PDF or photo |
-| `task_4_evaluation/` | the two sets the evaluations run over: `./mvnw test -Pevaluate` |
-| `task_5_claim_summary/` | the expensive agent, across every document on a claim |
-| `task_6_advisor_chat/` | tools and memory — the agent that suggests and never writes |
-| `task_7_create_claim_chat/` | an interview instead of a form |
-
-Inside a task the shape is always the same:
-
 ```
-task_3_document_agent/
-  DocumentsController.java     the endpoints
-  DocumentIntake.java          the code that calls the agent
-  agent/                       the agent and its wiring — this is what you write
-  model/                       the records it answers in
-  store/                       what is kept
-```
+backend/src/main/java/com/example/aiworkshop/
+  tasks/task_*/     one folder per task: the agent, the records it answers in, what is kept,
+                    and the endpoints the screen calls. The test tree mirrors it.
+  workshop/         works out which tasks are done by probing your code, not by reading a flag
+  config/           the Foundry provider, for Snokam staff who use it instead of Vertex
 
-Each task has its own README naming what is yours to write and what it uses from the tasks before
-it. The test tree mirrors the same folders.
-
-**A task may use the tasks before it and never the ones after it.** That is what lets you stop
-after any exercise and still have something that runs. When a later task needs to change how an
-earlier one behaves it contributes rather than calls: task 2 answers task 1's `ClaimProgress`, task
-3 hands its guardrails to task 2 as beans, task 4 listens for task 2's event. `TaskDependencyTest`
-fails if the rule is ever broken, and `WorkshopTaskTest` fails if a brief points at a file that has
-moved.
-
-Outside the tasks there is only `workshop/`, which works out which exercises are done by probing
-your code rather than reading a flag, and `config/`, which is the Foundry provider Snokam staff
-use instead of Vertex.
-
-### The agents
-
-Seven, and each one is an interface, a system message and a return type. LangChain4j generates the
-implementation, so the return type *is* the output schema — add a component to `DocumentAnalysis`
-and the agent starts filling it in. They all write in English; see
-[CONTEXT.md](./CONTEXT.md).
-
-| | |
-|---|---|
-| `task_1_first_agent/agent/ClaimTypeClassifier.java` | a sentence in, a claim type out |
-| `task_3_document_agent/agent/DocumentAnalyzer.java` | the file itself, sent as inline data |
-| `task_5_claim_summary/agent/ClaimSummarizer.java` | the expensive one: every document, in one prompt |
-| `task_5_claim_summary/agent/ClaimStatusWriter.java` | the cheap one: derived facts in, one situation report out |
-| `task_6_advisor_chat/agent/ClaimChatAgent.java` | memory id, tools, and a `Result` so tool calls survive |
-| `task_6_advisor_chat/agent/DocumentReader.java` | a second agent, given the file and no claim context at all |
-| `task_7_create_claim_chat/agent/ClaimIntakeInterviewer.java` | asks until it has enough to open a claim |
-
-An eighth lives in task 5, `SummaryJudge`, and is not part of the application. It is a model asked
-whether another model's answer holds up, which is the only way to score prose at any volume and the
-technique in here most easily used badly.
-
-Nothing in tasks 3 or 4 calls a model. Guardrails run around the call and the checks run after it,
-on bytes already in hand — no credentials, no network. The three layers are shown end to end in
-[`assets/`](./assets).
-
-### The frontend
-
-```
 frontend/src/
-  pages/                    one folder per person: file-claim/ and claim-handler/
-  components/task_*/        grouped by the task that brings them to life
-  components/{feedback,layout,workshop}/   scaffolding, belonging to no task
-  api/                      one file per group of endpoints, and the types they return
-  lib/                      labels, and the task state every screen reads
+  pages/            one folder per person: file-claim/ and claim-handler/
+  components/       task_* folders group by the task that brings them to life; the rest is scaffolding
+  api/              one file per group of endpoints, and the types they return
 ```
 
-Components follow the tasks the way the backend does. Pages do not, because a page is a screen
-rather than a task: the handler's claim screen shows the work of six of them at once.
-
-A screen that needs an unwritten task keeps working. The controls stay live, the explanation sits
-under them, and using them fails with the file to open — being told what to write is not the same
-as watching the thing you tried come back empty.
+Each task folder has its own README naming the files to open, in order. They are linked from
+[The tasks](#the-tasks) above, and that is where the detail lives — this file does not repeat it.
