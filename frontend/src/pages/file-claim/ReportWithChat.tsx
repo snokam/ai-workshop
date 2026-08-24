@@ -86,7 +86,7 @@ export function ReportWithChat() {
       </header>
 
       <TaskGate
-        task="CREATE_CLAIM_CHAT"
+        task="STREAMING_FILE_CLAIM_CHAT"
         instead="Holding a short conversation is how this claim gets opened, and the agent that runs it has not been written yet."
       >
         <div className="intake-chat">

@@ -5,9 +5,9 @@ export type TaskKey =
   | 'FIRST_AGENT'
   | 'DOCUMENT_AGENT'
   | 'GUARDRAILS'
-  | 'ADVISOR_CHAT'
+  | 'ADVISOR_CHAT_WITH_TOOLS'
   | 'CLAIM_SUMMARY'
-  | 'CREATE_CLAIM_CHAT'
+  | 'STREAMING_FILE_CLAIM_CHAT'
 
 export interface TaskState {
   number: number

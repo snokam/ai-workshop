@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { openClaim, reviewDocument } from "../../api";
 import type { ClaimDetail } from "../../api";
-import { ClaimChat } from "../../components/task_6_advisor_chat/ClaimChat";
+import { ClaimChat } from "../../components/task_6_advisor_chat_with_tools/ClaimChat";
 import { Checklist } from "../../components/task_1_first_agent/Checklist";
 import { DocumentCard } from "../../components/task_3_document_agent/DocumentCard";
 import {

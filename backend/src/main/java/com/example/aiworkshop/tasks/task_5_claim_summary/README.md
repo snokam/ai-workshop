@@ -1,4 +1,4 @@
-# Task 5 — Claim: Claim summary
+# Task 5 — Claim summary
 
 You write the expensive agent, then the questions that say whether its answer is any good.
 

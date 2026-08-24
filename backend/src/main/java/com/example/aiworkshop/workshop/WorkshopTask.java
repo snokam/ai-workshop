@@ -7,8 +7,8 @@ import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiConfig;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_2_guardrails.Guardrails;
 import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
-import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.ClaimChatAgent;
-import com.example.aiworkshop.tasks.task_7_create_claim_chat.agent.ClaimIntakeInterviewer;
+import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.agent.ClaimChatAgent;
+import com.example.aiworkshop.tasks.task_7_streaming_file_claim_chat.agent.ClaimIntakeInterviewer;
 
 public enum WorkshopTask {
     FIRST_AGENT(
@@ -36,21 +36,21 @@ public enum WorkshopTask {
                     + " classifier from task 1 and the guardrails from task 2."),
     CLAIM_SUMMARY(
             5,
-            "Claim: Claim summary",
+            "Claim summary",
             "tasks/task_5_claim_summary/agent/ClaimSummarizer.java",
             "Write the agent that reads every document on a claim at once, then the rubric that says"
                     + " whether its answer holds up."),
-    ADVISOR_CHAT(
+    ADVISOR_CHAT_WITH_TOOLS(
             6,
-            "Claim: Advisor chat",
-            "tasks/task_6_advisor_chat/agent/ClaimChatAgent.java",
-            "Write the chat agent and its tools."),
-    CREATE_CLAIM_CHAT(
+            "Advisor chat with tools",
+            "tasks/task_6_advisor_chat_with_tools/agent/ClaimChatTools.java",
+            "Describe two of the tools so the model knows when to reach for them, then hand the tools"
+                    + " to the agent."),
+    STREAMING_FILE_CLAIM_CHAT(
             7,
-            "Claim: File claim with AI chat",
-            "tasks/task_7_create_claim_chat/agent/ClaimIntakeInterviewer.java",
-            "Write the interviewer that asks before it commits, and the budget that stops it asking"
-                    + " forever.");
+            "File a claim with a streaming chat",
+            "tasks/task_7_streaming_file_claim_chat/InterviewNarration.java",
+            "Carry a TokenStream to the browser, so the claimant reads the answer as it is written.");
 
 
     private static final String SOURCE_ROOT = "backend/src/main/java/com/example/aiworkshop/";

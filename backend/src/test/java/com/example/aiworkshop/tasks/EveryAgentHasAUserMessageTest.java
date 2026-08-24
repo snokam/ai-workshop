@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.ClaimTypeClassifier;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
-import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.ClaimChatAgent;
-import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.DocumentReader;
+import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.agent.ClaimChatAgent;
+import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools.agent.DocumentReader;
 import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimStatusWriter;
 import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
 import dev.langchain4j.service.SystemMessage;
