@@ -18,24 +18,19 @@ import java.time.Instant;
 import java.util.List;
 import java.util.HexFormat;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * What happens to a file between the upload button and the case it lands on: it is saved, shown to
+ * the agent, and written down. Everything that decides anything is in accept(), in order.
+ */
 @Service
 public class DocumentIntake {
-    private static final Logger log = LoggerFactory.getLogger(DocumentIntake.class);
 
-    private final DocumentAnalyzer analyzer;
-    private final DocumentStore store;
-    private final CaseStore cases;
-    private final Map<String, Object> arrivals = new ConcurrentHashMap<>();
     /**
      * The only text sent alongside the file. Task 3's input guardrail refuses a message carrying
      * anything else, which is why it lives here rather than there: this is what intake sends, and a
@@ -43,6 +38,9 @@ public class DocumentIntake {
      */
     public static final String INTAKE_INSTRUCTION = "Analyse the attached file.";
 
+    private final DocumentAnalyzer analyzer;
+    private final DocumentStore store;
+    private final CaseStore cases;
     private final ApplicationEventPublisher events;
     private final DocumentFiles files;
 
@@ -62,60 +60,43 @@ public class DocumentIntake {
     public UploadedDocument accept(String caseId, MultipartFile file) throws IOException {
         Case theCase =
                 cases.findById(caseId).orElseThrow(() -> new UnknownCaseException("No such case: " + caseId));
-        String mimeType = resolveMimeType(file);
+
         String id = UUID.randomUUID().toString();
-        files.save(id, file.getBytes());
-        String contentHash = hashOf(file.getBytes());
+        byte[] content = file.getBytes();
+        String mimeType = resolveMimeType(file);
+        String contentHash = hashOf(content);
+        files.save(id, content);
 
-        synchronized (arrivalOf(caseId, contentHash)) {
-            DocumentAnalysis analysis = analysisFor(theCase, file, mimeType, contentHash);
-            return store(id, caseId, file, mimeType, contentHash, analysis);
-        }
-    }
+        // The same bytes on the same case were read once already, and that answer still holds.
+        DocumentAnalysis analysis = analysisAlreadyOnCase(caseId, contentHash)
+                .orElseGet(() -> analyzer.analyse(promptFor(content, mimeType), theCase.requiredDocuments()));
 
-    private DocumentAnalysis analysisFor(Case theCase, MultipartFile file, String mimeType, String contentHash)
-            throws IOException {
-        Optional<DocumentAnalysis> alreadyRead = alreadyReadOnThisCase(theCase.id(), contentHash);
-        if (alreadyRead.isPresent()) {
-            log.info(
-                    "{} is byte-identical to a document already on case {}; not reading it again",
-                    file.getOriginalFilename(),
-                    theCase.id());
-            return alreadyRead.get();
-        }
-        return analyzer.analyse(promptFor(file, mimeType), theCase.requiredDocuments());
-    }
-
-    private UploadedDocument store(
-            String id,
-            String caseId,
-            MultipartFile file,
-            String mimeType,
-            String contentHash,
-            DocumentAnalysis analysis)
-            throws IOException {
         UploadedDocument document = new UploadedDocument(
-                id,
-                caseId,
-                file.getOriginalFilename(),
-                mimeType,
-                file.getSize(),
-                Instant.now(),
-                contentHash,
-                analysis,
-                false);
+                id, caseId, file.getOriginalFilename(), mimeType,
+                file.getSize(), Instant.now(), contentHash, analysis, false);
         store.save(document);
-
         events.publishEvent(new DocumentStored(
-                id, caseId, file.getOriginalFilename(), mimeType, file.getBytes(), contentHash, analysis));
+                id, caseId, file.getOriginalFilename(), mimeType, content, contentHash, analysis));
         return document;
     }
 
-    private Object arrivalOf(String caseId, String contentHash) {
-        return arrivals.computeIfAbsent(caseId + "/" + contentHash, key -> new Object());
+    private List<Content> promptFor(byte[] content, String mimeType) {
+        // TODO — task 3, part 3. Send the file as itself.
+        //
+        // Return the List<Content> the model is sent. Two elements, in this order:
+        //
+        //   1. TextContent.from(INTAKE_INSTRUCTION)
+        //   2. DocumentFiles.contentOf(content, mimeType)
+        //
+        // contentOf decides between PdfFileContent and ImageContent from the mime type. Nothing extracts
+        // text first — the model is handed the document itself, which is the whole idea of the task.
+        //
+        // The text has to be exactly INTAKE_INSTRUCTION and nothing else.
+
+        throw new TaskNotImplementedException(WorkshopTask.DOCUMENT_AGENT);
     }
 
-    private Optional<DocumentAnalysis> alreadyReadOnThisCase(String caseId, String contentHash) {
+    private Optional<DocumentAnalysis> analysisAlreadyOnCase(String caseId, String contentHash) {
         return store.findByCaseId(caseId).stream()
                 .filter(document -> contentHash.equals(document.contentHash()))
                 .map(UploadedDocument::analysis)
@@ -130,22 +111,7 @@ public class DocumentIntake {
         }
     }
 
-    private List<Content> promptFor(MultipartFile file, String mimeType) throws IOException {
-        // TODO — task 3, part 3. Send the file as itself.
-        //
-        // Return the List<Content> the model is sent. Two elements, in this order:
-        //
-        //   1. TextContent.from(INTAKE_INSTRUCTION)
-        //   2. DocumentFiles.contentOf(file.getBytes(), mimeType)
-        //
-        // contentOf decides between PdfFileContent and ImageContent from the mime type. Nothing extracts
-        // text first — the model is handed the document itself, which is the whole idea of the task.
-        //
-        // The text has to be exactly INTAKE_INSTRUCTION and nothing else.
-
-        throw new TaskNotImplementedException(WorkshopTask.DOCUMENT_AGENT);
-    }
-
+    /** What kind of file this is, from the browser if it said, and from the name if it did not. */
     private String resolveMimeType(MultipartFile file) {
         String declared = file.getContentType();
         if (declared != null && (declared.equals("application/pdf") || declared.startsWith("image/"))) {
