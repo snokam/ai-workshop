@@ -1,3 +1,3 @@
 export * from './types'
-export * from './cases'
+export * from './claims'
 export * from './documents'

@@ -26,9 +26,9 @@ public class DocumentStore {
                 .toList();
     }
 
-    public List<UploadedDocument> findByCaseId(String caseId) {
+    public List<UploadedDocument> findByCaseId(String claimId) {
         return findAll().stream()
-                .filter(document -> document.caseId().equals(caseId))
+                .filter(document -> document.claimId().equals(claimId))
                 .toList();
     }
 

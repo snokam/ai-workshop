@@ -1,9 +1,9 @@
-# Task 6 — Case: Advisor chat
+# Task 6 — Claim: Advisor chat
 
 Every agent so far answered one question from what it was handed. This one holds a conversation
-about a case, looks things up while answering, and remembers what was already asked.
+about a claim, looks things up while answering, and remembers what was already asked.
 
-**Time:** 60 minutes. **You need:** tasks 1, 2 and 5 working, and a case with a document or two on it.
+**Time:** 60 minutes. **You need:** tasks 1, 2 and 5 working, and a claim with a document or two on it.
 
 The parts, in order, are in `backend/src/main/java/com/example/aiworkshop/tasks/task_6_advisor_chat/README.md` — each one names the file, what it is for, and what to reach for.
 
@@ -16,15 +16,15 @@ together.
 Three things, and each is one line of wiring in
 `backend/src/main/java/com/example/aiworkshop/tasks/task_6_advisor_chat/`:
 
-**Tools.** `CaseChatTools` is four methods carrying `@Tool`. The model decides when to call them
+**Tools.** `ClaimChatTools` is four methods carrying `@Tool`. The model decides when to call them
 and LangChain4j does the calling. Read them: not one contains any logic. Every one hands straight to
-`CaseDesk`, which is the same seam the screen uses. A tool is an entry point, not a place to put
+`ClaimDesk`, which is the same seam the screen uses. A tool is an entry point, not a place to put
 behaviour — anything else and the agent gets a private version of the truth.
 
 **Memory.** `chatMemoryProvider(caseId -> MessageWindowChatMemory.withMaxMessages(20))`. The key is
-the case identifier, which is also what every tool receives as its `@ToolMemoryId`. One key doing
+the claim identifier, which is also what every tool receives as its `@ToolMemoryId`. One key doing
 both jobs is what makes the conversation resume where it left off and makes each tool answer about
-the right case.
+the right claim.
 
 **`Result<T>`.** The method returns `Result<Answer>` rather than `Answer`, so the tool calls that
 happened on the way are still there afterwards. Return the bare type and the answer survives but
@@ -34,7 +34,7 @@ how it was reached does not — and the screen shows what was looked up.
 
 A system message for an agent that:
 
-- answers questions about one case, from what its tools tell it
+- answers questions about one claim, from what its tools tell it
 - may **propose** asking the claimant for something, and never does it itself
 - says what it does not know rather than filling the gap
 
@@ -43,14 +43,14 @@ deciding the claim.
 
 ## Part 2 — write two tools
 
-Two of the four in `CaseChatTools` are yours; the other two are left whole for the shape.
+Two of the four in `ClaimChatTools` are yours; the other two are left whole for the shape.
 
 The `@Tool` text is the exercise, and it is not documentation. It is what the model reads to decide
 whether to call this rather than answer from what it already has — so say when to use it, and say
 what it costs. `readDocument` sends a file to a second agent; an agent that reaches for it on every
 question is slow and expensive for nothing.
 
-`@ToolMemoryId` is the case the conversation is about. `@P` describes one argument to the model, and
+`@ToolMemoryId` is the claim the conversation is about. `@P` describes one argument to the model, and
 a filename it cannot guess is a tool call that fails.
 
 ## Why it never writes
@@ -60,7 +60,7 @@ by the handler before anything happens. Sealed rather than open on purpose: conf
 pattern switch, and the compiler will not let a new kind of proposal be added without every place
 that handles one being updated.
 
-An agent that could write to the case directly would need to be right every time. One that proposes
+An agent that could write to the claim directly would need to be right every time. One that proposes
 needs only to be useful.
 
 ## How you know it worked
@@ -69,15 +69,15 @@ needs only to be useful.
 cd backend && ./mvnw test -Dtest=TaskCompletionTest
 ```
 
-Then open a case on the handler side and ask the three suggested questions. Watch which tools get
+Then open a claim on the handler side and ask the three suggested questions. Watch which tools get
 called — the answer should cite what it looked at.
 
 ## Try to break it
 
-- Ask "what is the total on the receipt?" about a case with no receipt.
+- Ask "what is the total on the receipt?" about a claim with no receipt.
 - Ask the same question twice in a row. The second answer should know the first happened.
 - Ask it to email the claimant. It has no tool for that. What does it say?
-- Ask about a *different* case by reference. The memory id is the boundary; there is no tool that
+- Ask about a *different* claim by reference. The memory id is the boundary; there is no tool that
   crosses it.
 
 ## If you finish early

@@ -16,14 +16,14 @@ import org.springframework.context.annotation.Configuration;
 class ChatConfig {
 
     @Bean
-    CaseChatAgent caseChatAgent(ChatModel chatModel, CaseChatTools tools) {
+    ClaimChatAgent caseChatAgent(ChatModel chatModel, ClaimChatTools tools) {
         return UnfinishedTasks.wire(
-                CaseChatAgent.class,
+                ClaimChatAgent.class,
                 WorkshopTask.ADVISOR_CHAT,
-                () -> AiServices.builder(CaseChatAgent.class)
+                () -> AiServices.builder(ClaimChatAgent.class)
                         .chatModel(chatModel)
                         .tools(tools)
-                        .chatMemoryProvider(caseId -> MessageWindowChatMemory.withMaxMessages(20))
+                        .chatMemoryProvider(claimId -> MessageWindowChatMemory.withMaxMessages(20))
                         .build());
     }
 

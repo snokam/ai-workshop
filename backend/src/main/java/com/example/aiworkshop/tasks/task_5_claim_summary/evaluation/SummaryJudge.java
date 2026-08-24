@@ -29,13 +29,13 @@ public interface SummaryJudge {
     @SystemMessage(
             """
             You are checking one specific thing about a piece of text, on behalf of someone who has to
-            decide whether it can be shown to an insurance case handler.
+            decide whether it can be shown to an insurance claim handler.
 
             You are given the question, the documents the text was written from, and the text itself.
             Answer only the question you were asked. Do not comment on anything else about the text,
             however wrong it seems — there are other questions, and this is not the one.
 
-            Answer no if you are not sure. A summary wrongly marked acceptable reaches a case handler
+            Answer no if you are not sure. A summary wrongly marked acceptable reaches a claim handler
             who has no reason to doubt it. A summary wrongly marked unacceptable costs someone two
             minutes of reading.
 

@@ -1,7 +1,9 @@
 package com.example.aiworkshop.workshop;
 
+import dev.langchain4j.model.output.structured.Description;
 import dev.langchain4j.service.SystemMessage;
 import java.lang.reflect.Method;
+import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Proxy;
 import java.util.function.Supplier;
 
@@ -25,6 +27,28 @@ public final class UnfinishedTasks {
             SystemMessage prompt = method.getAnnotation(SystemMessage.class);
             if (prompt != null && String.join("\n", prompt.value()).contains(UNWRITTEN)) {
                 return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * True while every {@code @Description} on the record has been written.
+     *
+     * <p>Read off the field rather than the record component: {@code @Description} is declared
+     * {@code @Target({FIELD, TYPE})}, so asking the component or the accessor returns null and the
+     * check would quietly pass for everything.
+     */
+    public static boolean descriptionsWritten(Class<?> record) {
+        for (RecordComponent component : record.getRecordComponents()) {
+            try {
+                Description described = record.getDeclaredField(component.getName())
+                        .getAnnotation(Description.class);
+                if (described != null && String.join(" ", described.value()).contains("TODO")) {
+                    return false;
+                }
+            } catch (NoSuchFieldException e) {
+                throw new IllegalStateException("a record component always has a field", e);
             }
         }
         return true;

@@ -3,7 +3,7 @@ export type Quality = 'GOOD' | 'ACCEPTABLE' | 'POOR'
 
 export type MatchConfidence = 'HIGH' | 'MEDIUM' | 'LOW'
 
-export type CaseStatus = 'AWAITING_DOCUMENTS' | 'NEEDS_REVIEW' | 'READY_FOR_DECISION'
+export type ClaimStatus = 'AWAITING_DOCUMENTS' | 'NEEDS_REVIEW' | 'READY_FOR_DECISION'
 
 export interface ExtractedField {
   name: string
@@ -27,7 +27,7 @@ export interface DocumentAnalysis {
 
 export interface UploadedDocument {
   id: string
-  caseId: string
+  claimId: string
   filename: string
   contentType: string
   sizeBytes: number
@@ -39,7 +39,7 @@ export interface UploadedDocument {
 
 export interface DocumentRequest {
   id: string
-  caseId: string
+  claimId: string
   label: string
   reason: string
 }
@@ -73,27 +73,27 @@ export interface ChatAnswer {
   proposals: ProposalCard[]
 }
 
-export interface CaseOverview {
+export interface ClaimOverview {
   id: string
   reference: string
   typeLabel: string
-  status: CaseStatus
+  status: ClaimStatus
   requiredDocuments: string[]
   outstanding: string[]
 }
 
-export interface CreatedCase {
+export interface CreatedClaim {
   id: string
   reference: string
   typeLabel: string
   confidence: MatchConfidence
   rationale: string
   requiredDocuments: string[]
-  status: CaseStatus
+  status: ClaimStatus
 }
 
-export interface CaseDetail {
-  overview: CaseOverview
+export interface ClaimDetail {
+  overview: ClaimOverview
   documents: UploadedDocument[]
   countingDocumentIds: string[]
   blockedDocumentIds: string[]
@@ -120,5 +120,5 @@ export interface InterviewResponse {
   status: 'NEEDS_INFO' | 'DECIDED'
   questions: string[]
   rationale: string | null
-  createdCase: CreatedCase | null
+  createdCase: CreatedClaim | null
 }

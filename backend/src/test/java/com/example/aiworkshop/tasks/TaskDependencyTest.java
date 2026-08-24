@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
  * thing that is obvious in a review and invisible a month later, so it is checked here.
  *
  * <p>When a later task needs to change how an earlier one behaves, it contributes rather than being
- * called: task 2 answers task 1's CaseProgress, task 3 hands its guardrails to task 2 as beans,
- * task 4 listens for task 2's event. The dependency still points backwards in every case.
+ * called: task 2 answers task 1's ClaimProgress, task 3 hands its guardrails to task 2 as beans,
+ * task 4 listens for task 2's event. The dependency still points backwards in every claim.
  */
 class TaskDependencyTest {
     private static final Path TASKS = Path.of("src/main/java/com/example/aiworkshop/tasks");

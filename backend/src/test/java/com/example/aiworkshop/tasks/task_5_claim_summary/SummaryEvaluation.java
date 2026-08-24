@@ -2,10 +2,10 @@ package com.example.aiworkshop.tasks.task_5_claim_summary;
 
 import com.example.aiworkshop.tasks.task_5_claim_summary.evaluation.SummaryJudge;
 import com.example.aiworkshop.tasks.task_5_claim_summary.evaluation.SummaryRubric;
-import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimType;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.ExtractedField;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.QualityAssessment.Quality;
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.service.AiServices;
 import java.util.List;
@@ -20,7 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  *
  * <pre>./mvnw test -Dtest=SummaryEvaluation -Dsurefire.failIfNoSpecifiedTests=false</pre>
  *
- * <p>Nobody can write down the correct summary of a case, so the two techniques before this one are
+ * <p>Nobody can write down the correct summary of a claim, so the two techniques before this one are
  * both unavailable. What is left is to write down what a good summary must be true of, and ask each
  * question separately — which is {@link SummaryRubric}, and which is the only part of this you
  * could have done without a model.
@@ -34,7 +34,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class SummaryEvaluation {
 
     @Autowired
-    private CaseSummarizer summarizer;
+    private ClaimSummarizer summarizer;
 
     @Autowired
     private ChatModel chatModel;
@@ -42,7 +42,7 @@ class SummaryEvaluation {
     @Test
     void scoreTheSummary() {
         List<DocumentForSummary> documents = twoDocumentsOnACase();
-        String summary = summarizer.summarise(CaseType.MOTOR.label(), documents);
+        String summary = summarizer.summarise(ClaimType.MOTOR.label(), documents);
         SummaryJudge judge = AiServices.create(SummaryJudge.class, chatModel);
 
         System.out.printf("%nThe summary being judged:%n%n%s%n%n", summary);
@@ -68,7 +68,7 @@ class SummaryEvaluation {
                 by hand, before you look at what the judge said.
 
                 Where you and it disagree is the finding. If it passed something you would not have
-                shown a case handler, you have just watched a model mark its own homework and give
+                shown a claim handler, you have just watched a model mark its own homework and give
                 itself the benefit of the doubt — which is the ordinary outcome, and the reason a
                 number out of this is not evidence on its own.
 

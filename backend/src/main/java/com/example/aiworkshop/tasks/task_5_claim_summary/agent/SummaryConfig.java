@@ -12,15 +12,15 @@ import org.springframework.context.annotation.Configuration;
 class SummaryConfig {
 
     @Bean
-    CaseSummarizer caseSummarizer(ChatModel chatModel) {
+    ClaimSummarizer caseSummarizer(ChatModel chatModel) {
         return UnfinishedTasks.wire(
-                CaseSummarizer.class,
+                ClaimSummarizer.class,
                 WorkshopTask.CLAIM_SUMMARY,
-                () -> AiServices.create(CaseSummarizer.class, chatModel));
+                () -> AiServices.create(ClaimSummarizer.class, chatModel));
     }
 
     @Bean
-    CaseStatusWriter caseStatusWriter(ChatModel chatModel) {
-        return AiServices.create(CaseStatusWriter.class, chatModel);
+    ClaimStatusWriter caseStatusWriter(ChatModel chatModel) {
+        return AiServices.create(ClaimStatusWriter.class, chatModel);
     }
 }

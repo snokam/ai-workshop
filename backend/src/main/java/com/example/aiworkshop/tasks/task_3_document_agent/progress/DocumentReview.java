@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 /**
  * A handler overriding the agent.
  *
- * <p>When the analyser calls a document too poor to work with, the case stops. A human who can read
- * it anyway says so here, and the case moves on. Every agent that blocks something needs one of
- * these, or the first wrong answer is the last thing that ever happens on that case.
+ * <p>When the analyser calls a document too poor to work with, the claim stops. A human who can read
+ * it anyway says so here, and the claim moves on. Every agent that blocks something needs one of
+ * these, or the first wrong answer is the last thing that ever happens on that claim.
  */
 @Service
 public class DocumentReview {

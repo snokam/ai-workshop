@@ -27,7 +27,7 @@ public record DocumentForChat(
 
     private String standing() {
         if (matchedRequiredDocument == null) {
-            return "counts as nothing this case requires";
+            return "counts as nothing this claim requires";
         }
         return counting
                 ? "counts as \"%s\"".formatted(matchedRequiredDocument)
@@ -35,6 +35,6 @@ public record DocumentForChat(
     }
 
     private String renderedQuality() {
-        return reviewed ? quality + ", already reviewed by a case handler" : quality.toString();
+        return reviewed ? quality + ", already reviewed by a claim handler" : quality.toString();
     }
 }

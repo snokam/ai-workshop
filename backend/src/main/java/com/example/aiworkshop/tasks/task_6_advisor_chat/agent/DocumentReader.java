@@ -9,8 +9,8 @@ import java.util.List;
 public interface DocumentReader {
     @SystemMessage(
             """
-            You are looking at one file on behalf of a case handler who cannot make something out on
-            it. You know nothing else about the case, and you do not need to.
+            You are looking at one file on behalf of a claim handler who cannot make something out on
+            it. You know nothing else about the claim, and you do not need to.
 
             The question is: {{question}}
 
@@ -19,7 +19,7 @@ public interface DocumentReader {
             rather than guessing at the rest.
 
             If the file does not show what was asked about at all, say so plainly and stop. That is a
-            useful answer — it is what tells a case handler to stop looking and ask the claimant
+            useful answer — it is what tells a claim handler to stop looking and ask the claimant
             instead. A plausible answer invented from the rest of the file is the one thing that
             would make this worse than not asking.
 

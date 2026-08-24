@@ -1,8 +1,8 @@
 package com.example.aiworkshop.tasks.task_4_evaluation;
 
-import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
-import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseTypeSuggestion;
-import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimType;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimTypeSuggestion;
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.ClaimTypeClassifier;
 import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +19,9 @@ import org.springframework.boot.test.context.SpringBootTest;
  * <p>Kept out of the ordinary test run by its tag, because it calls a real model once per row.
  * {@code ./mvnw test} stays free and needs no credentials; this costs about ten calls.
  *
- * <p>The rules it is scored against are the classifier's own: it picks exactly one of the five case
+ * <p>The rules it is scored against are the classifier's own: it picks exactly one of the five claim
  * types, or nothing at all when none of them fit, and says how sure it is. Those are the rules to
- * label against in {@link LabelledCase}.
+ * label against in {@link LabelledClaim}.
  *
  * <p>It prints rather than asserts, and that is the exercise. A number on its own decides nothing —
  * the useful part is reading the disagreements and working out which are the model being wrong and
@@ -32,12 +32,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ClassifierEvaluation {
 
     @Autowired
-    private CaseTypeClassifier classifier;
+    private ClaimTypeClassifier classifier;
 
     @Test
     void scoreTheClassifier() {
         try {
-            classifier.classify(CaseType.catalog(), "a warm-up call, to fail early if task 1 is not written");
+            classifier.classify(ClaimType.catalog(), "a warm-up call, to fail early if task 1 is not written");
         } catch (TaskNotImplementedException notYet) {
             System.out.println("\nThere is nothing to evaluate yet — task 1's classifier is not written.\n");
             return;
@@ -49,8 +49,8 @@ class ClassifierEvaluation {
         System.out.printf("%n%-62s %-16s %-16s %s%n", "description", "expected", "answered", "confidence");
         System.out.println("-".repeat(120));
 
-        for (LabelledCase example : LabelledCase.all()) {
-            CaseTypeSuggestion answer = classifier.classify(CaseType.catalog(), example.description());
+        for (LabelledClaim example : LabelledClaim.all()) {
+            ClaimTypeSuggestion answer = classifier.classify(ClaimType.catalog(), example.description());
             boolean same = answer.type() == example.expected();
             agreed += same ? 1 : 0;
 
@@ -75,7 +75,7 @@ class ClassifierEvaluation {
             }
         }
 
-        System.out.printf("%n%d of %d agreed with the label.%n", agreed, LabelledCase.all().size());
+        System.out.printf("%n%d of %d agreed with the label.%n", agreed, LabelledClaim.all().size());
         if (!disagreements.isEmpty()) {
             System.out.printf("%nThe %d worth arguing about:%n%n", disagreements.size());
             disagreements.forEach(d -> System.out.println(d + System.lineSeparator()));

@@ -6,17 +6,14 @@ import com.example.aiworkshop.tasks.task_3_document_agent.model.QualityAssessmen
 import java.util.List;
 import java.util.stream.Collectors;
 
-// TODO — task 6, part 2. Decide what it is shown.
-//
-// This record is what the summariser is shown, once per document, on every open. Every component is
-// paid for every time, and the ones nobody reads are the whole of the cost with none of the value.
-//
-// Look at what is deliberately missing before adding anything. There are no bytes: the file was read
-// in task 3, and reading it again would pay twice for one answer and risk two descriptions of one
-// document on the same screen.
-//
-// Add a component and watch the summary change. That is the trade this task is about.
-
+/**
+ * What the summariser is shown, once per document, on every open.
+ *
+ * <p>Every component here is paid for every time, and the ones nobody reads are the whole of the
+ * cost with none of the value. Worth noticing what is deliberately missing: there are no bytes. The
+ * file was read in task 3, and reading it again would pay twice for one answer and risk two
+ * descriptions of one document on the same screen.
+ */
 public record DocumentForSummary(
         String filename, String category, String summary, List<ExtractedField> fields, Quality quality) {
     public static DocumentForSummary of(UploadedDocument document) {

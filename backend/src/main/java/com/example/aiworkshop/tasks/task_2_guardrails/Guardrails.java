@@ -54,7 +54,7 @@ public final class Guardrails {
         throw new TaskNotImplementedException(WorkshopTask.GUARDRAILS);
     }
 
-    /** Runs second. Refuses text there is nothing to open a case from. */
+    /** Runs second. Refuses text there is nothing to open a claim from. */
     public static InputGuardrail againstWastedCalls(ClaimCheck check) {
         // TODO — task 2, part 5. Hand back the claim guardrail.
         //

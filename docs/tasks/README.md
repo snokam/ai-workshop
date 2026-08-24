@@ -5,17 +5,17 @@ order to do them in.
 
 | | | you write |
 |---|---|---|
-| 1 | [Your first agent](./task_1_first_agent.md) | the SDK wiring, and an agent that reads a sentence and decides which case to open |
-| 2 | [Is this even a claim?](./task_2_guardrails.md) | two guardrails, before the call — refusing text with no case in it, and text addressed to the software |
+| 1 | [Your first agent](./task_1_first_agent.md) | the SDK wiring, and an agent that reads a sentence and decides which claim to open |
+| 2 | [Is this even a claim?](./task_2_guardrails.md) | two guardrails, before the call — refusing text with no claim in it, and text addressed to the software |
 | 3 | [Give it a file](./task_3_document_agent.md) | an agent handed a PDF or a photograph, and a record that is its output schema |
 | 4 | [How would you know?](./task_4_evaluation.md) | two sets, two evaluations — one over the classifier from task 1, one over the guardrails from task 2 |
-| 5 | [Case: Claim summary](./task_5_claim_summary.md) | the expensive agent: every document at once, what it is shown, and what that costs |
-| 6 | [Case: Advisor chat](./task_6_advisor_chat.md) | an agent that looks things up mid-answer, and the tool descriptions that decide when it does |
-| 7 | [Case: File claim with AI chat](./task_7_create_case_chat.md) | an intake agent that may ask before it commits |
+| 5 | [Claim: Claim summary](./task_5_claim_summary.md) | the expensive agent: every document at once, what it is shown, and what that costs |
+| 6 | [Claim: Advisor chat](./task_6_advisor_chat.md) | an agent that looks things up mid-answer, and the tool descriptions that decide when it does |
+| 7 | [Claim: File claim with AI chat](./task_7_create_claim_chat.md) | an intake agent that may ask before it commits |
 
 
 The first four build and check a single agent: write one, put a guardrail in front of it, hand it a
-file, then ask whether any of it works. Tasks 5 to 7 are the case itself — what happens to a claim
+file, then ask whether any of it works. Tasks 5 to 7 are the claim itself — what happens to a claim
 once documents start arriving, and the agents a handler needs once there is something to handle.
 
 Five comes before six because the advisor chat is shown the summary the claim summary writes.
@@ -29,7 +29,7 @@ are ordered so that stopping anywhere leaves something whole:
 | | |
 |---|---|
 | 0:00 | set up, and run both halves with nothing written |
-| 0:15 | **task 1** — the model, the agent, and the case its answer opens |
+| 0:15 | **task 1** — the model, the agent, and the claim its answer opens |
 | 1:15 | **task 2** — one guardrail, before the call, and what it saves |
 | 2:15 | break |
 | 2:25 | **task 3** — the same again with a file |
@@ -41,7 +41,7 @@ them.
 
 Do not try to fit more in. Task 1 and task 2 are where the ideas are: an interface that is an agent,
 a record that is the schema, a file that goes to the model as itself, and the moment a model's
-answer becomes the shape of someone's case. Rushing those to reach the ones that demo better trades
+answer becomes the shape of someone's claim. Rushing those to reach the ones that demo better trades
 the part that transfers for the part that impresses.
 
 If the room is quick, **task 4** is the better one to add rather than 5 — it is the shortest, and it
@@ -77,10 +77,10 @@ Each task folder holds what you write: the agent, its wiring, and the records it
 shape of. Every folder has a `README.md` saying which files are yours and which packages it reaches
 into.
 
-What it reaches into stays outside, and that is deliberate. `Case` and `UploadedDocument` and their
+What it reaches into stays outside, and that is deliberate. `Claim` and `UploadedDocument` and their
 stores are used by most of the seven tasks each — they are what the application *is*, and they would
 exist if there were no workshop. An agent is what a task *is*. Moving the domain inside the tasks
-would mean task 5 depending on task 1 for the idea of a case, which is not what it depends on at
+would mean task 5 depending on task 1 for the idea of a claim, which is not what it depends on at
 all.
 
 The one rule the layout does enforce: **a task may depend only on earlier tasks.** There are no
@@ -98,12 +98,12 @@ with the application running:
    repair myself."* You want `Motor insurance claim`, `HIGH`, and a checklist of three.
 2. Upload `assets/repair-receipt.pdf` to it. The card should name the amount that is actually on the
    receipt, in the currency it is printed in, and say something specific about the scan.
-3. Open a second, unrelated case — a theft, say — and upload **the same receipt** to it. The case
-   handler's screen must say the same file has been seen on another case. One expense, two claims,
+3. Open a second, unrelated claim — a theft, say — and upload **the same receipt** to it. The claim
+   handler's screen must say the same file has been seen on another claim. One expense, two claims,
    which is the oldest trick there is.
 4. Upload `assets/document-that-gives-orders.pdf` anywhere. The claimant's screen must not tell them
    which of their tricks was noticed; the handler's must.
-5. Ask the chat *"what is the total on the receipt?"* on a case that has no receipt, and read what
+5. Ask the chat *"what is the total on the receipt?"* on a claim that has no receipt, and read what
    it says rather than what you hoped it would say.
 6. Run [task 4](./task_4_evaluation.md) and sort the disagreements.
 
@@ -141,7 +141,7 @@ A worked version of all six is on the **`solutions`** branch, which is this repo
 task written.
 
 ```bash
-git show solutions:backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/agent/CaseTypeClassifier.java
+git show solutions:backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/agent/ClaimTypeClassifier.java
 ```
 
 Look after you have tried, not before. An afternoon lost to a compiler error teaches nobody anything

@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import { useNavigate, type NavigateFunction } from 'react-router-dom'
 import { interviewIntake } from '../../api'
-import type { CreatedCase, InterviewAnswer } from '../../api'
-import { rememberCase } from './openedCases'
+import type { CreatedClaim, InterviewAnswer } from '../../api'
+import { rememberCase } from './openedClaims'
 import { Loader } from '../../components/feedback/Loader'
 import { Failure } from '../../components/feedback/Failure'
 import { TaskGate } from '../../components/workshop/TaskGate'
 
-function openCreated(navigate: NavigateFunction, created: CreatedCase) {
+function openCreated(navigate: NavigateFunction, created: CreatedClaim) {
   rememberCase(created.id)
-  navigate(`/cases/${created.id}`, { state: { intro: created } })
+  navigate(`/claims/${created.id}`, { state: { intro: created } })
 }
 
 export function ReportWithChat() {
@@ -24,7 +24,7 @@ export function ReportWithChat() {
   const [error, setError] = useState<Error | null>(null)
 
   // The whole conversation is resent each turn, so the agent stays stateless and the page owns the
-  // history: on a decision the case is already open, so we jump straight to it.
+  // history: on a decision the claim is already open, so we jump straight to it.
   async function send(nextAnswers: InterviewAnswer[]) {
     setBusy(true)
     setError(null)
@@ -69,13 +69,13 @@ export function ReportWithChat() {
         <p>
           Tell us what happened. Unlike the quick report, the agent may ask a
           couple of follow-up questions first, so it can open exactly the right
-          case and ask only for the documents that situation needs.
+          claim and ask only for the documents that situation needs.
         </p>
       </header>
 
       <TaskGate
-        task="CREATE_CASE_CHAT"
-        instead="Holding a short conversation is how this case gets opened, and the agent that runs it has not been written yet."
+        task="CREATE_CLAIM_CHAT"
+        instead="Holding a short conversation is how this claim gets opened, and the agent that runs it has not been written yet."
       >
         <div className="intake-chat">
           {started && (
@@ -161,7 +161,7 @@ export function ReportWithChat() {
             busy && (
               <p className="reading">
                 <Loader />
-                Opening your case…
+                Opening your claim…
               </p>
             )
           )}

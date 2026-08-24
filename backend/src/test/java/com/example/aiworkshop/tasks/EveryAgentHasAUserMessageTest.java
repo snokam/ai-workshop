@@ -2,12 +2,12 @@ package com.example.aiworkshop.tasks;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.ClaimTypeClassifier;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
-import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.ClaimChatAgent;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.DocumentReader;
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.CaseStatusWriter;
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.CaseSummarizer;
+import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimStatusWriter;
+import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import java.lang.reflect.Method;
@@ -29,11 +29,11 @@ class EveryAgentHasAUserMessageTest {
 
     static Stream<Class<?>> agents() {
         return Stream.of(
-                CaseTypeClassifier.class,
+                ClaimTypeClassifier.class,
                 DocumentAnalyzer.class,
-                CaseChatAgent.class,
-                CaseSummarizer.class,
-                CaseStatusWriter.class,
+                ClaimChatAgent.class,
+                ClaimSummarizer.class,
+                ClaimStatusWriter.class,
                 DocumentReader.class);
     }
 

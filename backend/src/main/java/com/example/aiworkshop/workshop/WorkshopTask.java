@@ -1,33 +1,33 @@
 package com.example.aiworkshop.workshop;
 
-import com.example.aiworkshop.tasks.task_1_first_agent.CaseIntake;
-import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
-import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
+import com.example.aiworkshop.tasks.task_1_first_agent.ClaimIntake;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.Claim;
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.ClaimTypeClassifier;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiConfig;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_2_guardrails.Guardrails;
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.CaseSummarizer;
-import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.CaseChatAgent;
-import com.example.aiworkshop.tasks.task_7_create_case_chat.agent.CaseIntakeInterviewer;
+import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
+import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.ClaimChatAgent;
+import com.example.aiworkshop.tasks.task_7_create_claim_chat.agent.ClaimIntakeInterviewer;
 
 public enum WorkshopTask {
     FIRST_AGENT(
             1,
             "Your first agent",
             "tasks/task_1_first_agent/",
-            "Build the ChatModel in VertexAiConfig, write the @SystemMessage in CaseTypeClassifier,"
-                    + " and open the case its answer describes in CaseIntake."),
+            "Build the ChatModel in VertexAiConfig, write the @SystemMessage in ClaimTypeClassifier,"
+                    + " and open the claim its answer describes in ClaimIntake."),
     GUARDRAILS(
             2,
             "Is this even a claim?",
             "tasks/task_2_guardrails/Guardrails.java",
-            "Refuse text nobody could open a case from, and text that is instructing the system"
+            "Refuse text nobody could open a claim from, and text that is instructing the system"
                     + " rather than describing a situation, before either reaches the model."),
     DOCUMENT_AGENT(
             3,
             "Give it a file",
-            "tasks/task_3_document_agent/agent/DocumentAnalyzer.java",
-            "Write the agent that reads an uploaded PDF or photo."),
+            "tasks/task_3_document_agent/model/DocumentAnalysis.java",
+            "Say what two of the fields mean, then send the file to the model as a file."),
     EVALUATION(
             4,
             "How would you know?",
@@ -36,19 +36,19 @@ public enum WorkshopTask {
                     + " classifier from task 1 and the guardrails from task 2."),
     CLAIM_SUMMARY(
             5,
-            "Case: Claim summary",
-            "tasks/task_5_claim_summary/agent/CaseSummarizer.java",
-            "Write the agent that reads every document on a case at once."),
+            "Claim: Claim summary",
+            "tasks/task_5_claim_summary/agent/ClaimSummarizer.java",
+            "Write the agent that reads every document on a claim at once."),
     ADVISOR_CHAT(
             6,
-            "Case: Advisor chat",
-            "tasks/task_6_advisor_chat/agent/CaseChatAgent.java",
+            "Claim: Advisor chat",
+            "tasks/task_6_advisor_chat/agent/ClaimChatAgent.java",
             "Write the chat agent and its tools."),
-    CREATE_CASE_CHAT(
+    CREATE_CLAIM_CHAT(
             7,
-            "Case: File claim with AI chat",
-            "tasks/task_7_create_case_chat/agent/CaseIntakeInterviewer.java",
-            "Write the @SystemMessage in CaseIntakeInterviewer so it can ask before it commits.");
+            "Claim: File claim with AI chat",
+            "tasks/task_7_create_claim_chat/agent/ClaimIntakeInterviewer.java",
+            "Write the @SystemMessage in ClaimIntakeInterviewer so it can ask before it commits.");
 
 
     private static final String SOURCE_ROOT = "backend/src/main/java/com/example/aiworkshop/";

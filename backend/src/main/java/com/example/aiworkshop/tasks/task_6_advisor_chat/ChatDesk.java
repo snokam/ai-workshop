@@ -1,13 +1,13 @@
 package com.example.aiworkshop.tasks.task_6_advisor_chat;
 
-import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.ClaimChatAgent;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.DocumentReader;
-import com.example.aiworkshop.tasks.task_1_first_agent.CaseDesk;
-import com.example.aiworkshop.tasks.task_6_advisor_chat.store.CaseChatStore;
+import com.example.aiworkshop.tasks.task_1_first_agent.ClaimDesk;
+import com.example.aiworkshop.tasks.task_6_advisor_chat.store.ClaimChatStore;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.model.ChatAnswer;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.model.ChatTurn;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.model.ToolCall;
-import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.Claim;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.proposals.DocumentRequest;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.proposals.DocumentRequestProposal;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.store.DocumentRequestStore;
@@ -16,14 +16,14 @@ import com.example.aiworkshop.tasks.task_6_advisor_chat.proposals.ProposalCard;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.proposals.ProposalState;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.store.ProposalStore;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.proposals.ReviewProposal;
-import com.example.aiworkshop.tasks.task_1_first_agent.store.CaseStore;
+import com.example.aiworkshop.tasks.task_1_first_agent.store.ClaimStore;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.UploadedDocument;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentFiles;
-import com.example.aiworkshop.tasks.task_3_document_agent.progress.CaseDocuments;
+import com.example.aiworkshop.tasks.task_3_document_agent.progress.ClaimDocuments;
 import com.example.aiworkshop.tasks.task_3_document_agent.progress.DocumentReview;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_5_claim_summary.SummaryDesk;
-import com.example.aiworkshop.tasks.task_6_advisor_chat.model.CaseAtAGlance;
+import com.example.aiworkshop.tasks.task_6_advisor_chat.model.ClaimAtAGlance;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.model.DocumentForChat;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.model.DocumentInDetail;
 import dev.langchain4j.data.message.TextContent;
@@ -34,10 +34,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
- * Everything task 6 offers: one conversation about one case, and the proposals it puts up.
+ * Everything task 6 offers: one conversation about one claim, and the proposals it puts up.
  *
  * <p>The tools talk to this and nothing else, which is why none of them contains any logic — an
- * agent that could reach past this door would end up with a private version of the case.
+ * agent that could reach past this door would end up with a private version of the claim.
  *
  * <p>It reads task 5's summary rather than the documents. That is what the opening context is: the
  * agent starts knowing what the documents say together, and uses its tools for the detail.
@@ -45,33 +45,33 @@ import org.springframework.stereotype.Service;
 @Service
 public class ChatDesk {
 
-    private final CaseStore cases;
+    private final ClaimStore claims;
     private final DocumentStore documents;
     private final DocumentFiles files;
     private final ProposalStore proposals;
     private final DocumentRequestStore requests;
-    private final CaseChatStore chats;
-    private final CaseChatAgent chatAgent;
+    private final ClaimChatStore chats;
+    private final ClaimChatAgent chatAgent;
     private final DocumentReader reader;
     private final SummaryDesk summaries;
-    private final CaseDesk desk;
+    private final ClaimDesk desk;
     private final DocumentReview review;
 
     public ChatDesk(
-            CaseStore cases,
+            ClaimStore claims,
             DocumentStore documents,
             DocumentFiles files,
             ProposalStore proposals,
             DocumentRequestStore requests,
-            CaseChatStore chats,
+            ClaimChatStore chats,
             // The tools call this desk and this desk calls the agent that owns them, so one of the
             // two has to be resolved late. Spring cannot break the circle on its own.
-            @Lazy CaseChatAgent chatAgent,
+            @Lazy ClaimChatAgent chatAgent,
             DocumentReader reader,
             SummaryDesk summaries,
-            CaseDesk desk,
+            ClaimDesk desk,
             DocumentReview review) {
-        this.cases = cases;
+        this.claims = claims;
         this.documents = documents;
         this.files = files;
         this.proposals = proposals;
@@ -84,13 +84,13 @@ public class ChatDesk {
         this.review = review;
     }
 
-    public ChatAnswer chat(String caseId, String question) {
-        Case theCase = caseOrFail(caseId);
-        List<String> before = idsOfProposalsOn(caseId);
+    public ChatAnswer chat(String claimId, String question) {
+        Claim theClaim = caseOrFail(claimId);
+        List<String> before = idsOfProposalsOn(claimId);
 
-        Result<String> answered = chatAgent.answer(caseId, question, glanceAt(theCase));
+        Result<String> answered = chatAgent.answer(claimId, question, glanceAt(theClaim));
 
-        List<String> raised = idsOfProposalsOn(caseId).stream()
+        List<String> raised = idsOfProposalsOn(claimId).stream()
                 .filter(id -> !before.contains(id))
                 .toList();
         ChatTurn turn = new ChatTurn(
@@ -98,47 +98,47 @@ public class ChatDesk {
                 answered.content(),
                 answered.toolExecutions().stream().map(ToolCall::of).toList(),
                 raised);
-        chats.append(caseId, turn);
-        return new ChatAnswer(turn, proposalsOn(caseId));
+        chats.append(claimId, turn);
+        return new ChatAnswer(turn, proposalsOn(claimId));
     }
 
-    public List<ChatTurn> turnsOn(String caseId) {
-        return chats.findByCaseId(caseId);
+    public List<ChatTurn> turnsOn(String claimId) {
+        return chats.findByCaseId(claimId);
     }
 
-    public List<ProposalCard> proposalsOn(String caseId) {
-        return proposals.findByCaseId(caseId).stream().map(ProposalCard::of).toList();
+    public List<ProposalCard> proposalsOn(String claimId) {
+        return proposals.findByCaseId(claimId).stream().map(ProposalCard::of).toList();
     }
 
-    public String documentDetail(String caseId, String filename) {
-        return DocumentInDetail.of(documentIn(caseId, filename)).toString();
+    public String documentDetail(String claimId, String filename) {
+        return DocumentInDetail.of(documentIn(claimId, filename)).toString();
     }
 
-    public String readDocument(String caseId, String filename, String question) {
-        UploadedDocument document = documentIn(caseId, filename);
+    public String readDocument(String claimId, String filename, String question) {
+        UploadedDocument document = documentIn(claimId, filename);
         return reader.read(
                 List.of(TextContent.from("Look at the attached file."), files.contentOf(document)), question);
     }
 
-    public ProposalCard proposeReview(String caseId, String filename, String reason) {
-        UploadedDocument document = documentIn(caseId, filename);
+    public ProposalCard proposeReview(String claimId, String filename, String reason) {
+        UploadedDocument document = documentIn(claimId, filename);
         return raise(new ReviewProposal(
                 UUID.randomUUID().toString(),
-                caseId,
+                claimId,
                 document.id(),
                 document.filename(),
                 reason,
                 ProposalState.PROPOSED));
     }
 
-    public ProposalCard proposeDocumentRequest(String caseId, String label, String reason) {
-        caseOrFail(caseId);
+    public ProposalCard proposeDocumentRequest(String claimId, String label, String reason) {
+        caseOrFail(claimId);
         return raise(new DocumentRequestProposal(
-                UUID.randomUUID().toString(), caseId, label, reason, ProposalState.PROPOSED));
+                UUID.randomUUID().toString(), claimId, label, reason, ProposalState.PROPOSED));
     }
 
-    public List<DocumentRequest> requestsOn(String caseId) {
-        return requests.findByCaseId(caseId);
+    public List<DocumentRequest> requestsOn(String claimId) {
+        return requests.findByCaseId(claimId);
     }
 
     public ProposalCard confirm(String proposalId) {
@@ -151,7 +151,7 @@ public class ChatDesk {
             case DocumentRequestProposal requestProposal ->
                 requests.save(new DocumentRequest(
                         UUID.randomUUID().toString(),
-                        requestProposal.caseId(),
+                        requestProposal.claimId(),
                         requestProposal.label(),
                         requestProposal.reason()));
         }
@@ -165,33 +165,33 @@ public class ChatDesk {
                 : ProposalCard.of(proposal);
     }
 
-    private CaseAtAGlance glanceAt(Case theCase) {
-        List<UploadedDocument> attached = documents.findByCaseId(theCase.id());
+    private ClaimAtAGlance glanceAt(Claim theClaim) {
+        List<UploadedDocument> attached = documents.findByCaseId(theClaim.id());
         List<String> counting =
-                CaseDocuments.countingDocuments(theCase, attached).stream().map(UploadedDocument::id).toList();
-        return new CaseAtAGlance(
-                theCase.reference(),
-                theCase.type().label(),
-                CaseDocuments.statusOf(theCase, attached),
-                theCase.requiredDocuments(),
-                CaseDocuments.unmatchedRequiredDocuments(theCase, attached),
-                summaries.summaryOf(theCase, attached),
+                ClaimDocuments.countingDocuments(theClaim, attached).stream().map(UploadedDocument::id).toList();
+        return new ClaimAtAGlance(
+                theClaim.reference(),
+                theClaim.type().label(),
+                ClaimDocuments.statusOf(theClaim, attached),
+                theClaim.requiredDocuments(),
+                ClaimDocuments.unmatchedRequiredDocuments(theClaim, attached),
+                summaries.summaryOf(theClaim, attached),
                 attached.stream()
                         .map(document -> DocumentForChat.of(document, counting.contains(document.id())))
                         .toList(),
-                proposalsOn(theCase.id()));
+                proposalsOn(theClaim.id()));
     }
 
-    private Case caseOrFail(String caseId) {
-        return cases.findById(caseId).orElseThrow(() -> new CaseDesk.UnknownCaseException(caseId));
+    private Claim caseOrFail(String claimId) {
+        return claims.findById(claimId).orElseThrow(() -> new ClaimDesk.UnknownClaimException(claimId));
     }
 
-    private List<String> idsOfProposalsOn(String caseId) {
-        return proposals.findByCaseId(caseId).stream().map(Proposal::id).toList();
+    private List<String> idsOfProposalsOn(String claimId) {
+        return proposals.findByCaseId(claimId).stream().map(Proposal::id).toList();
     }
 
     private Proposal answerable(String proposalId) {
-        return proposals.findById(proposalId).orElseThrow(() -> new CaseDesk.UnknownProposalException(proposalId));
+        return proposals.findById(proposalId).orElseThrow(() -> new ClaimDesk.UnknownProposalException(proposalId));
     }
 
     private ProposalCard raise(Proposal proposal) {
@@ -199,10 +199,10 @@ public class ChatDesk {
         return ProposalCard.of(proposal);
     }
 
-    private UploadedDocument documentIn(String caseId, String filename) {
-        return documents.findByCaseId(caseId).stream()
+    private UploadedDocument documentIn(String claimId, String filename) {
+        return documents.findByCaseId(claimId).stream()
                 .filter(document -> document.filename().equals(filename))
                 .findFirst()
-                .orElseThrow(() -> new CaseDesk.UnknownDocumentException(filename));
+                .orElseThrow(() -> new ClaimDesk.UnknownDocumentException(filename));
     }
 }

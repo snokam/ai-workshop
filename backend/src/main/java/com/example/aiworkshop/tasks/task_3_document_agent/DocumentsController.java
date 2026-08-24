@@ -44,13 +44,13 @@ class DocumentsController {
 
     @PostMapping
     ResponseEntity<DocumentForClaimant> upload(
-            @RequestParam("caseId") String caseId, @RequestParam("file") MultipartFile file) throws IOException {
-        UploadedDocument document = intake.accept(caseId, file);
+            @RequestParam("claimId") String claimId, @RequestParam("file") MultipartFile file) throws IOException {
+        UploadedDocument document = intake.accept(claimId, file);
         log.info(
-                "Analysed {} ({}) for case {}: category={}, matched={}, quality={}",
+                "Analysed {} ({}) for claim {}: category={}, matched={}, quality={}",
                 document.filename(),
                 document.contentType(),
-                document.caseId(),
+                document.claimId(),
                 document.analysis().category(),
                 document.analysis().matchedRequiredDocument(),
                 document.analysis().quality().verdict());
@@ -87,7 +87,7 @@ class DocumentsController {
 
     @PostMapping("/{documentId}/review")
     ResponseEntity<Void> review(@PathVariable String documentId) {
-        log.info("Document {} reviewed by a case handler", documentId);
+        log.info("Document {} reviewed by a claim handler", documentId);
         review.markReviewed(documentId);
         return ResponseEntity.noContent().build();
     }
@@ -97,8 +97,8 @@ class DocumentsController {
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(Map.of("message", e.getMessage()));
     }
 
-    @ExceptionHandler(DocumentIntake.UnknownCaseException.class)
-    ResponseEntity<Map<String, String>> unknownCase(DocumentIntake.UnknownCaseException e) {
+    @ExceptionHandler(DocumentIntake.UnknownClaimException.class)
+    ResponseEntity<Map<String, String>> unknownCase(DocumentIntake.UnknownClaimException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
     }
 

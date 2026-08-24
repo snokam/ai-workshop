@@ -45,14 +45,14 @@ class DocumentForChatTest {
     void aDocumentThatMatchedNothingSaysSo() {
         String rendered = DocumentForChat.of(aHolidayPhoto(), false).toString();
 
-        assertThat(rendered).contains("counts as nothing this case requires");
+        assertThat(rendered).contains("counts as nothing this claim requires");
     }
 
     @Test
     void aReviewedDocumentSaysItHasBeenReviewed() {
         String rendered = DocumentForChat.of(aReceipt(Quality.POOR, true), true).toString();
 
-        assertThat(rendered).contains("quality POOR, already reviewed by a case handler");
+        assertThat(rendered).contains("quality POOR, already reviewed by a claim handler");
     }
 
     private static UploadedDocument aReceipt(Quality verdict, boolean reviewed) {

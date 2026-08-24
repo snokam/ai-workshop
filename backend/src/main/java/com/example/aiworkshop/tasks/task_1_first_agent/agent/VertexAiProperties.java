@@ -21,7 +21,7 @@ public record VertexAiProperties(
     /**
      * Which Google Cloud project to bill and authorise against.
      *
-     * <p>Normally GOOGLE_CLOUD_PROJECT, but the point of this method is the case where nobody set
+     * <p>Normally GOOGLE_CLOUD_PROJECT, but the point of this method is the claim where nobody set
      * it. Signing in to Claude Code leaves Application Default Credentials on the machine, and
      * those credentials already name a project — so asking a participant to export it as well is
      * asking them to repeat something their laptop already knows.

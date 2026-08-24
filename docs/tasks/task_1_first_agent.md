@@ -1,6 +1,6 @@
 # Task 1 — Your first agent
 
-Someone types what happened to them, in their own words. You have to work out which kind of case to
+Someone types what happened to them, in their own words. You have to work out which kind of claim to
 open. That is the whole exercise, and by the end you will have written a working LLM integration
 with no HTTP client, no JSON parsing and no prompt string concatenated by hand.
 
@@ -48,31 +48,31 @@ model and starts being about the agent, which is part 2.
 
 ## Part 2 — the agent
 
-Open `backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/agent/CaseTypeClassifier.java`.
+Open `backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/agent/ClaimTypeClassifier.java`.
 
 It is an interface, and it is the entire agent. There is no implementation to write:
 
 ```java
-public interface CaseTypeClassifier {
+public interface ClaimTypeClassifier {
     @SystemMessage("...")
-    CaseTypeSuggestion classify(@V("caseTypes") String caseTypes, @UserMessage String description);
+    ClaimTypeSuggestion classify(@V("caseTypes") String caseTypes, @UserMessage String description);
 }
 ```
 
-`AiServices.create(CaseTypeClassifier.class, chatModel)` in `FirstAgentConfig` generates the
+`AiServices.create(ClaimTypeClassifier.class, chatModel)` in `FirstAgentConfig` generates the
 implementation at runtime. That one line is the same for five of the six tasks — what differs
 between agents is never the wiring.
 
 Three things are doing work in that signature, and they are worth understanding before you write
 the prompt:
 
-**The return type is the output schema.** `CaseTypeSuggestion` is a record whose fields carry
+**The return type is the output schema.** `ClaimTypeSuggestion` is a record whose fields carry
 `@Description`. LangChain4j derives a JSON contract from it and holds the model to it, and because
-`type` is the `CaseType` enum, the model cannot invent a category that has no checklist behind it.
+`type` is the `ClaimType` enum, the model cannot invent a category that has no checklist behind it.
 Add a field to the record and the agent starts filling it in. Nothing parses a response by hand.
 
 **`@V` renders a value into the system message.** `{{caseTypes}}` is replaced with
-`CaseType.catalog()`, so the list the agent chooses from is generated from the same enum the case is
+`ClaimType.catalog()`, so the list the agent chooses from is generated from the same enum the claim is
 opened from. Write the catalogue into the prompt by hand and it goes stale the first time someone
 adds a type.
 
@@ -111,18 +111,18 @@ A system message that:
 - asks for one plain sentence of reasoning, in English, whatever language was written in
 - tells it not to address the person or ask them anything
 
-## Part 3 — the answer becomes a case
+## Part 3 — the answer becomes a claim
 
-An agent that returns a good answer nobody acts on has done nothing. `CaseIntake.open` is where the
-suggestion becomes the shape of someone's case, and it is the last thing to write.
+An agent that returns a good answer nobody acts on has done nothing. `ClaimIntake.open` is where the
+suggestion becomes the shape of someone's claim, and it is the last thing to write.
 
 ```java
-CaseTypeSuggestion suggestion = classifier.classify(CaseType.catalog(), description);
-CaseType type = suggestion.type();
+ClaimTypeSuggestion suggestion = classifier.classify(ClaimType.catalog(), description);
+ClaimType type = suggestion.type();
 // ...
 ```
 
-The type chosen decides `CaseType.requiredDocuments()`, which is the checklist the person is then
+The type chosen decides `ClaimType.requiredDocuments()`, which is the checklist the person is then
 asked to satisfy. That is the whole weight of this exercise in one line: a model picked a category,
 and a checklist appeared because of it.
 
@@ -137,14 +137,14 @@ cd backend && ./mvnw test -Dtest=TaskCompletionTest
 ```
 
 Eight tests, one per exercise. Task 1 should now be green — and so should
-`CaseTypeClassifierTest` and `ProviderSelectionTest`, which sit beside the code and check the
+`ClaimTypeClassifierTest` and `ProviderSelectionTest`, which sit beside the code and check the
 wiring rather than the flag.
 
 Then use it. With both halves running, describe something at http://localhost:5173 — the app said
-which file to open until now, and should open a case instead:
+which file to open until now, and should open a claim instead:
 
 ```bash
-curl -s -X POST localhost:8080/api/cases -H 'Content-Type: application/json' \
+curl -s -X POST localhost:8080/api/claims -H 'Content-Type: application/json' \
   -d '{"description":"Someone reversed into my parked car outside the shop."}' | jq
 ```
 
@@ -164,7 +164,7 @@ The interesting part is the boundary you just drew.
 
 ## If you finish early
 
-- **Add a field to `CaseTypeSuggestion`** — say, the one question worth asking back. Change nothing
+- **Add a field to `ClaimTypeSuggestion`** — say, the one question worth asking back. Change nothing
   else. It gets filled in, because the record is the schema.
 - **Take `{{caseTypes}}` out** and hard-code the list in the prompt. It still works, and it is now
   two lists that have to agree.

@@ -9,11 +9,11 @@ import { framework } from '../framework'
 import { useDarkMode } from '../useDarkMode'
 
 function backFrom(pathname: string): { url: string; text: string } | null {
-  if (/^\/casehandler\/cases\/[^/]+$/.test(pathname)) {
-    return { url: '/casehandler', text: 'All cases' }
+  if (/^\/claimhandler\/claims\/[^/]+$/.test(pathname)) {
+    return { url: '/claimhandler', text: 'All claims' }
   }
-  if (/^\/cases\/[^/]+$/.test(pathname)) {
-    return { url: '/cases', text: 'My cases' }
+  if (/^\/claims\/[^/]+$/.test(pathname)) {
+    return { url: '/claims', text: 'My claims' }
   }
   return null
 }
@@ -53,9 +53,9 @@ export function Layout({ children }: { children: ReactNode }) {
               </p>
             }
             links={[
-              { href: '/', text: 'Report a case (task 1, 2)' },
-              { href: '/cases', text: 'My cases (task 1, 3)' },
-              { href: '/casehandler', text: 'Case handler (task 3, 5, 6)' },
+              { href: '/', text: 'Report a claim (task 1, 2)' },
+              { href: '/claims', text: 'My claims (task 1, 3)' },
+              { href: '/claimhandler', text: 'Claim handler (task 3, 5, 6)' },
               { href: '/chat', text: 'Report with AI chat (task 7)' },
             ]}
           />

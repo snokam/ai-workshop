@@ -6,9 +6,9 @@ export async function listDocuments(): Promise<UploadedDocument[]> {
   return json(await fetch('/api/documents'))
 }
 
-export async function uploadDocument(caseId: string, file: File): Promise<UploadedDocument> {
+export async function uploadDocument(claimId: string, file: File): Promise<UploadedDocument> {
   const body = new FormData()
-  body.append('caseId', caseId)
+  body.append('claimId', claimId)
   body.append('file', file)
 
   return json(await fetch('/api/documents', { method: 'POST', body }))

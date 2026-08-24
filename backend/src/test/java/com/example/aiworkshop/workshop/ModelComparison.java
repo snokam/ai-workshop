@@ -1,9 +1,9 @@
 package com.example.aiworkshop.workshop;
 
-import com.example.aiworkshop.tasks.task_1_first_agent.agent.CaseTypeClassifier;
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.ClaimTypeClassifier;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiProperties;
-import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
-import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseTypeSuggestion;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimType;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimTypeSuggestion;
 import com.example.aiworkshop.tasks.task_3_document_agent.DocumentIntake;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.DocumentAnalysis;
@@ -89,8 +89,8 @@ class ModelComparison {
             }
 
             Probe structured = probe(() -> {
-                CaseTypeSuggestion answer = AiServices.create(CaseTypeClassifier.class, model)
-                        .classify(CaseType.catalog(), "Someone reversed into my parked car outside the shop.");
+                ClaimTypeSuggestion answer = AiServices.create(ClaimTypeClassifier.class, model)
+                        .classify(ClaimType.catalog(), "Someone reversed into my parked car outside the shop.");
                 return answer.type() != null && answer.confidence() != null;
             });
             Probe readsFile = probe(() -> {

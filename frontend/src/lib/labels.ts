@@ -1,5 +1,5 @@
 
-import type { CaseStatus, MatchConfidence, Quality, ToolCall } from '../api'
+import type { ClaimStatus, MatchConfidence, Quality, ToolCall } from '../api'
 
 export const QUALITY_LABEL: Record<Quality, string> = {
   GOOD: 'Looks good',
@@ -7,7 +7,7 @@ export const QUALITY_LABEL: Record<Quality, string> = {
   POOR: 'Hard to read',
 }
 
-export const STATUS_LABEL: Record<CaseStatus, string> = {
+export const STATUS_LABEL: Record<ClaimStatus, string> = {
   AWAITING_DOCUMENTS: 'Awaiting documents',
   NEEDS_REVIEW: 'Needs review',
   READY_FOR_DECISION: 'Ready for decision',
@@ -27,7 +27,7 @@ export const TOOL_LABEL: Record<string, string> = {
 }
 
 export const SUGGESTED_QUESTIONS = [
-  'What is this case waiting on?',
+  'What is this claim waiting on?',
   'Do any of the documents disagree with each other?',
   'Look at the poorest scan again — what can you make out?',
 ]

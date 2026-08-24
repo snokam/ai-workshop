@@ -1,5 +1,5 @@
 import type {
-  CaseOverview,
+  ClaimOverview,
   DocumentRequest,
   UploadedDocument,
 } from "../../../api";
@@ -8,9 +8,9 @@ export function Checklist({
   chosen,
   alsoSent = [],
   askedFor = [],
-  askedForHeading = "Your case handler has also asked for",
+  askedForHeading = "Your claim handler has also asked for",
 }: {
-  chosen: CaseOverview;
+  chosen: ClaimOverview;
   alsoSent?: UploadedDocument[];
   askedFor?: DocumentRequest[];
   /** The claimant and the handler are looking at the same list from opposite sides. */

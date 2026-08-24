@@ -1,12 +1,12 @@
 package com.example.aiworkshop.tasks.task_6_advisor_chat;
 
 import com.example.aiworkshop.tasks.task_5_claim_summary.SummaryDesk;
-import com.example.aiworkshop.tasks.task_1_first_agent.CaseDesk;
+import com.example.aiworkshop.tasks.task_1_first_agent.ClaimDesk;
 import com.example.aiworkshop.tasks.task_3_document_agent.progress.DocumentReview;
 import com.example.aiworkshop.tasks.task_3_document_agent.progress.DocumentProgress;
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.CaseSummarizer;
-import com.example.aiworkshop.tasks.task_5_claim_summary.agent.CaseStatusWriter;
-import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.CaseChatAgent;
+import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
+import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimStatusWriter;
+import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.ClaimChatAgent;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentFiles;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.UploadedDocument;
@@ -14,21 +14,21 @@ import com.example.aiworkshop.tasks.task_3_document_agent.model.QualityAssessmen
 import com.example.aiworkshop.tasks.task_1_first_agent.model.MatchConfidence;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.DocumentAnalysis;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.DocumentReader;
-import com.example.aiworkshop.tasks.task_5_claim_summary.store.CaseSummaryStore;
-import com.example.aiworkshop.tasks.task_1_first_agent.store.CaseStore;
+import com.example.aiworkshop.tasks.task_5_claim_summary.store.ClaimSummaryStore;
+import com.example.aiworkshop.tasks.task_1_first_agent.store.ClaimStore;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.store.ProposalStore;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.proposals.ProposalState;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.proposals.ProposalCard;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.store.DocumentRequestStore;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.proposals.DocumentRequest;
-import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
-import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseStatus;
-import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseOverview;
-import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimType;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimStatus;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimOverview;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.Claim;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.model.ChatTurn;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.model.ChatAnswer;
-import com.example.aiworkshop.tasks.task_6_advisor_chat.store.CaseChatStore;
-import com.example.aiworkshop.tasks.task_6_advisor_chat.model.CaseAtAGlance;
+import com.example.aiworkshop.tasks.task_6_advisor_chat.store.ClaimChatStore;
+import com.example.aiworkshop.tasks.task_6_advisor_chat.model.ClaimAtAGlance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
@@ -63,15 +63,15 @@ class ChatDeskTest {
 
     private static final byte[] SCAN = {1, 2, 3};
 
-    private final CaseStore cases = new CaseStore();
+    private final ClaimStore claims = new ClaimStore();
     private final DocumentStore documents = new DocumentStore();
-    private final CaseSummaryStore summaries = new CaseSummaryStore();
+    private final ClaimSummaryStore summaries = new ClaimSummaryStore();
     private final ProposalStore proposals = new ProposalStore();
     private final DocumentRequestStore requests = new DocumentRequestStore();
-    private final CaseChatStore chats = new CaseChatStore();
-    private final CaseSummarizer summarizer = mock(CaseSummarizer.class);
-    private final CaseStatusWriter statusWriter = mock(CaseStatusWriter.class);
-    private final CaseChatAgent chatAgent = mock(CaseChatAgent.class);
+    private final ClaimChatStore chats = new ClaimChatStore();
+    private final ClaimSummarizer summarizer = mock(ClaimSummarizer.class);
+    private final ClaimStatusWriter statusWriter = mock(ClaimStatusWriter.class);
+    private final ClaimChatAgent chatAgent = mock(ClaimChatAgent.class);
     private final DocumentReader reader = mock(DocumentReader.class);
 
     @TempDir
@@ -79,21 +79,21 @@ class ChatDeskTest {
 
     private DocumentFiles files;
     private ChatDesk desk;
-    private CaseDesk caseDesk;
-    private CaseFile caseFile;
+    private ClaimDesk caseDesk;
+    private ClaimFile caseFile;
 
     @BeforeEach
     void aCaseHeldUpByOneUnreadableDocument() throws IOException {
-        cases.save(new Case(CASE_ID, "CASE-2026-001", CaseType.HOME_CONTENTS, List.of("receipt")));
+        claims.save(new Claim(CASE_ID, "CASE-2026-001", ClaimType.HOME_CONTENTS, List.of("receipt")));
         documents.save(document("d-1", "blurry.jpg", "receipt", Quality.POOR));
         when(summarizer.summarise(anyString(), anyList()))
                 .thenReturn("What the documents say, taken together.");
         files = new DocumentFiles(directory);
         SummaryDesk summaryDesk = new SummaryDesk(summaries, summarizer, statusWriter);
-        caseDesk = new CaseDesk(cases, new DocumentProgress(documents));
-        caseFile = new CaseFile(caseDesk, documents, requests, summaryDesk);
+        caseDesk = new ClaimDesk(claims, new DocumentProgress(documents));
+        caseFile = new ClaimFile(caseDesk, documents, requests, summaryDesk);
         desk = new ChatDesk(
-                cases,
+                claims,
                 documents,
                 files,
                 proposals,
@@ -112,7 +112,7 @@ class ChatDeskTest {
 
         assertThat(desk.proposalsOn(CASE_ID)).containsExactly(proposed);
         assertThat(proposed.state()).isEqualTo(ProposalState.PROPOSED);
-        assertThat(statusOfTheCase()).isEqualTo(CaseStatus.NEEDS_REVIEW);
+        assertThat(statusOfTheCase()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
     }
 
     @Test
@@ -121,7 +121,7 @@ class ChatDeskTest {
 
         desk.confirm(proposed.id());
 
-        assertThat(statusOfTheCase()).isEqualTo(CaseStatus.READY_FOR_DECISION);
+        assertThat(statusOfTheCase()).isEqualTo(ClaimStatus.READY_FOR_DECISION);
         assertThat(desk.proposalsOn(CASE_ID))
                 .extracting(ProposalCard::state)
                 .containsExactly(ProposalState.CONFIRMED);
@@ -133,7 +133,7 @@ class ChatDeskTest {
 
         desk.decline(proposed.id());
 
-        assertThat(statusOfTheCase()).isEqualTo(CaseStatus.NEEDS_REVIEW);
+        assertThat(statusOfTheCase()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
         assertThat(desk.proposalsOn(CASE_ID))
                 .extracting(ProposalCard::state)
                 .containsExactly(ProposalState.DECLINED);
@@ -167,7 +167,7 @@ class ChatDeskTest {
 
         assertThat(overviewOfTheCase().requiredDocuments()).containsExactly("receipt");
         assertThat(overviewOfTheCase().outstanding()).isEmpty();
-        assertThat(statusOfTheCase()).isEqualTo(CaseStatus.NEEDS_REVIEW);
+        assertThat(statusOfTheCase()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
     }
 
     @Test
@@ -188,7 +188,7 @@ class ChatDeskTest {
 
         desk.confirm(proposed.id());
 
-        assertThat(statusOfTheCase()).isEqualTo(CaseStatus.NEEDS_REVIEW);
+        assertThat(statusOfTheCase()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
         assertThat(desk.proposalsOn(CASE_ID))
                 .extracting(ProposalCard::state)
                 .containsExactly(ProposalState.DECLINED);
@@ -196,11 +196,11 @@ class ChatDeskTest {
 
     @Test
     void theChatIsBoundToTheCaseItWasAskedIn() {
-        theAgentReplies("This case is waiting on a review of blurry.jpg.");
+        theAgentReplies("This claim is waiting on a review of blurry.jpg.");
 
         ChatAnswer answer = desk.chat(CASE_ID, "What is this waiting on?");
 
-        assertThat(answer.turn().answer()).isEqualTo("This case is waiting on a review of blurry.jpg.");
+        assertThat(answer.turn().answer()).isEqualTo("This claim is waiting on a review of blurry.jpg.");
         verify(chatAgent).answer(eq(CASE_ID), eq("What is this waiting on?"), any());
     }
 
@@ -288,7 +288,7 @@ class ChatDeskTest {
     @Test
     void aFilenameFromAnotherCaseIsNotFound() {
         assertThatThrownBy(() -> desk.documentDetail(CASE_ID, "someone-elses.pdf"))
-                .isInstanceOf(CaseDesk.UnknownDocumentException.class)
+                .isInstanceOf(ClaimDesk.UnknownDocumentException.class)
                 .hasMessageContaining("someone-elses.pdf");
     }
 
@@ -299,8 +299,8 @@ class ChatDeskTest {
         return captor.getValue();
     }
 
-    private CaseAtAGlance capturedGlance() {
-        ArgumentCaptor<CaseAtAGlance> captor = ArgumentCaptor.forClass(CaseAtAGlance.class);
+    private ClaimAtAGlance capturedGlance() {
+        ArgumentCaptor<ClaimAtAGlance> captor = ArgumentCaptor.forClass(ClaimAtAGlance.class);
         verify(chatAgent).answer(any(), any(), captor.capture());
         return captor.getValue();
     }
@@ -313,14 +313,14 @@ class ChatDeskTest {
                         .build());
     }
 
-    private CaseOverview overviewOfTheCase() {
+    private ClaimOverview overviewOfTheCase() {
         return caseDesk.list().stream()
                 .filter(overview -> overview.id().equals(CASE_ID))
                 .findFirst()
                 .orElseThrow();
     }
 
-    private CaseStatus statusOfTheCase() {
+    private ClaimStatus statusOfTheCase() {
         return caseDesk.list().stream()
                 .filter(overview -> overview.id().equals(CASE_ID))
                 .findFirst()

@@ -6,7 +6,7 @@ import dev.langchain4j.guardrail.InputGuardrailRequest;
 import dev.langchain4j.guardrail.InputGuardrailResult;
 
 /**
- * Refuses text nobody could open a case from, before the classifier is asked about it.
+ * Refuses text nobody could open a claim from, before the classifier is asked about it.
  *
  * <p>The judgement belongs to {@link ClaimCheck}, which is a model, and this class does nothing but
  * ask it and pass on the answer. There is no length rule and no list of greetings underneath,

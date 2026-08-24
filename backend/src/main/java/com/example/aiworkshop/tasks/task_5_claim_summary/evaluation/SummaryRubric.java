@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Questions to ask about a summary, when there is no right answer to compare it with.
  *
- * <p>Nobody can write down the correct summary of a case, so there is nothing to match. What can be
+ * <p>Nobody can write down the correct summary of a claim, so there is nothing to match. What can be
  * written down is what a good one must be true of, and each of these is a yes-or-no question a
  * reader could answer without arguing. That is the whole trick: not "is it good", which nothing can
  * score, but a handful of things that would each be obviously wrong if they failed.

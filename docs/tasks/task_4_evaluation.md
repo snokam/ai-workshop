@@ -1,7 +1,7 @@
 # Task 4 — How would you know?
 
 Every other task asks you to build something. This one asks whether what you built is any good, and
-it is the question that separates a demo from something you would put in front of a case handler.
+it is the question that separates a demo from something you would put in front of a claim handler.
 
 **Time:** 30 minutes. **You need:** tasks 1 and 2 working — they are what you are evaluating.
 
@@ -12,7 +12,7 @@ The parts, in order, are in `backend/src/main/java/com/example/aiworkshop/tasks/
 You have run the classifier a dozen times by now and it has been right every time, so it works.
 
 That is not evidence. You wrote the descriptions, and you wrote them the way you were already
-thinking about the categories. The cases that decide whether this is deployable are the ones you
+thinking about the categories. The claims that decide whether this is deployable are the ones you
 would not have thought to type.
 
 The same goes double for the guardrails, because both of them are models too. A rule you can read
@@ -30,7 +30,7 @@ they call a real model — a normal test run stays free and needs no credentials
 
 | Evaluation | Asks about | Set you build |
 |---|---|---|
-| `ClassifierEvaluation` | the classifier from task 1 | `LabelledCase` |
+| `ClassifierEvaluation` | the classifier from task 1 | `LabelledClaim` |
 | `GuardrailEvaluation` | both guardrails from task 2 | `GuardrailProbe` |
 
 Both print a table and then the rows that disagreed, in full. Note what neither does: **assert.**
@@ -38,13 +38,13 @@ There is no threshold to go green, and that is deliberate. A test that failed at
 you to change the prompt until it passed, which is how an agent gets better at the test and worse at
 the job.
 
-## Part 1 — label the cases you would argue about
+## Part 1 — label the claims you would argue about
 
-`tasks/task_4_evaluation/LabelledCase.java`. Three rows are written for you, and they are the three
+`tasks/task_4_evaluation/LabelledClaim.java`. Three rows are written for you, and they are the three
 kinds worth having: one plain, one where reasonable people disagree, one with no right answer among
 the five. Add seven or eight of your own to `yours()`.
 
-The rules to label against are the classifier's own: it picks exactly one of the five case types, or
+The rules to label against are the classifier's own: it picks exactly one of the five claim types, or
 nothing when none of them fit, and says how sure it is. `expected` may be null — "my neighbour parks
 across my drive" has no right answer, and expecting null asks whether the agent will admit that or
 force the nearest match to make the question go away.
@@ -116,8 +116,8 @@ is worth knowing:
 - **It scores one field.** The classifier evaluation checks the type and nothing else — not whether
   the rationale is honest, not whether the confidence means anything, not whether `LOW` correlates
   with being wrong. That last one is the most useful thing you could measure next.
-- **Four agents are still unmeasured.** `CaseStatusWriter`, `DocumentReader`, `CaseChatAgent` and
-  `CaseIntakeInterviewer` have nothing pointed at them. The first two would take the rubric you have
+- **Four agents are still unmeasured.** `ClaimStatusWriter`, `DocumentReader`, `ClaimChatAgent` and
+  `ClaimIntakeInterviewer` have nothing pointed at them. The first two would take the rubric you have
   already seen; the chat needs a different technique again, because what you would be scoring is
   which tool it called, and the interviewer a different one after that, because the thing being
   judged is a conversation and not an answer.
@@ -125,7 +125,7 @@ is worth knowing:
   how stable any of them is.
 - **It has no baseline.** Would a keyword match do as well? On the unambiguous half, probably. Worth
   knowing before paying for a model.
-- **Nobody labelled it but us.** Ten cases labelled by the person who wrote the prompt is the
+- **Nobody labelled it but us.** Ten claims labelled by the person who wrote the prompt is the
   weakest possible evidence, and it is what most "we evaluated it" amounts to.
 
 ## If you finish early

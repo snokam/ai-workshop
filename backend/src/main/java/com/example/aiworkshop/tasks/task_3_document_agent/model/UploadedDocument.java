@@ -4,7 +4,7 @@ import java.time.Instant;
 
 public record UploadedDocument(
         String id,
-        String caseId,
+        String claimId,
         String filename,
         String contentType,
         long sizeBytes,
@@ -14,6 +14,6 @@ public record UploadedDocument(
         boolean reviewed) {
     public UploadedDocument markReviewed() {
         return new UploadedDocument(
-                id, caseId, filename, contentType, sizeBytes, uploadedAt, contentHash, analysis, true);
+                id, claimId, filename, contentType, sizeBytes, uploadedAt, contentHash, analysis, true);
     }
 }

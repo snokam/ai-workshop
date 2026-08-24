@@ -9,7 +9,7 @@ second copy server-side bought nothing.
 
 ## What prompted it
 
-The Case Chat's whole premise is that a Case Handler can ask a question the screen does not answer.
+The Claim Chat's whole premise is that a Claim Handler can ask a question the screen does not answer.
 Some of those questions — "the scan is dark, can you make out the amount at the bottom" — are
 questions no Extraction can answer, because an Extraction is what an agent made of a file rather
 than the file. The intake agent saw the file once, at upload, and then it was gone with the tab.
@@ -22,19 +22,19 @@ system was built to notice.
 ## Considered options
 
 **Return the file from a tool.** LangChain4j supports returning image content from a tool, which
-would let the Case Chat agent look at the file itself with no second agent. Rejected on a fact
+would let the Claim Chat agent look at the file itself with no second agent. Rejected on a fact
 rather than a preference: the documented provider list covers Anthropic, Amazon Bedrock and Google
 AI Gemini — not Vertex AI Gemini's module, and not the OpenAI-compatible path. This application runs
 on both of the ones it does not cover. PDF content is not a supported tool return type on any of
 them. The `DocumentReader` agent exists because of this, and is a better shape regardless: an agent
-that knows nothing about the Case cannot be led by it.
+that knows nothing about the Claim cannot be led by it.
 
 **Keep the bytes in memory, in a map, like everything else.** Rejected on the day of the workshop
 rather than in principle. A room of people dragging in phone photos at 5–10 MB each, held for the
 life of the process, is a heap that only grows.
 
 **Have the browser re-send the file when the chat needs it.** Rejected: it only works for the tab
-that uploaded it, and the Case Handler is on the other screen entirely.
+that uploaded it, and the Claim Handler is on the other screen entirely.
 
 ## Consequences
 
@@ -49,6 +49,6 @@ that uploaded it, and the Case Handler is on the other screen entirely.
   file actually is.
 - **The Claimant's preview is unchanged.** It is still rendered from the file the browser already
   holds. Nothing about that path was touched, and there is no endpoint that serves the bytes back.
-- **This is not persistence.** The deferred storage decision stays deferred for Cases, Documents,
-  Case Summaries, Proposals and conversations. What changed is that one thing now outlives a
+- **This is not persistence.** The deferred storage decision stays deferred for Claims, Documents,
+  Claim Summaries, Proposals and conversations. What changed is that one thing now outlives a
   request, for one reason, with a lifetime deliberately tied to the process.

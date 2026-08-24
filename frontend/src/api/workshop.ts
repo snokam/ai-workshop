@@ -7,7 +7,7 @@ export type TaskKey =
   | 'GUARDRAILS'
   | 'ADVISOR_CHAT'
   | 'CLAIM_SUMMARY'
-  | 'CREATE_CASE_CHAT'
+  | 'CREATE_CLAIM_CHAT'
 
 export interface TaskState {
   number: number

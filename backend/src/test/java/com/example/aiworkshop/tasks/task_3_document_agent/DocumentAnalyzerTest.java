@@ -18,6 +18,9 @@ import org.junit.jupiter.api.Test;
  * <p>The second test here is the one worth having. Without {@code @UserMessage} on the file
  * argument LangChain4j looks for a message template, finds none, and sends the call anyway — with
  * no file and no error. The agent then answers, confidently, about a document it never saw.
+ *
+ * <p>Neither test asserts anything about what the prompt says. It is given rather than written in
+ * this task, and what it would otherwise have said is on the {@code @Description}s instead.
  */
 class DocumentAnalyzerTest {
 
@@ -30,9 +33,6 @@ class DocumentAnalyzerTest {
         SystemMessage system = analyse().getAnnotation(SystemMessage.class);
 
         assertThat(system).describedAs("analyse() needs an @SystemMessage").isNotNull();
-        assertThat(String.join("\n", system.value()))
-                .describedAs("the @SystemMessage still holds the brief it shipped with — write the prompt")
-                .doesNotContain("TODO");
     }
 
     @Test

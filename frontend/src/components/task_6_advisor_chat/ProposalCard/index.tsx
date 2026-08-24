@@ -9,7 +9,7 @@ export function ProposalCardView({
 }) {
   const what =
     proposal.kind === 'REVIEW'
-      ? `Review ${proposal.subject} — let the case proceed despite its quality`
+      ? `Review ${proposal.subject} — let the claim proceed despite its quality`
       : `Ask the claimant for ${proposal.subject}`
 
   return (

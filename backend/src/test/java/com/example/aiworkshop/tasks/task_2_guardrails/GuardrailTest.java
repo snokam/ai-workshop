@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
  *
  * <p>The judgements belong to models, so they are not tested here — what a model says about "hi", or
  * about a sentence that might be an instruction, is task 4's question, measured over a set rather
- * than asserted one case at a time. What is tested here is everything around the judgement, which is
+ * than asserted one claim at a time. What is tested here is everything around the judgement, which is
  * ordinary code and fails in ordinary ways.
  */
 class GuardrailTest {

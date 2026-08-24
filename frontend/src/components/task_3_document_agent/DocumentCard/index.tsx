@@ -30,7 +30,7 @@ export function DocumentCard({
 
         <p className="match">
           {!analysis.matchedRequiredDocument ? (
-            <span className="confidence low">Matches none of the documents this case needs — kept anyway</span>
+            <span className="confidence low">Matches none of the documents this claim needs — kept anyway</span>
           ) : standing === 'superseded' ? (
             <>
               Sent as <strong>{analysis.matchedRequiredDocument}</strong>{' '}
@@ -58,10 +58,10 @@ export function DocumentCard({
           )}
           {onReview && blocking && (
             <button className="review" onClick={onReview}>
-              I can read this — let the case proceed
+              I can read this — let the claim proceed
             </button>
           )}
-          {doc.reviewed && <p className="reviewed">Reviewed by a case handler.</p>}
+          {doc.reviewed && <p className="reviewed">Reviewed by a claim handler.</p>}
         </div>
 
         <p className="summary">{analysis.summary}</p>

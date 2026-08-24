@@ -1,9 +1,9 @@
 
-import type { CaseDetail, UploadedDocument } from '../../api'
+import type { ClaimDetail, UploadedDocument } from '../../api'
 
 export type Standing = 'counting' | 'superseded' | 'unmatched'
 
-export function standingOf(doc: UploadedDocument, detail: CaseDetail): Standing {
+export function standingOf(doc: UploadedDocument, detail: ClaimDetail): Standing {
   if (!doc.analysis.matchedRequiredDocument) return 'unmatched'
   return detail.countingDocumentIds.includes(doc.id) ? 'counting' : 'superseded'
 }

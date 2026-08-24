@@ -95,13 +95,13 @@ agent you write, the records it answers in, what is kept, and the endpoints the 
 
 | | |
 |---|---|
-| `task_1_first_agent/` | the model itself, a classifier, and the case its answer opens |
-| `task_2_guardrails/` | one guardrail, before the call — refusing text nobody could open a case from |
+| `task_1_first_agent/` | the model itself, a classifier, and the claim its answer opens |
+| `task_2_guardrails/` | one guardrail, before the call — refusing text nobody could open a claim from |
 | `task_3_document_agent/` | the agent that reads an uploaded PDF or photo |
 | `task_4_evaluation/` | the two sets the evaluations run over: `./mvnw test -Pevaluate` |
-| `task_5_claim_summary/` | the expensive agent, across every document on a case |
+| `task_5_claim_summary/` | the expensive agent, across every document on a claim |
 | `task_6_advisor_chat/` | tools and memory — the agent that suggests and never writes |
-| `task_7_create_case_chat/` | an interview instead of a form |
+| `task_7_create_claim_chat/` | an interview instead of a form |
 
 Inside a task the shape is always the same:
 
@@ -119,7 +119,7 @@ it. The test tree mirrors the same folders.
 
 **A task may use the tasks before it and never the ones after it.** That is what lets you stop
 after any exercise and still have something that runs. When a later task needs to change how an
-earlier one behaves it contributes rather than calls: task 2 answers task 1's `CaseProgress`, task
+earlier one behaves it contributes rather than calls: task 2 answers task 1's `ClaimProgress`, task
 3 hands its guardrails to task 2 as beans, task 4 listens for task 2's event. `TaskDependencyTest`
 fails if the rule is ever broken, and `WorkshopTaskTest` fails if a brief points at a file that has
 moved.
@@ -137,13 +137,13 @@ and the agent starts filling it in. They all write in English; see
 
 | | |
 |---|---|
-| `task_1_first_agent/agent/CaseTypeClassifier.java` | a sentence in, a case type out |
+| `task_1_first_agent/agent/ClaimTypeClassifier.java` | a sentence in, a claim type out |
 | `task_3_document_agent/agent/DocumentAnalyzer.java` | the file itself, sent as inline data |
-| `task_5_claim_summary/agent/CaseSummarizer.java` | the expensive one: every document, in one prompt |
-| `task_5_claim_summary/agent/CaseStatusWriter.java` | the cheap one: derived facts in, one situation report out |
-| `task_6_advisor_chat/agent/CaseChatAgent.java` | memory id, tools, and a `Result` so tool calls survive |
-| `task_6_advisor_chat/agent/DocumentReader.java` | a second agent, given the file and no case context at all |
-| `task_7_create_case_chat/agent/CaseIntakeInterviewer.java` | asks until it has enough to open a case |
+| `task_5_claim_summary/agent/ClaimSummarizer.java` | the expensive one: every document, in one prompt |
+| `task_5_claim_summary/agent/ClaimStatusWriter.java` | the cheap one: derived facts in, one situation report out |
+| `task_6_advisor_chat/agent/ClaimChatAgent.java` | memory id, tools, and a `Result` so tool calls survive |
+| `task_6_advisor_chat/agent/DocumentReader.java` | a second agent, given the file and no claim context at all |
+| `task_7_create_claim_chat/agent/ClaimIntakeInterviewer.java` | asks until it has enough to open a claim |
 
 An eighth lives in task 5, `SummaryJudge`, and is not part of the application. It is a model asked
 whether another model's answer holds up, which is the only way to score prose at any volume and the
@@ -165,7 +165,7 @@ frontend/src/
 ```
 
 Components follow the tasks the way the backend does. Pages do not, because a page is a screen
-rather than a task: the handler's case screen shows the work of six of them at once.
+rather than a task: the handler's claim screen shows the work of six of them at once.
 
 A screen that needs an unwritten task keeps working. The controls stay live, the explanation sits
 under them, and using them fails with the file to open — being told what to write is not the same

@@ -10,10 +10,10 @@ The parts, in order, are in `backend/src/main/java/com/example/aiworkshop/tasks/
 ## The problem
 
 Type `hi` into the box on the report screen and press the button. The classifier picks whichever of
-the five case types fits least badly, with `LOW` confidence and a courteous sentence explaining that
+the five claim types fits least badly, with `LOW` confidence and a courteous sentence explaining that
 there is not much to go on — a perfectly good answer to a question nobody should have asked.
 
-You paid for that. So did the case handler, who now has a case to close.
+You paid for that. So did the claim handler, who now has a claim to close.
 
 Then type this instead:
 
@@ -48,7 +48,7 @@ through. Both of those are the wrong way round, and no amount of tuning fixes it
 there is a situation in a piece of text is a question about meaning.
 
 So the guardrail asks a model. Not the classifier — a second, narrower one, with a single closed
-question and no catalogue to choose from: **is there anything here to open a case from?**
+question and no catalogue to choose from: **is there anything here to open a claim from?**
 
 That is `ClaimCheck`, and it is an agent exactly like the one in task 1: an interface, a system
 message, a return type. The difference is the shape of the question. Open questions get answers
@@ -117,7 +117,7 @@ over them in the real order.
 Two things the prompt has to get right, and both are easier to see once it is wrong:
 
 - **When in doubt, say yes.** Refusing someone with an unusual claim is far worse than opening a
-  case somebody has to close. The second wastes a minute; the first turns a person away.
+  claim somebody has to close. The second wastes a minute; the first turns a person away.
 - **Write the refusal to the claimant**, in their language — and in English when the text is too
   short or too garbled to have one. The first version of this answered `asdf asdf` in Spanish.
 
@@ -128,7 +128,7 @@ obvious reading of the title — and it is the wrong instinct.
 
 A guardrail that judged the subject would be a second, worse classifier standing in front of the
 first, disagreeing with it occasionally, and refusing people whose claims are unusual rather than
-absent. Deciding what kind of case this is has an agent already, and an unusual claim is exactly the
+absent. Deciding what kind of claim this is has an agent already, and an unusual claim is exactly the
 kind it exists to think about.
 
 The guardrail decides whether there is anything to read. The agent decides what it means.
@@ -137,7 +137,7 @@ The guardrail decides whether there is anything to read. The agent decides what 
 
 - **Try to get past it.** Then decide whether the rule you would add to stop yourself is worth what
   it would refuse by mistake.
-- **Time it.** How long does the check add to opening a case, and would you notice on the screen?
+- **Time it.** How long does the check add to opening a claim, and would you notice on the screen?
 - **Try a smaller model for the check.** The question is narrow, so it may not need the good one —
   and task 4 has the harness to tell you whether it holds up.
 - **Count what it saves.** Log every refusal for an afternoon and multiply by what a call costs. The

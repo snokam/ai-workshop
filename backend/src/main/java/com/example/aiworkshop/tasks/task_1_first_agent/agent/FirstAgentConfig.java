@@ -26,17 +26,17 @@ import org.springframework.context.annotation.Configuration;
 class FirstAgentConfig {
 
     /**
-     * The case intake agent: reads what a claimant typed and picks which case type to open.
+     * The claim intake agent: reads what a claimant typed and picks which claim type to open.
      *
      * <p>The guardrails arrive rather than being fetched. This agent takes whichever ones exist and
      * knows nothing about who wrote them — task 2 publishes one as a bean and it turns up here. Task
      * 1 has no idea task 2 exists, which is what lets the workshop be done in order.
      */
     @Bean
-    CaseTypeClassifier caseTypeClassifier(ChatModel chatModel, List<InputGuardrail> beforeTheCall) {
-        return UnfinishedTasks.wire(CaseTypeClassifier.class, WorkshopTask.FIRST_AGENT, () -> {
-            AiServices<CaseTypeClassifier> agent =
-                    AiServices.builder(CaseTypeClassifier.class).chatModel(chatModel);
+    ClaimTypeClassifier caseTypeClassifier(ChatModel chatModel, List<InputGuardrail> beforeTheCall) {
+        return UnfinishedTasks.wire(ClaimTypeClassifier.class, WorkshopTask.FIRST_AGENT, () -> {
+            AiServices<ClaimTypeClassifier> agent =
+                    AiServices.builder(ClaimTypeClassifier.class).chatModel(chatModel);
             if (!beforeTheCall.isEmpty()) {
                 agent.inputGuardrails(beforeTheCall);
             }

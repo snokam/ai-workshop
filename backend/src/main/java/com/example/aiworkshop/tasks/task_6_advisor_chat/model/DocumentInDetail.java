@@ -35,7 +35,7 @@ public record DocumentInDetail(
                 Extracted: %s
                 Quality: %s — %s
                 Issues: %s
-                Reviewed by a case handler: %s"""
+                Reviewed by a claim handler: %s"""
                 .formatted(
                         filename,
                         category,

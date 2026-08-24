@@ -9,9 +9,9 @@ import com.example.aiworkshop.tasks.task_3_document_agent.model.QualityAssessmen
 import com.example.aiworkshop.tasks.task_1_first_agent.model.MatchConfidence;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.ExtractedField;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.DocumentAnalysis;
-import com.example.aiworkshop.tasks.task_1_first_agent.store.CaseStore;
-import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseType;
-import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
+import com.example.aiworkshop.tasks.task_1_first_agent.store.ClaimStore;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimType;
+import com.example.aiworkshop.tasks.task_1_first_agent.model.Claim;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -56,7 +56,7 @@ class DocumentIntakeTest {
 
     private final DocumentAnalyzer analyzer = mock(DocumentAnalyzer.class);
     private final DocumentStore store = new DocumentStore();
-    private final CaseStore cases = new CaseStore();
+    private final ClaimStore claims = new ClaimStore();
     /** Intake announces that a document was stored; nothing in this test cares who hears it. */
 
     @TempDir
@@ -67,10 +67,10 @@ class DocumentIntakeTest {
 
     @BeforeEach
     void theClaimantHasACase() throws IOException {
-        cases.save(new Case(
-                CASE_ID, "CASE-2026-001", CaseType.HOME_CONTENTS, List.of("proof of identity", "receipt")));
+        claims.save(new Claim(
+                CASE_ID, "CASE-2026-001", ClaimType.HOME_CONTENTS, List.of("proof of identity", "receipt")));
         files = new DocumentFiles(directory);
-        intake = new DocumentIntake(analyzer, store, cases, files);
+        intake = new DocumentIntake(analyzer, store, claims, files);
     }
 
     @Test
@@ -84,9 +84,9 @@ class DocumentIntakeTest {
 
     @Test
     void anUploadNamingACaseThatDoesNotExistIsRefused() {
-        assertThatThrownBy(() -> intake.accept("no-such-case", image("receipt.jpg")))
-                .isInstanceOf(DocumentIntake.UnknownCaseException.class)
-                .hasMessageContaining("no-such-case");
+        assertThatThrownBy(() -> intake.accept("no-such-claim", image("receipt.jpg")))
+                .isInstanceOf(DocumentIntake.UnknownClaimException.class)
+                .hasMessageContaining("no-such-claim");
     }
 
     @Test
@@ -95,7 +95,7 @@ class DocumentIntakeTest {
 
         UploadedDocument document = intake.accept(CASE_ID, image("receipt.jpg"));
 
-        assertThat(document.caseId()).isEqualTo(CASE_ID);
+        assertThat(document.claimId()).isEqualTo(CASE_ID);
     }
 
     @Test

@@ -10,7 +10,7 @@ Do them in this order. Each is one file, and the `TODO` at the top of it has the
 
 | | File | What it is for |
 |---|---|---|
-| 1 | [`LabelledCase.java`](./LabelledCase.java) | Label the cases you would argue about |
+| 1 | [`LabelledClaim.java`](./LabelledClaim.java) | Label the claims you would argue about |
 | 2 | [`GuardrailProbe.java`](./GuardrailProbe.java) | Write what should and should not get past the door |
 
 ## Running them
@@ -24,7 +24,7 @@ they call a real model — a normal test run stays free and needs no credentials
 
 | Evaluation | Asks about | Set |
 |---|---|---|
-| `ClassifierEvaluation` | the classifier from task 1 | `LabelledCase` |
+| `ClassifierEvaluation` | the classifier from task 1 | `LabelledClaim` |
 | `GuardrailEvaluation` | both guardrails from task 2 | `GuardrailProbe` |
 
 Both print a table instead of asserting. That is deliberate: a number decides nothing, and the

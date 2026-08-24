@@ -6,7 +6,7 @@ import java.util.List;
 
 public record DocumentForClaimant(
         String id,
-        String caseId,
+        String claimId,
         String filename,
         String contentType,
         long sizeBytes,
@@ -18,7 +18,7 @@ public record DocumentForClaimant(
         DocumentAnalysis analysis = document.analysis();
         return new DocumentForClaimant(
                 document.id(),
-                document.caseId(),
+                document.claimId(),
                 document.filename(),
                 document.contentType(),
                 document.sizeBytes(),
