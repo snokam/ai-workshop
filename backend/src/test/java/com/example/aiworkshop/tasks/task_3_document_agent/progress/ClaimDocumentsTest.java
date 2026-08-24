@@ -22,12 +22,12 @@ class ClaimDocumentsTest {
     private static final Instant AT_TEN = Instant.parse("2026-08-15T10:00:00Z");
 
     @Test
-    void aCaseWithNothingUploadedIsAwaitingDocuments() {
+    void aClaimWithNothingUploadedIsAwaitingDocuments() {
         assertThat(ClaimDocuments.statusOf(THE_CASE, List.of())).isEqualTo(ClaimStatus.AWAITING_DOCUMENTS);
     }
 
     @Test
-    void aCaseIsReadyForDecisionOnceEveryRequiredDocumentHasArrived() {
+    void aClaimIsReadyForDecisionOnceEveryRequiredDocumentHasArrived() {
         List<UploadedDocument> documents =
                 List.of(document("proof of identity", Quality.GOOD), document("receipt", Quality.GOOD));
 
@@ -35,14 +35,14 @@ class ClaimDocumentsTest {
     }
 
     @Test
-    void oneRequiredDocumentStillMissingHoldsTheCaseAtAwaitingDocuments() {
+    void oneRequiredDocumentStillMissingHoldsTheClaimAtAwaitingDocuments() {
         List<UploadedDocument> documents = List.of(document("proof of identity", Quality.GOOD));
 
         assertThat(ClaimDocuments.statusOf(THE_CASE, documents)).isEqualTo(ClaimStatus.AWAITING_DOCUMENTS);
     }
 
     @Test
-    void aRequiredDocumentTooPoorToWorkWithHoldsTheCaseAtNeedsReview() {
+    void aRequiredDocumentTooPoorToWorkWithHoldsTheClaimAtNeedsReview() {
         List<UploadedDocument> documents =
                 List.of(document("proof of identity", Quality.GOOD), document("receipt", Quality.POOR));
 
@@ -50,7 +50,7 @@ class ClaimDocumentsTest {
     }
 
     @Test
-    void anAcceptableDocumentDoesNotBlockTheCase() {
+    void anAcceptableDocumentDoesNotBlockTheClaim() {
         List<UploadedDocument> documents =
                 List.of(document("proof of identity", Quality.GOOD), document("receipt", Quality.ACCEPTABLE));
 
@@ -65,7 +65,7 @@ class ClaimDocumentsTest {
     }
 
     @Test
-    void aReviewedDocumentNoLongerBlocksTheCase() {
+    void aReviewedDocumentNoLongerBlocksTheClaim() {
         List<UploadedDocument> documents = List.of(
                 document("proof of identity", Quality.GOOD),
                 document("receipt", Quality.POOR).markReviewed());
@@ -114,7 +114,7 @@ class ClaimDocumentsTest {
     }
 
     @Test
-    void lowConfidenceInAMatchDoesNotBlockTheCase() {
+    void lowConfidenceInAMatchDoesNotBlockTheClaim() {
         List<UploadedDocument> documents = List.of(
                 hedged(document("proof of identity", Quality.GOOD)), hedged(document("receipt", Quality.GOOD)));
 

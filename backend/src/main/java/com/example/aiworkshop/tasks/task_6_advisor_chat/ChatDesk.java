@@ -103,11 +103,11 @@ public class ChatDesk {
     }
 
     public List<ChatTurn> turnsOn(String claimId) {
-        return chats.findByCaseId(claimId);
+        return chats.findByClaimId(claimId);
     }
 
     public List<ProposalCard> proposalsOn(String claimId) {
-        return proposals.findByCaseId(claimId).stream().map(ProposalCard::of).toList();
+        return proposals.findByClaimId(claimId).stream().map(ProposalCard::of).toList();
     }
 
     public String documentDetail(String claimId, String filename) {
@@ -138,7 +138,7 @@ public class ChatDesk {
     }
 
     public List<DocumentRequest> requestsOn(String claimId) {
-        return requests.findByCaseId(claimId);
+        return requests.findByClaimId(claimId);
     }
 
     public ProposalCard confirm(String proposalId) {
@@ -166,7 +166,7 @@ public class ChatDesk {
     }
 
     private ClaimAtAGlance glanceAt(Claim theClaim) {
-        List<UploadedDocument> attached = documents.findByCaseId(theClaim.id());
+        List<UploadedDocument> attached = documents.findByClaimId(theClaim.id());
         List<String> counting =
                 ClaimDocuments.countingDocuments(theClaim, attached).stream().map(UploadedDocument::id).toList();
         return new ClaimAtAGlance(
@@ -187,7 +187,7 @@ public class ChatDesk {
     }
 
     private List<String> idsOfProposalsOn(String claimId) {
-        return proposals.findByCaseId(claimId).stream().map(Proposal::id).toList();
+        return proposals.findByClaimId(claimId).stream().map(Proposal::id).toList();
     }
 
     private Proposal answerable(String proposalId) {
@@ -200,7 +200,7 @@ public class ChatDesk {
     }
 
     private UploadedDocument documentIn(String claimId, String filename) {
-        return documents.findByCaseId(claimId).stream()
+        return documents.findByClaimId(claimId).stream()
                 .filter(document -> document.filename().equals(filename))
                 .findFirst()
                 .orElseThrow(() -> new ClaimDesk.UnknownDocumentException(filename));

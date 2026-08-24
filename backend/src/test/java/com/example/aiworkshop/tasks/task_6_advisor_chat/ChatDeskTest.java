@@ -83,7 +83,7 @@ class ChatDeskTest {
     private ClaimFile caseFile;
 
     @BeforeEach
-    void aCaseHeldUpByOneUnreadableDocument() throws IOException {
+    void aClaimHeldUpByOneUnreadableDocument() throws IOException {
         claims.save(new Claim(CASE_ID, "CASE-2026-001", ClaimType.HOME_CONTENTS, List.of("receipt")));
         documents.save(document("d-1", "blurry.jpg", "receipt", Quality.POOR));
         when(summarizer.summarise(anyString(), anyList()))
@@ -112,28 +112,28 @@ class ChatDeskTest {
 
         assertThat(desk.proposalsOn(CASE_ID)).containsExactly(proposed);
         assertThat(proposed.state()).isEqualTo(ProposalState.PROPOSED);
-        assertThat(statusOfTheCase()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
+        assertThat(statusOfTheClaim()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
     }
 
     @Test
-    void confirmingAProposedReviewMovesTheCase() {
+    void confirmingAProposedReviewMovesTheClaim() {
         ProposalCard proposed = desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
 
         desk.confirm(proposed.id());
 
-        assertThat(statusOfTheCase()).isEqualTo(ClaimStatus.READY_FOR_DECISION);
+        assertThat(statusOfTheClaim()).isEqualTo(ClaimStatus.READY_FOR_DECISION);
         assertThat(desk.proposalsOn(CASE_ID))
                 .extracting(ProposalCard::state)
                 .containsExactly(ProposalState.CONFIRMED);
     }
 
     @Test
-    void decliningAProposedReviewLeavesTheCaseWhereItWas() {
+    void decliningAProposedReviewLeavesTheClaimWhereItWas() {
         ProposalCard proposed = desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
 
         desk.decline(proposed.id());
 
-        assertThat(statusOfTheCase()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
+        assertThat(statusOfTheClaim()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
         assertThat(desk.proposalsOn(CASE_ID))
                 .extracting(ProposalCard::state)
                 .containsExactly(ProposalState.DECLINED);
@@ -159,15 +159,15 @@ class ChatDeskTest {
     }
 
     @Test
-    void aConfirmedDocumentRequestDoesNotChangeWhatTheCaseRequires() {
+    void aConfirmedDocumentRequestDoesNotChangeWhatTheClaimRequires() {
         ProposalCard proposed =
                 desk.proposeDocumentRequest(CASE_ID, "the second page of the receipt", "The total did not arrive.");
 
         desk.confirm(proposed.id());
 
-        assertThat(overviewOfTheCase().requiredDocuments()).containsExactly("receipt");
-        assertThat(overviewOfTheCase().outstanding()).isEmpty();
-        assertThat(statusOfTheCase()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
+        assertThat(overviewOfTheClaim().requiredDocuments()).containsExactly("receipt");
+        assertThat(overviewOfTheClaim().outstanding()).isEmpty();
+        assertThat(statusOfTheClaim()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
     }
 
     @Test
@@ -188,14 +188,14 @@ class ChatDeskTest {
 
         desk.confirm(proposed.id());
 
-        assertThat(statusOfTheCase()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
+        assertThat(statusOfTheClaim()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
         assertThat(desk.proposalsOn(CASE_ID))
                 .extracting(ProposalCard::state)
                 .containsExactly(ProposalState.DECLINED);
     }
 
     @Test
-    void theChatIsBoundToTheCaseItWasAskedIn() {
+    void theChatIsBoundToTheClaimItWasAskedIn() {
         theAgentReplies("This claim is waiting on a review of blurry.jpg.");
 
         ChatAnswer answer = desk.chat(CASE_ID, "What is this waiting on?");
@@ -205,7 +205,7 @@ class ChatDeskTest {
     }
 
     @Test
-    void theChatReusesTheCaseSummaryTheHandlerHasAlreadyPaidFor() {
+    void theChatReusesTheClaimSummaryTheHandlerHasAlreadyPaidFor() {
         theAgentReplies("Waiting on a review.");
         caseFile.open(CASE_ID, List.of(), List.of());
 
@@ -231,7 +231,7 @@ class ChatDeskTest {
     }
 
     @Test
-    void theConversationIsStillThereWhenTheCaseIsReopened() {
+    void theConversationIsStillThereWhenTheClaimIsReopened() {
         theAgentReplies("It is waiting on a review of blurry.jpg.");
 
         desk.chat(CASE_ID, "What is this waiting on?");
@@ -286,7 +286,7 @@ class ChatDeskTest {
     }
 
     @Test
-    void aFilenameFromAnotherCaseIsNotFound() {
+    void aFilenameFromAnotherClaimIsNotFound() {
         assertThatThrownBy(() -> desk.documentDetail(CASE_ID, "someone-elses.pdf"))
                 .isInstanceOf(ClaimDesk.UnknownDocumentException.class)
                 .hasMessageContaining("someone-elses.pdf");
@@ -313,14 +313,14 @@ class ChatDeskTest {
                         .build());
     }
 
-    private ClaimOverview overviewOfTheCase() {
+    private ClaimOverview overviewOfTheClaim() {
         return caseDesk.list().stream()
                 .filter(overview -> overview.id().equals(CASE_ID))
                 .findFirst()
                 .orElseThrow();
     }
 
-    private ClaimStatus statusOfTheCase() {
+    private ClaimStatus statusOfTheClaim() {
         return caseDesk.list().stream()
                 .filter(overview -> overview.id().equals(CASE_ID))
                 .findFirst()

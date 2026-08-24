@@ -41,7 +41,7 @@ class SummaryEvaluation {
 
     @Test
     void scoreTheSummary() {
-        List<DocumentForSummary> documents = twoDocumentsOnACase();
+        List<DocumentForSummary> documents = twoDocumentsOnAClaim();
         String summary = summarizer.summarise(ClaimType.MOTOR.label(), documents);
         SummaryJudge judge = AiServices.create(SummaryJudge.class, chatModel);
 
@@ -78,7 +78,7 @@ class SummaryEvaluation {
                 """);
     }
 
-    private static List<DocumentForSummary> twoDocumentsOnACase() {
+    private static List<DocumentForSummary> twoDocumentsOnAClaim() {
         return List.of(
                 new DocumentForSummary(
                         "repair-receipt.pdf",

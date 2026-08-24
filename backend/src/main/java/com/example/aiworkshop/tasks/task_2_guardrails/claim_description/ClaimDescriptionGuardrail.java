@@ -35,8 +35,8 @@ public class ClaimDescriptionGuardrail implements InputGuardrail {
         // Steps:
         //
         //   1. message.singleText() is what the person typed
-        //   2. ClaimCheck.Verdict verdict = check.couldOpenACaseFrom(...)
-        //   3. verdict.couldOpenACase() ? success() : fatal(verdict.whatWouldHelp())
+        //   2. ClaimCheck.Verdict verdict = check.couldOpenAClaimFrom(...)
+        //   3. verdict.couldOpenAClaim() ? success() : fatal(verdict.whatWouldHelp())
         //
         // fatal(...) and success() come from InputGuardrail, which this class implements.
         //

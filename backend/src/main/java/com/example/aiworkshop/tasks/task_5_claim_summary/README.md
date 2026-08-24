@@ -2,8 +2,6 @@
 
 You write the expensive agent: every document on a claim, read together, in one call.
 
-The brief is `docs/tasks/task_5_claim_summary.md`, from the repository root.
-
 ## The part
 
 One file, and the `TODO` at the top of it has the steps.
@@ -15,3 +13,11 @@ One file, and the `TODO` at the top of it has the steps.
 [`DocumentForSummary.java`](./DocumentForSummary.java) beside it is given, and worth reading before
 you start: it is what the agent is shown for each document, and every component of it is paid for on
 every open.
+
+## If you finish early
+
+- **Give it `DocumentInDetail` instead** of `DocumentForSummary`. Better answers, and now read what
+  it costs.
+- **Turn the cache off** and open the same claim five times. That is the bill for a screen refresh.
+- **Summarise the summary** for a claim with fifty documents. At what point does a summary need its
+  own summary, and what have you lost by then?

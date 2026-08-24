@@ -46,7 +46,7 @@ public class ClaimFile {
      */
     public ClaimDetail open(String claimId, List<ProposalCard> proposals, List<ChatTurn> conversation) {
         Claim theClaim = claims.require(claimId);
-        List<UploadedDocument> attached = documents.findByCaseId(claimId);
+        List<UploadedDocument> attached = documents.findByClaimId(claimId);
         ClaimOverview overview = claims.overviewOf(theClaim);
 
         return new ClaimDetail(
@@ -60,7 +60,7 @@ public class ClaimFile {
                         overview.status(),
                         overview.outstanding(),
                         whyEachBlockedDocumentIsBlocked(theClaim, attached)),
-                requests.findByCaseId(claimId),
+                requests.findByClaimId(claimId),
                 proposals,
                 conversation);
     }

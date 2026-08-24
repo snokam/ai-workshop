@@ -41,9 +41,9 @@ class ClaimTypeClassifierTest {
     void rendersTheCatalogueInsteadOfHardCodingIt() throws Exception {
         assertThat(String.join("\n", classify().getAnnotation(SystemMessage.class).value()))
                 .describedAs(
-                        "the prompt should render {{caseTypes}}, so the list the agent chooses from is the enum"
+                        "the prompt should render {{claimTypes}}, so the list the agent chooses from is the enum"
                                 + " the claim is opened from rather than a second copy that goes stale")
-                .contains("{{caseTypes}}");
+                .contains("{{claimTypes}}");
     }
 
     @Test

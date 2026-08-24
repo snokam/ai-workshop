@@ -24,20 +24,6 @@ import org.springframework.stereotype.Component;
  * the one it just proposed.
  */
 @Component
-// TODO — task 7, part 2. Write the tools.
-//
-// Two tools. The @Tool description is what decides whether a tool gets called — it is a prompt, not
-// documentation, and it is the whole exercise. Write it for a reader who has the claim summary in
-// front of them and is deciding whether they need more.
-//
-// The methods hold no logic. Each hands straight to the desk:
-//
-//   desk.documentDetail(claimId, filename)  the half the summary leaves out
-//   desk.readDocument(claimId, filename)    a second agent, given the file and no claim context
-//
-// @ToolMemoryId gives the tool the claim id the conversation belongs to, so the model does not have to
-// be told which claim it is on.
-
 public class ClaimChatTools {
 
     private final ChatDesk desk;
@@ -58,12 +44,22 @@ public class ClaimChatTools {
         return desk.documentDetail(claimId, filename);
     }
 
-    @Tool(
-            """
-            Have a second agent look at the original file and answer one question about it. Use this \
-            when the extracted facts do not contain what was asked, when the file was judged poor, \
-            or when the claim handler asks you to look again. Slower than the other tools, because a \
-            model reads the file.""")
+    // TODO — task 6, part 1. Write the two descriptions marked below.
+    //
+    // A @Tool description is a prompt, not documentation. It is the only thing the model reads when it
+    // decides whether to call this method, so it has to answer one question for a reader who has the
+    // claim summary in front of them: when would I need this instead of what I already have?
+    //
+    // The two above are written for you. Notice what they do beyond saying what the tool returns:
+    //
+    //   documentDetail   says when to reach for it ("whenever a question turns on what a document
+    //                    actually says") and what it will not do ("it does not open the file")
+    //   proposeReview    says outright that it performs nothing, because a model that thinks it has
+    //                    acted will tell the handler it has
+    //
+    // For this one: it is the expensive tool. A second agent opens the actual file. Say when that is
+    // worth it and when the cheaper one will do, or it will be called for everything.
+    @Tool("TODO — say what this does, when to use it instead of documentDetail, and what it costs.")
     String readDocument(
             @ToolMemoryId String claimId,
             @P("The document's filename, exactly as it appears in the claim index.") String filename,
@@ -87,10 +83,10 @@ public class ClaimChatTools {
         return desk.proposeReview(claimId, filename, reason);
     }
 
-    @Tool(
-            """
-            Suggest asking the claimant for a document. This performs nothing and reaches nobody. \
-            It puts a card in front of the claim handler, and only their click sends it.""")
+    // The second one to write. It reaches a person, eventually — but not by being called. Say what
+    // actually happens when the model calls it, or it will report to the handler that it has already
+    // asked the claimant.
+    @Tool("TODO — say what this does, and be exact about what it does not do.")
     ProposalCard proposeDocumentRequest(
             @ToolMemoryId String claimId,
             @P("What to ask the claimant for, in plain language they will understand.") String label,

@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { useNavigate, type NavigateFunction } from 'react-router-dom'
 import { interviewIntake } from '../../api'
 import type { CreatedClaim, InterviewAnswer } from '../../api'
-import { rememberCase } from './openedClaims'
+import { rememberClaim } from './openedClaims'
 import { Loader } from '../../components/feedback/Loader'
 import { Failure } from '../../components/feedback/Failure'
 import { TaskGate } from '../../components/workshop/TaskGate'
 
 function openCreated(navigate: NavigateFunction, created: CreatedClaim) {
-  rememberCase(created.id)
+  rememberClaim(created.id)
   navigate(`/claims/${created.id}`, { state: { intro: created } })
 }
 
@@ -30,8 +30,8 @@ export function ReportWithChat() {
     setError(null)
     try {
       const response = await interviewIntake(description.trim(), nextAnswers)
-      if (response.status === 'DECIDED' && response.createdCase) {
-        openCreated(navigate, response.createdCase)
+      if (response.status === 'DECIDED' && response.createdClaim) {
+        openCreated(navigate, response.createdClaim)
         return
       }
       setAnswered(nextAnswers)

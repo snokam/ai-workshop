@@ -9,7 +9,7 @@ setting, but nothing here is specific to it.
 Agents write their prose in **English**, whatever language the Documents are in. Extraction is the
 exception: field names and values are quoted off the Document and stay untranslated. Each agent
 states this in its own system message — see
-[ADR 0002](./docs/adr/0002-agents-write-in-english.md) for why, and for why the Claim Summary agent is
+the decisions at the end of this file for why, and for why the Claim Summary agent is
 handed a projection rather than the Documents.
 
 ## Language
@@ -48,7 +48,7 @@ grounded in Storebrand products (travel, home contents, disability, health treat
 carrying the Required Documents that kind of Claim needs. `OTHER` is the fallback when nothing fits.
 The type decides the checklist at creation and is kept on the Claim: it frames how the handler-side
 agents read across it, so a travel claim is summarised as a travel claim. See
-[ADR 0005](./docs/adr/0003-hardcoded-claim-types.md).
+the decisions at the end of this file.
 _Avoid_: category, claim kind
 
 **Claim Handler**:
@@ -129,4 +129,29 @@ Terms the domain clearly has, which are deliberately still open.
 
 - **The four Document Types** — not named. The intake agent returns free text until they are, and a
   Claim's Required Documents are plain labels rather than types. See
-  [ADR 0001](./docs/adr/0001-free-text-required-documents.md).
+  the decisions at the end of this file.
+
+## Decisions worth knowing
+
+Four choices that shaped the domain, and would be asked about by anyone reading the code cold.
+
+**Required Documents are free-text labels, matched by an agent.** The domain has document types, but
+they are not named yet, and a Claim Status is a checklist over required documents — so waiting for
+those names would have blocked the whole handler side. The agent is asked to copy a label back
+exactly from the list it was given, which is a weaker contract than an enum and the reason
+`matchedRequiredDocument` can come back null.
+
+**Claim Types are a hardcoded enum, with their required documents on them.** The claimant side opens
+with a free-text box, so something has to turn "my suitcase never arrived" into a checklist. Five
+types, each carrying its own list. A type nobody can classify into is worse than no type, which is
+why there is no "other".
+
+**Agents write in English, whatever language the documents are in.** Each agent says so in its own
+system message rather than inheriting it from anywhere: `AiServices.create` builds an agent from its
+interface alone, so the interface has to be the whole of the definition. Extracted field *names*
+stay in the document's own words — those are quoted, not written.
+
+**Uploaded files are kept on disk**, named by document id, in a configured directory emptied on
+startup. Everything else here is in memory. The bytes are kept because more than one agent needs the
+file itself: intake reads it once, and the advisor chat's `DocumentReader` opens it again later to
+answer a specific question.

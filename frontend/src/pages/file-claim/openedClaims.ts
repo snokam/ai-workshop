@@ -1,7 +1,7 @@
 
-const MY_CASES_KEY = 'myCaseIds'
+const MY_CASES_KEY = 'myClaimIds'
 
-export function rememberedCaseIds(): string[] {
+export function rememberedClaimIds(): string[] {
   try {
     const stored = JSON.parse(localStorage.getItem(MY_CASES_KEY) ?? '[]')
     return Array.isArray(stored) ? (stored as string[]) : []
@@ -10,7 +10,7 @@ export function rememberedCaseIds(): string[] {
   }
 }
 
-export function rememberCase(id: string) {
-  const ids = rememberedCaseIds()
+export function rememberClaim(id: string) {
+  const ids = rememberedClaimIds()
   if (!ids.includes(id)) localStorage.setItem(MY_CASES_KEY, JSON.stringify([id, ...ids]))
 }

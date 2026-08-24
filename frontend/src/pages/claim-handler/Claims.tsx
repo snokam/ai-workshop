@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { listCases } from '../../api'
+import { listClaims } from '../../api'
 import type { ClaimOverview } from '../../api'
 import { STATUS_LABEL } from '../../lib/labels'
 import { Failure } from '../../components/feedback/Failure'
@@ -8,13 +8,13 @@ import { TaskGate } from '../../components/workshop/TaskGate'
 import { useTaskPending } from '../../lib/task-state'
 
 export function Claims() {
-  const [claims, setCases] = useState<ClaimOverview[]>([])
+  const [claims, setClaims] = useState<ClaimOverview[]>([])
   const [error, setError] = useState<Error | null>(null)
   const firstAgentPending = useTaskPending('FIRST_AGENT')
 
   useEffect(() => {
-    listCases()
-      .then(setCases)
+    listClaims()
+      .then(setClaims)
       .catch((e: Error) => setError(e))
   }, [])
 

@@ -98,7 +98,7 @@ class DocumentsController {
     }
 
     @ExceptionHandler(DocumentIntake.UnknownClaimException.class)
-    ResponseEntity<Map<String, String>> unknownCase(DocumentIntake.UnknownClaimException e) {
+    ResponseEntity<Map<String, String>> unknownClaim(DocumentIntake.UnknownClaimException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
     }
 

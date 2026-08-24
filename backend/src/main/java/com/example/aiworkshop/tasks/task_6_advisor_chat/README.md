@@ -1,8 +1,6 @@
 # Task 6 — Claim: Advisor chat
 
-You write an agent with tools and a memory, that suggests and never writes.
-
-The brief is `docs/tasks/task_6_advisor_chat.md`, from the repository root.
+You write what makes a tool get called, and the one line that hands the tools over.
 
 ## The parts
 
@@ -10,5 +8,27 @@ Do them in this order. Each is one file, and the `TODO` at the top of it has the
 
 | | File | What it is for |
 |---|---|---|
-| 1 | [`agent/ClaimChatAgent.java`](./agent/ClaimChatAgent.java) | Write the agent |
-| 2 | [`agent/ClaimChatTools.java`](./agent/ClaimChatTools.java) | Write the tools |
+| 1 | [`agent/ClaimChatTools.java`](./agent/ClaimChatTools.java) | Describe two of the tools |
+| 2 | [`agent/ChatConfig.java`](./agent/ChatConfig.java) | Give the model its tools |
+
+The agent's `@SystemMessage` in [`agent/ClaimChatAgent.java`](./agent/ClaimChatAgent.java) is given.
+The prompt is not what decides whether a tool is used — the `@Tool` description is, and that is what
+you write.
+
+A tool description is a prompt. It is the only thing the model reads when it decides whether to call
+a method, so it has to answer one question for a reader who already has the claim summary in front
+of them: **when would I need this instead of what I already have?** Two of the four are written as
+worked examples; two are yours.
+
+Then `.tools(...)` in `ChatConfig` is what makes any of it reachable. Until that call is there the
+agent is built without them, and the failure is worth seeing once: it does not report that it cannot
+check anything. It answers anyway, fluently, from the summary it was given.
+
+## If you finish early
+
+- **Drop `Result<Answer>` to `Answer`** and watch the tool calls disappear from the screen while the
+  answers stay correct.
+- **Set the window to 2 messages** and have a four-turn conversation. Where exactly does it start
+  contradicting itself?
+- **Add a tool** that returns something the agent could work out itself. Does it call it? Tools it
+  does not need are how a cheap agent becomes an expensive one.

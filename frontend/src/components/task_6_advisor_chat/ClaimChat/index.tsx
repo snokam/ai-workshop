@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { askCaseChat, confirmProposal, declineProposal } from '../../../api'
+import { askClaimChat, confirmProposal, declineProposal } from '../../../api'
 import type { ClaimDetail, ChatTurn, ProposalCard } from '../../../api'
 import { SUGGESTED_QUESTIONS } from '../../../lib/labels'
 import { Turn } from '../Turn'
@@ -9,10 +9,10 @@ import { TaskGate } from '../../workshop/TaskGate'
 
 export function ClaimChat({
   detail,
-  onCaseChanged,
+  onClaimChanged,
 }: {
   detail: ClaimDetail
-  onCaseChanged: () => Promise<void>
+  onClaimChanged: () => Promise<void>
 }) {
   const [turns, setTurns] = useState<ChatTurn[]>(detail.conversation)
   const [proposals, setProposals] = useState<ProposalCard[]>(detail.proposals)
@@ -31,7 +31,7 @@ export function ClaimChat({
     setThinking(true)
     setQuestion('')
     try {
-      const answered = await askCaseChat(detail.overview.id, asked)
+      const answered = await askClaimChat(detail.overview.id, asked)
       setTurns((current) => [...current, answered.turn])
       setProposals(answered.proposals)
     } catch (e) {
@@ -50,7 +50,7 @@ export function ClaimChat({
       setProposals((current) =>
         current.map((p) => (p.id === resolved.id ? resolved : p)),
       )
-      if (confirmed && resolved.kind === 'REVIEW') await onCaseChanged()
+      if (confirmed && resolved.kind === 'REVIEW') await onClaimChanged()
     } catch (e) {
       setError(e as Error)
     }

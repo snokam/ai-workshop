@@ -1,5 +1,6 @@
 package com.example.aiworkshop.workshop;
 
+import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.model.output.structured.Description;
 import dev.langchain4j.service.SystemMessage;
 import java.lang.reflect.Method;
@@ -49,6 +50,17 @@ public final class UnfinishedTasks {
                 }
             } catch (NoSuchFieldException e) {
                 throw new IllegalStateException("a record component always has a field", e);
+            }
+        }
+        return true;
+    }
+
+    /** True while every {@code @Tool} description on the type has been written. */
+    public static boolean toolDescriptionsWritten(Class<?> tools) {
+        for (Method method : tools.getDeclaredMethods()) {
+            Tool described = method.getAnnotation(Tool.class);
+            if (described != null && String.join(" ", described.value()).contains("TODO")) {
+                return false;
             }
         }
         return true;

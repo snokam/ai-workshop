@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { listCases } from "../../api";
+import { listClaims } from "../../api";
 import type { ClaimOverview } from "../../api";
 import { STATUS_LABEL } from "../../lib/labels";
-import { rememberedCaseIds } from "./openedClaims";
+import { rememberedClaimIds } from "./openedClaims";
 import { Failure } from "../../components/feedback/Failure";
 import { TaskGate } from "../../components/workshop/TaskGate";
 
 export function MyClaims() {
-  const [claims, setCases] = useState<ClaimOverview[] | null>(null);
+  const [claims, setClaims] = useState<ClaimOverview[] | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const mine = new Set(rememberedCaseIds());
-    listCases()
-      .then((all) => setCases(all.filter((c) => mine.has(c.id))))
+    const mine = new Set(rememberedClaimIds());
+    listClaims()
+      .then((all) => setClaims(all.filter((c) => mine.has(c.id))))
       .catch((e: Error) => setError(e));
   }, []);
 

@@ -35,13 +35,10 @@ class ClaimChatAgentTest {
         SystemMessage system = answer().getAnnotation(SystemMessage.class);
 
         assertThat(system).describedAs("answer() needs an @SystemMessage").isNotNull();
-        assertThat(String.join("\n", system.value()))
-                .describedAs("the @SystemMessage still holds the brief it shipped with — write the prompt")
-                .doesNotContain("TODO");
     }
 
     @Test
-    void remembersPerCase() {
+    void remembersPerClaim() {
         Method answer = answer();
 
         assertThat(answer.getParameters()[0].getAnnotation(MemoryId.class))

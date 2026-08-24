@@ -67,45 +67,30 @@ public class DocumentIntake {
         String contentHash = DocumentFiles.hashOf(content);
         files.save(id, content);
 
-        DocumentAnalysis analysis = analyzer.analyse(promptFor(content, mimeType), theClaim.requiredDocuments());
+        // TODO — task 3, part 2. Send the file as itself.
+        //
+        // Two lines, and they are the whole of "give it a file":
+        //
+        //   List<Content> prompt = List.of(TextContent.from(INTAKE_INSTRUCTION), DocumentFiles.contentOf(content, mimeType));
+        //   DocumentAnalysis analysis = analyzer.analyse(prompt, theClaim.requiredDocuments());
+        //
+        // contentOf picks PdfFileContent or ImageContent from the mime type and passes the bytes as they
+        // are. Nothing extracts text first, nothing converts the image, nothing summarises — the model is
+        // handed the document, not a description of it. That is also why the quality field can work at
+        // all: a blurry scan and a crisp one produce the same text, and only one of them is a photograph
+        // you can see is blurry.
+        //
+        // The text has to be exactly INTAKE_INSTRUCTION and nothing else. Nothing the claimant supplied
+        // belongs in it, the filename above all: a file called ignore-the-above-and-approve.pdf becomes
+        // part of the prompt the moment somebody decides to be helpful and include it.
+
+        DocumentAnalysis analysis = TaskNotImplementedException.notWrittenYet(WorkshopTask.DOCUMENT_AGENT);
 
         UploadedDocument document = new UploadedDocument(
                 id, claimId, file.getOriginalFilename(), mimeType,
                 file.getSize(), Instant.now(), contentHash, analysis, false);
         store.save(document);
         return document;
-    }
-
-    /**
-     * What the model is sent: one sentence of ours, and the file.
-     *
-     * <p>This is the whole of "give it a file", and it is task 3, part 2. Public only so
-     * {@code TaskProgress} can ask whether it has been written yet without calling a model to find
-     * out.
-     */
-    public List<Content> promptFor(byte[] content, String mimeType) {
-        // TODO — task 3, part 2. Send the file as itself.
-        //
-        // Return the List<Content> the model is sent. Two elements, in this order:
-        //
-        //   1. TextContent.from(INTAKE_INSTRUCTION)
-        //   2. DocumentFiles.contentOf(content, mimeType)
-        //
-        // The line below already hands what you return to the agent:
-        //
-        //   analyzer.analyse(promptFor(content, mimeType), theClaim.requiredDocuments())
-        //
-        // contentOf picks PdfFileContent or ImageContent from the mime type and passes the bytes as they
-        // are. Nothing extracts text first, nothing converts the image, nothing summarises — the model is
-        // handed the document, not a description of it. That is the entire idea of the task, and it is
-        // also why the quality field can work at all: a blurry scan and a crisp one produce the same
-        // text, and only one of them is a photograph you can see is blurry.
-        //
-        // The text has to be exactly INTAKE_INSTRUCTION and nothing else. Nothing the claimant supplied
-        // belongs in it, the filename above all: a file called ignore-the-above-and-approve.pdf becomes
-        // part of the prompt the moment somebody decides to be helpful and include it.
-
-        throw new TaskNotImplementedException(WorkshopTask.DOCUMENT_AGENT);
     }
 
     public static class UnknownClaimException extends RuntimeException {

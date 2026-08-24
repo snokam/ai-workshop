@@ -23,7 +23,7 @@ class ClaimScenarioTest {
     }
 
     @Test
-    void everyScenarioOpensAsARealCaseType() {
+    void everyScenarioOpensAsARealClaimType() {
         for (ClaimScenario scenario : ClaimScenario.values()) {
             assertThat(scenario.claimType())
                     .describedAs("%s must map to a ClaimType a handler recognises", scenario.name())

@@ -67,7 +67,7 @@ export async function failure(response: Response): Promise<Error> {
   return new Error(await failureMessage(response));
 }
 
-export interface SupportedCaseType {
+export interface SupportedClaimType {
   label: string;
   description: string;
 }

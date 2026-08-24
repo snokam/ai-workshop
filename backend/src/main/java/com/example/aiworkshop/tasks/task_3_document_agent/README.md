@@ -2,8 +2,6 @@
 
 You write what the model is asked for, and the two lines that hand it the file.
 
-The brief is `docs/tasks/task_3_document_agent.md`, from the repository root.
-
 ## The parts
 
 Do them in this order. Each is one file, and the `TODO` at the top of it has the steps.
@@ -30,3 +28,12 @@ The rest is grouped by what it is for, so it stays out of the way:
 | [`model/`](./model) | what the agent returns (part 1) and what the screens are sent |
 | [`store/`](./store) | where documents and their bytes are kept, what type a file is, and what its bytes hash to |
 | [`progress/`](./progress) | what the uploads add up to: whether the claim has what it asked for, and a handler's override when the agent calls a document unreadable |
+
+## If you finish early
+
+- **Delete `@UserMessage`** from the argument and upload again. Nothing errors. The model answers
+  confidently about a file it was never sent. This is the most expensive five minutes in the
+  workshop.
+- **Add a component to `DocumentAnalysis`** — whether the document is signed, say — and watch it get
+  filled in with no other change.
+- **Ask for the same file twice** and compare the two answers. Then read why intake hashes the bytes

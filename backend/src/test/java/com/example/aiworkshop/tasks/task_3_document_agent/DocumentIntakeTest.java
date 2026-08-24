@@ -66,7 +66,7 @@ class DocumentIntakeTest {
     private DocumentIntake intake;
 
     @BeforeEach
-    void theClaimantHasACase() throws IOException {
+    void theClaimantHasAClaim() throws IOException {
         claims.save(new Claim(
                 CASE_ID, "CASE-2026-001", ClaimType.HOME_CONTENTS, List.of("proof of identity", "receipt")));
         files = new DocumentFiles(directory);
@@ -83,14 +83,14 @@ class DocumentIntakeTest {
     }
 
     @Test
-    void anUploadNamingACaseThatDoesNotExistIsRefused() {
+    void anUploadNamingAClaimThatDoesNotExistIsRefused() {
         assertThatThrownBy(() -> intake.accept("no-such-claim", image("receipt.jpg")))
                 .isInstanceOf(DocumentIntake.UnknownClaimException.class)
                 .hasMessageContaining("no-such-claim");
     }
 
     @Test
-    void anUploadedDocumentRecordsTheCaseItBelongsTo() throws IOException {
+    void anUploadedDocumentRecordsTheClaimItBelongsTo() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
 
         UploadedDocument document = intake.accept(CASE_ID, image("receipt.jpg"));
@@ -99,7 +99,7 @@ class DocumentIntakeTest {
     }
 
     @Test
-    void theAgentIsToldWhatTheCaseIsWaitingFor() throws IOException {
+    void theAgentIsToldWhatTheClaimIsWaitingFor() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
 
         intake.accept(CASE_ID, image("receipt.jpg"));
@@ -130,12 +130,12 @@ class DocumentIntakeTest {
     }
 
     @Test
-    void aPoorDocumentIsStillAttachedToItsCase() throws IOException {
+    void aPoorDocumentIsStillAttachedToItsClaim() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
 
         UploadedDocument document = intake.accept(CASE_ID, image("blurry.jpg"));
 
-        assertThat(store.findByCaseId(CASE_ID)).containsExactly(document);
+        assertThat(store.findByClaimId(CASE_ID)).containsExactly(document);
     }
 
     /**
@@ -153,7 +153,7 @@ class DocumentIntakeTest {
 
         verify(analyzer, times(2)).analyse(anyList(), anyList());
         assertThat(second.contentHash()).isEqualTo(first.contentHash());
-        assertThat(store.findByCaseId(CASE_ID)).hasSize(2);
+        assertThat(store.findByClaimId(CASE_ID)).hasSize(2);
     }
 
     @Test
@@ -163,7 +163,7 @@ class DocumentIntakeTest {
         intake.accept(CASE_ID, image("blurry.jpg"));
         intake.accept(CASE_ID, image("better.jpg"));
 
-        assertThat(store.findByCaseId(CASE_ID)).hasSize(2);
+        assertThat(store.findByClaimId(CASE_ID)).hasSize(2);
     }
 
     @Test

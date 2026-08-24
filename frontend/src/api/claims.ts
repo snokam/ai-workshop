@@ -8,22 +8,22 @@ import type { DocumentRequest,
   InterviewAnswer,
   InterviewResponse,
   ProposalCard,
-  SupportedCaseType,
+  SupportedClaimType,
 } from './types'
 
-export async function listCases(): Promise<ClaimOverview[]> {
+export async function listClaims(): Promise<ClaimOverview[]> {
   return json(await fetch('/api/claims'))
 }
 
-export async function listCaseTypes(): Promise<SupportedCaseType[]> {
+export async function listClaimTypes(): Promise<SupportedClaimType[]> {
   return json(await fetch('/api/claims/types'))
 }
 
-export async function openCase(claimId: string): Promise<ClaimDetail> {
+export async function openClaim(claimId: string): Promise<ClaimDetail> {
   return json(await fetch(`/api/claims/${claimId}`))
 }
 
-export async function createCase(description: string): Promise<CreatedClaim> {
+export async function createClaim(description: string): Promise<CreatedClaim> {
   return json(
     await fetch('/api/claims', {
       method: 'POST',
@@ -51,7 +51,7 @@ export async function reviewDocument(documentId: string): Promise<void> {
   if (!response.ok) throw await failure(response)
 }
 
-export async function askCaseChat(claimId: string, question: string): Promise<ChatAnswer> {
+export async function askClaimChat(claimId: string, question: string): Promise<ChatAnswer> {
   return json(
     await fetch(`/api/claims/${claimId}/chat`, {
       method: 'POST',

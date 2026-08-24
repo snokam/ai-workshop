@@ -66,23 +66,23 @@ class ClaimFileTest {
     private final ClaimFile file = new ClaimFile(desk, documents, requests, summaryDesk);
 
     @BeforeEach
-    void aCaseWithOneUnreadableDocument() {
+    void aClaimWithOneUnreadableDocument() {
         claims.save(new Claim(CASE_ID, "CASE-2026-001", ClaimType.HOME_CONTENTS, List.of("receipt")));
         documents.save(document("blurry.jpg", "receipt", Quality.POOR));
         when(summarizer.summarise(anyString(), anyList())).thenReturn("What the documents say, taken together.");
     }
 
     @Test
-    void reviewingABlockedDocumentLetsTheCaseProceed() {
-        assertThat(statusOfTheCase()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
+    void reviewingABlockedDocumentLetsTheClaimProceed() {
+        assertThat(statusOfTheClaim()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
 
         review.markReviewed("blurry.jpg");
 
-        assertThat(statusOfTheCase()).isEqualTo(ClaimStatus.READY_FOR_DECISION);
+        assertThat(statusOfTheClaim()).isEqualTo(ClaimStatus.READY_FOR_DECISION);
     }
 
     @Test
-    void theCaseDetailSaysWhichDocumentCounts() {
+    void theClaimDetailSaysWhichDocumentCounts() {
         documents.save(document("better.jpg", "receipt", Quality.GOOD, AT_TEN));
 
         ClaimDetail detail = file.open(CASE_ID, List.of(), List.of());
@@ -92,7 +92,7 @@ class ClaimFileTest {
     }
 
     @Test
-    void onlyTheDocumentsHoldingTheCaseUpAreMarkedAsBlocking() {
+    void onlyTheDocumentsHoldingTheClaimUpAreMarkedAsBlocking() {
         documents.save(document("holiday-photo.png", null, Quality.POOR));
         documents.save(document("blurrier.jpg", "receipt", Quality.POOR, AT_TEN));
 
@@ -103,7 +103,7 @@ class ClaimFileTest {
     }
 
     @Test
-    void theSummarizerIsHandedTheCasesDocuments() {
+    void theSummarizerIsHandedTheClaimsDocuments() {
         documents.save(document("better.jpg", "receipt", Quality.GOOD, AT_TEN));
 
         file.open(CASE_ID, List.of(), List.of());
@@ -125,7 +125,7 @@ class ClaimFileTest {
     }
 
     @Test
-    void openingTheSameCaseTwiceWritesTheSummaryOnce() {
+    void openingTheSameClaimTwiceWritesTheSummaryOnce() {
         file.open(CASE_ID, List.of(), List.of());
         file.open(CASE_ID, List.of(), List.of());
 
@@ -168,7 +168,7 @@ class ClaimFileTest {
         return captor.getValue();
     }
 
-    private ClaimStatus statusOfTheCase() {
+    private ClaimStatus statusOfTheClaim() {
         return desk.list().stream()
                 .filter(overview -> overview.id().equals(CASE_ID))
                 .findFirst()

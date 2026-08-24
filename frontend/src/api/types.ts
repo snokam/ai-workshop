@@ -104,7 +104,7 @@ export interface ClaimDetail {
   conversation: ChatTurn[]
 }
 
-export interface SupportedCaseType {
+export interface SupportedClaimType {
   label: string
   description: string
 }
@@ -120,5 +120,5 @@ export interface InterviewResponse {
   status: 'NEEDS_INFO' | 'DECIDED'
   questions: string[]
   rationale: string | null
-  createdCase: CreatedClaim | null
+  createdClaim: CreatedClaim | null
 }

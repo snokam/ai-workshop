@@ -15,7 +15,7 @@ public class DocumentRequestStore {
         requests.put(request.id(), request);
     }
 
-    public List<DocumentRequest> findByCaseId(String claimId) {
+    public List<DocumentRequest> findByClaimId(String claimId) {
         synchronized (requests) {
             return requests.values().stream()
                     .filter(request -> request.claimId().equals(claimId))

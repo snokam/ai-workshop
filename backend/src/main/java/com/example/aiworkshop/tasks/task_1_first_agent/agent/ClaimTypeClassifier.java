@@ -11,7 +11,7 @@ import dev.langchain4j.service.V;
  *
  * <p>This interface <em>is</em> the agent — LangChain4j builds the implementation from the system
  * message and the shape of {@link ClaimTypeSuggestion}. The set of types is not written into the
- * prompt by hand; {@link ClaimType#catalog()} is rendered in through the {@code {{caseTypes}}}
+ * prompt by hand; {@link ClaimType#catalog()} is rendered in through the {@code {{claimTypes}}}
  * variable, so the one list the agent chooses from is the same enum the Claim is created from.
  *
  * <p>The Claimant's own words are the {@link UserMessage}. Nothing else is: the description is
@@ -27,9 +27,9 @@ public interface ClaimTypeClassifier {
 
             You are writing the system message. The method signature below is already the contract:
 
-              classify(@V("caseTypes") String caseTypes, @UserMessage String description)
+              classify(@V("claimTypes") String claimTypes, @UserMessage String description)
 
-            {{caseTypes}} renders the catalogue in — ClaimType.catalog() builds it, one line per type with its
+            {{claimTypes}} renders the catalogue in — ClaimType.catalog() builds it, one line per type with its
             name, label and description. The description is what the person typed, and it is the user turn.
 
             The prompt has to make it:
@@ -45,5 +45,5 @@ public interface ClaimTypeClassifier {
             name a type and a handler reads it, name none and the claimant does, because it is all they see.
             """)
 
-    ClaimTypeSuggestion classify(@V("caseTypes") String caseTypes, @UserMessage String description);
+    ClaimTypeSuggestion classify(@V("claimTypes") String claimTypes, @UserMessage String description);
 }

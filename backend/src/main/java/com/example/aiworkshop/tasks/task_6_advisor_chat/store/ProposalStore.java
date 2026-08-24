@@ -20,7 +20,7 @@ public class ProposalStore {
         return Optional.ofNullable(proposals.get(id));
     }
 
-    public List<Proposal> findByCaseId(String claimId) {
+    public List<Proposal> findByClaimId(String claimId) {
         synchronized (proposals) {
             return proposals.values().stream()
                     .filter(proposal -> proposal.claimId().equals(claimId))

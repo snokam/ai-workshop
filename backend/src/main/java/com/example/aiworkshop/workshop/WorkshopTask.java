@@ -81,7 +81,8 @@ public enum WorkshopTask {
         return todo;
     }
 
+    /** The task's own README, beside the code it changes. */
     public String brief() {
-        return "docs/tasks/task_%d_%s.md".formatted(number, name().toLowerCase());
+        return SOURCE_ROOT + "tasks/task_%d_%s/README.md".formatted(number, name().toLowerCase());
     }
 }

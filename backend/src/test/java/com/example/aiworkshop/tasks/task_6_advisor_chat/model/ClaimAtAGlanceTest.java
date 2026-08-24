@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 class ClaimAtAGlanceTest {
     @Test
-    void itRendersTheCaseTheHandlerHasOpen() {
+    void itRendersTheClaimTheHandlerHasOpen() {
         String rendered =
                 aClaim(List.of(DocumentForChat.of(aBlurryReceipt(), true)), List.of()).toString();
 

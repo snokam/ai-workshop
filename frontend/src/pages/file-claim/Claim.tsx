@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import {
-  listCases,
+  listClaims,
   listDocumentRequests,
   listDocuments,
   uploadDocument,
@@ -51,7 +51,7 @@ export function Claim() {
         });
 
   async function refreshOverview() {
-    const all = await listCases();
+    const all = await listClaims();
     setOverview(all.find((c) => c.id === claimId) ?? null);
     setAskedFor(await listDocumentRequests(claimId));
   }

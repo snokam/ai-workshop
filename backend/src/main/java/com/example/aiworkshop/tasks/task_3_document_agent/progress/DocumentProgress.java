@@ -26,11 +26,11 @@ public class DocumentProgress implements ClaimProgress {
 
     @Override
     public ClaimStatus statusOf(Claim theClaim) {
-        return ClaimDocuments.statusOf(theClaim, documents.findByCaseId(theClaim.id()));
+        return ClaimDocuments.statusOf(theClaim, documents.findByClaimId(theClaim.id()));
     }
 
     @Override
     public List<String> outstandingFor(Claim theClaim) {
-        return ClaimDocuments.unmatchedRequiredDocuments(theClaim, documents.findByCaseId(theClaim.id()));
+        return ClaimDocuments.unmatchedRequiredDocuments(theClaim, documents.findByClaimId(theClaim.id()));
     }
 }

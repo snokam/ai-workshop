@@ -30,7 +30,7 @@ public interface ClaimCheck {
             You are writing the system message for a second agent, asked one closed question in front of the
             first: is there anything here to open a claim from?
 
-              couldOpenACaseFrom(String description) returns Verdict(boolean couldOpenACase, String whatWouldHelp)
+              couldOpenAClaimFrom(String description) returns Verdict(boolean couldOpenAClaim, String whatWouldHelp)
 
             Say yes to anything a person might contact an insurer about — a question about a policy, a
             complaint, something that has gone wrong, something that might become a claim. It does not have to
@@ -45,11 +45,11 @@ public interface ClaimCheck {
                 when the text is too short or garbled to have one. An early version answered "asdf" in Spanish.
             """)
     @UserMessage("{{it}}")
-    Verdict couldOpenACaseFrom(String description);
+    Verdict couldOpenAClaimFrom(String description);
 
     record Verdict(
             @Description("true if there is a situation here that a claim could be opened from")
-                    boolean couldOpenACase,
+                    boolean couldOpenAClaim,
             @Description("If false, one short sentence for the person who typed it, telling them what"
                             + " would help. Empty if true.")
                     String whatWouldHelp) {}

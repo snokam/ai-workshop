@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useNavigate, type NavigateFunction } from "react-router-dom";
-import { createCase, listCaseTypes } from "../../api";
-import type { CreatedClaim, SupportedCaseType } from "../../api";
-import { rememberCase } from "./openedClaims";
+import { createClaim, listClaimTypes } from "../../api";
+import type { CreatedClaim, SupportedClaimType } from "../../api";
+import { rememberClaim } from "./openedClaims";
 import { useEffect } from "react";
 import { Loader } from "../../components/feedback/Loader";
 import { Failure } from "../../components/feedback/Failure";
 import { TaskGate } from "../../components/workshop/TaskGate";
 
 function openCreated(navigate: NavigateFunction, created: CreatedClaim) {
-  rememberCase(created.id);
+  rememberClaim(created.id);
   navigate(`/claims/${created.id}`, { state: { intro: created } });
 }
 
@@ -18,11 +18,11 @@ export function NewClaim() {
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [types, setTypes] = useState<SupportedCaseType[]>([]);
+  const [types, setTypes] = useState<SupportedClaimType[]>([]);
 
   useEffect(() => {
     let live = true;
-    listCaseTypes()
+    listClaimTypes()
       .then((t) => live && setTypes(t))
       .catch(() => {});
     return () => {
@@ -36,7 +36,7 @@ export function NewClaim() {
     setSubmitting(true);
     setError(null);
     try {
-      openCreated(navigate, await createCase(text));
+      openCreated(navigate, await createClaim(text));
     } catch (e) {
       setError(e as Error);
     } finally {

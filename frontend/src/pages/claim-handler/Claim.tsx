@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { openCase, reviewDocument } from "../../api";
+import { openClaim, reviewDocument } from "../../api";
 import type { ClaimDetail } from "../../api";
 import { ClaimChat } from "../../components/task_6_advisor_chat/ClaimChat";
 import { Checklist } from "../../components/task_1_first_agent/Checklist";
@@ -22,7 +22,7 @@ export function Claim() {
   const read = useCallback(async () => {
     setError(null);
     try {
-      setDetail(await openCase(claimId));
+      setDetail(await openClaim(claimId));
     } catch (e) {
       setError(e as Error);
     }
@@ -113,7 +113,7 @@ export function Claim() {
           </TaskGate>
         </div>
 
-        <ClaimChat detail={detail} onCaseChanged={read} />
+        <ClaimChat detail={detail} onClaimChanged={read} />
       </div>
     </>
   );

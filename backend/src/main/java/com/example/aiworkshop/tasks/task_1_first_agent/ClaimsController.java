@@ -44,13 +44,13 @@ class ClaimsController {
     record SupportedType(String label, String description) {}
 
     @PostMapping
-    ResponseEntity<CreatedClaim> create(@RequestBody NewCaseRequest request) {
+    ResponseEntity<CreatedClaim> create(@RequestBody NewClaimRequest request) {
         CreatedClaim created = intake.open(request.description());
         log.info("Opened claim {} as '{}' ({})", created.reference(), created.typeLabel(), created.confidence());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    record NewCaseRequest(String description) {}
+    record NewClaimRequest(String description) {}
 
     @ExceptionHandler({ClaimDesk.UnknownClaimException.class, ClaimDesk.UnknownProposalException.class})
     ResponseEntity<Map<String, String>> notFound(RuntimeException e) {

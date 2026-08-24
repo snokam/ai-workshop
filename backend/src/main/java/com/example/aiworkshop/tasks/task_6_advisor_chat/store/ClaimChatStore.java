@@ -15,7 +15,7 @@ public class ClaimChatStore {
         conversations.computeIfAbsent(claimId, id -> new CopyOnWriteArrayList<>()).add(turn);
     }
 
-    public List<ChatTurn> findByCaseId(String claimId) {
+    public List<ChatTurn> findByClaimId(String claimId) {
         return List.copyOf(conversations.getOrDefault(claimId, List.of()));
     }
 

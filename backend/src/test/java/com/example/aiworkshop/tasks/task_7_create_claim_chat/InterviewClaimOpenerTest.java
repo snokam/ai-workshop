@@ -13,10 +13,10 @@ import org.junit.jupiter.api.Test;
  * the agent has decided, so this is the part of task 7 that is plumbing and can be pinned down
  * exactly: the checklist comes from the scenario, and the reference is minted clear of task 1's.
  */
-class InterviewCaseOpenerTest {
+class InterviewClaimOpenerTest {
 
     @Test
-    void opensACaseCarryingTheScenariosChecklist() {
+    void opensAClaimCarryingTheScenariosChecklist() {
         ClaimStore claims = new ClaimStore();
         InterviewClaimOpener opener = new InterviewClaimOpener(claims);
 

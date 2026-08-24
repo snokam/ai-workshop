@@ -84,14 +84,14 @@ class ClaimInterviewController {
      * Either the next questions to ask, or the claim that was opened. {@code status} tells the two
      * apart so the screen can keep the conversation going or move on to uploading.
      */
-    record InterviewResponse(String status, List<String> questions, String rationale, CreatedClaim createdCase) {
+    record InterviewResponse(String status, List<String> questions, String rationale, CreatedClaim createdClaim) {
 
         static InterviewResponse needsInfo(List<String> questions, String rationale) {
             return new InterviewResponse("NEEDS_INFO", questions, rationale, null);
         }
 
-        static InterviewResponse decided(CreatedClaim createdCase) {
-            return new InterviewResponse("DECIDED", List.of(), null, createdCase);
+        static InterviewResponse decided(CreatedClaim createdClaim) {
+            return new InterviewResponse("DECIDED", List.of(), null, createdClaim);
         }
     }
 
