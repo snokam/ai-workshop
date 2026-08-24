@@ -1,46 +1,49 @@
 # Task 4 — How would you know?
 
-Three tasks in, you have an agent, a guardrail in front of it, and a second agent that reads files.
-None of them has been measured. This is where you find out whether any of it works, and what
-"works" would even mean.
+You build the sets four evaluations run over, then read what they say.
 
 The brief is `docs/tasks/task_4_evaluation.md`, from the repository root.
 
-## Four evaluations, one per shape of answer
+## The parts
 
-Every file in this folder is an evaluation set: the examples one technique runs over. Each is paired
-with a runner in the matching test folder, and each exists because the technique before it does not
-work on the next kind of answer.
+Do them in this order. Each is one file, and the `TODO` at the top of it repeats the steps.
 
-| The set | What it evaluates | Why this technique |
+| | File | What it is for |
 |---|---|---|
-| `LabelledCase` | task 1's classifier | one value out of a list, so scoring is a comparison |
-| `ExtractedFacts` | task 3's document agent | it chooses its own facts, so coverage and invention, counted apart |
-| `Attack` | task 2's guardrail | the only set with a right answer, and no partial credit |
-| `CandidateModel` | whether any of it runs elsewhere | holds the task still and changes the model |
+| 1 | [`LabelledCase.java`](./LabelledCase.java) | Label the cases you would argue about |
+| 2 | [`ExtractedFacts.java`](./ExtractedFacts.java) | Write down what a handler needs |
 
-The runners are `ClassifierEvaluation`, `ExtractionEvaluation`, `GuardrailEvaluation` and
-`ModelComparison`, all disabled — they cost model calls and run when you ask for them. The brief has
-the commands.
+### Part 1 · `LabelledCase.java`
 
-Scoring prose is the technique this task does not cover, because the agent that writes prose is not
-written yet. It waits with the summariser, in task 6.
+**Label the cases you would argue about.**
 
-## What is yours to write
+One description, and the case type a person thinks it should open.
 
-Each of these has the exercise parked in it as a comment headed `── To set this task again`.
+Do not write ten easy ones. Half the value is in the rows reasonable people disagree about — a
+laptop stolen from a car, an injury on holiday treated privately — because those are the ones that
+tell you whether a disagreement is the model being wrong or the label being an opinion.
 
-- `LabelledCase.java` — the descriptions you would argue about
-- `ExtractedFacts.java` — what a handler needs from each of the sample files
+There is no case type for "something else" any more, so `null` is a legitimate label.
 
-`Attack` and `CandidateModel` ship filled in. Read them rather than writing them: the first is four
-shapes of prompt injection and one honest control, the second is the shortest way to answer "can we
-use a different model" before the day rather than during it.
+### Part 2 · `ExtractedFacts.java`
+
+**Write down what a handler needs.**
+
+Two lists per file, and they are not the same measurement. `mustFind` is what a handler would be
+annoyed to have missed. `mustNotSay` is what the document does not contain — an agent that
+produces one of those has not misread anything, it has made it up.
+
+Open the files in `assets/` and fill in the empty lists. Doing that by hand is most of what
+building an evaluation set actually is, and you will find yourself inventing scoring rules as you
+go: is `20 468,75` the same answer as `20468`?
+
+## Everything else in the folder
+
+- at the top — `Attack`, `CandidateModel`, `ExtractedFacts`, `LabelledCase`
 
 ## What it uses from the tasks before it
 
 - **task 1, Your first agent** — `CaseType`
 
-The runners reach further — into the guardrail from task 2 and the document agent from task 3 —
-because that is what they measure. Nothing before this task refers to anything in here, which is the
-rule the workshop runs on, and `TaskDependencyTest` fails if it is ever broken.
+No task before this one refers to anything in here, which is the rule the workshop runs on.
+`TaskDependencyTest` fails if it is ever broken.
