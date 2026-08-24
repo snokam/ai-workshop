@@ -45,7 +45,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 class ClaimFileTest {
-    private static final String CASE_ID = "c-1";
+    private static final String CLAIM_ID = "c-1";
 
     private static final Instant AT_NINE = Instant.parse("2026-08-15T09:00:00Z");
     private static final Instant AT_TEN = Instant.parse("2026-08-15T10:00:00Z");
@@ -67,7 +67,7 @@ class ClaimFileTest {
 
     @BeforeEach
     void aClaimWithOneUnreadableDocument() {
-        claims.save(new Claim(CASE_ID, "CASE-2026-001", ClaimType.HOME_CONTENTS, List.of("receipt")));
+        claims.save(new Claim(CLAIM_ID, "CLAIM-2026-001", ClaimType.HOME_CONTENTS, List.of("receipt")));
         documents.save(document("blurry.jpg", "receipt", Quality.POOR));
         when(summarizer.summarise(anyString(), anyList())).thenReturn("What the documents say, taken together.");
     }
@@ -85,7 +85,7 @@ class ClaimFileTest {
     void theClaimDetailSaysWhichDocumentCounts() {
         documents.save(document("better.jpg", "receipt", Quality.GOOD, AT_TEN));
 
-        ClaimDetail detail = file.open(CASE_ID, List.of(), List.of());
+        ClaimDetail detail = file.open(CLAIM_ID, List.of(), List.of());
 
         assertThat(detail.countingDocumentIds()).containsExactly("better.jpg");
         assertThat(detail.documents()).extracting(UploadedDocument::id).contains("blurry.jpg", "better.jpg");
@@ -96,7 +96,7 @@ class ClaimFileTest {
         documents.save(document("holiday-photo.png", null, Quality.POOR));
         documents.save(document("blurrier.jpg", "receipt", Quality.POOR, AT_TEN));
 
-        ClaimDetail detail = file.open(CASE_ID, List.of(), List.of());
+        ClaimDetail detail = file.open(CLAIM_ID, List.of(), List.of());
 
         assertThat(detail.blockedDocumentIds()).containsExactly("blurrier.jpg");
         assertThat(detail.countingDocumentIds()).doesNotContain("holiday-photo.png");
@@ -106,7 +106,7 @@ class ClaimFileTest {
     void theSummarizerIsHandedTheClaimsDocuments() {
         documents.save(document("better.jpg", "receipt", Quality.GOOD, AT_TEN));
 
-        file.open(CASE_ID, List.of(), List.of());
+        file.open(CLAIM_ID, List.of(), List.of());
 
         assertThat(capturedProjections())
                 .extracting(DocumentForSummary::filename)
@@ -115,7 +115,7 @@ class ClaimFileTest {
 
     @Test
     void theStatusWriterIsHandedTheDerivedFactsAndNothingElse() {
-        file.open(CASE_ID, List.of(), List.of());
+        file.open(CLAIM_ID, List.of(), List.of());
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<String>> blocked = ArgumentCaptor.forClass(List.class);
@@ -126,28 +126,28 @@ class ClaimFileTest {
 
     @Test
     void openingTheSameClaimTwiceWritesTheSummaryOnce() {
-        file.open(CASE_ID, List.of(), List.of());
-        file.open(CASE_ID, List.of(), List.of());
+        file.open(CLAIM_ID, List.of(), List.of());
+        file.open(CLAIM_ID, List.of(), List.of());
 
         verify(summarizer, times(1)).summarise(anyString(), anyList());
     }
 
     @Test
     void aNewDocumentMakesTheNextOpenWriteTheSummaryAgain() {
-        file.open(CASE_ID, List.of(), List.of());
+        file.open(CLAIM_ID, List.of(), List.of());
 
         documents.save(document("better.jpg", "receipt", Quality.GOOD, AT_TEN));
-        file.open(CASE_ID, List.of(), List.of());
+        file.open(CLAIM_ID, List.of(), List.of());
 
         verify(summarizer, times(2)).summarise(anyString(), anyList());
     }
 
     @Test
     void aReviewDoesNotMakeTheSummaryStale() {
-        file.open(CASE_ID, List.of(), List.of());
+        file.open(CLAIM_ID, List.of(), List.of());
 
         review.markReviewed("blurry.jpg");
-        file.open(CASE_ID, List.of(), List.of());
+        file.open(CLAIM_ID, List.of(), List.of());
 
         verify(summarizer, times(1)).summarise(anyString(), anyList());
     }
@@ -155,8 +155,8 @@ class ClaimFileTest {
 
     @Test
     void theStatusNoteIsWrittenOnEveryOpen() {
-        file.open(CASE_ID, List.of(), List.of());
-        file.open(CASE_ID, List.of(), List.of());
+        file.open(CLAIM_ID, List.of(), List.of());
+        file.open(CLAIM_ID, List.of(), List.of());
 
         verify(statusWriter, times(2)).write(anyString(), any(), anyList(), anyList());
     }
@@ -170,7 +170,7 @@ class ClaimFileTest {
 
     private ClaimStatus statusOfTheClaim() {
         return desk.list().stream()
-                .filter(overview -> overview.id().equals(CASE_ID))
+                .filter(overview -> overview.id().equals(CLAIM_ID))
                 .findFirst()
                 .orElseThrow()
                 .status();
@@ -184,7 +184,7 @@ class ClaimFileTest {
             String id, String matchedRequiredDocument, Quality verdict, Instant uploadedAt) {
         return new UploadedDocument(
                 id,
-                CASE_ID,
+                CLAIM_ID,
                 id,
                 "image/jpeg",
                 1024,

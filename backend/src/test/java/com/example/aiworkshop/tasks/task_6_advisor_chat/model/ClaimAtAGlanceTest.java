@@ -23,7 +23,7 @@ class ClaimAtAGlanceTest {
                 aClaim(List.of(DocumentForChat.of(aBlurryReceipt(), true)), List.of()).toString();
 
         assertThat(rendered)
-                .contains("Claim CASE-2026-001 — Home contents claim")
+                .contains("Claim CLAIM-2026-001 — Home contents claim")
                 .contains("Status: NEEDS_REVIEW")
                 .contains("Required documents: receipt")
                 .contains("blurry.jpg — receipt — counts as \"receipt\" — quality POOR")
@@ -74,7 +74,7 @@ class ClaimAtAGlanceTest {
 
     private static ClaimAtAGlance aClaim(List<DocumentForChat> documents, List<ProposalCard> proposals) {
         return new ClaimAtAGlance(
-                "CASE-2026-001",
+                "CLAIM-2026-001",
                 "Home contents claim",
                 ClaimStatus.NEEDS_REVIEW,
                 List.of("receipt"),

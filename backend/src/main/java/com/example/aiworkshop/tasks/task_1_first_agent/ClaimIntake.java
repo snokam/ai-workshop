@@ -35,7 +35,7 @@ public class ClaimIntake {
         //   2. if suggestion.type() is null, throw new NothingWeCoverException(suggestion.rationale())
         //      — the controller turns that into a 422 the claimant reads
         //   3. take a number from nextReference.getAndIncrement() for the id and the reference
-        //      (the format elsewhere is CASE-<year>-<number>, and Year.now().getValue() gives the year)
+        //      (the format elsewhere is CLAIM-<year>-<number>, and Year.now().getValue() gives the year)
         //   4. type.requiredDocuments() is the checklist that comes with the type
         //   5. new Claim(id, reference, type, requiredDocuments), then claims.save(theClaim)
         //   6. return a CreatedClaim — read the record for the order of its components; the status of a

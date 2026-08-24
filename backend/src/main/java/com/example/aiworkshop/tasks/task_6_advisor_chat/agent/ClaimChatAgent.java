@@ -34,7 +34,7 @@ public interface ClaimChatAgent {
             of them and can see everything below; they are asking you because reading every document
             to answer one question is the work you exist to remove.
 
-            THE CASE
+            THE CLAIM
 
             {{claim}}
 

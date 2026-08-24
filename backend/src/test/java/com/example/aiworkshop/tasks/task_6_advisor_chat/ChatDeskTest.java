@@ -56,7 +56,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.ArgumentCaptor;
 
 class ChatDeskTest {
-    private static final String CASE_ID = "c-1";
+    private static final String CLAIM_ID = "c-1";
 
     private static final Instant AT_NINE = Instant.parse("2026-08-15T09:00:00Z");
     private static final Instant AT_TEN = Instant.parse("2026-08-15T10:00:00Z");
@@ -84,7 +84,7 @@ class ChatDeskTest {
 
     @BeforeEach
     void aClaimHeldUpByOneUnreadableDocument() throws IOException {
-        claims.save(new Claim(CASE_ID, "CASE-2026-001", ClaimType.HOME_CONTENTS, List.of("receipt")));
+        claims.save(new Claim(CLAIM_ID, "CLAIM-2026-001", ClaimType.HOME_CONTENTS, List.of("receipt")));
         documents.save(document("d-1", "blurry.jpg", "receipt", Quality.POOR));
         when(summarizer.summarise(anyString(), anyList()))
                 .thenReturn("What the documents say, taken together.");
@@ -108,33 +108,33 @@ class ChatDeskTest {
 
     @Test
     void aProposedReviewIsRecordedAndMovesNothing() {
-        ProposalCard proposed = desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
+        ProposalCard proposed = desk.proposeReview(CLAIM_ID, "blurry.jpg", "The total is legible despite the shadow.");
 
-        assertThat(desk.proposalsOn(CASE_ID)).containsExactly(proposed);
+        assertThat(desk.proposalsOn(CLAIM_ID)).containsExactly(proposed);
         assertThat(proposed.state()).isEqualTo(ProposalState.PROPOSED);
         assertThat(statusOfTheClaim()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
     }
 
     @Test
     void confirmingAProposedReviewMovesTheClaim() {
-        ProposalCard proposed = desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
+        ProposalCard proposed = desk.proposeReview(CLAIM_ID, "blurry.jpg", "The total is legible despite the shadow.");
 
         desk.confirm(proposed.id());
 
         assertThat(statusOfTheClaim()).isEqualTo(ClaimStatus.READY_FOR_DECISION);
-        assertThat(desk.proposalsOn(CASE_ID))
+        assertThat(desk.proposalsOn(CLAIM_ID))
                 .extracting(ProposalCard::state)
                 .containsExactly(ProposalState.CONFIRMED);
     }
 
     @Test
     void decliningAProposedReviewLeavesTheClaimWhereItWas() {
-        ProposalCard proposed = desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
+        ProposalCard proposed = desk.proposeReview(CLAIM_ID, "blurry.jpg", "The total is legible despite the shadow.");
 
         desk.decline(proposed.id());
 
         assertThat(statusOfTheClaim()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
-        assertThat(desk.proposalsOn(CASE_ID))
+        assertThat(desk.proposalsOn(CLAIM_ID))
                 .extracting(ProposalCard::state)
                 .containsExactly(ProposalState.DECLINED);
     }
@@ -142,26 +142,26 @@ class ChatDeskTest {
     @Test
     void aConfirmedDocumentRequestReachesTheClaimant() {
         ProposalCard proposed = desk.proposeDocumentRequest(
-                CASE_ID, "the second page of the receipt", "The total is on a page that did not arrive.");
+                CLAIM_ID, "the second page of the receipt", "The total is on a page that did not arrive.");
 
         desk.confirm(proposed.id());
 
-        assertThat(caseFile.open(CASE_ID, List.of(), List.of()).documentRequests())
+        assertThat(caseFile.open(CLAIM_ID, List.of(), List.of()).documentRequests())
                 .extracting(DocumentRequest::label)
                 .containsExactly("the second page of the receipt");
     }
 
     @Test
     void anUnconfirmedDocumentRequestReachesNobody() {
-        desk.proposeDocumentRequest(CASE_ID, "the second page of the receipt", "The total did not arrive.");
+        desk.proposeDocumentRequest(CLAIM_ID, "the second page of the receipt", "The total did not arrive.");
 
-        assertThat(caseFile.open(CASE_ID, List.of(), List.of()).documentRequests()).isEmpty();
+        assertThat(caseFile.open(CLAIM_ID, List.of(), List.of()).documentRequests()).isEmpty();
     }
 
     @Test
     void aConfirmedDocumentRequestDoesNotChangeWhatTheClaimRequires() {
         ProposalCard proposed =
-                desk.proposeDocumentRequest(CASE_ID, "the second page of the receipt", "The total did not arrive.");
+                desk.proposeDocumentRequest(CLAIM_ID, "the second page of the receipt", "The total did not arrive.");
 
         desk.confirm(proposed.id());
 
@@ -173,23 +173,23 @@ class ChatDeskTest {
     @Test
     void aProposalAlreadyAnsweredIsNotAnsweredAgain() {
         ProposalCard proposed =
-                desk.proposeDocumentRequest(CASE_ID, "the second page of the receipt", "The total did not arrive.");
+                desk.proposeDocumentRequest(CLAIM_ID, "the second page of the receipt", "The total did not arrive.");
 
         desk.confirm(proposed.id());
         desk.confirm(proposed.id());
 
-        assertThat(caseFile.open(CASE_ID, List.of(), List.of()).documentRequests()).hasSize(1);
+        assertThat(caseFile.open(CLAIM_ID, List.of(), List.of()).documentRequests()).hasSize(1);
     }
 
     @Test
     void aDeclinedProposalCannotBeConfirmedAfterTheFact() {
-        ProposalCard proposed = desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
+        ProposalCard proposed = desk.proposeReview(CLAIM_ID, "blurry.jpg", "The total is legible despite the shadow.");
         desk.decline(proposed.id());
 
         desk.confirm(proposed.id());
 
         assertThat(statusOfTheClaim()).isEqualTo(ClaimStatus.NEEDS_REVIEW);
-        assertThat(desk.proposalsOn(CASE_ID))
+        assertThat(desk.proposalsOn(CLAIM_ID))
                 .extracting(ProposalCard::state)
                 .containsExactly(ProposalState.DECLINED);
     }
@@ -198,18 +198,18 @@ class ChatDeskTest {
     void theChatIsBoundToTheClaimItWasAskedIn() {
         theAgentReplies("This claim is waiting on a review of blurry.jpg.");
 
-        ChatAnswer answer = desk.chat(CASE_ID, "What is this waiting on?");
+        ChatAnswer answer = desk.chat(CLAIM_ID, "What is this waiting on?");
 
         assertThat(answer.turn().answer()).isEqualTo("This claim is waiting on a review of blurry.jpg.");
-        verify(chatAgent).answer(eq(CASE_ID), eq("What is this waiting on?"), any());
+        verify(chatAgent).answer(eq(CLAIM_ID), eq("What is this waiting on?"), any());
     }
 
     @Test
     void theChatReusesTheClaimSummaryTheHandlerHasAlreadyPaidFor() {
         theAgentReplies("Waiting on a review.");
-        caseFile.open(CASE_ID, List.of(), List.of());
+        caseFile.open(CLAIM_ID, List.of(), List.of());
 
-        desk.chat(CASE_ID, "What is this waiting on?");
+        desk.chat(CLAIM_ID, "What is this waiting on?");
 
         verify(summarizer, times(1)).summarise(anyString(), anyList());
     }
@@ -217,11 +217,11 @@ class ChatDeskTest {
     @Test
     void whatTheHandlerHasAlreadyAnsweredReachesTheAgent() {
         theAgentReplies("Nothing further.");
-        ProposalCard declined = desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
+        ProposalCard declined = desk.proposeReview(CLAIM_ID, "blurry.jpg", "The total is legible despite the shadow.");
         desk.decline(declined.id());
-        desk.proposeDocumentRequest(CASE_ID, "the second page of the receipt", "The total did not arrive.");
+        desk.proposeDocumentRequest(CLAIM_ID, "the second page of the receipt", "The total did not arrive.");
 
-        desk.chat(CASE_ID, "Should I review the receipt?");
+        desk.chat(CLAIM_ID, "Should I review the receipt?");
 
         assertThat(capturedGlance().proposals())
                 .extracting(ProposalCard::subject, ProposalCard::state)
@@ -234,9 +234,9 @@ class ChatDeskTest {
     void theConversationIsStillThereWhenTheClaimIsReopened() {
         theAgentReplies("It is waiting on a review of blurry.jpg.");
 
-        desk.chat(CASE_ID, "What is this waiting on?");
+        desk.chat(CLAIM_ID, "What is this waiting on?");
 
-        assertThat(desk.turnsOn(CASE_ID))
+        assertThat(desk.turnsOn(CLAIM_ID))
                 .extracting(ChatTurn::question, ChatTurn::answer)
                 .containsExactly(tuple("What is this waiting on?", "It is waiting on a review of blurry.jpg."));
     }
@@ -244,14 +244,14 @@ class ChatDeskTest {
     @Test
     void aTurnRemembersTheSuggestionsItRaised() {
         when(chatAgent.answer(any(), any(), any())).thenAnswer(invocation -> {
-            desk.proposeReview(CASE_ID, "blurry.jpg", "The total is legible despite the shadow.");
+            desk.proposeReview(CLAIM_ID, "blurry.jpg", "The total is legible despite the shadow.");
             return Result.<String>builder()
                     .content("I would review it.")
                     .toolExecutions(List.of())
                     .build();
         });
 
-        ChatAnswer answer = desk.chat(CASE_ID, "Can I work with the receipt?");
+        ChatAnswer answer = desk.chat(CLAIM_ID, "Can I work with the receipt?");
 
         assertThat(answer.proposals()).hasSize(1);
         assertThat(answer.turn().proposalIds())
@@ -262,7 +262,7 @@ class ChatDeskTest {
     void answeringWithoutTheReadToolNeverOpensAFile() {
         theAgentReplies("It is waiting on a review of blurry.jpg.");
 
-        desk.chat(CASE_ID, "What is this waiting on?");
+        desk.chat(CLAIM_ID, "What is this waiting on?");
 
         verifyNoInteractions(reader);
     }
@@ -272,7 +272,7 @@ class ChatDeskTest {
         files.save("d-1", SCAN);
         when(reader.read(anyList(), any())).thenReturn("The total reads 4 200 kr.");
 
-        String read = desk.readDocument(CASE_ID, "blurry.jpg", "What is the total at the bottom?");
+        String read = desk.readDocument(CLAIM_ID, "blurry.jpg", "What is the total at the bottom?");
 
         assertThat(read).isEqualTo("The total reads 4 200 kr.");
         assertThat(capturedFile()).hasAtLeastOneElementOfType(ImageContent.class);
@@ -282,12 +282,12 @@ class ChatDeskTest {
     void aFilenameUsedTwiceResolvesToTheNewerDocument() {
         documents.save(document("d-2", "blurry.jpg", "receipt", Quality.GOOD, AT_TEN));
 
-        assertThat(desk.documentDetail(CASE_ID, "blurry.jpg")).contains("Quality: GOOD");
+        assertThat(desk.documentDetail(CLAIM_ID, "blurry.jpg")).contains("Quality: GOOD");
     }
 
     @Test
     void aFilenameFromAnotherClaimIsNotFound() {
-        assertThatThrownBy(() -> desk.documentDetail(CASE_ID, "someone-elses.pdf"))
+        assertThatThrownBy(() -> desk.documentDetail(CLAIM_ID, "someone-elses.pdf"))
                 .isInstanceOf(ClaimDesk.UnknownDocumentException.class)
                 .hasMessageContaining("someone-elses.pdf");
     }
@@ -315,14 +315,14 @@ class ChatDeskTest {
 
     private ClaimOverview overviewOfTheClaim() {
         return caseDesk.list().stream()
-                .filter(overview -> overview.id().equals(CASE_ID))
+                .filter(overview -> overview.id().equals(CLAIM_ID))
                 .findFirst()
                 .orElseThrow();
     }
 
     private ClaimStatus statusOfTheClaim() {
         return caseDesk.list().stream()
-                .filter(overview -> overview.id().equals(CASE_ID))
+                .filter(overview -> overview.id().equals(CLAIM_ID))
                 .findFirst()
                 .orElseThrow()
                 .status();
@@ -337,7 +337,7 @@ class ChatDeskTest {
             String id, String filename, String matchedRequiredDocument, Quality verdict, Instant uploadedAt) {
         return new UploadedDocument(
                 id,
-                CASE_ID,
+                CLAIM_ID,
                 filename,
                 "image/jpeg",
                 1024,

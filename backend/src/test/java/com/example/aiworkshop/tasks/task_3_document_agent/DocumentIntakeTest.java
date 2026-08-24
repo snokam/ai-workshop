@@ -34,7 +34,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.mock.web.MockMultipartFile;
 
 class DocumentIntakeTest {
-    private static final String CASE_ID = "c-1";
+    private static final String CLAIM_ID = "c-1";
 
     private static final DocumentAnalysis UNREADABLE = new DocumentAnalysis(
             "unknown",
@@ -68,7 +68,7 @@ class DocumentIntakeTest {
     @BeforeEach
     void theClaimantHasAClaim() throws IOException {
         claims.save(new Claim(
-                CASE_ID, "CASE-2026-001", ClaimType.HOME_CONTENTS, List.of("proof of identity", "receipt")));
+                CLAIM_ID, "CLAIM-2026-001", ClaimType.HOME_CONTENTS, List.of("proof of identity", "receipt")));
         files = new DocumentFiles(directory);
         intake = new DocumentIntake(analyzer, store, claims, files);
     }
@@ -77,7 +77,7 @@ class DocumentIntakeTest {
     void theUploadedBytesAreKeptSoAnAgentCanLookAgain() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
 
-        UploadedDocument document = intake.accept(CASE_ID, image("blurry.jpg"));
+        UploadedDocument document = intake.accept(CLAIM_ID, image("blurry.jpg"));
 
         assertThat(files.read(document.id())).isEqualTo(new byte[] {1, 2, 3});
     }
@@ -93,16 +93,16 @@ class DocumentIntakeTest {
     void anUploadedDocumentRecordsTheClaimItBelongsTo() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
 
-        UploadedDocument document = intake.accept(CASE_ID, image("receipt.jpg"));
+        UploadedDocument document = intake.accept(CLAIM_ID, image("receipt.jpg"));
 
-        assertThat(document.claimId()).isEqualTo(CASE_ID);
+        assertThat(document.claimId()).isEqualTo(CLAIM_ID);
     }
 
     @Test
     void theAgentIsToldWhatTheClaimIsWaitingFor() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
 
-        intake.accept(CASE_ID, image("receipt.jpg"));
+        intake.accept(CLAIM_ID, image("receipt.jpg"));
 
         assertThat(capturedRequiredDocuments()).containsExactly("proof of identity", "receipt");
     }
@@ -111,7 +111,7 @@ class DocumentIntakeTest {
     void theMatchTheAgentReportedIsStoredOnTheDocument() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(MATCHED_RECEIPT);
 
-        UploadedDocument document = intake.accept(CASE_ID, image("receipt.jpg"));
+        UploadedDocument document = intake.accept(CLAIM_ID, image("receipt.jpg"));
 
         assertThat(store.findById(document.id()))
                 .get()
@@ -123,7 +123,7 @@ class DocumentIntakeTest {
     void poorQualityDocumentsAreStillAccepted() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
 
-        UploadedDocument document = intake.accept(CASE_ID, image("blurry.jpg"));
+        UploadedDocument document = intake.accept(CLAIM_ID, image("blurry.jpg"));
 
         assertThat(document.analysis().quality().verdict()).isEqualTo(Quality.POOR);
         assertThat(store.findById(document.id())).contains(document);
@@ -133,9 +133,9 @@ class DocumentIntakeTest {
     void aPoorDocumentIsStillAttachedToItsClaim() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
 
-        UploadedDocument document = intake.accept(CASE_ID, image("blurry.jpg"));
+        UploadedDocument document = intake.accept(CLAIM_ID, image("blurry.jpg"));
 
-        assertThat(store.findByClaimId(CASE_ID)).containsExactly(document);
+        assertThat(store.findByClaimId(CLAIM_ID)).containsExactly(document);
     }
 
     /**
@@ -148,29 +148,29 @@ class DocumentIntakeTest {
     void everyUploadIsRead() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(MATCHED_RECEIPT);
 
-        UploadedDocument first = intake.accept(CASE_ID, image("receipt.jpg"));
-        UploadedDocument second = intake.accept(CASE_ID, image("receipt.jpg"));
+        UploadedDocument first = intake.accept(CLAIM_ID, image("receipt.jpg"));
+        UploadedDocument second = intake.accept(CLAIM_ID, image("receipt.jpg"));
 
         verify(analyzer, times(2)).analyse(anyList(), anyList());
         assertThat(second.contentHash()).isEqualTo(first.contentHash());
-        assertThat(store.findByClaimId(CASE_ID)).hasSize(2);
+        assertThat(store.findByClaimId(CLAIM_ID)).hasSize(2);
     }
 
     @Test
     void aBetterReUploadIsKeptAlongsideTheEarlierOne() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE, MATCHED_RECEIPT);
 
-        intake.accept(CASE_ID, image("blurry.jpg"));
-        intake.accept(CASE_ID, image("better.jpg"));
+        intake.accept(CLAIM_ID, image("blurry.jpg"));
+        intake.accept(CLAIM_ID, image("better.jpg"));
 
-        assertThat(store.findByClaimId(CASE_ID)).hasSize(2);
+        assertThat(store.findByClaimId(CLAIM_ID)).hasSize(2);
     }
 
     @Test
     void aPdfReachesTheModelAsAPdf() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
 
-        intake.accept(CASE_ID, new MockMultipartFile("file", "scan.pdf", "application/pdf", "%PDF-1.4".getBytes()));
+        intake.accept(CLAIM_ID, new MockMultipartFile("file", "scan.pdf", "application/pdf", "%PDF-1.4".getBytes()));
 
         assertThat(capturedContent()).hasAtLeastOneElementOfType(PdfFileContent.class);
     }
@@ -179,7 +179,7 @@ class DocumentIntakeTest {
     void anImageReachesTheModelAsAnImage() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
 
-        intake.accept(CASE_ID, image("receipt.jpg"));
+        intake.accept(CLAIM_ID, image("receipt.jpg"));
 
         assertThat(capturedContent()).hasAtLeastOneElementOfType(ImageContent.class);
     }
@@ -188,7 +188,7 @@ class DocumentIntakeTest {
     void anUnhelpfulContentTypeFallsBackToTheExtension() throws IOException {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
 
-        UploadedDocument document = intake.accept(CASE_ID, 
+        UploadedDocument document = intake.accept(CLAIM_ID, 
                 new MockMultipartFile("file", "scan.pdf", "application/octet-stream", "%PDF-1.4".getBytes()));
 
         assertThat(document.contentType()).isEqualTo("application/pdf");
@@ -199,7 +199,7 @@ class DocumentIntakeTest {
         when(analyzer.analyse(anyList(), anyList())).thenReturn(UNREADABLE);
 
         UploadedDocument document = intake.accept(
-                CASE_ID,
+                CLAIM_ID,
                 new MockMultipartFile("file", "IMG_4021.heic", "application/octet-stream", new byte[] {1, 2, 3}));
 
         assertThat(document.contentType()).isEqualTo("image/heic");
@@ -208,7 +208,7 @@ class DocumentIntakeTest {
     @Test
     void aFileTheModelCannotLookAtIsRejected() {
         assertThatThrownBy(() ->
-                        intake.accept(CASE_ID, new MockMultipartFile("file", "notes.docx", null, "irrelevant".getBytes())))
+                        intake.accept(CLAIM_ID, new MockMultipartFile("file", "notes.docx", null, "irrelevant".getBytes())))
                 .isInstanceOf(FileType.UnsupportedDocumentException.class);
     }
 

@@ -15,15 +15,15 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class ClaimDocumentsTest {
-    private static final Claim THE_CASE =
-            new Claim("c-1", "CASE-2026-001", ClaimType.HOME_CONTENTS, List.of("proof of identity", "receipt"));
+    private static final Claim THE_CLAIM =
+            new Claim("c-1", "CLAIM-2026-001", ClaimType.HOME_CONTENTS, List.of("proof of identity", "receipt"));
 
     private static final Instant AT_NINE = Instant.parse("2026-08-15T09:00:00Z");
     private static final Instant AT_TEN = Instant.parse("2026-08-15T10:00:00Z");
 
     @Test
     void aClaimWithNothingUploadedIsAwaitingDocuments() {
-        assertThat(ClaimDocuments.statusOf(THE_CASE, List.of())).isEqualTo(ClaimStatus.AWAITING_DOCUMENTS);
+        assertThat(ClaimDocuments.statusOf(THE_CLAIM, List.of())).isEqualTo(ClaimStatus.AWAITING_DOCUMENTS);
     }
 
     @Test
@@ -31,14 +31,14 @@ class ClaimDocumentsTest {
         List<UploadedDocument> documents =
                 List.of(document("proof of identity", Quality.GOOD), document("receipt", Quality.GOOD));
 
-        assertThat(ClaimDocuments.statusOf(THE_CASE, documents)).isEqualTo(ClaimStatus.READY_FOR_DECISION);
+        assertThat(ClaimDocuments.statusOf(THE_CLAIM, documents)).isEqualTo(ClaimStatus.READY_FOR_DECISION);
     }
 
     @Test
     void oneRequiredDocumentStillMissingHoldsTheClaimAtAwaitingDocuments() {
         List<UploadedDocument> documents = List.of(document("proof of identity", Quality.GOOD));
 
-        assertThat(ClaimDocuments.statusOf(THE_CASE, documents)).isEqualTo(ClaimStatus.AWAITING_DOCUMENTS);
+        assertThat(ClaimDocuments.statusOf(THE_CLAIM, documents)).isEqualTo(ClaimStatus.AWAITING_DOCUMENTS);
     }
 
     @Test
@@ -46,7 +46,7 @@ class ClaimDocumentsTest {
         List<UploadedDocument> documents =
                 List.of(document("proof of identity", Quality.GOOD), document("receipt", Quality.POOR));
 
-        assertThat(ClaimDocuments.statusOf(THE_CASE, documents)).isEqualTo(ClaimStatus.NEEDS_REVIEW);
+        assertThat(ClaimDocuments.statusOf(THE_CLAIM, documents)).isEqualTo(ClaimStatus.NEEDS_REVIEW);
     }
 
     @Test
@@ -54,14 +54,14 @@ class ClaimDocumentsTest {
         List<UploadedDocument> documents =
                 List.of(document("proof of identity", Quality.GOOD), document("receipt", Quality.ACCEPTABLE));
 
-        assertThat(ClaimDocuments.statusOf(THE_CASE, documents)).isEqualTo(ClaimStatus.READY_FOR_DECISION);
+        assertThat(ClaimDocuments.statusOf(THE_CLAIM, documents)).isEqualTo(ClaimStatus.READY_FOR_DECISION);
     }
 
     @Test
     void awaitingDocumentsOutranksNeedsReview() {
         List<UploadedDocument> documents = List.of(document("receipt", Quality.POOR));
 
-        assertThat(ClaimDocuments.statusOf(THE_CASE, documents)).isEqualTo(ClaimStatus.AWAITING_DOCUMENTS);
+        assertThat(ClaimDocuments.statusOf(THE_CLAIM, documents)).isEqualTo(ClaimStatus.AWAITING_DOCUMENTS);
     }
 
     @Test
@@ -70,7 +70,7 @@ class ClaimDocumentsTest {
                 document("proof of identity", Quality.GOOD),
                 document("receipt", Quality.POOR).markReviewed());
 
-        assertThat(ClaimDocuments.statusOf(THE_CASE, documents)).isEqualTo(ClaimStatus.READY_FOR_DECISION);
+        assertThat(ClaimDocuments.statusOf(THE_CLAIM, documents)).isEqualTo(ClaimStatus.READY_FOR_DECISION);
     }
 
     @Test
@@ -80,7 +80,7 @@ class ClaimDocumentsTest {
                 document("receipt", Quality.POOR, AT_NINE),
                 document("receipt", Quality.GOOD, AT_TEN));
 
-        assertThat(ClaimDocuments.statusOf(THE_CASE, documents)).isEqualTo(ClaimStatus.READY_FOR_DECISION);
+        assertThat(ClaimDocuments.statusOf(THE_CLAIM, documents)).isEqualTo(ClaimStatus.READY_FOR_DECISION);
     }
 
     @Test
@@ -90,7 +90,7 @@ class ClaimDocumentsTest {
                 document("receipt", Quality.GOOD, AT_NINE),
                 document("receipt", Quality.POOR, AT_TEN));
 
-        assertThat(ClaimDocuments.statusOf(THE_CASE, documents)).isEqualTo(ClaimStatus.NEEDS_REVIEW);
+        assertThat(ClaimDocuments.statusOf(THE_CLAIM, documents)).isEqualTo(ClaimStatus.NEEDS_REVIEW);
     }
 
     @Test
@@ -100,7 +100,7 @@ class ClaimDocumentsTest {
                 document("receipt", Quality.GOOD),
                 document(null, Quality.POOR));
 
-        assertThat(ClaimDocuments.statusOf(THE_CASE, documents)).isEqualTo(ClaimStatus.READY_FOR_DECISION);
+        assertThat(ClaimDocuments.statusOf(THE_CLAIM, documents)).isEqualTo(ClaimStatus.READY_FOR_DECISION);
     }
 
     @Test
@@ -110,7 +110,7 @@ class ClaimDocumentsTest {
         List<UploadedDocument> documents =
                 List.of(document("proof of identity", Quality.GOOD), superseded, newest);
 
-        assertThat(ClaimDocuments.countingDocuments(THE_CASE, documents)).contains(newest).doesNotContain(superseded);
+        assertThat(ClaimDocuments.countingDocuments(THE_CLAIM, documents)).contains(newest).doesNotContain(superseded);
     }
 
     @Test
@@ -118,7 +118,7 @@ class ClaimDocumentsTest {
         List<UploadedDocument> documents = List.of(
                 hedged(document("proof of identity", Quality.GOOD)), hedged(document("receipt", Quality.GOOD)));
 
-        assertThat(ClaimDocuments.statusOf(THE_CASE, documents)).isEqualTo(ClaimStatus.READY_FOR_DECISION);
+        assertThat(ClaimDocuments.statusOf(THE_CLAIM, documents)).isEqualTo(ClaimStatus.READY_FOR_DECISION);
     }
 
     private static UploadedDocument document(String matchedRequiredDocument, Quality verdict) {
@@ -128,7 +128,7 @@ class ClaimDocumentsTest {
     private static UploadedDocument document(String matchedRequiredDocument, Quality verdict, Instant uploadedAt) {
         return new UploadedDocument(
                 matchedRequiredDocument + "@" + uploadedAt,
-                THE_CASE.id(),
+                THE_CLAIM.id(),
                 "scan.pdf",
                 "application/pdf",
                 1024,

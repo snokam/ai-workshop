@@ -35,7 +35,7 @@ public class InterviewClaimOpener {
     public CreatedClaim open(ClaimScenario scenario, MatchConfidence confidence, String rationale) {
         int number = nextReference.getAndIncrement();
         String id = String.valueOf(number);
-        String reference = "CASE-%d-%d".formatted(Year.now().getValue(), number);
+        String reference = "CLAIM-%d-%d".formatted(Year.now().getValue(), number);
         List<String> requiredDocuments = scenario.requiredDocuments();
 
         Claim theClaim = new Claim(id, reference, scenario.claimType(), requiredDocuments);

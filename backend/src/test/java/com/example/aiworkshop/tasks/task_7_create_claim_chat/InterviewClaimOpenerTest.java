@@ -42,6 +42,6 @@ class InterviewClaimOpenerTest {
         assertThat(Integer.parseInt(created.id()))
                 .describedAs("the interview counts from 9001, clear of task 1's range that starts at 1001")
                 .isGreaterThanOrEqualTo(9001);
-        assertThat(created.reference()).startsWith("CASE-");
+        assertThat(created.reference()).startsWith("CLAIM-");
     }
 }
