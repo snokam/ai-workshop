@@ -23,12 +23,3 @@ worked examples; two are yours.
 Then `.tools(...)` in `ChatConfig` is what makes any of it reachable. Until that call is there the
 agent is built without them, and the failure is worth seeing once: it does not report that it cannot
 check anything. It answers anyway, fluently, from the summary it was given.
-
-## If you finish early
-
-- **Drop `Result<Answer>` to `Answer`** and watch the tool calls disappear from the screen while the
-  answers stay correct.
-- **Set the window to 2 messages** and have a four-turn conversation. Where exactly does it start
-  contradicting itself?
-- **Add a tool** that returns something the agent could work out itself. Does it call it? Tools it
-  does not need are how a cheap agent becomes an expensive one.
