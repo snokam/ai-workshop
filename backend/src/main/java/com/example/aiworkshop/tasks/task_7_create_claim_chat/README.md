@@ -1,20 +1,31 @@
 # Task 7 — Claim: File claim with AI chat
 
-You write an interview instead of a form, and the bound that stops it interrogating people.
+You make the answer arrive as it is written, instead of all at once when it is finished.
 
-## The parts
+## The part
 
-Do them in this order. Each is one file, and the `TODO` at the top of it has the steps.
+One file, and the `TODO` in it has the steps.
 
 | | File | What it is for |
 |---|---|---|
-| 1 | [`agent/ClaimIntakeInterviewer.java`](./agent/ClaimIntakeInterviewer.java) | Write the interviewer |
-| 2 | [`InterviewBudget.java`](./InterviewBudget.java) | Stop it asking forever |
+| 1 | [`InterviewNarration.java`](./InterviewNarration.java) | Carry the tokens to the browser |
 
-Part 2 is the first loop in the workshop. Every agent before this one answered a single call; this
-one asks, reads the answer, and decides whether to ask again — and nothing in that loop stops it. The
-prompt asks for two or three questions, and a prompt is a request.
+Both prompts are given. There are two agents here and only one of them is ever seen:
 
-What makes it interesting is not the counter but what happens when it runs out, and the honest
-options are all bad in different ways. The class comment lays them out. Read it before writing the
-two lines, because the code is obvious and the choice it encodes is not.
+| | returns | who reads it |
+|---|---|---|
+| [`agent/ClaimIntakeInterviewer.java`](./agent/ClaimIntakeInterviewer.java) | `InterviewTurn`, a record | the application, which branches on it |
+| [`agent/ClaimIntakeSpeaker.java`](./agent/ClaimIntakeSpeaker.java) | `TokenStream` | the claimant, a word at a time |
+
+**They cannot be one call.** A method returning a record has no answer until the last token has
+arrived, because half a JSON object is not an object. A method returning a `TokenStream` never has a
+whole answer to give back. That is not a preference — it is whether the reply is for a program or for
+a person, and this task is one of each.
+
+So a turn costs two calls. Worth knowing you are paying it: the decision call is small and into a
+fixed schema; the one worth streaming is the one a human reads at reading speed.
+
+What you write is the join between `TokenStream`, which calls you back as tokens arrive, and Spring's
+`SseEmitter`, which holds the response open until you say you are done. Both are push, so there is no
+loop and nothing to poll — you say what to do on a token, on the end and on a failure, and then start
+it. Each of those three has its own way of going wrong, and the `TODO` names them.

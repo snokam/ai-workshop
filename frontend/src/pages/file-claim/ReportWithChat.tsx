@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, type NavigateFunction } from 'react-router-dom'
-import { interviewIntake } from '../../api'
+import { interviewIntake, narrateInterview } from '../../api'
 import type { CreatedClaim, InterviewAnswer } from '../../api'
 import { rememberClaim } from './openedClaims'
 import { Loader } from '../../components/feedback/Loader'
@@ -22,6 +22,7 @@ export function ReportWithChat() {
   const [started, setStarted] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<Error | null>(null)
+  const [spoken, setSpoken] = useState('')
 
   // The whole conversation is resent each turn, so the agent stays stateless and the page owns the
   // history: on a decision the claim is already open, so we jump straight to it.
@@ -39,6 +40,17 @@ export function ReportWithChat() {
       setReplies({})
       setRationale(response.rationale)
       setStarted(true)
+
+      // The decision is already on screen. This is the same turn put into words, arriving as the
+      // model writes them — which is why it is started after the questions rather than before.
+      setSpoken('')
+      const transcript = [
+        description.trim(),
+        ...nextAnswers.map((qa) => `Q: ${qa.question}\nA: ${qa.answer}`),
+      ].join('\n\n')
+      void narrateInterview(transcript, response.questions.join(' '), (token) =>
+        setSpoken((so_far) => so_far + token),
+      )
     } catch (e) {
       setError(e as Error)
     } finally {
@@ -133,7 +145,10 @@ export function ReportWithChat() {
                 answer()
               }}
             >
-              {rationale && <p className="chat-note">{rationale}</p>}
+              {/* The same turn, in words, arriving as the model writes them. The questions below
+                  were already here before the first token of this landed. */}
+              {spoken && <p className="chat-spoken">{spoken}</p>}
+              {rationale && !spoken && <p className="chat-note">{rationale}</p>}
               {questions.map((question, i) => (
                 <label key={i} className="chat-question">
                   <span>{question}</span>

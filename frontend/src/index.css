@@ -1137,3 +1137,13 @@ header p.status {
   opacity: 0.55;
   cursor: default;
 }
+
+/* The interview's voice: written into as tokens arrive, so it grows while you read it. */
+.chat-spoken {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid var(--accent);
+  background: var(--surface);
+  border-radius: 0 6px 6px 0;
+  line-height: 1.55;
+}

@@ -3,7 +3,9 @@ package com.example.aiworkshop.tasks.task_1_first_agent.agent;
 import com.example.aiworkshop.workshop.UnfinishedTasks;
 import com.example.aiworkshop.workshop.WorkshopTask;
 import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiChatModel;
+import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiStreamingChatModel;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -32,5 +34,24 @@ public class VertexAiConfig {
         // Nothing else in the workshop works until this returns a model.
 
         return UnfinishedTasks.notWrittenYet(ChatModel.class, WorkshopTask.FIRST_AGENT);
+    }
+
+    /**
+     * The same model, answering a token at a time. Given — task 7 uses it.
+     *
+     * <p>It is a separate bean rather than a mode on the one above, and that is the shape of the API
+     * rather than a choice made here: an agent method returning a record needs the whole answer before
+     * it can be a record, and an agent method returning a {@code TokenStream} never has a whole answer
+     * to give back. The two cannot be the same call.
+     */
+    @Bean(destroyMethod = "close")
+    StreamingChatModel streamingChatModel(VertexAiProperties properties) {
+        return VertexAiGeminiStreamingChatModel.builder()
+                .project(properties.projectId())
+                .location(properties.location())
+                .modelName(properties.modelName())
+                .temperature(properties.temperature())
+                .maxOutputTokens(properties.maxOutputTokens())
+                .build();
     }
 }

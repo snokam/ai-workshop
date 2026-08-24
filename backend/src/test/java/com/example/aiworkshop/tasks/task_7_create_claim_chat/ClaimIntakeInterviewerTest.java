@@ -36,9 +36,6 @@ class ClaimIntakeInterviewerTest {
         assertThat(system)
                 .describedAs("next() needs an @SystemMessage: that is where the agent is defined")
                 .isNotNull();
-        assertThat(String.join("\n", system.value()))
-                .describedAs("the @SystemMessage still holds the brief it shipped with — write the prompt")
-                .doesNotContain("TODO");
     }
 
     @Test

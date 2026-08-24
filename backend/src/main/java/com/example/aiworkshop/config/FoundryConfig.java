@@ -1,7 +1,9 @@
 package com.example.aiworkshop.config;
 
 import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -27,5 +29,18 @@ public class FoundryConfig {
             builder.temperature(properties.temperature());
         }
         return builder.build();
+    }
+
+    /** The same deployment, answering a token at a time. Task 7 uses it. */
+    @Bean
+    StreamingChatModel streamingChatModel(FoundryProperties properties) {
+        return OpenAiStreamingChatModel.builder()
+                .baseUrl(properties.endpoint())
+                .apiKey(properties.apiKey())
+                .modelName(properties.deploymentName())
+                .timeout(properties.timeout())
+                .logRequests(properties.logRequests())
+                .logResponses(properties.logResponses())
+                .build();
     }
 }

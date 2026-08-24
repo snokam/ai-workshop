@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 /**
  * The conversational intake endpoint (task 7), kept beside task 1's {@code ClaimController} rather
@@ -36,24 +38,35 @@ class ClaimInterviewController {
 
     private final ClaimIntakeInterviewer interviewer;
     private final InterviewClaimOpener opener;
+    private final InterviewNarration narration;
 
-    ClaimInterviewController(ClaimIntakeInterviewer interviewer, InterviewClaimOpener opener) {
+    ClaimInterviewController(
+            ClaimIntakeInterviewer interviewer, InterviewClaimOpener opener, InterviewNarration narration) {
         this.interviewer = interviewer;
         this.opener = opener;
+        this.narration = narration;
     }
+
+    /**
+     * The words for a turn the interviewer has already decided, streamed as they are written.
+     *
+     * <p>A second endpoint rather than a field on the response above, because the two answers
+     * have different shapes: that one is a JSON object the screen branches on, this one is a
+     * response that stays open. The screen calls this immediately after that one.
+     */
+    @PostMapping(value = "/narration", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    SseEmitter narrate(@RequestBody NarrationRequest request) {
+        return narration.narrate(request.transcript(), request.decision());
+    }
+
+    /** What the screen echoes back so the voice can put the decision to the claimant. */
+    record NarrationRequest(String transcript, String decision) {}
 
     @PostMapping
     InterviewResponse next(@RequestBody InterviewRequest request) {
-        int roundsAnswered = request.answers() == null ? 0 : request.answers().size();
-        String transcript = InterviewBudget.withinBudget(transcriptOf(request), roundsAnswered);
-        InterviewTurn turn = interviewer.next(ClaimScenario.catalog(), transcript);
+        InterviewTurn turn = interviewer.next(ClaimScenario.catalog(), transcriptOf(request));
 
         if (turn.decision() == InterviewTurn.Decision.NEEDS_INFO) {
-            // Asked to decide and still asking. The budget is the bound, so it holds here rather than
-            // being negotiated: nothing further is put to the claimant.
-            if (roundsAnswered >= InterviewBudget.ROUNDS) {
-                throw new ClaimIntake.NothingWeCoverException(turn.rationale());
-            }
             List<String> questions = turn.questions() == null ? List.of() : turn.questions();
             return InterviewResponse.needsInfo(questions, turn.rationale());
         }

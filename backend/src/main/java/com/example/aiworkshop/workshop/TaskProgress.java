@@ -8,8 +8,7 @@ import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
 import com.example.aiworkshop.tasks.task_5_claim_summary.evaluation.SummaryRubric;
 import com.example.aiworkshop.tasks.task_4_evaluation.GuardrailProbe;
 import com.example.aiworkshop.tasks.task_4_evaluation.LabelledClaim;
-import com.example.aiworkshop.tasks.task_7_create_claim_chat.InterviewBudget;
-import com.example.aiworkshop.tasks.task_7_create_claim_chat.agent.ClaimIntakeInterviewer;
+import com.example.aiworkshop.tasks.task_7_create_claim_chat.InterviewNarration;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +22,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class TaskProgress {
+
+    private final InterviewNarration narration;
+
+    TaskProgress(InterviewNarration narration) {
+        this.narration = narration;
+    }
 
 
     public boolean isDone(WorkshopTask task) {
@@ -41,8 +46,10 @@ public class TaskProgress {
             case ADVISOR_CHAT -> UnfinishedTasks.toolDescriptionsWritten(ClaimChatTools.class);
             case CLAIM_SUMMARY -> UnfinishedTasks.promptWritten(ClaimSummarizer.class)
                     && !SummaryRubric.yours().isEmpty();
-            case CREATE_CLAIM_CHAT -> UnfinishedTasks.promptWritten(ClaimIntakeInterviewer.class)
-                    && UnfinishedTasks.written(() -> InterviewBudget.withinBudget("", 0));
+            // Task 7's prompts are both given. What is written is the join between a TokenStream
+            // and an open HTTP response, and asking whether it exists costs nothing: narrate()
+            // returns before a single token has arrived, which is the whole point of it.
+            case CREATE_CLAIM_CHAT -> UnfinishedTasks.written(() -> narration.narrate("", ""));
             // Task 4 has no code to gate: nothing on a screen waits on it, and there is no prompt to
             // write. It counts as done when both sets have rows of yours in them — the three that ship
             // with each are the worked examples, and adding your own is the exercise.
