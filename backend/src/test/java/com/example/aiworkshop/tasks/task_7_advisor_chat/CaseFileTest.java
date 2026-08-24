@@ -1,8 +1,8 @@
 package com.example.aiworkshop.tasks.task_7_advisor_chat;
 
 import com.example.aiworkshop.tasks.task_1_first_agent.CaseDesk;
-import com.example.aiworkshop.tasks.task_3_document_agent.DocumentReview;
-import com.example.aiworkshop.tasks.task_3_document_agent.DocumentProgress;
+import com.example.aiworkshop.tasks.task_3_document_agent.progress.DocumentReview;
+import com.example.aiworkshop.tasks.task_3_document_agent.progress.DocumentProgress;
 import com.example.aiworkshop.tasks.task_1_first_agent.CaseProgress;
 import com.example.aiworkshop.tasks.task_6_case_summary.SummaryDesk;
 import com.example.aiworkshop.tasks.task_6_case_summary.agent.CaseSummarizer;

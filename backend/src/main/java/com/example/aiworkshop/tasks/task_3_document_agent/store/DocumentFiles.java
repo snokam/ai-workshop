@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.stream.Stream;
@@ -44,6 +47,18 @@ public class DocumentFiles {
             return Files.readAllBytes(file);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    /**
+     * The bytes, as a hex SHA-256. Two uploads of the same file have the same hash whatever they
+     * were named, which is how intake spots a re-upload and how task 5 spots a duplicate.
+     */
+    public static String hashOf(byte[] content) {
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(content));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 is required of every JVM", e);
         }
     }
 

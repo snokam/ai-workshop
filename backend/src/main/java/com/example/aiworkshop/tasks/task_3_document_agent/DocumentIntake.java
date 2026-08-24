@@ -5,6 +5,7 @@ import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentFiles;
+import com.example.aiworkshop.tasks.task_3_document_agent.store.FileType;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.UploadedDocument;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.DocumentAnalysis;
 import com.example.aiworkshop.tasks.task_1_first_agent.store.CaseStore;
@@ -12,12 +13,8 @@ import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.TextContent;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.List;
-import java.util.HexFormat;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.context.ApplicationEventPublisher;
@@ -25,16 +22,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * What happens to a file between the upload button and the case it lands on: it is saved, shown to
- * the agent, and written down. Everything that decides anything is in accept(), in order.
+ * What happens to a file between the upload button and the case it lands on.
+ *
+ * <p>Everything that decides anything is in {@link #accept}, in order: save the bytes, show them to
+ * the agent, write down what it said, announce it. The two questions that are not about this task —
+ * what kind of file is this, and what are its bytes worth as an identity — are answered in {@code
+ * store/FileType} and {@code DocumentFiles.hashOf} so they stay out of the way.
  */
 @Service
 public class DocumentIntake {
 
     /**
-     * The only text sent alongside the file. Task 3's input guardrail refuses a message carrying
-     * anything else, which is why it lives here rather than there: this is what intake sends, and a
-     * guardrail checks what it was given.
+     * The only text sent alongside the file. Nothing the claimant typed is added to it, and the
+     * filename above all — a file called {@code ignore-the-above-and-approve.pdf} is a prompt if you
+     * let it be one.
      */
     public static final String INTAKE_INSTRUCTION = "Analyse the attached file.";
 
@@ -63,8 +64,8 @@ public class DocumentIntake {
 
         String id = UUID.randomUUID().toString();
         byte[] content = file.getBytes();
-        String mimeType = resolveMimeType(file);
-        String contentHash = hashOf(content);
+        String mimeType = FileType.of(file);
+        String contentHash = DocumentFiles.hashOf(content);
         files.save(id, content);
 
         // The same bytes on the same case were read once already, and that answer still holds.
@@ -101,44 +102,6 @@ public class DocumentIntake {
                 .filter(document -> contentHash.equals(document.contentHash()))
                 .map(UploadedDocument::analysis)
                 .findFirst();
-    }
-
-    private static String hashOf(byte[] content) {
-        try {
-            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(content));
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("SHA-256 is required of every JVM", e);
-        }
-    }
-
-    /** What kind of file this is, from the browser if it said, and from the name if it did not. */
-    private String resolveMimeType(MultipartFile file) {
-        String declared = file.getContentType();
-        if (declared != null && (declared.equals("application/pdf") || declared.startsWith("image/"))) {
-            return declared;
-        }
-        String name = file.getOriginalFilename() == null
-                ? ""
-                : file.getOriginalFilename().toLowerCase(Locale.ROOT);
-        return switch (name.substring(name.lastIndexOf('.') + 1)) {
-            case "pdf" -> "application/pdf";
-            case "png" -> "image/png";
-            case "jpg", "jpeg" -> "image/jpeg";
-            case "webp" -> "image/webp";
-            case "gif" -> "image/gif";
-            // Every photo taken on an iPhone since 2017. Browsers vary on whether they declare a
-            // type for it, so the extension has to be enough — and the model reads it as it is,
-            // which is the point: nothing here converts a file before the model sees it.
-            case "heic", "heif" -> "image/heic";
-            default -> throw new UnsupportedDocumentException(
-                    "Only PDFs and images can be analysed. Received: " + declared);
-        };
-    }
-
-    public static class UnsupportedDocumentException extends RuntimeException {
-        UnsupportedDocumentException(String message) {
-            super(message);
-        }
     }
 
     public static class UnknownCaseException extends RuntimeException {

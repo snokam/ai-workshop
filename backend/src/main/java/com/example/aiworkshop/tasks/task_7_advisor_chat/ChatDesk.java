@@ -19,8 +19,8 @@ import com.example.aiworkshop.tasks.task_7_advisor_chat.proposals.ReviewProposal
 import com.example.aiworkshop.tasks.task_1_first_agent.store.CaseStore;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.UploadedDocument;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentFiles;
-import com.example.aiworkshop.tasks.task_3_document_agent.CaseDocuments;
-import com.example.aiworkshop.tasks.task_3_document_agent.DocumentReview;
+import com.example.aiworkshop.tasks.task_3_document_agent.progress.CaseDocuments;
+import com.example.aiworkshop.tasks.task_3_document_agent.progress.DocumentReview;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_6_case_summary.SummaryDesk;
 import com.example.aiworkshop.tasks.task_7_advisor_chat.model.CaseAtAGlance;

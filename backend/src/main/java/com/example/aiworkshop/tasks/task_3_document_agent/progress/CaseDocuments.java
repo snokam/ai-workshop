@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_3_document_agent;
+package com.example.aiworkshop.tasks.task_3_document_agent.progress;
 
 import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseStatus;
@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * What the uploads add up to, measured against what the case asked for.
  *
- * <p>Every method here needs an answer from the analyser you write in task 2, which is why none of
+ * <p>Every method here needs an answer from the analyser you write in task 3, which is why none of
  * them lives on Case. "Is this the police report?" is not a fact about the case; it is a claim the
  * agent made about a file, recorded in {@code analysis().matchedRequiredDocument()}.
  *

@@ -4,6 +4,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentFiles;
+import com.example.aiworkshop.tasks.task_3_document_agent.store.FileType;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.UploadedDocument;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.QualityAssessment;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.MatchConfidence;
@@ -215,7 +216,7 @@ class DocumentIntakeTest {
     void aFileTheModelCannotLookAtIsRejected() {
         assertThatThrownBy(() ->
                         intake.accept(CASE_ID, new MockMultipartFile("file", "notes.docx", null, "irrelevant".getBytes())))
-                .isInstanceOf(DocumentIntake.UnsupportedDocumentException.class);
+                .isInstanceOf(FileType.UnsupportedDocumentException.class);
     }
 
     private List<Content> capturedContent() {

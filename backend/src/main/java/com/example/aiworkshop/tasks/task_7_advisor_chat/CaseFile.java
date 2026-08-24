@@ -3,7 +3,7 @@ package com.example.aiworkshop.tasks.task_7_advisor_chat;
 import com.example.aiworkshop.tasks.task_1_first_agent.CaseDesk;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.Case;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CaseOverview;
-import com.example.aiworkshop.tasks.task_3_document_agent.CaseDocuments;
+import com.example.aiworkshop.tasks.task_3_document_agent.progress.CaseDocuments;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.UploadedDocument;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_5_fraud_detection.FraudScreener;

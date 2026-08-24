@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_3_document_agent;
+package com.example.aiworkshop.tasks.task_3_document_agent.progress;
 
 import com.example.aiworkshop.tasks.task_3_document_agent.model.UploadedDocument;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.QualityAssessment;

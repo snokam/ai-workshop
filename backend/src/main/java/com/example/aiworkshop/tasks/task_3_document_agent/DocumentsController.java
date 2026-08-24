@@ -5,7 +5,9 @@ import com.example.aiworkshop.workshop.TaskNotImplementedAdvice;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.DocumentForClaimant;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentFiles;
+import com.example.aiworkshop.tasks.task_3_document_agent.store.FileType;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.UploadedDocument;
+import com.example.aiworkshop.tasks.task_3_document_agent.progress.DocumentReview;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -90,8 +92,8 @@ class DocumentsController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(DocumentIntake.UnsupportedDocumentException.class)
-    ResponseEntity<Map<String, String>> unsupported(DocumentIntake.UnsupportedDocumentException e) {
+    @ExceptionHandler(FileType.UnsupportedDocumentException.class)
+    ResponseEntity<Map<String, String>> unsupported(FileType.UnsupportedDocumentException e) {
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(Map.of("message", e.getMessage()));
     }
 
