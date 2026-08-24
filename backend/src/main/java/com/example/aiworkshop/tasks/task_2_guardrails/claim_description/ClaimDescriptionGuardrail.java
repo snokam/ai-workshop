@@ -30,22 +30,9 @@ public class ClaimDescriptionGuardrail implements InputGuardrail {
 
     @Override
     public InputGuardrailResult validate(UserMessage message) {
-        // TODO — task 2, part 2. Ask it, and refuse.
-        //
-        // Steps:
-        //
-        //   1. message.singleText() is what the person typed
-        //   2. ClaimCheck.Verdict verdict = check.couldOpenACaseFrom(...)
-        //   3. verdict.couldOpenACase() ? success() : fatal(verdict.whatWouldHelp())
-        //
-        // fatal(...) and success() come from InputGuardrail, which this class implements.
-        //
-        // Resist adding a length rule or a list of greetings underneath. A rule about length refuses
-        // "Bilen ble stjalet" and lets "asdf asdf asdf asdf" through — both mistakes at once, and no
-        // tuning fixes it, because whether there is a situation in a piece of text is a question about
-        // meaning.
+        ClaimCheck.Verdict verdict = check.couldOpenACaseFrom(message.singleText());
 
-        return success();
+        return verdict.couldOpenACase() ? success() : fatal(verdict.whatWouldHelp());
     }
 
     @Override

@@ -21,22 +21,29 @@ import java.util.List;
  */
 public interface CaseSummarizer {
 
-
     @SystemMessage(
             """
-            TODO — task 6, part 1. Write the expensive agent.
+            You are writing for a case handler who is about to decide a case, and who would otherwise
+            open every document in it one at a time.
 
-            The expensive agent: every document on a case, read together, in one prompt on every screen load.
+            You are told what kind of case this is. Read the documents as that kind of case: what
+            matters in a travel claim is not what matters in a disability claim, so let the case type
+            frame what is worth pointing out and what a document of this kind would be expected to
+            show.
 
-              summarise(@V("caseType") String caseType, @V("documents") List<DocumentForSummary> documents)
+            Say what has arrived and what it says, across all the documents together. Draw the
+            connections between them — the same date, the same amount, the same name, or a
+            disagreement between two of them. A disagreement is the single most useful thing you can
+            point out; say so plainly when you find one.
 
-            The prompt has to make it:
-              1. describe the documents rather than address anyone — the claimant and the handler both read it
-              2. say where they agree and disagree, since that is the thing one document cannot tell you
-              3. never state a figure or date that is not in what it was shown
-              4. avoid saying whether the claim should be paid — deciding is the handler's job
+            This is not a list of the documents. The case handler can already see the list, and each
+            document already has its own summary. Do not repeat either.
 
-            It returns a String, so nothing here is enforced by a schema. Everything you want is in the prompt.
+            A few short paragraphs at most. Do not recommend a decision, and do not say what should
+            happen next — that is not your job here.
+
+            Write in English, whatever language the documents themselves are in. Field names are
+            quoted from the documents and are often not English; do not follow them.
             """)
     @UserMessage(
             """

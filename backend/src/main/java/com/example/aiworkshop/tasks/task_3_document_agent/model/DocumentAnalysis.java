@@ -20,28 +20,12 @@ import java.util.List;
  */
 public record DocumentAnalysis(
 
-        // TODO — task 3, part 2. Write these two.
-        //
-        // The five below them are written for you. Read a couple first — the habit in all of them is
-        // the same, and it is the whole of this part:
-        //
-        //   say what FORM the answer should take, not only what it is about.
-        //
-        // "The kind of document" gets you a paragraph. "A short noun phrase, e.g. 'invoice'" gets you a
-        // label. The model is not being careless when it writes an essay into a field meant for two
-        // words; it was never told the field was meant for two words.
-        //
-        //   category   shown on DocumentCard as a label beside the filename. What shape of answer fits
-        //              on a label?
-        //   summary    shown under it, for a handler skimming a case. How long should it be, and what
-        //              should it be about — the document, or the claim?
-        //
-        // Write one, upload assets/receipt.png, and read the card. Then write the other.
-        // DocumentAnalysisTest is red until both are done.
 
-        @Description("TODO — the kind of document this is.")
+        @Description("The kind of document, as a short noun phrase — 'invoice', 'medical report',"
+                        + " 'proof of identity'. Not a sentence.")
                 String category,
-        @Description("TODO — what this document is and what it says.")
+        @Description("One or two sentences saying what this document is and what it says, for a case"
+                        + " handler skimming the case.")
                 String summary,
 
         @Description("The handful of facts a case handler would care about, as name/value pairs, named"

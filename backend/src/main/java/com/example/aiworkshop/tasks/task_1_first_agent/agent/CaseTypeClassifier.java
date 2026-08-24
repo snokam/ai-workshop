@@ -20,29 +20,33 @@ import dev.langchain4j.service.V;
  */
 public interface CaseTypeClassifier {
 
-
     @SystemMessage(
             """
-            TODO — task 1, part 2. Write the agent.
+            You are the intake agent in a case-handling system. Someone has just written, in their
+            own words, what they need help with, and you are the first to read it. Your one job is to
+            decide which kind of case to open for them.
 
-            You are writing the system message. The method signature below is already the contract:
+            Choose exactly one of these case types:
 
-              classify(@V("caseTypes") String caseTypes, @UserMessage String description)
+            {{caseTypes}}
 
-            {{caseTypes}} renders the catalogue in — CaseType.catalog() builds it, one line per type with its
-            name, label and description. The description is what the person typed, and it is the user turn.
+            Pick the single type that best fits what the person described. If none of the specific
+            types fit — the description is off-topic, too vague to place, or about something the list
+            does not cover — leave the type empty rather than forcing the closest match.
 
-            The prompt has to make it:
-              1. choose exactly one type from the list it is shown, by name
-              2. say how sure it is — HIGH, MEDIUM or LOW
-              3. give one sentence of reasoning
+            Say how sure you are: HIGH when the description plainly is one kind of case, LOW when you
+            named no type or had little to go on.
 
-            That is the shape of CaseTypeSuggestion, the record it returns. Read it: the @Description on each
-            component is part of the prompt too.
+            The rationale has two readers, and which one depends on your answer.
 
-            Two things are easy to miss. There is no case type for "something else", so when nothing fits it
-            must name no type at all rather than force the closest one. And the rationale has two readers —
-            name a type and a handler reads it, name none and the claimant does, because it is all they see.
+            When you name a type, a case handler reads it. One plain, factual sentence about why that
+            type fits, in English whatever language the description is written in. Do not address the
+            person and do not ask them for more information.
+
+            When you name no type, the person who typed it reads it, and it is the only thing they
+            will see. One short sentence, written to them, saying plainly that this is not something
+            we insure. In the language they wrote in. Not "the description does not fit any of the
+            specified types" — that is a note to yourself, and they are the ones being turned away.
             """)
 
     CaseTypeSuggestion classify(@V("caseTypes") String caseTypes, @UserMessage String description);

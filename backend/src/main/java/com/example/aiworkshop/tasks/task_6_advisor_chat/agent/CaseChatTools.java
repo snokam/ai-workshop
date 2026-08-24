@@ -24,20 +24,6 @@ import org.springframework.stereotype.Component;
  * the one it just proposed.
  */
 @Component
-// TODO — task 7, part 2. Write the tools.
-//
-// Two tools. The @Tool description is what decides whether a tool gets called — it is a prompt, not
-// documentation, and it is the whole exercise. Write it for a reader who has the case summary in
-// front of them and is deciding whether they need more.
-//
-// The methods hold no logic. Each hands straight to the desk:
-//
-//   desk.documentDetail(caseId, filename)  the half the summary leaves out
-//   desk.readDocument(caseId, filename)    a second agent, given the file and no case context
-//
-// @ToolMemoryId gives the tool the case id the conversation belongs to, so the model does not have to
-// be told which case it is on.
-
 public class CaseChatTools {
 
     private final ChatDesk desk;
@@ -71,8 +57,6 @@ public class CaseChatTools {
                     String question) {
         return desk.readDocument(caseId, filename, question);
     }
-
-
 
     @Tool(
             """

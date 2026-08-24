@@ -46,23 +46,13 @@ public class PromptInjectionGuardrail implements InputGuardrail {
 
     @Override
     public InputGuardrailResult validate(UserMessage message) {
-        // TODO — task 2, part 4. Refuse without explaining.
-        //
-        // Steps:
-        //
-        //   1. message.singleText() is what the person typed
-        //   2. InjectionCheck.Verdict verdict = check.looksLikeAnInstruction(...)
-        //   3. if it does not address the system, return success()
-        //   4. otherwise log.warn(...) with verdict.whatItAskedFor(), and return fatal(REFUSAL)
-        //
-        // fatal(...) and success() come from InputGuardrail, which this class implements.
-        //
-        // Return REFUSAL itself, not verdict.whatItAskedFor(). Passing the check's description
-        // through to the screen is the tempting version and it is the wrong one: it turns every
-        // refusal into feedback for whoever is probing, and they are the only person who reads it
-        // carefully. The detail goes to the log instead.
+        InjectionCheck.Verdict verdict = check.looksLikeAnInstruction(message.singleText());
+        if (!verdict.addressesTheSystem()) {
+            return success();
+        }
 
-        return success();
+        log.warn("Refused an input addressed to the system: {}", verdict.whatItAskedFor());
+        return fatal(REFUSAL);
     }
 
     @Override
