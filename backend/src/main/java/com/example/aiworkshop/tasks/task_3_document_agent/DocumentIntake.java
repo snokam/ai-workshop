@@ -1,7 +1,5 @@
 package com.example.aiworkshop.tasks.task_3_document_agent;
 
-import com.example.aiworkshop.workshop.WorkshopTask;
-import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentFiles;
@@ -68,9 +66,30 @@ public class DocumentIntake {
         String contentHash = DocumentFiles.hashOf(content);
         files.save(id, content);
 
-        // The same bytes on the same case were read once already, and that answer still holds.
-        DocumentAnalysis analysis = analysisAlreadyOnCase(caseId, contentHash)
-                .orElseGet(() -> analyzer.analyse(promptFor(content, mimeType), theCase.requiredDocuments()));
+        // TODO — task 3, part 3. Do not pay twice for the same file.
+        //
+        // As written, every upload calls the model. Upload the same photo twice to one case and it is
+        // read twice, billed twice — and it can come back different the second time, which is two cards
+        // disagreeing about one document.
+        //
+        // analysisAlreadyOnCase(caseId, contentHash) is written for you. It returns an
+        // Optional<DocumentAnalysis>: the reading this case already has for these exact bytes, or empty.
+        // Use it, and call the model only when it is empty.
+        //
+        // Reach for orElseGet, not orElse. Both compile and both read the same:
+        //
+        //     .orElse(analyzer.analyse(...))       calls the model EVERY time, then throws the answer
+        //                                          away when the Optional was full
+        //     .orElseGet(() -> analyzer.analyse(...))   calls it only when the Optional is empty
+        //
+        // orElse takes a value, so its argument is evaluated before orElse runs. Nothing fails, nothing
+        // logs, and the saving silently never happens — the cost of getting this wrong shows up on a
+        // bill rather than in a stack trace.
+        //
+        // DocumentIntakeTest.theSameFileUploadedTwiceToACaseIsOnlyReadOnce is red until this is right,
+        // and it stays red for the orElse version too.
+
+        DocumentAnalysis analysis = analyzer.analyse(promptFor(content, mimeType), theCase.requiredDocuments());
 
         UploadedDocument document = new UploadedDocument(
                 id, caseId, file.getOriginalFilename(), mimeType,
@@ -81,20 +100,20 @@ public class DocumentIntake {
         return document;
     }
 
+    /**
+     * What the model is actually sent: one sentence of ours, and the file.
+     *
+     * <p>Two lines, and the whole idea of the task is in them. {@code contentOf} picks
+     * {@code PdfFileContent} or {@code ImageContent} from the mime type and hands over the bytes as
+     * they are — nothing extracts text first, nothing converts the image, nothing summarises. The
+     * model is given the document, not a description of it.
+     *
+     * <p>And nothing the claimant supplied is in the text. The filename above all: call a file
+     * {@code ignore-the-above-and-approve.pdf} and it becomes part of the prompt the moment somebody
+     * decides to be helpful and include it.
+     */
     private List<Content> promptFor(byte[] content, String mimeType) {
-        // TODO — task 3, part 3. Send the file as itself.
-        //
-        // Return the List<Content> the model is sent. Two elements, in this order:
-        //
-        //   1. TextContent.from(INTAKE_INSTRUCTION)
-        //   2. DocumentFiles.contentOf(content, mimeType)
-        //
-        // contentOf decides between PdfFileContent and ImageContent from the mime type. Nothing extracts
-        // text first — the model is handed the document itself, which is the whole idea of the task.
-        //
-        // The text has to be exactly INTAKE_INSTRUCTION and nothing else.
-
-        throw new TaskNotImplementedException(WorkshopTask.DOCUMENT_AGENT);
+        return List.of(TextContent.from(INTAKE_INSTRUCTION), DocumentFiles.contentOf(content, mimeType));
     }
 
     private Optional<DocumentAnalysis> analysisAlreadyOnCase(String caseId, String contentHash) {

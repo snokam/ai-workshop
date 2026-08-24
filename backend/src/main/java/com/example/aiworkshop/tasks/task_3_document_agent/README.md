@@ -11,15 +11,16 @@ Do them in this order. Each is one file, and the `TODO` at the top of it has the
 | | File | What it is for |
 |---|---|---|
 | 1 | [`agent/DocumentAnalyzer.java`](./agent/DocumentAnalyzer.java) | Write the agent |
-| 2 | [`model/DocumentAnalysis.java`](./model/DocumentAnalysis.java) | Finish the record |
-| 3 | [`DocumentIntake.java`](./DocumentIntake.java) | Send the file as itself |
+| 2 | [`model/DocumentAnalysis.java`](./model/DocumentAnalysis.java) | Say what each field means |
+| 3 | [`DocumentIntake.java`](./DocumentIntake.java) | Do not pay twice for the same file |
 
 ## Everything else
 
 Three files sit at the top of the folder, and only one of them is yours to edit.
 
 - [`DocumentIntake.java`](./DocumentIntake.java) — part 3. One method does the work: save the bytes,
-  show them to the agent, write down what it said, announce it.
+  show them to the agent, write down what it said, announce it. `promptFor` in it is given — it is
+  the two lines that hand the model the file itself, and worth reading before part 3.
 - [`DocumentsController.java`](./DocumentsController.java) — the HTTP surface. Upload, list, fetch
   the file back, mark one reviewed.
 - [`DocumentStored.java`](./DocumentStored.java) — what intake announces once an upload is safely
