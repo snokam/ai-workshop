@@ -49,7 +49,7 @@ class SummaryEvaluation {
         List<DocumentForSummary> documents = twoDocumentsOnAClaim();
         String summary;
         try {
-            summary = summarizer.summarise(ClaimType.MOTOR.label(), documents);
+            summary = summarizer.summarise("evaluation", ClaimType.MOTOR.label(), documents);
         } catch (TaskNotImplementedException notYet) {
             System.out.println("\nThere is nothing to judge yet — task 5's summariser is not written.\n");
             return;

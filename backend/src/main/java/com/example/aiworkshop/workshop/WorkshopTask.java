@@ -38,8 +38,8 @@ public enum WorkshopTask {
             5,
             "Claim summary",
             "tasks/task_5_claim_summary/agent/ClaimSummarizer.java",
-            "Write the agent that reads every document on a claim at once, then the rubric that says"
-                    + " whether its answer holds up."),
+            "Write the agent that reads every document on a claim at once, give it a memory of what it"
+                    + " said last time, then the rubric that says whether its answer holds up."),
     ADVISOR_CHAT_WITH_TOOLS(
             6,
             "Advisor chat with tools",

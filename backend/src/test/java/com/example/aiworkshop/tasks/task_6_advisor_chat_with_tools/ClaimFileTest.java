@@ -69,7 +69,7 @@ class ClaimFileTest {
     void aClaimWithOneUnreadableDocument() {
         claims.save(new Claim(CLAIM_ID, "CLAIM-2026-001", ClaimType.HOME_CONTENTS, List.of("receipt")));
         documents.save(document("blurry.jpg", "receipt", Quality.POOR));
-        when(summarizer.summarise(anyString(), anyList())).thenReturn("What the documents say, taken together.");
+        when(summarizer.summarise(anyString(), anyString(), anyList())).thenReturn("What the documents say, taken together.");
     }
 
     @Test
@@ -129,7 +129,7 @@ class ClaimFileTest {
         file.open(CLAIM_ID, List.of(), List.of());
         file.open(CLAIM_ID, List.of(), List.of());
 
-        verify(summarizer, times(1)).summarise(anyString(), anyList());
+        verify(summarizer, times(1)).summarise(anyString(), anyString(), anyList());
     }
 
     @Test
@@ -139,7 +139,7 @@ class ClaimFileTest {
         documents.save(document("better.jpg", "receipt", Quality.GOOD, AT_TEN));
         file.open(CLAIM_ID, List.of(), List.of());
 
-        verify(summarizer, times(2)).summarise(anyString(), anyList());
+        verify(summarizer, times(2)).summarise(anyString(), anyString(), anyList());
     }
 
     @Test
@@ -149,7 +149,7 @@ class ClaimFileTest {
         review.markReviewed("blurry.jpg");
         file.open(CLAIM_ID, List.of(), List.of());
 
-        verify(summarizer, times(1)).summarise(anyString(), anyList());
+        verify(summarizer, times(1)).summarise(anyString(), anyString(), anyList());
     }
 
 
@@ -164,7 +164,7 @@ class ClaimFileTest {
     private List<DocumentForSummary> capturedProjections() {
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<DocumentForSummary>> captor = ArgumentCaptor.forClass(List.class);
-        verify(summarizer).summarise(anyString(), captor.capture());
+        verify(summarizer).summarise(anyString(), anyString(), captor.capture());
         return captor.getValue();
     }
 

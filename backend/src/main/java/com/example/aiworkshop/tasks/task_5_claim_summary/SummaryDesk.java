@@ -36,6 +36,7 @@ public class SummaryDesk {
         List<String> writtenOver = attached.stream().map(UploadedDocument::id).toList();
         return summaries.find(claimId, writtenOver).orElseGet(() -> {
             String summary = summarizer.summarise(
+                    claimId,
                     theClaim.type().label(),
                     attached.stream().map(DocumentForSummary::of).toList());
             summaries.save(claimId, writtenOver, summary);

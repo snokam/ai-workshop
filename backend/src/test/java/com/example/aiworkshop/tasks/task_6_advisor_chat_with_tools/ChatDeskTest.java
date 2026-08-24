@@ -86,7 +86,7 @@ class ChatDeskTest {
     void aClaimHeldUpByOneUnreadableDocument() throws IOException {
         claims.save(new Claim(CLAIM_ID, "CLAIM-2026-001", ClaimType.HOME_CONTENTS, List.of("receipt")));
         documents.save(document("d-1", "blurry.jpg", "receipt", Quality.POOR));
-        when(summarizer.summarise(anyString(), anyList()))
+        when(summarizer.summarise(anyString(), anyString(), anyList()))
                 .thenReturn("What the documents say, taken together.");
         files = new DocumentFiles(directory);
         SummaryDesk summaryDesk = new SummaryDesk(summaries, summarizer, statusWriter);
@@ -211,7 +211,7 @@ class ChatDeskTest {
 
         desk.chat(CLAIM_ID, "What is this waiting on?");
 
-        verify(summarizer, times(1)).summarise(anyString(), anyList());
+        verify(summarizer, times(1)).summarise(anyString(), anyString(), anyList());
     }
 
     @Test
