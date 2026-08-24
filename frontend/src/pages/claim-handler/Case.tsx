@@ -92,27 +92,32 @@ export function Case() {
           </TaskGate>
 
           <TaskGate
-            task="FRAUD_DETECTION"
-            instead="Nothing below has been screened. The checks that catch a duplicate upload, an edited photo or a figure that does not add up are plain Java after the answer, and you have not written them yet."
+            task="DOCUMENT_AGENT"
+            instead="Anything listed below was read by task 3's agent. Until that is written no documents reach a case, so this list stays empty."
           >
-            <section className="documents">
-              {detail.documents.length === 0 && (
-                <p className="empty">Nothing uploaded to this case yet.</p>
-              )}
-              {detail.documents.map((doc) => (
-                <DocumentCard
-                  key={doc.id}
-                  doc={doc}
-                  preview={previewOf(doc)}
-                  standing={standingOf(doc, detail)}
-                  blocking={detail.blockedDocumentIds.includes(doc.id)}
-                  screening={detail.screenings.find(
-                    (s) => s.documentId === doc.id,
-                  )}
-                  onReview={() => void review(doc.id)}
-                />
-              ))}
-            </section>
+            <TaskGate
+              task="FRAUD_DETECTION"
+              instead="Nothing below has been screened. The checks that catch a duplicate upload, an edited photo or a figure that does not add up are plain Java after the answer, and you have not written them yet."
+            >
+              <section className="documents">
+                {detail.documents.length === 0 && (
+                  <p className="empty">Nothing uploaded to this case yet.</p>
+                )}
+                {detail.documents.map((doc) => (
+                  <DocumentCard
+                    key={doc.id}
+                    doc={doc}
+                    preview={previewOf(doc)}
+                    standing={standingOf(doc, detail)}
+                    blocking={detail.blockedDocumentIds.includes(doc.id)}
+                    screening={detail.screenings.find(
+                      (s) => s.documentId === doc.id,
+                    )}
+                    onReview={() => void review(doc.id)}
+                  />
+                ))}
+              </section>
+            </TaskGate>
           </TaskGate>
         </div>
 

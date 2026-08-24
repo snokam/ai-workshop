@@ -49,14 +49,14 @@ export function Layout({ children }: { children: ReactNode }) {
             content={
               <p>
                 A workshop on document handling with LLMs. Everything you upload
-                stays on this machine.
+                stays on this machine. Each link says which tasks it exercises.
               </p>
             }
             links={[
-              { href: '/', text: 'Report a case' },
-              { href: '/cases', text: 'My cases' },
-              { href: '/casehandler', text: 'Case handler' },
-              { href: '/chat', text: 'Report with AI chat' },
+              { href: '/', text: 'Tasks 1–2 · Report a case' },
+              { href: '/cases', text: 'Tasks 1, 3 · My cases' },
+              { href: '/casehandler', text: 'Tasks 3, 5–7 · Case handler' },
+              { href: '/chat', text: 'Task 8 · Report with AI chat' },
             ]}
           />
         </div>
