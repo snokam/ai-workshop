@@ -5,8 +5,10 @@ import com.example.aiworkshop.tasks.task_3_document_agent.model.DocumentAnalysis
 import com.example.aiworkshop.tasks.task_2_guardrails.Guardrails;
 import com.example.aiworkshop.tasks.task_6_advisor_chat.agent.ClaimChatTools;
 import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
+import com.example.aiworkshop.tasks.task_5_claim_summary.evaluation.SummaryRubric;
 import com.example.aiworkshop.tasks.task_4_evaluation.GuardrailProbe;
 import com.example.aiworkshop.tasks.task_4_evaluation.LabelledClaim;
+import com.example.aiworkshop.tasks.task_7_create_claim_chat.InterviewBudget;
 import com.example.aiworkshop.tasks.task_7_create_claim_chat.agent.ClaimIntakeInterviewer;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -37,8 +39,10 @@ public class TaskProgress {
             // agent wired without tools is not broken — it answers, it just never looks anything up,
             // which is the point of part 2 and something you see rather than something a gate reports.
             case ADVISOR_CHAT -> UnfinishedTasks.toolDescriptionsWritten(ClaimChatTools.class);
-            case CLAIM_SUMMARY -> UnfinishedTasks.promptWritten(ClaimSummarizer.class);
-            case CREATE_CLAIM_CHAT -> UnfinishedTasks.promptWritten(ClaimIntakeInterviewer.class);
+            case CLAIM_SUMMARY -> UnfinishedTasks.promptWritten(ClaimSummarizer.class)
+                    && !SummaryRubric.yours().isEmpty();
+            case CREATE_CLAIM_CHAT -> UnfinishedTasks.promptWritten(ClaimIntakeInterviewer.class)
+                    && UnfinishedTasks.written(() -> InterviewBudget.withinBudget("", 0));
             // Task 4 has no code to gate: nothing on a screen waits on it, and there is no prompt to
             // write. It counts as done when both sets have rows of yours in them — the three that ship
             // with each are the worked examples, and adding your own is the exercise.

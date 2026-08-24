@@ -38,7 +38,8 @@ public enum WorkshopTask {
             5,
             "Claim: Claim summary",
             "tasks/task_5_claim_summary/agent/ClaimSummarizer.java",
-            "Write the agent that reads every document on a claim at once."),
+            "Write the agent that reads every document on a claim at once, then the rubric that says"
+                    + " whether its answer holds up."),
     ADVISOR_CHAT(
             6,
             "Claim: Advisor chat",
@@ -48,7 +49,8 @@ public enum WorkshopTask {
             7,
             "Claim: File claim with AI chat",
             "tasks/task_7_create_claim_chat/agent/ClaimIntakeInterviewer.java",
-            "Write the @SystemMessage in ClaimIntakeInterviewer so it can ask before it commits.");
+            "Write the interviewer that asks before it commits, and the budget that stops it asking"
+                    + " forever.");
 
 
     private static final String SOURCE_ROOT = "backend/src/main/java/com/example/aiworkshop/";

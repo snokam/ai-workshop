@@ -6,10 +6,11 @@ import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimType;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.ExtractedField;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.QualityAssessment.Quality;
 import com.example.aiworkshop.tasks.task_5_claim_summary.agent.ClaimSummarizer;
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.service.AiServices;
 import java.util.List;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * Scoring prose, where there is nothing to compare against — task 5's own evaluation, and a different
  * shape from the two in task 4.
  *
- * <pre>./mvnw test -Dtest=SummaryEvaluation -Dsurefire.failIfNoSpecifiedTests=false</pre>
+ * <pre>cd backend && ./mvnw test -Pevaluate</pre>
  *
  * <p>Nobody can write down the correct summary of a claim, so the two techniques before this one are
  * both unavailable. What is left is to write down what a good summary must be true of, and ask each
@@ -30,7 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * person will not, and the interesting thing to see is exactly how much you would be trusting.
  */
 @SpringBootTest
-@Disabled("writes a summary, then judges it four times — run it deliberately, see the class comment")
+@Tag("evaluation")
 class SummaryEvaluation {
 
     @Autowired
@@ -41,8 +42,18 @@ class SummaryEvaluation {
 
     @Test
     void scoreTheSummary() {
+        if (SummaryRubric.yours().isEmpty()) {
+            System.out.println("\nThe rubric has only its worked examples — task 5, part 2 is adding to it.\n");
+        }
+
         List<DocumentForSummary> documents = twoDocumentsOnAClaim();
-        String summary = summarizer.summarise(ClaimType.MOTOR.label(), documents);
+        String summary;
+        try {
+            summary = summarizer.summarise(ClaimType.MOTOR.label(), documents);
+        } catch (TaskNotImplementedException notYet) {
+            System.out.println("\nThere is nothing to judge yet — task 5's summariser is not written.\n");
+            return;
+        }
         SummaryJudge judge = AiServices.create(SummaryJudge.class, chatModel);
 
         System.out.printf("%nThe summary being judged:%n%n%s%n%n", summary);

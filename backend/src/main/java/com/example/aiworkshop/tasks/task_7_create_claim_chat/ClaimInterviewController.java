@@ -44,9 +44,16 @@ class ClaimInterviewController {
 
     @PostMapping
     InterviewResponse next(@RequestBody InterviewRequest request) {
-        InterviewTurn turn = interviewer.next(ClaimScenario.catalog(), transcriptOf(request));
+        int roundsAnswered = request.answers() == null ? 0 : request.answers().size();
+        String transcript = InterviewBudget.withinBudget(transcriptOf(request), roundsAnswered);
+        InterviewTurn turn = interviewer.next(ClaimScenario.catalog(), transcript);
 
         if (turn.decision() == InterviewTurn.Decision.NEEDS_INFO) {
+            // Asked to decide and still asking. The budget is the bound, so it holds here rather than
+            // being negotiated: nothing further is put to the claimant.
+            if (roundsAnswered >= InterviewBudget.ROUNDS) {
+                throw new ClaimIntake.NothingWeCoverException(turn.rationale());
+            }
             List<String> questions = turn.questions() == null ? List.of() : turn.questions();
             return InterviewResponse.needsInfo(questions, turn.rationale());
         }
