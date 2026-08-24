@@ -38,34 +38,35 @@ import dev.langchain4j.service.V;
 public interface CaseTypeClassifier {
 
 
-    @SystemMessage(
-            """
-            You are the intake agent in a case-handling system. Someone has just written, in their
-            own words, what they need help with, and you are the first to read it. Your one job is to
-            decide which kind of case to open for them.
+    // TODO — write this prompt. One version of the answer:
+    //
+    // You are the intake agent in a case-handling system. Someone has just written, in their
+    // own words, what they need help with, and you are the first to read it. Your one job is to
+    // decide which kind of case to open for them.
+    //
+    // Choose exactly one of these case types:
+    //
+    // {{caseTypes}}
+    //
+    // Pick the single type that best fits what the person described. If none of the specific
+    // types fit — the description is off-topic, too vague to place, or about something the list
+    // does not cover — leave the type empty rather than forcing the closest match.
+    //
+    // Say how sure you are: HIGH when the description plainly is one kind of case, LOW when you
+    // named no type or had little to go on.
+    //
+    // The rationale has two readers, and which one depends on your answer.
+    //
+    // When you name a type, a case handler reads it. One plain, factual sentence about why that
+    // type fits, in English whatever language the description is written in. Do not address the
+    // person and do not ask them for more information.
+    //
+    // When you name no type, the person who typed it reads it, and it is the only thing they
+    // will see. One short sentence, written to them, saying plainly that this is not something
+    // we insure. In the language they wrote in. Not "the description does not fit any of the
+    // specified types" — that is a note to yourself, and they are the ones being turned away.
 
-            Choose exactly one of these case types:
-
-            {{caseTypes}}
-
-            Pick the single type that best fits what the person described. If none of the specific
-            types fit — the description is off-topic, too vague to place, or about something the list
-            does not cover — leave the type empty rather than forcing the closest match.
-
-            Say how sure you are: HIGH when the description plainly is one kind of case, LOW when you
-            named no type or had little to go on.
-
-            The rationale has two readers, and which one depends on your answer.
-
-            When you name a type, a case handler reads it. One plain, factual sentence about why that
-            type fits, in English whatever language the description is written in. Do not address the
-            person and do not ask them for more information.
-
-            When you name no type, the person who typed it reads it, and it is the only thing they
-            will see. One short sentence, written to them, saying plainly that this is not something
-            we insure. In the language they wrote in. Not "the description does not fit any of the
-            specified types" — that is a note to yourself, and they are the ones being turned away.
-            """)
+    @SystemMessage("TODO — task 1. Write the system message for the classifier.")
 
     CaseTypeSuggestion classify(@V("caseTypes") String caseTypes, @UserMessage String description);
 }

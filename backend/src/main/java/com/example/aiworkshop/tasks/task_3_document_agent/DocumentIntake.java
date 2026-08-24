@@ -1,5 +1,7 @@
 package com.example.aiworkshop.tasks.task_3_document_agent;
 
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
+import com.example.aiworkshop.workshop.WorkshopTask;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentFiles;
@@ -58,18 +60,22 @@ public class DocumentIntake {
     }
 
     public UploadedDocument accept(String caseId, MultipartFile file) throws IOException {
-        Case theCase =
-                cases.findById(caseId).orElseThrow(() -> new UnknownCaseException("No such case: " + caseId));
-        String mimeType = resolveMimeType(file);
-        String id = UUID.randomUUID().toString();
-        files.save(id, file.getBytes());
-        String contentHash = hashOf(file.getBytes());
+        // Case theCase =
+        //         cases.findById(caseId).orElseThrow(() -> new UnknownCaseException("No such case: " + caseId));
+        // String mimeType = resolveMimeType(file);
+        // String id = UUID.randomUUID().toString();
+        // files.save(id, file.getBytes());
+        // String contentHash = hashOf(file.getBytes());
+        //
+        // synchronized (arrivalOf(caseId, contentHash)) {
+        //     DocumentAnalysis analysis = analysisFor(theCase, file, mimeType, contentHash);
+        //     return store(id, caseId, file, mimeType, contentHash, analysis);
+        // }
+        //
 
-        synchronized (arrivalOf(caseId, contentHash)) {
-            DocumentAnalysis analysis = analysisFor(theCase, file, mimeType, contentHash);
-            return store(id, caseId, file, mimeType, contentHash, analysis);
+        throw new TaskNotImplementedException(WorkshopTask.DOCUMENT_AGENT);
+
         }
-    }
 
     private DocumentAnalysis analysisFor(Case theCase, MultipartFile file, String mimeType, String contentHash)
             throws IOException {

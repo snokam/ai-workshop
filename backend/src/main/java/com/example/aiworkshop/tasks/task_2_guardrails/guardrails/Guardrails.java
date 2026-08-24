@@ -17,7 +17,11 @@ public final class Guardrails {
     private Guardrails() {}
 
     public static InputGuardrail beforeTheCall(ClaimCheck check) {
-        return new ClaimDescriptionGuardrail(check);
+        // return new ClaimDescriptionGuardrail(check);
+        //
+        // 
+
+        throw new TaskNotImplementedException(WorkshopTask.GUARDRAILS);
 
         // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 2. Hand back the guardrail that reads what the person typed.

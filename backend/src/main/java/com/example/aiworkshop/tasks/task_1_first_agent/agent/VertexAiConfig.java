@@ -1,5 +1,7 @@
 package com.example.aiworkshop.tasks.task_1_first_agent.agent;
 
+import com.example.aiworkshop.workshop.UnfinishedTasks;
+import com.example.aiworkshop.workshop.WorkshopTask;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiChatModel;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -13,16 +15,20 @@ import org.springframework.context.annotation.Configuration;
 public class VertexAiConfig {
     @Bean(destroyMethod = "close")
     ChatModel chatModel(VertexAiProperties properties) {
-        return VertexAiGeminiChatModel.builder()
-                .project(properties.projectId())
-                .location(properties.location())
-                .modelName(properties.modelName())
-                .temperature(properties.temperature())
-                .maxOutputTokens(properties.maxOutputTokens())
-                .maxRetries(properties.maxRetries())
-                .logRequests(properties.logRequests())
-                .logResponses(properties.logResponses())
-                .build();
+        // return VertexAiGeminiChatModel.builder()
+        //         .project(properties.projectId())
+        //         .location(properties.location())
+        //         .modelName(properties.modelName())
+        //         .temperature(properties.temperature())
+        //         .maxOutputTokens(properties.maxOutputTokens())
+        //         .maxRetries(properties.maxRetries())
+        //         .logRequests(properties.logRequests())
+        //         .logResponses(properties.logResponses())
+        //         .build();
+        //
+        // 
+
+        return UnfinishedTasks.notWrittenYet(ChatModel.class, WorkshopTask.FIRST_AGENT);
 
         // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 1, part 1. Build the model.

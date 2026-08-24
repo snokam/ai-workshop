@@ -30,9 +30,13 @@ public class ClaimDescriptionGuardrail implements InputGuardrail {
 
     @Override
     public InputGuardrailResult validate(UserMessage message) {
-        ClaimCheck.Verdict verdict = check.couldOpenACaseFrom(message.singleText());
+        // ClaimCheck.Verdict verdict = check.couldOpenACaseFrom(message.singleText());
+        //
+        // return verdict.couldOpenACase() ? success() : fatal(verdict.whatWouldHelp());
+        //
+        // 
 
-        return verdict.couldOpenACase() ? success() : fatal(verdict.whatWouldHelp());
+        return success();
 
         // ── To set this task again ────────────────────────────────────────────────────────
         // TODO — task 2. Ask the check, and turn a no into a refusal.

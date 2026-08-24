@@ -1,5 +1,7 @@
 package com.example.aiworkshop.tasks.task_5_fraud_detection.checks;
 
+import com.example.aiworkshop.workshop.TaskNotImplementedException;
+import com.example.aiworkshop.workshop.WorkshopTask;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.ExtractedField;
 import com.example.aiworkshop.tasks.task_5_fraud_detection.FraudScreener.Upload;
 import com.example.aiworkshop.tasks.task_5_fraud_detection.model.FraudScreening.Indicator;
@@ -18,45 +20,49 @@ public class FiguresCheck implements FraudCheck {
 
     @Override
     public List<Indicator> screen(Upload upload) {
-        if (upload.analysis() == null || upload.analysis().fields() == null) {
-            return List.of();
+        // if (upload.analysis() == null || upload.analysis().fields() == null) {
+        //     return List.of();
+        // }
+        //
+        // List<ExtractedField> amounts = new ArrayList<>();
+        // ExtractedField total = null;
+        // for (ExtractedField field : upload.analysis().fields()) {
+        //     if (!looksLikeMoney(field) || amountIn(field).isEmpty()) {
+        //         continue;
+        //     }
+        //     if (looksLikeATotal(field.name())) {
+        //         total = field;
+        //     } else {
+        //         amounts.add(field);
+        //     }
+        // }
+        //
+        // if (total == null || amounts.size() < 2) {
+        //     return List.of();
+        // }
+        //
+        // BigDecimal stated = amountIn(total).orElseThrow();
+        // BigDecimal summed = amounts.stream()
+        //         .map(field -> amountIn(field).orElseThrow())
+        //         .reduce(BigDecimal.ZERO, BigDecimal::add);
+        //
+        // if (stated.subtract(summed).abs().compareTo(TOLERANCE) <= 0) {
+        //     return List.of();
+        // }
+        //
+        // return List.of(new Indicator(
+        //         Kind.FIGURES_DISAGREE,
+        //         Weight.CONCERN,
+        //         "The document states a total of %s, and the %d other amounts on it add up to %s."
+        //                 .formatted(stated.toPlainString(), amounts.size(), summed.toPlainString()),
+        //         amounts.stream()
+        //                 .map(field -> field.name() + ": " + field.value())
+        //                 .toList()));
+        //
+
+        throw new TaskNotImplementedException(WorkshopTask.FRAUD_DETECTION);
+
         }
-
-        List<ExtractedField> amounts = new ArrayList<>();
-        ExtractedField total = null;
-        for (ExtractedField field : upload.analysis().fields()) {
-            if (!looksLikeMoney(field) || amountIn(field).isEmpty()) {
-                continue;
-            }
-            if (looksLikeATotal(field.name())) {
-                total = field;
-            } else {
-                amounts.add(field);
-            }
-        }
-
-        if (total == null || amounts.size() < 2) {
-            return List.of();
-        }
-
-        BigDecimal stated = amountIn(total).orElseThrow();
-        BigDecimal summed = amounts.stream()
-                .map(field -> amountIn(field).orElseThrow())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        if (stated.subtract(summed).abs().compareTo(TOLERANCE) <= 0) {
-            return List.of();
-        }
-
-        return List.of(new Indicator(
-                Kind.FIGURES_DISAGREE,
-                Weight.CONCERN,
-                "The document states a total of %s, and the %d other amounts on it add up to %s."
-                        .formatted(stated.toPlainString(), amounts.size(), summed.toPlainString()),
-                amounts.stream()
-                        .map(field -> field.name() + ": " + field.value())
-                        .toList()));
-    }
 
     /**
      * Whether this field is money at all.
