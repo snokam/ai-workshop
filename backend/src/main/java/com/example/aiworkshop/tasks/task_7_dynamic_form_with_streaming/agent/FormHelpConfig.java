@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_7_streaming_form_help.agent;
+package com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.agent;
 
 import com.example.aiworkshop.workshop.UnfinishedTasks;
 import com.example.aiworkshop.workshop.WorkshopTask;
@@ -24,7 +24,7 @@ class FormHelpConfig {
     ClaimIntakeInterviewer claimIntakeInterviewer(ChatModel chatModel) {
         return UnfinishedTasks.wire(
                 ClaimIntakeInterviewer.class,
-                WorkshopTask.STREAMING_FORM_HELP,
+                WorkshopTask.DYNAMIC_FORM_WITH_STREAMING,
                 () -> AiServices.create(ClaimIntakeInterviewer.class, chatModel));
     }
 

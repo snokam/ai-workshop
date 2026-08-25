@@ -110,7 +110,7 @@ export function ReportWithHelp() {
       </header>
 
       <TaskGate
-        task="STREAMING_FORM_HELP"
+        task="DYNAMIC_FORM_WITH_STREAMING"
         instead="Describing a situation is how this claim gets opened, and neither the agent that reads it nor the one that judges what you wrote has been written yet."
       >
         {questions.length === 0 ? (

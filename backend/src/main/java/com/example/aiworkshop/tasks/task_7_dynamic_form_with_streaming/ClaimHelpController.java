@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_7_streaming_form_help;
+package com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;

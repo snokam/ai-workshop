@@ -1,10 +1,10 @@
-package com.example.aiworkshop.tasks.task_7_streaming_form_help;
+package com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming;
 
-import com.example.aiworkshop.tasks.task_7_streaming_form_help.model.ClaimScenario;
-import com.example.aiworkshop.tasks.task_7_streaming_form_help.model.InterviewTurn;
+import com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.model.ClaimScenario;
+import com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.model.InterviewTurn;
 import com.example.aiworkshop.tasks.task_1_first_agent.ClaimIntake;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CreatedClaim;
-import com.example.aiworkshop.tasks.task_7_streaming_form_help.agent.ClaimIntakeInterviewer;
+import com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.agent.ClaimIntakeInterviewer;
 import com.example.aiworkshop.workshop.TaskNotImplementedAdvice;
 import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import java.util.List;

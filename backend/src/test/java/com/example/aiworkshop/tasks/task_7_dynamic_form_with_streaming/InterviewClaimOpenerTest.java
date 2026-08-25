@@ -1,6 +1,6 @@
-package com.example.aiworkshop.tasks.task_7_streaming_form_help;
+package com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming;
 
-import com.example.aiworkshop.tasks.task_7_streaming_form_help.model.ClaimScenario;
+import com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.model.ClaimScenario;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CreatedClaim;

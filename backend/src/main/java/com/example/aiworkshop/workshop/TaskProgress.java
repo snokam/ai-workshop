@@ -7,7 +7,7 @@ import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools_and_memory.ag
 import com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models.agent.SummaryConfig;
 import com.example.aiworkshop.tasks.task_4_evaluation.GuardrailProbe;
 import com.example.aiworkshop.tasks.task_4_evaluation.LabelledClaim;
-import com.example.aiworkshop.tasks.task_7_streaming_form_help.StreamedHelp;
+import com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.StreamedHelp;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +50,7 @@ public class TaskProgress {
             // Task 7's prompt is given. What is written is the join between a TokenStream and an
             // open HTTP response, and asking whether it exists costs nothing: on() returns before a
             // single token has arrived, which is the whole point of it.
-            case STREAMING_FORM_HELP -> UnfinishedTasks.written(() -> help.on(""));
+            case DYNAMIC_FORM_WITH_STREAMING -> UnfinishedTasks.written(() -> help.on(""));
             // Task 4 has no code to gate: nothing on a screen waits on it, and there is no prompt to
             // write. It counts as done when both sets have rows of yours in them — the three that ship
             // with each are the worked examples, and adding your own is the exercise.

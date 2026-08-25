@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_7_streaming_form_help.agent;
+package com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.agent;
 
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.TokenStream;

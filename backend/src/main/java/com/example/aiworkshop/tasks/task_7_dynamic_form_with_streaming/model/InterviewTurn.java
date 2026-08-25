@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_7_streaming_form_help.model;
+package com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.model;
 
 import com.example.aiworkshop.tasks.task_1_first_agent.model.MatchConfidence;
 import dev.langchain4j.model.output.structured.Description;

@@ -10,19 +10,10 @@ One file, and the `TODO` in it has the steps.
 |---|---|---|
 | 1 | [`StreamedHelp.java`](./StreamedHelp.java) | Carry the tokens to the browser |
 
-## Two agents, and why they cannot be one call
-
-The screen does two things at once, and they are two different shapes of answer.
-
-| | returns | who reads it |
-|---|---|---|
-| [`agent/ClaimIntakeInterviewer.java`](./agent/ClaimIntakeInterviewer.java) | `InterviewTurn`, a record | the application — it renders the questions as form fields, or opens the claim |
-| [`agent/ClaimFormHelper.java`](./agent/ClaimFormHelper.java) | `TokenStream` | the person writing, a word at a time |
-
-A method returning a record has no answer until the last token has arrived, because half a JSON
-object is not an object. A method returning a `TokenStream` never has a whole answer to give back.
-It is not a preference — it is whether the reply is for a program to branch on or for a person to
-read while it is still being written.
+The questions on the form are not fixed — a given agent picks them from what you have written, and
+returns them as a record, the same shape as the classifier you wrote in task 1. There is nothing to
+write there. What you write is the other half: the feedback that arrives beside the box while you
+are still typing.
 
 ## Why the streaming half is here and not elsewhere
 
@@ -33,12 +24,19 @@ like — and on a reasoning model not even that, because it thinks first and emi
 Here nobody is waiting. They are writing, and the feedback lands 700ms after they stop, while the box
 is still in front of them and still easy to change:
 
-> *"my bag went missing"* → This description is a bit thin. The most useful thing missing is when
-> your bag went missing.
+> *"my bag is gone"* → It looks like your bag is gone. To help you with your claim, could you
+> please tell me what happened, when it happened, and roughly what it was worth.
 >
-> *"my suitcase never turned up after my flight home on 3 May and I had to buy clothes"* → This is a
-> good description for a baggage claim. You have clearly stated what happened, when it happened, and
-> to what.
+> *"my suitcase never turned up after my flight home on 3 May, flight 4121X. I lost some clothes and
+> a toothbrush, 500 nok."* → It's great that you've explained what happened, when it happened, and
+> what it cost.
+
+The second one turns the bar green, and that verdict is the interesting part of the prompt rather
+than the prose. Ask a model for the verdict first and it answers before it has read: that same
+description came back "something is still missing" six times out of six, each run naming different
+missing details, every one of them present in the text. The fix is in `ClaimFormHelper` — a first
+line the reader never sees, where it writes down what it found before it is allowed to conclude
+anything.
 
 Measured: first word at +0.35s on a warm model. It runs on the cheaper one from task 5 on purpose —
 a reasoning model gave its first token after 4.72s in a single chunk, which is not streaming, it is

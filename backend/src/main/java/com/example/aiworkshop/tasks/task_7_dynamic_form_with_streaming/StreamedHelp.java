@@ -1,9 +1,9 @@
-package com.example.aiworkshop.tasks.task_7_streaming_form_help;
+package com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming;
 
 import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.workshop.WorkshopTask;
-import com.example.aiworkshop.tasks.task_7_streaming_form_help.agent.ClaimFormHelper;
-import com.example.aiworkshop.tasks.task_7_streaming_form_help.model.ClaimScenario;
+import com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.agent.ClaimFormHelper;
+import com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.model.ClaimScenario;
 import dev.langchain4j.service.TokenStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +74,7 @@ public class StreamedHelp {
         // Return the emitter. Do not wait for the stream — returning is what lets the response start,
         // and blocking here would undo the whole point: somebody is typing while this runs.
 
-        throw new TaskNotImplementedException(WorkshopTask.STREAMING_FORM_HELP);
+        throw new TaskNotImplementedException(WorkshopTask.DYNAMIC_FORM_WITH_STREAMING);
     }
 
     /** SseEmitter.send throws a checked exception, and a callback cannot, so it is caught here. */

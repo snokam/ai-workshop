@@ -45,10 +45,10 @@ public enum WorkshopTask {
             "tasks/task_6_advisor_chat_with_tools_and_memory/agent/ClaimChatTools.java",
             "Describe two of the tools so the model knows when to reach for them, hand the tools to the"
                     + " agent, and give each claim its own conversation."),
-    STREAMING_FORM_HELP(
+    DYNAMIC_FORM_WITH_STREAMING(
             7,
-            "Help while you type, streamed",
-            "tasks/task_7_streaming_form_help/StreamedHelp.java",
+            "A dynamic form, and help while you write it",
+            "tasks/task_7_dynamic_form_with_streaming/StreamedHelp.java",
             "Carry a TokenStream to the browser, so somebody filling in the form is helped while they"
                     + " write rather than after they submit.");
 

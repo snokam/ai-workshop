@@ -20,7 +20,7 @@ file to open. Seven exercises, in order, each one an agent or the thing that kee
 | 4 | [How would you know?](./backend/src/main/java/com/example/aiworkshop/tasks/task_4_evaluation/README.md) | two sets, two evaluations — over the classifier from task 1 and the guardrails from task 2 |
 | 5 | [Claim summary, and which model each job needs](./backend/src/main/java/com/example/aiworkshop/tasks/task_5_claim_summary_choosing_models/README.md) | which of two models each of its two agents needs, decided by reading what the calls cost |
 | 6 | [Advisor chat with tools and memory](./backend/src/main/java/com/example/aiworkshop/tasks/task_6_advisor_chat_with_tools_and_memory/README.md) | tool descriptions that decide when a tool is called, the call that hands them over, and one conversation per claim |
-| 7 | [File a claim with a streaming chat](./backend/src/main/java/com/example/aiworkshop/tasks/task_7_streaming_form_help/README.md) | an intake agent that may ask before it commits, and its answer arriving as it is written |
+| 7 | [A dynamic form, and help while you write it](./backend/src/main/java/com/example/aiworkshop/tasks/task_7_dynamic_form_with_streaming/README.md) | the join that carries a token stream to the browser, so feedback lands beside the box while it is still being typed in |
 
 ## Layout
 
