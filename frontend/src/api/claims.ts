@@ -78,38 +78,6 @@ export async function interviewIntake(
   )
 }
 
-/**
- * The interview's reply, read as it is written.
- *
- * Not `json(await fetch(...))` like everything else here: that waits for the whole body. This reads
- * the response as it arrives and calls back per chunk, which is the only reason any of it feels live.
- *
- * Started alongside the decision rather than after it, so the wait for the decision is filled rather
- * than followed. Deliberately not awaited by the caller.
- */
-export async function narrateInterview(
-  transcript: string,
-  onToken: (token: string) => void,
-): Promise<void> {
-  const response = await fetch('/api/claims/interview/narration', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ transcript }),
-  })
-  if (!response.ok || !response.body) return
-
-  const reader = response.body.getReader()
-  const decoder = new TextDecoder()
-  for (;;) {
-    const { done, value } = await reader.read()
-    if (done) break
-    // Server-sent events arrive as `data:<token>` lines; the token is what follows the colon.
-    for (const line of decoder.decode(value, { stream: true }).split('\n')) {
-      if (line.startsWith('data:')) onToken(line.slice(5))
-    }
-  }
-}
-
 export async function reviewDocument(documentId: string): Promise<void> {
   const response = await fetch(`/api/documents/${documentId}/review`, { method: 'POST' })
   if (!response.ok) throw await failure(response)

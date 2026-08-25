@@ -1148,6 +1148,8 @@ header p.status {
   border-radius: 0 6px 6px 0;
   line-height: 1.55;
   color: var(--muted);
+  /* The tokens carry their own paragraph breaks now that they survive the wire intact. */
+  white-space: pre-line;
 }
 
 .typing-help-who {
