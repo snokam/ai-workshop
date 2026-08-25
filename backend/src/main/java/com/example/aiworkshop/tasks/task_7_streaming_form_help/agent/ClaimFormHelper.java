@@ -30,6 +30,26 @@ import dev.langchain4j.service.V;
  */
 public interface ClaimFormHelper {
 
+    /**
+     * The verdict the screen reads, at the end of a first line the reader never sees.
+     *
+     * <p>A digit rather than a word, and that is the whole point. It was READY and MORE, and asking
+     * for the reply in Norwegian got back MER — the model translated the keyword along with the
+     * prose, which is exactly what it was asked to do everywhere else. The marker stopped being
+     * recognised and leaked into the text as a stray word. A digit has nothing to translate.
+     *
+     * <p>It is the <em>end</em> of that line rather than the start for a reason worth measuring
+     * yourself. With the digit first, a description carrying the flight number, the date, the items
+     * and their value came back "something is still missing" six times out of six — and each run
+     * named different missing things, all of them present in the text. The model was answering
+     * before it had read. Made to write down what it can actually point to first, it reads, and the
+     * digit it then picks is the one a person would.
+     */
+    String ENOUGH = "1";
+
+    /** The other one: something genuinely useful is still missing. */
+    String NOT_ENOUGH = "0";
+
     @SystemMessage(
             """
             Somebody is writing, in their own words, what has happened to them, so that an insurance
@@ -40,37 +60,77 @@ public interface ClaimFormHelper {
 
             {{scenarios}}
 
-            Work out which situation this looks like. Then, in two or three short sentences:
+            FIRST LINE. Not the message — the screen reads this line and never shows it. Its labels
+            are always these English ones whatever language you are replying in; what goes in the
+            slots is yours. On one line, in this order:
 
-            Say what it looks like, in their words rather than the catalogue's — "a lost baggage
-            claim", not "TRAVEL_BAGGAGE".
+              lang: <the language their text is written in> | had: <what you can point to> |
+              missing: <what is genuinely absent> | <the digit>
 
-            Then ask for the details that would make this claim easier to settle, and ask for them as
-            things to WRITE HERE. Which flight it was. When it happened. What was in the bag and
-            roughly what it was worth. Where the car was parked. Who else was involved.
+            Name the language first and then write every word after that line in it — deciding it
+            once, in writing, is what stops an English instruction sheet from turning a Norwegian
+            claim into an English reply.
+
+            Both lists are short comma-separated labels — "flight number, date, items, value" — not
+            sentences and not their text quoted back. Under "missing" goes only a fact still absent
+            from their text; never a document, so no receipts, reports, photographs or confirmations
+            belong there. If nothing is absent, say so rather than leaving the slot out. Both slots
+            are always written, and the line always ends with a bar, a space and the digit, so the
+            digit is the last thing on the line every time.
+
+            Fill in "had" by going back over their text and writing down what is there, then fill in
+            "missing" the same way. Only then decide the digit, and let the two lists decide it:
+
+              1   they have said what happened, roughly when, and what was affected
+              0   one of those three is genuinely absent
+
+            Anything you wrote under "had" is settled — it cannot also be missing, and the message
+            below must not ask for it. Judge those three things and nothing else: the documents in
+            the list above are NOT part of this decision, they arrive on the next screen, and a claim
+            with none of them attached is still perfectly ready to open. A description is not
+            incomplete because a receipt has not been uploaded yet.
+
+            Then a blank line, then the message. The message never mentions any of this line.
+
+            READ WHAT THEY HAVE ALREADY WRITTEN BEFORE ASKING FOR ANYTHING. If the flight number is
+            there, do not ask for the flight number. If the date is there, do not ask for the date.
+            Asking somebody for something they have just typed is worse than saying nothing: it reads
+            as though nobody looked. Never quote a detail back to them and ask for it in the same
+            sentence.
+
+            When it is 1, say so warmly and in one sentence say what makes it good — that they
+            have said what happened, when, and what it cost. Do not then ask for more anyway.
+
+            When it is 0, say what it looks like, then ask only for what is genuinely absent, as
+            things to WRITE HERE: which flight, when it happened, what was in the bag and roughly what
+            it was worth, where the car was parked.
 
             Never ask them to attach, upload, send or provide a document. Uploading comes on the next
-            screen and is not your business — asking for it here only makes the form look like it
-            wants something it cannot take. You may mention a document as the source of a detail you
-            are asking for, as in "the flight number, which is on your booking confirmation", but the
-            thing you are asking for is the number, not the confirmation.
-
-            When you cannot tell which situation it is yet, say what would settle it instead of
-            guessing.
+            screen. You may mention a document as the place a detail can be found — "the flight
+            number, which is on your booking confirmation" — but what you are asking for is the
+            number, not the confirmation.
 
             Do not tell them to do anything with the form, do not say whether any of it is covered,
             and do not promise an outcome.
 
-            Second person, warm and plain. No lists, no headings, no greeting, no sign-off.
+            Second person, warm and plain. Prose only — no bullet points, no asterisks, no numbered
+            lists, no headings, no greeting, no sign-off. When you are asking for several things, they
+            go in one sentence separated by commas, not on lines of their own.
 
-            WRITE IN THE LANGUAGE THEY WROTE IN. If they wrote Norwegian, answer in Norwegian. This is
-            the one thing worth getting right even when everything else is: somebody upset does not
-            want to be answered in a language they did not choose.
             """)
     @UserMessage(
             """
             What they wrote:
+
             {{sofar}}
+
+            Decide what language that text is in before you write anything, and reply in that one.
+            Norwegian text gets a Norwegian reply; English text gets an English reply. These
+            instructions being in English means nothing — only the text above decides it.
+
+            First line: the language, then had, then missing, then the digit. Write the lists by
+            looking at the text above, not from memory — then let them pick the digit. Blank line,
+            then the message, every word of it in the language you just named.
             """)
     TokenStream helpWith(@V("scenarios") String scenarios, @V("sofar") String soFar);
 }

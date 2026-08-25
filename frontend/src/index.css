@@ -1152,6 +1152,27 @@ header p.status {
   white-space: pre-line;
 }
 
+/* Green once there is enough to work with, so the verdict is visible before the sentence is read. */
+.typing-help.ready {
+  border-left-color: var(--good-fg);
+  background: var(--good-bg);
+  color: var(--good-fg);
+}
+
+.typing-help.ready .typing-help-who {
+  color: var(--good-fg);
+}
+
+.typing-help.more {
+  border-left-color: var(--acceptable-fg);
+  background: var(--acceptable-bg);
+  color: var(--acceptable-fg);
+}
+
+.typing-help.more .typing-help-who {
+  color: var(--acceptable-fg);
+}
+
 .typing-help-who {
   display: block;
   margin-bottom: 0.35rem;

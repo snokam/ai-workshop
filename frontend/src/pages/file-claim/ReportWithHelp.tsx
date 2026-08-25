@@ -86,6 +86,16 @@ export function ReportWithHelp() {
     void send([...answered, ...additions]);
   }
 
+  // The answer opens with a line the reader never sees: what the model found in their text, what it
+  // thinks is absent, and then the verdict digit. The digit is last because a model asked for it
+  // first answers before it has read — it invents missing details that are sitting in the text.
+  // So the bar stays neutral until that line closes, which costs a moment and is worth it.
+  const broke = feedback.indexOf("\n");
+  const head = broke === -1 ? "" : feedback.slice(0, broke);
+  const verdict = /1\s*$/.test(head) ? "ready" : /0\s*$/.test(head) ? "more" : undefined;
+  // Everything after that line is the message. Before it closes there is nothing to show yet.
+  const said = broke === -1 ? "" : feedback.slice(broke + 1).trim();
+
   const allAnswered =
     questions.length > 0 && questions.every((_, i) => (replies[i] ?? "").trim().length > 0);
 
@@ -120,9 +130,18 @@ export function ReportWithHelp() {
             />
 
             {(feedback || judging) && (
-              <aside className="typing-help" aria-live="polite">
-                <span className="typing-help-who">About what you have written</span>
-                {feedback || <Loader />}
+              <aside
+                className={verdict ? `typing-help ${verdict}` : "typing-help"}
+                aria-live="polite"
+              >
+                <span className="typing-help-who">
+                  {verdict === "ready"
+                    ? "This is enough to go on"
+                    : verdict === "more"
+                      ? "Worth adding"
+                      : "About what you have written"}
+                </span>
+                {said || <Loader />}
               </aside>
             )}
 
