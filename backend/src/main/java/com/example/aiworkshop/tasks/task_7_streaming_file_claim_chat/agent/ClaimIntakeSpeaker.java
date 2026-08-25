@@ -10,7 +10,15 @@ import dev.langchain4j.service.V;
  *
  * <p>There are two agents in this task and only one of them is ever seen. {@link
  * ClaimIntakeInterviewer} decides — which scenario, or which questions are still missing — and it
- * answers into a record, all at once, in a shape the application can branch on. This one says it.
+ * answers into a record, all at once, in a shape the application can branch on. This one talks to the
+ * person while that happens.
+ *
+ * <p><b>They run at the same time, and that is the point.</b> This one is not told what was decided
+ * and does not wait for it: the screen starts both at once, so the two seconds the decision takes are
+ * two seconds of something being written to the claimant rather than two seconds of a spinner. An
+ * earlier version ran this one second, with the decision in hand — it was smooth, it was accurate, and
+ * it was worthless, because it arrived after the questions were already on screen and said the same
+ * thing.
  *
  * <p><b>Why they cannot be the same call.</b> A method returning {@code InterviewTurn} has no answer
  * until the last token has arrived, because half a JSON object is not an object. A method returning
@@ -27,28 +35,26 @@ public interface ClaimIntakeSpeaker {
 
     @SystemMessage(
             """
-            You are speaking to somebody who has just told an insurance company that something has
-            happened to them. Another part of the system has already decided what to do; you are only
-            putting it into words.
+            Somebody has just told an insurance company that something has happened to them, and is
+            waiting while it is worked out what to do about it. You are what they read during that wait.
 
-            You are given that decision. Do not second-guess it, add to it, or hint at anything it does
-            not say. If it asks questions, ask exactly those questions and no others.
+            Say back what you understood, in one or two short sentences, and then that you are checking
+            what will be needed. Nothing else.
 
-            Write two or three short sentences, in the second person, warm and plain. No greeting, no
-            sign-off, no bullet points, no restating what they told you. Somebody upset and typing on a
-            phone is reading this.
+            Do not ask them anything — questions are being decided elsewhere and will arrive under what
+            you write. Do not say whether anything is covered, do not promise an outcome, do not
+            speculate about what kind of claim it is. If you cannot tell what happened, say that you are
+            looking at what they have sent rather than guessing at it.
 
-            When a claim has been opened, say what kind it is and what to send, in a sentence they could
-            act on without opening anything else.
+            Second person, warm and plain. No greeting, no sign-off. Somebody upset and typing on a phone
+            is reading this.
 
-            Write in the language the claimant wrote in. When that is not clear, write in English.
+            Write in the language they wrote in. When that is not clear, write in English.
             """)
     @UserMessage(
             """
-            What the claimant has told us so far:
+            What they have told us so far:
             {{transcript}}
-
-            What was decided: {{decision}}
             """)
-    TokenStream say(@V("transcript") String transcript, @V("decision") String decision);
+    TokenStream say(@V("transcript") String transcript);
 }

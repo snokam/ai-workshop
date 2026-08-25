@@ -50,17 +50,17 @@ class ClaimInterviewController {
     /**
      * The words for a turn the interviewer has already decided, streamed as they are written.
      *
-     * <p>A second endpoint rather than a field on the response above, because the two answers
-     * have different shapes: that one is a JSON object the screen branches on, this one is a
-     * response that stays open. The screen calls this immediately after that one.
+     * <p>A second endpoint rather than a field on the response above, because the two answers have
+     * different shapes: that one is a JSON object the screen branches on, this one is a response
+     * that stays open. The screen calls both at the same time and this one answers first.
      */
     @PostMapping(value = "/narration", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     SseEmitter narrate(@RequestBody NarrationRequest request) {
-        return narration.narrate(request.transcript(), request.decision());
+        return narration.narrate(request.transcript());
     }
 
-    /** What the screen echoes back so the voice can put the decision to the claimant. */
-    record NarrationRequest(String transcript, String decision) {}
+    /** Just what the claimant has typed. The voice is started before anything has been decided. */
+    record NarrationRequest(String transcript) {}
 
     @PostMapping
     InterviewResponse next(@RequestBody InterviewRequest request) {

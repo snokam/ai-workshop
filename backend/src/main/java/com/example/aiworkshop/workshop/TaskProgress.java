@@ -50,7 +50,7 @@ public class TaskProgress {
             // Task 7's prompts are both given. What is written is the join between a TokenStream
             // and an open HTTP response, and asking whether it exists costs nothing: narrate()
             // returns before a single token has arrived, which is the whole point of it.
-            case STREAMING_FILE_CLAIM_CHAT -> UnfinishedTasks.written(() -> narration.narrate("", ""));
+            case STREAMING_FILE_CLAIM_CHAT -> UnfinishedTasks.written(() -> narration.narrate(""));
             // Task 4 has no code to gate: nothing on a screen waits on it, and there is no prompt to
             // write. It counts as done when both sets have rows of yours in them — the three that ship
             // with each are the worked examples, and adding your own is the exercise.

@@ -51,16 +51,18 @@ export async function interviewIntake(
  *
  * Not `json(await fetch(...))` like everything else here: that waits for the whole body. This reads
  * the response as it arrives and calls back per chunk, which is the only reason any of it feels live.
+ *
+ * Started alongside the decision rather than after it, so the wait for the decision is filled rather
+ * than followed. Deliberately not awaited by the caller.
  */
 export async function narrateInterview(
   transcript: string,
-  decision: string,
   onToken: (token: string) => void,
 ): Promise<void> {
   const response = await fetch('/api/claims/interview/narration', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ transcript, decision }),
+    body: JSON.stringify({ transcript }),
   })
   if (!response.ok || !response.body) return
 

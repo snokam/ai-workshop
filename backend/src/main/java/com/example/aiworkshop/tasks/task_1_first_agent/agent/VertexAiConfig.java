@@ -1,9 +1,6 @@
 package com.example.aiworkshop.tasks.task_1_first_agent.agent;
 
-import com.example.aiworkshop.workshop.UnfinishedTasks;
-import com.example.aiworkshop.workshop.WorkshopTask;
 import dev.langchain4j.model.chat.ChatModel;
-import org.springframework.beans.factory.annotation.Qualifier;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiChatModel;
 import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiStreamingChatModel;
@@ -12,6 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @Configuration
 @EnableConfigurationProperties(VertexAiProperties.class)
@@ -20,23 +18,16 @@ public class VertexAiConfig {
     @Bean(destroyMethod = "close")
     @Primary
     ChatModel chatModel(VertexAiProperties properties) {
-        // TODO — task 1, part 1. Build the model.
-        //
-        // VertexAiGeminiChatModel.builder() is the builder. Every value it needs is already bound in
-        // VertexAiProperties, which is a record beside this file:
-        //
-        //   .project(properties.projectId())        which project to bill and authorise against
-        //   .location(properties.location())        europe-west4 unless something says otherwise
-        //   .modelName(properties.modelName())      gemini-2.5-flash by default
-        //   .temperature(properties.temperature())  .maxOutputTokens(properties.maxOutputTokens())
-        //   .maxRetries(properties.maxRetries())    .logRequests(...) .logResponses(...)
-        //
-        // Use projectId() rather than project(): it falls back to the credentials already on the machine
-        // when GOOGLE_CLOUD_PROJECT is not set, which is why nothing has to be exported.
-        //
-        // Nothing else in the workshop works until this returns a model.
-
-        return UnfinishedTasks.notWrittenYet(ChatModel.class, WorkshopTask.FIRST_AGENT);
+        return VertexAiGeminiChatModel.builder()
+                .project(properties.projectId())
+                .location(properties.location())
+                .modelName(properties.modelName())
+                .temperature(properties.temperature())
+                .maxOutputTokens(properties.maxOutputTokens())
+                .maxRetries(properties.maxRetries())
+                .logRequests(properties.logRequests())
+                .logResponses(properties.logResponses())
+                .build();
     }
 
     /**
@@ -59,19 +50,26 @@ public class VertexAiConfig {
     }
 
     /**
-     * The same model, answering a token at a time. Given — task 7 uses it.
+     * The cheaper model, answering a token at a time. Given — task 7 uses it.
      *
      * <p>It is a separate bean rather than a mode on the one above, and that is the shape of the API
      * rather than a choice made here: an agent method returning a record needs the whole answer before
      * it can be a record, and an agent method returning a {@code TokenStream} never has a whole answer
      * to give back. The two cannot be the same call.
+     *
+     * <p>Built on the cheaper model on purpose, and it is the difference between streaming working and
+     * streaming being a decoration. A reasoning model thinks before it writes, so it emits nothing for
+     * seconds and then the whole answer at once — measured here, gemini-2.5-flash gave its first token
+     * after 4.72s in a single chunk. The smaller model started in 0.44s across four. Streaming is only
+     * worth wiring up on a model that does not stop to think first, and putting words on a decision
+     * somebody else made is exactly the easy job task 5 argues belongs on the cheaper one.
      */
     @Bean(destroyMethod = "close")
     StreamingChatModel streamingChatModel(VertexAiProperties properties) {
         return VertexAiGeminiStreamingChatModel.builder()
                 .project(properties.projectId())
                 .location(properties.location())
-                .modelName(properties.modelName())
+                .modelName(properties.cheaperModelName())
                 .temperature(properties.temperature())
                 .maxOutputTokens(properties.maxOutputTokens())
                 .build();

@@ -30,6 +30,15 @@ export function ReportWithChat() {
     setBusy(true)
     setError(null)
     try {
+      // Both at once. The voice answers in well under a second and writes into the wait; the
+      // decision takes a couple, and its questions land underneath when they arrive.
+      setSpoken('')
+      const transcript = [
+        description.trim(),
+        ...nextAnswers.map((qa) => `Q: ${qa.question}\nA: ${qa.answer}`),
+      ].join('\n\n')
+      void narrateInterview(transcript, (token) => setSpoken((soFar) => soFar + token))
+
       const response = await interviewIntake(description.trim(), nextAnswers)
       if (response.status === 'DECIDED' && response.createdClaim) {
         openCreated(navigate, response.createdClaim)
@@ -40,17 +49,6 @@ export function ReportWithChat() {
       setReplies({})
       setRationale(response.rationale)
       setStarted(true)
-
-      // The decision is already on screen. This is the same turn put into words, arriving as the
-      // model writes them — which is why it is started after the questions rather than before.
-      setSpoken('')
-      const transcript = [
-        description.trim(),
-        ...nextAnswers.map((qa) => `Q: ${qa.question}\nA: ${qa.answer}`),
-      ].join('\n\n')
-      void narrateInterview(transcript, response.questions.join(' '), (token) =>
-        setSpoken((so_far) => so_far + token),
-      )
     } catch (e) {
       setError(e as Error)
     } finally {

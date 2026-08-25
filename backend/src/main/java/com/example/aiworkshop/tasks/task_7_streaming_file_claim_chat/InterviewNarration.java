@@ -37,12 +37,15 @@ public class InterviewNarration {
     /**
      * Starts the speaker and returns the response the browser is already reading.
      *
+     * <p>Called at the same moment as the decision, not after it, so this has to return before a
+     * single token exists. That is what {@link SseEmitter} is for, and why the whole of this
+     * method is callbacks.
+     *
      * @param transcript the conversation so far
-     * @param decision what the interviewer settled on, in words the speaker can put to the claimant
      */
-    public SseEmitter narrate(String transcript, String decision) {
+    public SseEmitter narrate(String transcript) {
         SseEmitter emitter = new SseEmitter(TIMEOUT_MS);
-        TokenStream tokens = speaker.say(transcript, decision);
+        TokenStream tokens = speaker.say(transcript);
 
         // TODO — task 7. Carry the tokens to the browser.
         //
@@ -69,7 +72,8 @@ public class InterviewNarration {
         //                          screen never knows the answer finished.
         //
         // Return the emitter. Do not wait for the stream — returning is what lets the response start,
-        // and blocking here would undo the whole point.
+        // and blocking here would undo the whole point: the screen has already fired the decision
+        // call alongside this one and is waiting to paint whichever answers first.
 
         throw new TaskNotImplementedException(WorkshopTask.STREAMING_FILE_CLAIM_CHAT);
     }
