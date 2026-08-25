@@ -7,7 +7,7 @@ export type TaskKey =
   | 'GUARDRAILS'
   | 'ADVISOR_CHAT_WITH_TOOLS_AND_MEMORY'
   | 'CLAIM_SUMMARY_CHOOSING_MODELS'
-  | 'STREAMING_FILE_CLAIM_CHAT'
+  | 'STREAMING_FORM_HELP'
 
 export interface TaskState {
   number: number

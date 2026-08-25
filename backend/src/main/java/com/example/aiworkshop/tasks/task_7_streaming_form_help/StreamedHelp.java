@@ -1,8 +1,9 @@
-package com.example.aiworkshop.tasks.task_7_streaming_file_claim_chat;
+package com.example.aiworkshop.tasks.task_7_streaming_form_help;
 
-import com.example.aiworkshop.tasks.task_7_streaming_file_claim_chat.agent.ClaimIntakeSpeaker;
 import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.workshop.WorkshopTask;
+import com.example.aiworkshop.tasks.task_7_streaming_form_help.agent.ClaimFormHelper;
+import com.example.aiworkshop.tasks.task_7_streaming_form_help.model.ClaimScenario;
 import dev.langchain4j.service.TokenStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,31 +22,30 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
  * immediately; the response is still being written long after.
  */
 @Service
-public class InterviewNarration {
+public class StreamedHelp {
 
-    private static final Logger log = LoggerFactory.getLogger(InterviewNarration.class);
+    private static final Logger log = LoggerFactory.getLogger(StreamedHelp.class);
 
     /** Long enough for a slow model and a long answer, short enough that a dead one is not forever. */
     private static final long TIMEOUT_MS = 60_000;
 
-    private final ClaimIntakeSpeaker speaker;
+    private final ClaimFormHelper helper;
 
-    InterviewNarration(ClaimIntakeSpeaker speaker) {
-        this.speaker = speaker;
+    StreamedHelp(ClaimFormHelper helper) {
+        this.helper = helper;
     }
 
     /**
      * Starts the speaker and returns the response the browser is already reading.
      *
-     * <p>Called at the same moment as the decision, not after it, so this has to return before a
-     * single token exists. That is what {@link SseEmitter} is for, and why the whole of this
-     * method is callbacks.
+     * <p>Called at the same moment as the decision, not after it, so the method has to return
+     * before a single token exists. That is what {@link SseEmitter} is for.
      *
-     * @param transcript the conversation so far
+     * @param soFar whatever is in the box at the moment somebody stopped typing
      */
-    public SseEmitter narrate(String transcript) {
+    public SseEmitter on(String soFar) {
         SseEmitter emitter = new SseEmitter(TIMEOUT_MS);
-        TokenStream tokens = speaker.say(transcript);
+        TokenStream tokens = helper.helpWith(ClaimScenario.catalog(), soFar);
 
         // TODO — task 7. Carry the tokens to the browser.
         //
@@ -54,7 +54,7 @@ public class InterviewNarration {
         //
         //   tokens.onPartialResponse(token -> send(emitter, token))
         //         .onCompleteResponse(response -> emitter.complete())
-        //         .onError(failed -> { log.warn("The interview's narration failed", failed);
+        //         .onError(failed -> { log.warn("The help stream failed", failed);
         //                              emitter.completeWithError(failed); })
         //         .start();
         //
@@ -72,10 +72,9 @@ public class InterviewNarration {
         //                          screen never knows the answer finished.
         //
         // Return the emitter. Do not wait for the stream — returning is what lets the response start,
-        // and blocking here would undo the whole point: the screen has already fired the decision
-        // call alongside this one and is waiting to paint whichever answers first.
+        // and blocking here would undo the whole point: somebody is typing while this runs.
 
-        throw new TaskNotImplementedException(WorkshopTask.STREAMING_FILE_CLAIM_CHAT);
+        throw new TaskNotImplementedException(WorkshopTask.STREAMING_FORM_HELP);
     }
 
     /** SseEmitter.send throws a checked exception, and a callback cannot, so it is caught here. */

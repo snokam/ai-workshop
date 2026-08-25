@@ -8,7 +8,6 @@ import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer
 import com.example.aiworkshop.tasks.task_2_guardrails.Guardrails;
 import com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models.agent.ClaimSummarizer;
 import com.example.aiworkshop.tasks.task_6_advisor_chat_with_tools_and_memory.agent.ClaimChatAgent;
-import com.example.aiworkshop.tasks.task_7_streaming_file_claim_chat.agent.ClaimIntakeInterviewer;
 
 public enum WorkshopTask {
     FIRST_AGENT(
@@ -46,11 +45,12 @@ public enum WorkshopTask {
             "tasks/task_6_advisor_chat_with_tools_and_memory/agent/ClaimChatTools.java",
             "Describe two of the tools so the model knows when to reach for them, hand the tools to the"
                     + " agent, and give each claim its own conversation."),
-    STREAMING_FILE_CLAIM_CHAT(
+    STREAMING_FORM_HELP(
             7,
-            "File a claim with a streaming chat",
-            "tasks/task_7_streaming_file_claim_chat/InterviewNarration.java",
-            "Carry a TokenStream to the browser, so the claimant reads the answer as it is written.");
+            "Help while you type, streamed",
+            "tasks/task_7_streaming_form_help/StreamedHelp.java",
+            "Carry a TokenStream to the browser, so somebody filling in the form is helped while they"
+                    + " write rather than after they submit.");
 
 
     private static final String SOURCE_ROOT = "backend/src/main/java/com/example/aiworkshop/";

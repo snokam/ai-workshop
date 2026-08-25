@@ -6,7 +6,7 @@ import { Claim as ClaimHandlerClaim } from './pages/claim-handler/Claim'
 import { Claims as ClaimHandlerClaims } from './pages/claim-handler/Claims'
 import { MyClaims } from './pages/file-claim/MyClaims'
 import { NewClaim } from './pages/file-claim/NewClaim'
-import { ReportWithChat } from './pages/file-claim/ReportWithChat'
+import { ReportWithHelp } from './pages/file-claim/ReportWithHelp'
 
 export default function App() {
   return (
@@ -15,7 +15,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<FileClaimShell />}>
             <Route index element={<NewClaim />} />
-            <Route path="chat" element={<ReportWithChat />} />
+            <Route path="chat" element={<ReportWithHelp />} />
             <Route path="claims" element={<MyClaims />} />
           </Route>
           <Route path="/claims/:claimId" element={<FileClaimClaim />} />

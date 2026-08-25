@@ -56,7 +56,7 @@ export function Layout({ children }: { children: ReactNode }) {
               { href: '/', text: 'Report a claim (task 1, 2)' },
               { href: '/claims', text: 'My claims (task 1, 3)' },
               { href: '/claimhandler', text: 'Claim handler (task 3, 5, 6)' },
-              { href: '/chat', text: 'Report with AI chat (task 7)' },
+              { href: '/chat', text: 'Report a claim, with help (task 7)' },
             ]}
           />
         </div>

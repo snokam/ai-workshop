@@ -1,4 +1,4 @@
-package com.example.aiworkshop.tasks.task_7_streaming_file_claim_chat.model;
+package com.example.aiworkshop.tasks.task_7_streaming_form_help.model;
 
 import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimType;
 import java.util.LinkedHashMap;
