@@ -61,11 +61,32 @@ public enum ClaimScenario {
                     "travel booking confirmation")),
 
     // --- The rest: one general scenario each, mirroring the type's own checklist for now ---------
-    HOME_CONTENTS_GENERAL(
+    HOME_CONTENTS_THEFT(
             ClaimType.HOME_CONTENTS,
-            "Home contents claim",
-            "Belongings at home were lost or damaged: theft, or water, fire or similar damage.",
-            ClaimType.HOME_CONTENTS.requiredDocuments()),
+            "Theft or break-in at home",
+            "Belongings were stolen from the home, or the home was broken into.",
+            List.of(
+                    "police report",
+                    "receipts or proof of ownership for the stolen items",
+                    "photos of the damage caused getting in")),
+
+    HOME_CONTENTS_WATER(
+            ClaimType.HOME_CONTENTS,
+            "Water damage at home",
+            "A leak, a burst pipe or an overflowing appliance damaged the home or what was in it.",
+            List.of(
+                    "plumber's report or repair invoice",
+                    "photos of the damage",
+                    "receipts or proof of ownership for the affected items")),
+
+    HOME_CONTENTS_FIRE(
+            ClaimType.HOME_CONTENTS,
+            "Fire or smoke damage at home",
+            "Fire, smoke or soot damaged the home or what was in it.",
+            List.of(
+                    "fire service report",
+                    "photos of the damage",
+                    "receipts or proof of ownership for the affected items")),
 
     DISABILITY_GENERAL(
             ClaimType.DISABILITY,
@@ -119,7 +140,12 @@ public enum ClaimScenario {
 
     /**
      * The whole taxonomy rendered for the interviewer's prompt: scenarios grouped under the kind of
-     * insurance they belong to. Rendered from the enum so adding a scenario updates what the agent is
+     * insurance they belong to, each with what it will be asked for. The documents are here because an
+ * agent that knows a situation is a baggage claim but not what a baggage claim needs can only say so
+ * vaguely — it is the difference between "this looks like a baggage claim" and "you will be asked for
+ * the carrier's baggage report".
+ *
+ * <p>Rendered from the enum so adding a scenario updates what the agent is
      * shown, rather than a second list drifting out of step with this one.
      */
     public static String catalog() {
@@ -132,6 +158,7 @@ public enum ClaimScenario {
             rendered.append(type.label()).append('\n');
             for (ClaimScenario scenario : scenarios) {
                 rendered.append("  - %s (%s): %s%n".formatted(scenario.name(), scenario.label, scenario.description));
+                rendered.append("      needs: %s%n".formatted(String.join(", ", scenario.requiredDocuments)));
             }
         });
         return rendered.toString().strip();
