@@ -1,6 +1,6 @@
-# Task 7 — Help while you type, streamed
+# Task 7 — A form that asks, and something that reads what you wrote
 
-You make help arrive beside the box a word at a time, while somebody is still filling it in.
+You make feedback arrive beside the box a word at a time, while somebody is still writing in it.
 
 ## The part
 
@@ -10,35 +10,43 @@ One file, and the `TODO` in it has the steps.
 |---|---|---|
 | 1 | [`StreamedHelp.java`](./StreamedHelp.java) | Carry the tokens to the browser |
 
-## Why this screen and not the others
+## Two agents, and why they cannot be one call
 
-Streaming is easy to wire up and easy to waste. Every other agent in this workshop answers a question
-somebody has finished asking, so streaming its reply only changes what the waiting looks like — and
-on a reasoning model it does not even do that, because it thinks first and then emits everything at
-once.
-
-Here nobody is waiting. They are typing. [`agent/ClaimFormHelper.java`](./agent/ClaimFormHelper.java)
-reads what is in the box each time the typing settles and says what would be worth adding — a date, a
-reference, the receipt they will be asked for anyway. Help that arrives while you work is help. The
-same sentence delivered after you submit is too late to be worth anything.
-
-An earlier version of this task ran an interview instead: question, answer, question. It was worse
-than the form it replaced. People can see a whole form, fill it in the order things occur to them,
-and change their mind — so the form came back, and the agent moved to the side where it belongs.
-
-## The two shapes of answer
+The screen does two things at once, and they are two different shapes of answer.
 
 | | returns | who reads it |
 |---|---|---|
-| `ClaimTypeClassifier` (task 1) | a record | the application, which branches on it |
-| [`agent/ClaimFormHelper.java`](./agent/ClaimFormHelper.java) | `TokenStream` | a person, a word at a time |
+| [`agent/ClaimIntakeInterviewer.java`](./agent/ClaimIntakeInterviewer.java) | `InterviewTurn`, a record | the application — it renders the questions as form fields, or opens the claim |
+| [`agent/ClaimFormHelper.java`](./agent/ClaimFormHelper.java) | `TokenStream` | the person writing, a word at a time |
 
-**They cannot be the same call.** A method returning a record has no answer until the last token has
-arrived, because half a JSON object is not an object. A method returning a `TokenStream` never has a
-whole answer to give back. It is not a preference — it is whether the reply is for a program or for a
-person, and the form has one of each: the helper while you write, the classifier when you submit.
+A method returning a record has no answer until the last token has arrived, because half a JSON
+object is not an object. A method returning a `TokenStream` never has a whole answer to give back.
+It is not a preference — it is whether the reply is for a program to branch on or for a person to
+read while it is still being written.
 
-What you write is the join between `TokenStream`, which calls you back as tokens arrive, and Spring's
-`SseEmitter`, which holds the response open until you say you are done. Both are push, so there is no
-loop and nothing to poll — you say what to do on a token, on the end and on a failure, and start it.
+## Why the streaming half is here and not elsewhere
+
+Streaming is easy to wire up and easy to waste. Most agents answer a question somebody has finished
+asking and then sit there being read, so streaming the reply only changes what the waiting looks
+like — and on a reasoning model not even that, because it thinks first and emits everything at once.
+
+Here nobody is waiting. They are writing, and the feedback lands 700ms after they stop, while the box
+is still in front of them and still easy to change:
+
+> *"my bag went missing"* → This description is a bit thin. The most useful thing missing is when
+> your bag went missing.
+>
+> *"my suitcase never turned up after my flight home on 3 May and I had to buy clothes"* → This is a
+> good description for a baggage claim. You have clearly stated what happened, when it happened, and
+> to what.
+
+Measured: first word at +0.35s on a warm model. It runs on the cheaper one from task 5 on purpose —
+a reasoning model gave its first token after 4.72s in a single chunk, which is not streaming, it is
+just arriving late.
+
+## What you write
+
+The join between `TokenStream`, which calls you back as tokens arrive, and Spring's `SseEmitter`,
+which holds the response open until you say you are done. Both are push, so there is no loop and
+nothing to poll — you say what to do on a token, on the end and on a failure, and then start it.
 Each of those three has its own way of going wrong, and the `TODO` names them.

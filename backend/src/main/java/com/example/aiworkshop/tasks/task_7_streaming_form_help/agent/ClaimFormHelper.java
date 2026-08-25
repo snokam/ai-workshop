@@ -6,53 +6,60 @@ import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
 
 /**
- * What a claimant reads beside the box while they are still writing in it.
+ * What a claimant reads while their claim is being opened.
  *
  * <p>This is the whole reason streaming is here. Everything else in the workshop answers a question
- * somebody has already finished asking, so a stream only changes how the waiting looks. Here nobody
- * is waiting: they are typing. Help that arrives a word at a time while they work is help; the same
- * help delivered in one lump after they submit is too late to be useful.
+ * somebody has finished asking and then waits to be read, so streaming its reply only changes what
+ * the waiting looks like — and on a reasoning model not even that, because it thinks first and emits
+ * everything at once.
  *
- * <p>It never asks anything. An earlier version of this task ran an interview — question, answer,
- * question — and the form it replaced was better: people can see the whole box, fill it in the order
- * they think of things, and change their mind. So this reads what is in the box and says what would
- * help, and the person stays in charge of the form.
+ * <p>Here somebody is genuinely waiting. They have pressed the button, the classifier is deciding
+ * what kind of claim to open, and that takes a couple of seconds during which the screen has nothing
+ * to say. This fills them, with the one thing worth saying at that moment: was what you wrote enough
+ * to work with, and if not, what is missing.
+ *
+ * <p>Two earlier versions of this were worse and both failed the same way. One ran an interview,
+ * question by question, which is worse than a form somebody can see whole. One read the box while
+ * they were still typing, which interrupts the writing it is meant to help. Neither was waiting for
+ * anything — and streaming into a wait that does not exist is decoration.
  *
  * <p>It returns a {@link TokenStream} and the classifier in task 1 returns a record, which is the
  * distinction worth keeping: one answer is for a person to read as it arrives, the other is for a
- * program to branch on and has to be whole before it means anything. They cannot be the same call.
+ * program to branch on and has to be whole before it means anything. They cannot be the same call —
+ * and here they are not even sequential, because both start the moment the button is pressed.
  */
 public interface ClaimFormHelper {
 
     @SystemMessage(
             """
-            Somebody is part-way through writing, in their own words, what has happened to them, so
-            that an insurance claim can be opened. You are reading over their shoulder and helping them
-            get it right the first time.
+            Somebody has just described, in their own words, something that has happened to them, and
+            pressed the button to open an insurance claim. It is being opened now. You are telling them
+            whether what they wrote will be enough to work with.
 
-            These are the situations a claim can be opened as, and what each of them needs:
+            These are the situations a claim can be opened as, and what each needs:
 
             {{scenarios}}
 
-            Two short sentences. First, what this looks like so far. Second, the single most useful
-            thing they could add or have ready — a date, a reference, a receipt, whichever is most
-            obviously missing from what they have written.
+            Two short sentences, and be straight with them.
 
-            Do not ask them a question. Do not tell them to do anything with the form. Do not say
-            whether any of it is covered, and do not promise an outcome — you are helping them describe
-            what happened, and somebody else decides what it means.
+            When the description is good, say so and say what made it good — that they said what
+            happened, when, and to what. Do not pad it out with advice they do not need.
 
-            When there is barely anything written yet, say what sort of detail helps rather than
-            guessing at what happened.
+            When it is thin, say that plainly and name the single most useful thing missing: a date, a
+            reference number, what was damaged, where it happened. One thing, the most useful one, not
+            a list.
 
-            Second person, warm and plain. No greeting, no sign-off, no lists. Somebody upset and
-            typing on a phone is reading this.
+            Do not ask them a question — they cannot answer you, the claim is already being opened.
+            Do not say whether anything is covered and do not promise an outcome. Do not tell them to
+            do anything with the form they have just sent.
 
-            Write in the language they are writing in. When that is not clear, write in English.
+            Second person, warm and plain. No greeting, no sign-off, no lists.
+
+            Write in the language they wrote in. When that is not clear, write in English.
             """)
     @UserMessage(
             """
-            What they have written so far:
+            What they wrote:
             {{sofar}}
             """)
     TokenStream helpWith(@V("scenarios") String scenarios, @V("sofar") String soFar);
