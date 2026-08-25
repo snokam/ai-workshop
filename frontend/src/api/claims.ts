@@ -58,9 +58,16 @@ export async function streamHelp(
   for (;;) {
     const { done, value } = await reader.read()
     if (done) break
-    // Server-sent events arrive as `data:<token>` lines; the token is what follows the colon.
+    // Server-sent events arrive as `data:<token>` lines, and the token is JSON — sent that way
+    // because the format is line-based and strips one leading space after the colon, either of
+    // which quietly mangles the text.
     for (const line of decoder.decode(value, { stream: true }).split('\n')) {
-      if (line.startsWith('data:')) onToken(line.slice(5))
+      if (!line.startsWith('data:')) continue
+      try {
+        onToken(JSON.parse(line.slice(5)) as string)
+      } catch {
+        // A frame split across two reads; the next one carries the rest.
+      }
     }
   }
 }
