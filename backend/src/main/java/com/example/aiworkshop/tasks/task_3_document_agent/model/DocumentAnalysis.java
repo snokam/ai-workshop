@@ -17,29 +17,12 @@ import java.util.List;
  */
 public record DocumentAnalysis(
 
-        @Description("""
-                TODO — task 3, part 1. Write these two, this one first.
 
-                A @Description is a prompt: the only thing the model is told about a field before it
-                fills it in. Say what FORM the answer should take, not only what it is about. The model
-                is not being careless when it writes an essay into a field meant for two words — it was
-                never told.
-
-                The five fields below these are written for you; read a couple. Write one, upload
-                assets/receipt.png and read the card, then write the other. DocumentAnalysisTest is red
-                until both are done.
-
-                This field: the kind of document. It goes on a label beside the filename, so ask for a
-                short noun phrase, e.g. "invoice".
-                """)
+        @Description("The kind of document, as a short noun phrase — 'invoice', 'medical report',"
+                        + " 'proof of identity'. Not a sentence.")
                 String category,
-        @Description("""
-                TODO — task 3, part 1. The other one.
-
-                What this document is and what it says. A handler reads it under the label while
-                skimming a claim, so say how long it should be, and whether it is about the document or
-                about the claim.
-                """)
+        @Description("One or two sentences saying what this document is and what it says, for a claim"
+                        + " handler skimming the claim.")
                 String summary,
         @Description("""
                 The handful of facts a claim handler would care about, as name/value pairs, named in the

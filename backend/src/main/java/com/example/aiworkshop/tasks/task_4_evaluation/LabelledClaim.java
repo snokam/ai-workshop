@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * five — because a suite of unambiguous examples only tells you the model can do the job you already
  * knew it could do.
  */
-public record LabelledClaim(String description, ClaimType expected, String why) {
+public record LabelledClaim(String description, ClaimType expected) {
 
     /** What the evaluation runs over: the worked examples, then yours. */
     public static List<LabelledClaim> all() {
@@ -23,42 +23,51 @@ public record LabelledClaim(String description, ClaimType expected, String why) 
     }
 
     public static List<LabelledClaim> yours() {
-        // TODO — task 4, part 1. Add the claims you would argue about.
-        //
-        // Return a List.of(new LabelledClaim(description, expectedType, why), ...). Seven or eight on top
-        // of the three examples is plenty.
-        //
-        // Do not write eight easy ones. Half the value is in rows reasonable people disagree about —
-        // a laptop stolen from a car, an injury on holiday treated privately, a phone dropped in a hotel
-        // pool — because those are what tell you whether a disagreement is the model being wrong or the
-        // label being an opinion.
-        //
-        // expectedType may be null. There is no claim type for "something else", so "my neighbour parks
-        // across my drive" has no right answer among the five, and that is a legitimate label.
-        //
-        // The why is read by whoever looks at the disagreements later, which is you in twenty minutes.
-        // Write down why you chose it, not what you chose.
-
-        return List.of();
+        return List.of(
+                new LabelledClaim(
+                        "My laptop was stolen out of the boot of my car while it was parked at the station.",
+                        ClaimType.HOME_CONTENTS),
+                new LabelledClaim(
+                        "I broke my ankle on holiday in Spain and paid a private clinic to set it.",
+                        ClaimType.TRAVEL),
+                new LabelledClaim(
+                        "I have been signed off work for eight months and I do not know what I am entitled to.",
+                        ClaimType.DISABILITY),
+                new LabelledClaim(
+                        "vann i kjelleren etter styrtregn i natt",
+                        ClaimType.HOME_CONTENTS),
+                new LabelledClaim(
+                        "The dentist says I need a crown and I want to know if it is covered before I book.",
+                        ClaimType.HEALTH_TREATMENT),
+                new LabelledClaim(
+                        "Someone keyed the whole side of my van outside the depot last night.",
+                        ClaimType.MOTOR),
+                new LabelledClaim(
+                        "I want to complain about how long my last claim took and who handled it.",
+                        null),
+                new LabelledClaim(
+                        "My phone went into the hotel pool on the second day and has not turned on since.",
+                        ClaimType.TRAVEL));
     }
 
     private static List<LabelledClaim> examples() {
         return List.of(
+                // Plain. A row like this tells you the wiring works, and almost nothing else.
                 new LabelledClaim(
                         "Someone reversed into my parked car outside the office and drove off.",
-                        ClaimType.MOTOR,
-                        "Plain. A row like this tells you the wiring works, and almost nothing else."),
+                        ClaimType.MOTOR),
+
+                // Arguable, and that is the point. It happened on a trip, so TRAVEL — but the loss is
+                // belongings, and a reader who thinks about what was lost says HOME_CONTENTS. Decide
+                // which you meant before you call the model wrong.
                 new LabelledClaim(
                         "My suitcase never arrived and I had to buy clothes for the week.",
-                        ClaimType.TRAVEL,
-                        "Arguable, and that is the point. It happened on a trip, so TRAVEL — but the loss is"
-                                + " belongings, and a reader who thinks in terms of what was lost says"
-                                + " HOME_CONTENTS. Decide which you meant before you call the model wrong."),
+                        ClaimType.TRAVEL),
+
+                // None of the five fit. Expecting null is a real label: it asks whether the agent will
+                // admit that nothing matches, or force the nearest one to make the question go away.
                 new LabelledClaim(
                         "My neighbour keeps parking across my driveway and I want to know my options.",
-                        null,
-                        "None of the five fit. Expecting null is a real label: it asks whether the agent"
-                                + " will admit that nothing matches, or force the nearest one to make the"
-                                + " question go away."));
+                        null));
     }
 }
