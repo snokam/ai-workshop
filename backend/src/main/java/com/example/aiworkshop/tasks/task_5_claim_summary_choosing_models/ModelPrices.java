@@ -1,6 +1,7 @@
 package com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models;
 
 import dev.langchain4j.model.output.TokenUsage;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -53,6 +54,16 @@ public final class ModelPrices {
         int in = usage.inputTokenCount() == null ? 0 : usage.inputTokenCount();
         int out = usage.outputTokenCount() == null ? 0 : usage.outputTokenCount();
         return Math.max(0, usage.totalTokenCount() - in - out);
+    }
+
+    /**
+     * A price as dollars, with a decimal point wherever it is read.
+     *
+     * <p>{@code Locale.ROOT} rather than the default: on a Norwegian machine {@code %.6f} formats
+     * $0.000635 as "$0,000635", which reads as a different number entirely.
+     */
+    public static String asDollars(double dollars) {
+        return dollars < 0 ? "no published price" : String.format(Locale.ROOT, "$%.6f", dollars);
     }
 
     /** True when we have a published price for this model. */

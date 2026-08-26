@@ -98,7 +98,7 @@ public class SummaryDesk {
                 (System.nanoTime() - start) / 1_000_000,
                 result.tokenUsage() == null ? "?" : result.tokenUsage().totalTokenCount(),
                 ModelPrices.hiddenThinking(result.tokenUsage()),
-                dollars < 0 ? "no published price for that model" : "$%.6f".formatted(dollars));
+                ModelPrices.asDollars(dollars));
         return result.content();
     }
 }

@@ -133,7 +133,7 @@ class SummaryEvaluation {
                 millis,
                 usage == null || usage.totalTokenCount() == null ? "?" : usage.totalTokenCount(),
                 ModelPrices.hiddenThinking(usage),
-                dollars < 0 ? "no price" : "$%.6f".formatted(dollars));
+                ModelPrices.asDollars(dollars));
         System.out.println("""
 
                   "unseen" is thinking: tokens the model spent that appear in neither the prompt nor
