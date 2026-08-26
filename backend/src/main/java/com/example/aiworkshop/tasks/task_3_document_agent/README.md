@@ -2,9 +2,14 @@
 
 Describe the fields you want back, and send the model a PDF or a photo.
 
-Models read files, not just text. You learn how to send a PDF or a photograph as itself rather than
-extracting the text first, and how the description on each field of the answer does more work than
-the system message does.
+Someone uploads a document to their claim — a receipt, a police report, a photo of a dented door.
+The file goes to the model as it is, and the model answers with what kind of document it is, the
+facts worth pulling out, which item on the claim's checklist it satisfies, and whether it is legible
+enough to use.
+
+You learn two things. A model reads files, not only text, so nothing has to pull the text out first.
+And the way to get a usable answer back is to say what form each field should take: "the kind of
+document" gets you a paragraph, "a short noun phrase, e.g. 'invoice'" gets you a label.
 
 ## The parts
 
