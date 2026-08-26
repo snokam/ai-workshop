@@ -18,9 +18,7 @@ import dev.langchain4j.service.V;
  * untrusted free text, and keeping the catalogue in the system message keeps that text from
  * competing with the instructions for the model's attention.
  *
- * <h2>An example</h2>
- *
- * <em>"someone drove into my parked car outside the office"</em> comes back as:
+ * <p>For example, <em>"someone drove into my parked car outside the office"</em> comes back as:
  *
  * <pre>{@code
  * new ClaimTypeSuggestion(ClaimType.MOTOR, MatchConfidence.HIGH,

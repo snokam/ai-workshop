@@ -8,16 +8,12 @@ import dev.langchain4j.service.UserMessage;
  * Asks one yes-or-no question about the text before the classifier ever sees it: is there anything
  * here to open a claim from?
  *
- * <p>An agent guarding an agent. The classifier in task 1 is asked an open question — which of these
- * types fits? — and an open question always gets an answer. This one is asked a single closed
- * question with no catalogue to choose from, which is a much harder thing to talk round.
- *
  * <p>The point is to keep the classifier doing what it is supposed to do. Handed junk, a model still
  * answers, and it answers confidently — and that answer becomes a claim with a reference number on
  * it. Stopping it here is what lets everything after this point assume the text it was given was
  * worth reading.
  *
- * <h2>An example</h2>
+ * <p>For example:
  *
  * <pre>{@code
  * "my kitchen flooded last night" -> new Verdict(true, "")
