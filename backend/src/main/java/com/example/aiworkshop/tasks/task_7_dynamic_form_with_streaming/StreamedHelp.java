@@ -1,10 +1,9 @@
 package com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming;
 
-import com.example.aiworkshop.workshop.TaskNotImplementedException;
-import com.example.aiworkshop.workshop.WorkshopTask;
 import com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.agent.ClaimFormHelper;
 import com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.model.ClaimScenario;
 import dev.langchain4j.service.TokenStream;
+import tools.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class StreamedHelp {
 
     private static final Logger log = LoggerFactory.getLogger(StreamedHelp.class);
+
+    /** Only ever asked to quote a string, so the default configuration is the whole of it. */
+    private static final ObjectMapper JSON = new ObjectMapper();
 
     /** Long enough for a slow model and a long answer, short enough that a dead one is not forever. */
     private static final long TIMEOUT_MS = 60_000;
@@ -47,40 +49,35 @@ public class StreamedHelp {
         SseEmitter emitter = new SseEmitter(TIMEOUT_MS);
         TokenStream tokens = helper.helpWith(ClaimScenario.catalog(), soFar);
 
-        // TODO — task 7. Carry the tokens to the browser.
-        //
-        // TokenStream is push, not pull: nothing arrives until you say what to do with it, and nothing
-        // starts until you say to start. Four calls, and it reads as one chain:
-        //
-        //   tokens.onPartialResponse(token -> send(emitter, token))
-        //         .onCompleteResponse(response -> emitter.complete())
-        //         .onError(failed -> { log.warn("The help stream failed", failed);
-        //                              emitter.completeWithError(failed); })
-        //         .start();
-        //
-        // send(...) is written for you below, because SseEmitter.send throws a checked IOException and
-        // a lambda cannot.
-        //
-        // Three ways this goes wrong, and each fails differently:
-        //
-        //   no .start()            you registered callbacks for a stream nobody asked to run. The
-        //                          method returns, the browser holds an open connection, and nothing
-        //                          ever arrives — it looks exactly like a slow model.
-        //   no .onError(...)       the model fails and nobody completes the emitter. The browser waits
-        //                          the full timeout for a request that was over in a second.
-        //   no .onCompleteResponse the tokens all arrive and the connection stays open anyway, so the
-        //                          screen never knows the answer finished.
-        //
-        // Return the emitter. Do not wait for the stream — returning is what lets the response start,
-        // and blocking here would undo the whole point: somebody is typing while this runs.
+        tokens.onPartialResponse(token -> send(emitter, token))
+                .onCompleteResponse(response -> emitter.complete())
+                .onError(failed -> {
+                    log.warn("The interview's narration failed", failed);
+                    emitter.completeWithError(failed);
+                })
+                .start();
 
-        throw new TaskNotImplementedException(WorkshopTask.DYNAMIC_FORM_WITH_STREAMING);
+        return emitter;
     }
 
-    /** SseEmitter.send throws a checked exception, and a callback cannot, so it is caught here. */
+    /**
+     * One token, on the wire, in a form that survives the trip.
+     *
+     * <p>Sent as JSON rather than as itself, and both reasons are things that only show up in the
+     * output. Server-sent events are line-based, so a token containing a newline would arrive as two
+     * frames and the text would come apart. And the format is {@code data:<value>}, where a reader is
+     * required to drop one leading space — so a token that begins with a space, which plenty do,
+     * silently loses it and two words run together.
+     *
+     * <p>Spring's String converter writes a string verbatim whatever media type it is given, so the
+     * quoting has to be done here rather than asked for.
+     *
+     * <p>{@code SseEmitter.send} also throws a checked exception, which a callback cannot, so it is
+     * caught here rather than in the lambda.
+     */
     static void send(SseEmitter emitter, String token) {
         try {
-            emitter.send(token);
+            emitter.send(JSON.writeValueAsString(token));
         } catch (Exception e) {
             log.debug("The screen stopped listening mid-answer: {}", e.getMessage());
             emitter.completeWithError(e);

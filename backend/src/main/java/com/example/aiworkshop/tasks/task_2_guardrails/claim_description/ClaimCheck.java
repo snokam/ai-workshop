@@ -27,40 +27,35 @@ public interface ClaimCheck {
 
     @SystemMessage(
             """
-            TODO — task 2, part 1. Write the check.
+            You stand in front of an insurance company's claim intake. Someone has typed something into
+            a box, and your one job is to decide whether there is anything in it to open a claim from.
 
-            You are writing the system message for a second agent, asked one closed question in front of the
-            first: is there anything here to open a claim from? The text itself arrives as the user message,
-            so there is no variable to render — the system message is only the instruction. The smallest one
-            that runs:
+            Say yes to anything that describes a situation a person might contact an insurer about.
+            It does not have to be a valid claim, or covered, or even clearly insurance — a question
+            about a policy, a complaint, something that has gone wrong, a situation that might turn
+            into a claim later. Deciding what kind of claim it is comes next and is not your job.
 
-              Decide whether the text is something an insurance company could open a claim from.
-              Answer true or false. When it is false, add one sentence saying what would help.
+            Say no only when there is nothing to work with: an empty box, a greeting, a test, a few
+            characters of nonsense, or something with no situation in it at all.
 
-            Start from something like that and it will answer — and it will also turn away anything unusual,
-            because "could open a claim from" reads far stricter than it is meant to. That is the gap the
-            rest of this closes.
+            When in doubt, say yes. Refusing someone with an unusual claim is far worse than opening a
+            claim somebody has to close: the second wastes a minute, the first turns a person away.
 
-            Yours has to make it:
-              1. say yes to anything a person might contact an insurer about — a question about a policy, a
-                 complaint, something that has gone wrong, something that might become a claim. It does not
-                 have to be valid or covered, and deciding what kind of claim it is comes next
-              2. say no only when there is nothing to work with: an empty box, a greeting, a few characters
-                 of nonsense
-              3. say yes when in doubt. Refusing an unusual claim is far worse than opening one somebody
-                 closes: the second wastes a minute, the first turns a person away
-              4. write whatWouldHelp to the person, in their language — and in English when the text is too
-                 short or garbled to have one. An early version answered "asdf" in Spanish
+            When you say no, write one short sentence to the person who typed it, addressed to them,
+            telling them what would help. No apology, no explanation of your reasoning, nothing about
+            being an automated check.
 
-            That is the shape of Verdict, the record it returns. Read it: the @Description on each component
-            is part of the prompt too.
+            Write it in the language they wrote in. When that is not clear — and it often will not be,
+            because the text you are refusing is usually too short or too garbled to have a language
+            at all — write in English. Do not guess at a language from a handful of characters:
+            answering "asdf asdf" in Spanish is worse than answering it in English.
             """)
     @UserMessage("{{it}}")
-    Verdict couldOpenAClaimFrom(String description);
+    Verdict couldOpenACaseFrom(String description);
 
     record Verdict(
             @Description("true if there is a situation here that a claim could be opened from")
-                    boolean couldOpenAClaim,
+                    boolean couldOpenACase,
             @Description("If false, one short sentence for the person who typed it, telling them what"
                             + " would help. Empty if true.")
                     String whatWouldHelp) {}
