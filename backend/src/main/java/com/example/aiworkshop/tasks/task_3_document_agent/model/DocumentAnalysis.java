@@ -5,45 +5,43 @@ import dev.langchain4j.model.output.structured.Description;
 import java.util.List;
 
 /**
- * What the agent gives back about one file, and the only place the shape of that answer is written
- * down.
+ * What the agent gives back about one file.
  *
- * <p>Nothing parses the model's reply. This record <em>is</em> the schema: LangChain4j derives the
- * output format from these components, so adding one is how you ask for something new, and there is
- * no second place to keep in step.
+ * <p>Nothing parses the model's reply. This record is the schema — LangChain4j builds the output
+ * format out of these components, so adding a field here is how you ask the model for something new.
  *
- * <p>Which makes {@code @Description} prompt rather than documentation. It is not a note for the
- * next developer — it is the sentence the model is shown when it decides what to put in that field,
- * and it is the only instruction it gets about it. A vague one produces a vague answer, and the
- * failure is silent: the field fills in, the screen renders, and nobody finds out it is wrong until
- * they read a card carefully.
+ * <p>That makes {@code @Description} part of the prompt rather than a note for the next developer.
+ * It is the only thing the model is told about a field before it fills it in. Ask vaguely and you
+ * get a vague answer, and nothing breaks to tell you: the field fills, the screen renders, and the
+ * card quietly says the wrong thing.
  */
 public record DocumentAnalysis(
 
-        // TODO — task 3, part 2. Write these two.
+        // TODO — task 3, part 1. Write these two.
         //
-        // The five below them are written for you. Read a couple first — the habit in all of them is
-        // the same, and it is the whole of this part:
+        // A @Description is a prompt: it is the only thing the model is told about a field before it
+        // fills it in. The smallest one that runs:
+        //
+        //   @Description("The kind of document this is.")
+        //
+        // That does fill the field — with a paragraph, where the screen has room for a label. The model
+        // is not being careless; it was never told the field was meant for two words. So the habit is:
         //
         //   say what FORM the answer should take, not only what it is about.
         //
-        // "The kind of document" gets you a paragraph. "A short noun phrase, e.g. 'invoice'" gets you a
-        // label. The model is not being careless when it writes an essay into a field meant for two
-        // words; it was never told the field was meant for two words.
-        //
-        //   category   shown on DocumentCard as a label beside the filename. What shape of answer fits
-        //              on a label?
-        //   summary    shown under it, for a handler skimming a claim. How long should it be, and what
-        //              should it be about — the document, or the claim?
+        // The five fields below these are written for you. Read a couple — they all do the same thing,
+        // and it is the whole of this part.
         //
         // Write one, upload assets/receipt.png, and read the card. Then write the other.
         // DocumentAnalysisTest is red until both are done.
 
-        @Description("TODO — the kind of document this is.")
+        @Description("TODO — the kind of document this is. It goes on a label beside the filename, so"
+                        + " ask for a short noun phrase, e.g. \"invoice\" or \"police report\".")
                 String category,
-        @Description("TODO — what this document is and what it says.")
+        @Description("TODO — what this document is and what it says. A handler reads it under the label"
+                        + " while skimming a claim, so say how long it should be, and whether it is"
+                        + " about the document or about the claim.")
                 String summary,
-
         @Description("The handful of facts a claim handler would care about, as name/value pairs, named"
                         + " in the document's own words rather than translated into ours. There is no"
                         + " fixed schema — an invoice and a driving licence share nothing. Return an"
