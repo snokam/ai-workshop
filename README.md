@@ -17,7 +17,7 @@ done yet tells you which file to open.
 
 | | | what you do |
 |---|---|---|
-| 1 | [Your first agent](./backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/README.md) | Connect to the model, write an agent that reads a sentence, and open the claim it describes. |
+| 1 | [Your first agent](./backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/README.md) | Send the user's description to an LLM with a prompt and the five insurance types, and open a claim of the type it picks. |
 | 2 | [Guardrails](./backend/src/main/java/com/example/aiworkshop/tasks/task_2_guardrails/README.md) | Block text that is not a claim, and text that tries to give the system instructions. |
 | 3 | [Reading documents](./backend/src/main/java/com/example/aiworkshop/tasks/task_3_document_agent/README.md) | Describe the fields you want back, and send the model a PDF or a photo. |
 | 4 | [Evaluation](./backend/src/main/java/com/example/aiworkshop/tasks/task_4_evaluation/README.md) | Build test sets and measure the agents you wrote in tasks 1 and 2. |

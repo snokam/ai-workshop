@@ -1,10 +1,14 @@
 # Task 1 — Your first agent
 
-Connect to the model, write an agent that reads a sentence, and open the claim it describes.
+Someone types what happened to them into a text field. The text goes to our backend, which sends it
+to an LLM together with a prompt and the five kinds of insurance we cover: travel, home contents,
+disability, health treatment and motor. The model picks one, and the backend opens a claim of that
+kind, listing the documents that kind needs. If nothing fits, it says so and no claim is opened.
 
-The first time the application talks to a model. You learn how an agent is built in LangChain4j:
-you write an interface and a system message, and the framework generates the implementation. The
-answer comes back as a record, so the rest of the code can branch on it.
+That is an agent in one screen: a prompt, the user's text, and an answer the program can act on. You
+learn how one is built in LangChain4j — you write an interface and a system message, and the
+framework generates the implementation — and why the answer comes back as a record rather than as
+prose.
 
 ## The parts
 
