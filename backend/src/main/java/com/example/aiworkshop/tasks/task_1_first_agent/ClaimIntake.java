@@ -29,21 +29,37 @@ public class ClaimIntake {
     public CreatedClaim open(String description) {
         // TODO — task 1, part 3. Turn the answer into a claim.
         //
-        // Steps:
+        // Ask the agent, then build a claim out of what it answers. Real names where you could not
+        // guess them, the rest in your own words:
         //
-        //   1. ClaimTypeSuggestion suggestion = classifier.classify(ClaimType.catalog(), description)
-        //   2. if suggestion.type() is null, throw new NothingWeCoverException(suggestion.rationale())
-        //      — the controller turns that into a 422 the claimant reads
-        //   3. take a number from nextReference.getAndIncrement(). The id is that number as a string;
-        //      the reference is CLAIM-<year>-<number>, and Year.now().getValue() gives the year
-        //   4. type.requiredDocuments() is the checklist that comes with the type
-        //   5. new Claim(id, reference, type, requiredDocuments), then claims.save(theClaim)
-        //   6. return a CreatedClaim: the id, the reference, type.label(), the suggestion's confidence
-        //      and rationale, the documents, and ClaimStatus.AWAITING_DOCUMENTS — the status of a
-        //      brand-new claim, since nothing has arrived yet
+        //   suggestion = classifier.classify(ClaimType.catalog(), description)
         //
-        // Step 5 is where the model's answer stops being a suggestion and becomes someone's actual
-        // claim, with a reference number they will quote at you. That is the whole point of the task.
+        //   if the suggestion has no type:
+        //       throw new NothingWeCoverException(suggestion.rationale())
+        //
+        //   type      = suggestion.type()
+        //   number    = nextReference.getAndIncrement()
+        //   id        = that number, as a String
+        //   reference = "CLAIM-%d-%d".formatted(Year.now().getValue(), number)
+        //   documents = type.requiredDocuments()
+        //
+        //   build a new Claim(id, reference, type, documents) and hand it to claims.save(...)
+        //
+        //   return a CreatedClaim of:
+        //       id, reference, type.label(),
+        //       the suggestion's confidence and rationale,
+        //       documents,
+        //       ClaimStatus.AWAITING_DOCUMENTS
+        //
+        // Two of those lines are worth more than the typing.
+        //
+        // The no-type branch is the agent being allowed to say "none of these".
+        // NothingWeCoverException becomes a 422 the claimant reads, instead of a claim nobody can
+        // ever settle.
+        //
+        // claims.save(...) is where the model's answer stops being a suggestion and becomes
+        // someone's actual claim, with a reference number they will quote at you. That is the point
+        // of the task.
 
         throw new TaskNotImplementedException(WorkshopTask.FIRST_AGENT);
     }
