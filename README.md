@@ -1,4 +1,4 @@
-# AI workshop — document handling
+# AI workshop
 
 Upload a document, and an agent reads it: what kind of document it is, the facts worth pulling out
 of it, and whether the file is legible enough to work with.
