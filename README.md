@@ -1,18 +1,17 @@
 # AI workshop
 
-The goal of this workshop is to learn what an LLM feature is made of besides the prompt: how an agent
-is wired up, what keeps it honest, how you find out whether it works at all, and which of the
-decisions are yours rather than the model's. Guardrails, evaluation, choosing a model, tools, memory,
-streaming — one at a time, each with something to show for it on screen.
+You build the AI parts of an insurance claim system.
 
-You learn them by building one thing, in Java with LangChain4j. Somebody writes, in their own words,
-what has happened to them, and by the end of the day that sentence has become an opened insurance
-claim: sorted into the right kind, its uploaded documents read, its summary written, and a claims
-handler able to ask questions about it.
+A customer writes what happened to them in their own words. Your agents read that text, decide what
+kind of claim it is, check the documents the customer uploads, write a summary for the claims
+handler, and answer the handler's questions about the claim.
 
-**Nothing is finished, and it runs anyway.** The application starts with every agent unwritten: each
-screen works, the controls stay live, and the ones needing a task you have not done say which file to
-open. Seven exercises, in order.
+Along the way you learn what matters when an LLM goes into a real application: guardrails,
+evaluation, picking the right model for the job, tools, memory and streaming.
+
+The code is mostly written. Your job is to fill in the missing pieces, in seven tasks. The
+application runs from the start — every screen works, and anything that needs a task you have not
+done yet tells you which file to open.
 
 ## The tasks
 
