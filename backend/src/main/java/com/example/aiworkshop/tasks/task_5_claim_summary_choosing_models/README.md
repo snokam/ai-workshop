@@ -12,7 +12,7 @@ One file, and the `TODO` in it has the steps.
 
 | | File | What it is for |
 |---|---|---|
-| 1 | [`agent/SummaryConfig.java`](./agent/SummaryConfig.java) | Decide which model each job needs |
+| 1 | [`agent/SummaryConfig.java`](./agent/SummaryConfig.java) | Name the model each job runs on |
 
 This is the only task with two agents of obviously different difficulty side by side, and until now
 nothing has questioned them sharing a model.
@@ -22,8 +22,20 @@ nothing has questioned them sharing a model.
 | [`agent/ClaimSummarizer.java`](./agent/ClaimSummarizer.java) | every document on the claim at once | read across them, notice where they disagree, write prose |
 | [`agent/ClaimStatusWriter.java`](./agent/ClaimStatusWriter.java) | facts already worked out | put them in one sentence |
 
-Both prompts are given. Both agents return `Result<String>`, so `SummaryDesk` logs what every call
-cost — open a claim and read the log before you choose.
+Both prompts are given. What you write is two strings — the name of the model each agent runs on.
+
+| name | |
+|---|---|
+| `gemini-2.5-flash-lite` | fastest and cheapest. Thinks less, and does not reliably keep a format it was asked for |
+| `gemini-2.5-flash` | what the rest of the workshop runs on. Thinks before it answers |
+| `gemini-2.5-pro` | strongest, slowest, dearest |
+
+Task 1 builds the one model everything else uses. These two are the exception, and they are built
+from the name you type through the `Models` factory beside it — so trying another is a one-word edit
+rather than new wiring.
+
+Both agents return `Result<String>`, so `SummaryDesk` logs what every call cost — open a claim and
+read the log before you choose.
 
 Measured on the status line while this was written:
 
@@ -44,5 +56,17 @@ cd backend && ./mvnw test -Pevaluate
 ```
 
 That scores the summary against [`evaluation/SummaryRubric.java`](./evaluation/SummaryRubric.java)
-using [`evaluation/SummaryJudge.java`](./evaluation/SummaryJudge.java) — both given. It is how you
-tell whether a model change made the answer worse rather than only cheaper.
+using [`evaluation/SummaryJudge.java`](./evaluation/SummaryJudge.java) — both given — and prints what
+the call cost beside the score:
+
+```
+  job                      model                        time   tokens   unseen         cost
+  reading every document   gemini-2.5-flash          2070ms      244      139    $0.000492
+```
+
+`unseen` is thinking: tokens spent that appear in neither the prompt nor the answer, billed at the
+output rate. On a reasoning model most of what you pay for is text you never read. Prices live in
+[`ModelPrices.java`](./ModelPrices.java) with the date they were checked — they will go stale.
+
+Score and cost only mean something together. A model that halves the bill and fails two more rubric
+questions has not saved you anything.

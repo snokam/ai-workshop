@@ -5,9 +5,13 @@ import com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models.evaluat
 import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimType;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.ExtractedField;
 import com.example.aiworkshop.tasks.task_3_document_agent.model.QualityAssessment.Quality;
+import com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models.agent.SummaryConfig;
+import com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models.ModelPrices;
 import com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models.agent.ClaimSummarizer;
 import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.service.Result;
+import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.service.AiServices;
 import java.util.List;
 import org.junit.jupiter.api.Tag;
@@ -43,13 +47,17 @@ class SummaryEvaluation {
     @Test
     void scoreTheSummary() {
         List<DocumentForSummary> documents = twoDocumentsOnAClaim();
-        String summary;
+        Result<String> summarised;
+        long start = System.nanoTime();
         try {
-            summary = summarizer.summarise(ClaimType.MOTOR.label(), documents).content();
+            summarised = summarizer.summarise(ClaimType.MOTOR.label(), documents);
         } catch (TaskNotImplementedException notYet) {
             System.out.println("\nThere is nothing to judge yet — task 5's summariser is not written.\n");
             return;
         }
+        long millis = (System.nanoTime() - start) / 1_000_000;
+        String summary = summarised.content();
+        printWhatItCost(millis, summarised);
         SummaryJudge judge = AiServices.create(SummaryJudge.class, chatModel);
 
         System.out.printf("%nThe summary being judged:%n%n%s%n%n", summary);
@@ -69,6 +77,7 @@ class SummaryEvaluation {
         }
 
         System.out.printf("%n%d of %d held.%n%n", held, SummaryRubric.all().size());
+        printWhatItCost(millis, summarised);
         System.out.println(
                 """
                 Now do the part that matters: read the summary yourself and answer the four questions
@@ -102,5 +111,35 @@ class SummaryEvaluation {
                         "A photograph of a car's front bumper, cracked across the near side.",
                         List.of(new ExtractedField("Shows", "front bumper, cracked")),
                         Quality.GOOD));
+    }
+
+    /**
+     * What the choice in SummaryConfig actually cost, in tokens and in money.
+     *
+     * <p>Printed twice on purpose — once before the rubric and once after — because the two numbers
+     * only mean something together. A model that halves the bill and fails two more questions has not
+     * saved you anything.
+     */
+    private static void printWhatItCost(long millis, Result<String> result) {
+        String model = SummaryConfig.READING_EVERY_DOCUMENT;
+        TokenUsage usage = result.tokenUsage();
+        double dollars = ModelPrices.dollarsFor(model, usage);
+
+        System.out.printf("%n  %-24s %-24s %8s %8s %8s %12s%n", "job", "model", "time", "tokens", "unseen", "cost");
+        System.out.printf(
+                "  %-24s %-24s %7dms %8s %8d %12s%n",
+                "reading every document",
+                model,
+                millis,
+                usage == null || usage.totalTokenCount() == null ? "?" : usage.totalTokenCount(),
+                ModelPrices.hiddenThinking(usage),
+                dollars < 0 ? "no price" : "$%.6f".formatted(dollars));
+        System.out.println("""
+
+                  "unseen" is thinking: tokens the model spent that appear in neither the prompt nor
+                  the answer. They are billed at the output rate, so on a reasoning model most of what
+                  you pay for is text you never see. Published prices, checked 26 August 2026 — read
+                  ModelPrices if a number looks wrong.
+                """);
     }
 }

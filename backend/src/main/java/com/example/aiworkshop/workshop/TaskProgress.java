@@ -43,10 +43,9 @@ public class TaskProgress {
             // agent wired without tools is not broken — it answers, it just never looks anything up,
             // which is the point of part 2 and something you see rather than something a gate reports.
             case ADVISOR_CHAT_WITH_TOOLS_AND_MEMORY -> UnfinishedTasks.toolDescriptionsWritten(ClaimChatTools.class);
-            // Task 5's prompts and its rubric are given; what is written is which model does which
-            // job, and asking costs nothing — modelFor only chooses between two it was handed.
-            case CLAIM_SUMMARY_CHOOSING_MODELS ->
-                    UnfinishedTasks.written(() -> SummaryConfig.modelFor(SummaryConfig.Job.READING_EVERY_DOCUMENT, null, null));
+            // Task 5's prompts and its rubric are given; what is written is the name of the model
+            // each job runs on. Two strings, so asking is reading them — nothing is built to find out.
+            case CLAIM_SUMMARY_CHOOSING_MODELS -> SummaryConfig.decided();
             // Task 7's prompt is given. What is written is the join between a TokenStream and an
             // open HTTP response, and asking whether it exists costs nothing: on() returns before a
             // single token has arrived, which is the whole point of it.

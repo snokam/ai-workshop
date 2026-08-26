@@ -2,6 +2,7 @@ package com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models;
 
 import com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models.agent.ClaimStatusWriter;
 import com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models.agent.ClaimSummarizer;
+import com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models.agent.SummaryConfig;
 import com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models.store.ClaimSummaryStore;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.Claim;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimStatus;
@@ -42,6 +43,7 @@ public class SummaryDesk {
         List<String> writtenOver = attached.stream().map(UploadedDocument::id).toList();
         return summaries.find(claimId, writtenOver).orElseGet(() -> {
             String summary = costOf(
+                    SummaryConfig.READING_EVERY_DOCUMENT,
                     "summary",
                     () -> summarizer.summarise(
                             theClaim.type().label(),
@@ -69,7 +71,7 @@ public class SummaryDesk {
         List<String> derivedFrom = List.of(claimType, status.name(), outstanding.toString(), blockedReasons.toString());
 
         return summaries.findStatusNote(claimId, derivedFrom).orElseGet(() -> {
-            String note = costOf("status line", () -> statusWriter.write(claimType, status, outstanding, blockedReasons));
+            String note = costOf(SummaryConfig.WRITING_THE_STATUS_LINE, "status line", () -> statusWriter.write(claimType, status, outstanding, blockedReasons));
             summaries.saveStatusNote(claimId, derivedFrom, note);
             return note;
         });
@@ -79,21 +81,24 @@ public class SummaryDesk {
      * Runs one call and says what it cost.
      *
      * <p>Both agents return {@link Result}, which carries the token usage beside the answer. That is
-     * the only reason the choice in {@code SummaryConfig.modelFor} can be made on evidence rather
+     * the only reason the choice in {@code SummaryConfig} can be made on evidence rather
      * than on a feeling about which job sounds harder.
      *
      * <p>Read the totals rather than adding the parts: input plus output does not make the total on a
      * reasoning model, and the difference is thinking — spent, billed, and invisible in both.
      */
-    private static String costOf(String what, Supplier<Result<String>> call) {
+    private static String costOf(String modelName, String what, Supplier<Result<String>> call) {
         long start = System.nanoTime();
         Result<String> result = call.get();
+        double dollars = ModelPrices.dollarsFor(modelName, result.tokenUsage());
         log.info(
-                "{} took {}ms and {} tokens ({})",
+                "{} on {} took {}ms, {} tokens ({} of them thinking), {}",
                 what,
+                modelName,
                 (System.nanoTime() - start) / 1_000_000,
                 result.tokenUsage() == null ? "?" : result.tokenUsage().totalTokenCount(),
-                result.tokenUsage());
+                ModelPrices.hiddenThinking(result.tokenUsage()),
+                dollars < 0 ? "no published price for that model" : "$%.6f".formatted(dollars));
         return result.content();
     }
 }

@@ -1,11 +1,13 @@
 package com.example.aiworkshop.config;
 
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.Models;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +17,8 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(FoundryProperties.class)
 @ConditionalOnProperty(name = "aiworkshop.model.provider", havingValue = "foundry")
 public class FoundryConfig {
+    private static final Logger log = LoggerFactory.getLogger(FoundryConfig.class);
+
     @Bean
     @Primary
     ChatModel chatModel(FoundryProperties properties) {
@@ -35,35 +39,40 @@ public class FoundryConfig {
     }
 
     /**
-     * A cheaper deployment, if one is configured. Falls back to the same one when it is not, so the
-     * workshop runs either way — task 5 then measures no difference, which is its own answer.
+     * Foundry has one deployment, so there are no tiers to choose between.
+     *
+     * <p>The name is ignored and the fact is logged rather than hidden. Task 5 then measures no
+     * difference between its two choices, which is a true answer about this deployment — not a bug,
+     * and better than silently serving a Gemini model to somebody running on Foundry.
      */
     @Bean
-    @Qualifier("cheaper")
-    ChatModel cheaperChatModel(FoundryProperties properties) {
-        String deployment = properties.cheaperDeploymentName() == null || properties.cheaperDeploymentName().isBlank()
-                ? properties.deploymentName()
-                : properties.cheaperDeploymentName();
-        return OpenAiChatModel.builder()
-                .baseUrl(properties.endpoint())
-                .apiKey(properties.apiKey())
-                .modelName(deployment)
-                .maxCompletionTokens(properties.maxCompletionTokens())
-                .timeout(properties.timeout())
-                .maxRetries(properties.maxRetries())
-                .build();
-    }
+    Models models(FoundryProperties properties) {
+        return new Models() {
+            @Override
+            public ChatModel named(String modelName) {
+                log.info("Foundry has one deployment ({}), so '{}' is ignored", properties.deploymentName(), modelName);
+                return OpenAiChatModel.builder()
+                        .baseUrl(properties.endpoint())
+                        .apiKey(properties.apiKey())
+                        .modelName(properties.deploymentName())
+                        .maxCompletionTokens(properties.maxCompletionTokens())
+                        .timeout(properties.timeout())
+                        .maxRetries(properties.maxRetries())
+                        .build();
+            }
 
-    /** The same deployment, answering a token at a time. Task 7 uses it. */
-    @Bean
-    StreamingChatModel streamingChatModel(FoundryProperties properties) {
-        return OpenAiStreamingChatModel.builder()
-                .baseUrl(properties.endpoint())
-                .apiKey(properties.apiKey())
-                .modelName(properties.deploymentName())
-                .timeout(properties.timeout())
-                .logRequests(properties.logRequests())
-                .logResponses(properties.logResponses())
-                .build();
+            @Override
+            public StreamingChatModel streamingNamed(String modelName) {
+                log.info("Foundry has one deployment ({}), so '{}' is ignored", properties.deploymentName(), modelName);
+                return OpenAiStreamingChatModel.builder()
+                        .baseUrl(properties.endpoint())
+                        .apiKey(properties.apiKey())
+                        .modelName(properties.deploymentName())
+                        .timeout(properties.timeout())
+                        .logRequests(properties.logRequests())
+                        .logResponses(properties.logResponses())
+                        .build();
+            }
+        };
     }
 }
