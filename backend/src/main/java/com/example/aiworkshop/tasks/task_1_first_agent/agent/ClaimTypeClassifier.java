@@ -44,13 +44,22 @@ public interface ClaimTypeClassifier {
             {{claimTypes}} renders the catalogue in — ClaimType.catalog() builds it, one line per type with its
             name, label and description. The description is what the person typed, and it is the user turn.
 
-            The prompt has to make it:
+            A system message is only text with the variable dropped into it. The smallest one that runs:
+
+              You sort insurance claims. The types you can choose from are:
+
+              {{claimTypes}}
+
+              Pick the one that fits what the person describes, and say how sure you are.
+
+            Start from something like that and it will answer — and it will also force a match on a
+            description none of the types cover, because "pick the one that fits" never said it could
+            decline. That is the gap the rest of this list closes.
+
+            Yours has to make it:
               1. choose exactly one type from the list it is shown, by name
               2. say how sure it is — HIGH, MEDIUM or LOW
               3. give one sentence of reasoning
-
-            For example, "someone drove into my parked car" should come back MOTOR, HIGH, and one sentence
-            saying why. "my crops failed after a drought" should come back with no type at all.
 
             That is the shape of ClaimTypeSuggestion, the record it returns. Read it: the @Description on each
             component is part of the prompt too.
