@@ -37,14 +37,8 @@ public interface ClaimTypeClassifier {
             """
             TODO — task 1, part 2. Write the agent.
 
-            You are writing the system message. The method signature below is already the contract:
-
-              classify(@V("claimTypes") String claimTypes, @UserMessage String description)
-
-            {{claimTypes}} renders the catalogue in — ClaimType.catalog() builds it, one line per type with its
-            name, label and description. The description is what the person typed, and it is the user turn.
-
-            A system message is only text with the variable dropped into it. The smallest one that runs:
+            You are writing the system message: text, with the catalogue of claim types dropped into it as
+            {{claimTypes}}. The smallest one that runs:
 
               You sort insurance claims. The types you can choose from are:
 
