@@ -3,9 +3,6 @@
 Upload a document, and an agent reads it: what kind of document it is, the facts worth pulling out
 of it, and whether the file is legible enough to work with.
 
-The domain language lives in [CONTEXT.md](./CONTEXT.md). The exercises live beside the code they
-change — one README per task folder, listed below.
-
 **Nothing is finished, and it runs anyway.** The application starts with every agent unwritten:
 each screen works, the controls stay live, and the ones needing a task you have not done say which
 file to open. Seven exercises, in order, each one an agent or the thing that keeps an agent honest.
