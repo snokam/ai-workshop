@@ -1,7 +1,5 @@
 package com.example.aiworkshop.tasks.task_1_first_agent;
 
-import com.example.aiworkshop.workshop.WorkshopTask;
-import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.ClaimTypeClassifier;
 import com.example.aiworkshop.tasks.task_1_first_agent.store.ClaimStore;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.CreatedClaim;
@@ -27,41 +25,28 @@ public class ClaimIntake {
     }
 
     public CreatedClaim open(String description) {
-        // TODO — task 1, part 3. Turn the answer into a claim.
-        //
-        // Ask the agent, then build a claim out of what it answers. Real names where you could not
-        // guess them, the rest in your own words:
-        //
-        //   suggestion = classifier.classify(ClaimType.catalog(), description)
-        //
-        //   if the suggestion has no type:
-        //       throw new NothingWeCoverException(suggestion.rationale())
-        //
-        //   type      = suggestion.type()
-        //   number    = nextReference.getAndIncrement()
-        //   id        = that number, as a String
-        //   reference = "CLAIM-%d-%d".formatted(Year.now().getValue(), number)
-        //   documents = type.requiredDocuments()
-        //
-        //   build a new Claim(id, reference, type, documents) and hand it to claims.save(...)
-        //
-        //   return a CreatedClaim of:
-        //       id, reference, type.label(),
-        //       the suggestion's confidence and rationale,
-        //       documents,
-        //       ClaimStatus.AWAITING_DOCUMENTS
-        //
-        // Two of those lines are worth more than the typing.
-        //
-        // The no-type branch is the agent being allowed to say "none of these".
-        // NothingWeCoverException becomes a 422 the claimant reads, instead of a claim nobody can
-        // ever settle.
-        //
-        // claims.save(...) is where the model's answer stops being a suggestion and becomes
-        // someone's actual claim, with a reference number they will quote at you. That is the point
-        // of the task.
+        ClaimTypeSuggestion suggestion = classifier.classify(ClaimType.catalog(), description);
+        if (suggestion.type() == null) {
+            throw new NothingWeCoverException(suggestion.rationale());
+        }
+        ClaimType type = suggestion.type();
 
-        throw new TaskNotImplementedException(WorkshopTask.FIRST_AGENT);
+        int number = nextReference.getAndIncrement();
+        String id = String.valueOf(number);
+        String reference = "CLAIM-%d-%d".formatted(Year.now().getValue(), number);
+        List<String> requiredDocuments = type.requiredDocuments();
+
+        Claim theClaim = new Claim(id, reference, type, requiredDocuments);
+        claims.save(theClaim);
+
+        return new CreatedClaim(
+                id,
+                reference,
+                type.label(),
+                suggestion.confidence(),
+                suggestion.rationale(),
+                requiredDocuments,
+                ClaimStatus.AWAITING_DOCUMENTS);
     }
 
     /**
