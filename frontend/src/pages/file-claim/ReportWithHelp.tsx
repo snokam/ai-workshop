@@ -144,14 +144,14 @@ export function ReportWithHelp() {
 
   const helpBody = tooShortToJudge
     ? "A sentence or two: what happened, roughly when, and what was affected."
-    : said ||
-      (judging ? (
-        <Loader />
-      ) : broke === -1 ? (
-        "Keep writing — what happened, roughly when, and what was affected."
-      ) : (
-        fromTheSlots
-      ));
+    : broke !== -1 && missingSlots.length > 0
+      ? fromTheSlots
+      : said ||
+        (judging ? (
+          <Loader />
+        ) : (
+          "Keep writing — what happened, roughly when, and what was affected."
+        ));
 
   const [helpShowing, setHelpShowing] = useState(false);
   useEffect(() => {
