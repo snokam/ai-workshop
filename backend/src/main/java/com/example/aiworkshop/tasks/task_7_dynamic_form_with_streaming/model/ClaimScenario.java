@@ -31,7 +31,11 @@ public enum ClaimScenario {
             List.of(
                     "travel booking confirmation",
                     "cancellation confirmation from the travel operator",
-                    "medical certificate")),
+                    "medical certificate"),
+            List.of(
+                    "the travel dates",
+                    "why the trip could not go ahead",
+                    "roughly what the trip cost")),
 
     TRAVEL_BAGGAGE(
             ClaimType.TRAVEL,
@@ -40,7 +44,11 @@ public enum ClaimScenario {
             List.of(
                     "carrier's baggage report (PIR)",
                     "receipts for the affected items",
-                    "travel booking confirmation")),
+                    "travel booking confirmation"),
+            List.of(
+                    "the flight number",
+                    "what was in the bag",
+                    "roughly what those things were worth")),
 
     TRAVEL_ILLNESS(
             ClaimType.TRAVEL,
@@ -49,7 +57,11 @@ public enum ClaimScenario {
             List.of(
                     "medical certificate from the treating doctor",
                     "receipts for medical expenses",
-                    "travel booking confirmation")),
+                    "travel booking confirmation"),
+            List.of(
+                    "where they were treated",
+                    "what the treatment was for",
+                    "roughly what it cost")),
 
     TRAVEL_THEFT(
             ClaimType.TRAVEL,
@@ -58,7 +70,11 @@ public enum ClaimScenario {
             List.of(
                     "police report from the country it happened in",
                     "receipts or proof of ownership for the stolen items",
-                    "travel booking confirmation")),
+                    "travel booking confirmation"),
+            List.of(
+                    "where it happened",
+                    "what was taken",
+                    "roughly what those things were worth")),
 
     // --- The rest: one general scenario each, mirroring the type's own checklist for now ---------
     HOME_CONTENTS_THEFT(
@@ -68,7 +84,11 @@ public enum ClaimScenario {
             List.of(
                     "police report",
                     "receipts or proof of ownership for the stolen items",
-                    "photos of the damage caused getting in")),
+                    "photos of the damage caused getting in"),
+            List.of(
+                    "how they got in",
+                    "what was taken",
+                    "roughly what those things were worth")),
 
     HOME_CONTENTS_WATER(
             ClaimType.HOME_CONTENTS,
@@ -77,7 +97,11 @@ public enum ClaimScenario {
             List.of(
                     "plumber's report or repair invoice",
                     "photos of the damage",
-                    "receipts or proof of ownership for the affected items")),
+                    "receipts or proof of ownership for the affected items"),
+            List.of(
+                    "where the water came from",
+                    "which rooms were affected",
+                    "roughly what the damage is worth")),
 
     HOME_CONTENTS_FIRE(
             ClaimType.HOME_CONTENTS,
@@ -86,36 +110,58 @@ public enum ClaimScenario {
             List.of(
                     "fire service report",
                     "photos of the damage",
-                    "receipts or proof of ownership for the affected items")),
+                    "receipts or proof of ownership for the affected items"),
+            List.of(
+                    "where the fire started",
+                    "which rooms were affected",
+                    "roughly what the damage is worth")),
 
     DISABILITY_GENERAL(
             ClaimType.DISABILITY,
             "Disability claim",
             "A claim for loss of income after long-term illness or injury reduced the ability to work.",
-            ClaimType.DISABILITY.requiredDocuments()),
+            ClaimType.DISABILITY.requiredDocuments(),
+            List.of(
+                    "when the condition started",
+                    "what work they can no longer do")),
 
     HEALTH_TREATMENT_GENERAL(
             ClaimType.HEALTH_TREATMENT,
             "Health treatment claim",
             "A request to use health or treatment insurance to reach private treatment.",
-            ClaimType.HEALTH_TREATMENT.requiredDocuments()),
+            ClaimType.HEALTH_TREATMENT.requiredDocuments(),
+            List.of(
+                    "what treatment is needed",
+                    "which hospital or clinic",
+                    "roughly what it costs")),
 
     MOTOR_GENERAL(
             ClaimType.MOTOR,
             "Motor claim",
             "Damage to, a collision involving, or theft of a car or other motor vehicle.",
-            ClaimType.MOTOR.requiredDocuments());
+            ClaimType.MOTOR.requiredDocuments(),
+            List.of(
+                    "where the vehicle was",
+                    "the registration number",
+                    "roughly what the repair costs"));
 
     private final ClaimType claimType;
     private final String label;
     private final String description;
     private final List<String> requiredDocuments;
+    private final List<String> factsWorthHaving;
 
-    ClaimScenario(ClaimType claimType, String label, String description, List<String> requiredDocuments) {
+    ClaimScenario(
+            ClaimType claimType,
+            String label,
+            String description,
+            List<String> requiredDocuments,
+            List<String> factsWorthHaving) {
         this.claimType = claimType;
         this.label = label;
         this.description = description;
         this.requiredDocuments = requiredDocuments;
+        this.factsWorthHaving = factsWorthHaving;
     }
 
     /** The {@link ClaimType} a Claim of this scenario is opened as — its label is what handlers see. */
@@ -131,6 +177,18 @@ public enum ClaimScenario {
     /** What the interviewer reads to tell this scenario apart from its siblings. */
     public String description() {
         return description;
+    }
+
+    /**
+     * Facts a person can type, as opposed to documents they have to go and find.
+     *
+     * <p>Separate from {@link #requiredDocuments()} on purpose. The helper in task 7 reads what
+     * somebody is writing and may name one thing still worth adding — and with only a document list
+     * to draw on, it asked for a police report: collected on the next screen, and not something
+     * anybody can type into a box.
+     */
+    public List<String> factsWorthHaving() {
+        return factsWorthHaving;
     }
 
     /** The Required Documents a Claim opened as this scenario is created with. */
@@ -158,7 +216,8 @@ public enum ClaimScenario {
             rendered.append(type.label()).append('\n');
             for (ClaimScenario scenario : scenarios) {
                 rendered.append("  - %s (%s): %s%n".formatted(scenario.name(), scenario.label, scenario.description));
-                rendered.append("      needs: %s%n".formatted(String.join(", ", scenario.requiredDocuments)));
+                rendered.append("      worth asking for: %s%n".formatted(String.join(", ", scenario.factsWorthHaving)));
+                rendered.append("      documents, later: %s%n".formatted(String.join(", ", scenario.requiredDocuments)));
             }
         });
         return rendered.toString().strip();

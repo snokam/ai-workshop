@@ -1153,6 +1153,11 @@ header p.status {
 }
 
 /* Green once there is enough to work with, so the verdict is visible before the sentence is read. */
+.typing-help.working {
+  opacity: 0.55;
+  transition: opacity 120ms ease-in;
+}
+
 .typing-help.ready {
   border-left-color: var(--good-fg);
   background: var(--good-bg);
