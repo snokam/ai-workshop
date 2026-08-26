@@ -30,20 +30,11 @@ whether the description is good enough yet:
 
 The second one turns the bar green.
 
-## Why streaming belongs here and not earlier
+## Why streaming
 
-Streaming only helps when someone is waiting and can still act on what arrives. Most agents answer a
-question that has already been asked, so streaming the reply only changes what the waiting looks
-like. Here the user is still writing, and the feedback lands while the box is in front of them.
-
-Two things that were measured while building this, both worth knowing:
-
-- The first word arrives at +0.35s on the cheap model from task 5. A reasoning model gave its first
-  token after 4.72s, in a single chunk — that is not streaming, it is arriving late.
-- The prompt in [`agent/ClaimFormHelper.java`](./agent/ClaimFormHelper.java) makes the model write
-  down what it found before it is allowed to give a verdict. Asked for the verdict first, it called
-  a complete description incomplete six times out of six, naming different missing details each
-  time — all of them present in the text.
+Streaming sometimes makes sense: instead of waiting for the whole answer, the user sees it forming
+and gets feedback earlier. That is worth it here, because they are still writing and can use the
+feedback while the box is in front of them.
 
 ## Checking it
 
