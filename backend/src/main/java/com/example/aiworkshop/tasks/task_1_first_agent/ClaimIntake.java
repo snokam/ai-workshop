@@ -34,15 +34,16 @@ public class ClaimIntake {
         //   1. ClaimTypeSuggestion suggestion = classifier.classify(ClaimType.catalog(), description)
         //   2. if suggestion.type() is null, throw new NothingWeCoverException(suggestion.rationale())
         //      — the controller turns that into a 422 the claimant reads
-        //   3. take a number from nextReference.getAndIncrement() for the id and the reference
-        //      (the format elsewhere is CLAIM-<year>-<number>, and Year.now().getValue() gives the year)
+        //   3. take a number from nextReference.getAndIncrement(). The id is that number as a string;
+        //      the reference is CLAIM-<year>-<number>, and Year.now().getValue() gives the year
         //   4. type.requiredDocuments() is the checklist that comes with the type
         //   5. new Claim(id, reference, type, requiredDocuments), then claims.save(theClaim)
-        //   6. return a CreatedClaim — read the record for the order of its components; the status of a
-        //      brand-new claim is ClaimStatus.AWAITING_DOCUMENTS, since nothing has arrived yet
+        //   6. return a CreatedClaim: the id, the reference, type.label(), the suggestion's confidence
+        //      and rationale, the documents, and ClaimStatus.AWAITING_DOCUMENTS — the status of a
+        //      brand-new claim, since nothing has arrived yet
         //
-        // Step 4 is where the model's answer stops being a suggestion and becomes the shape of someone's
-        // claim, which is the whole point of the task.
+        // Step 5 is where the model's answer stops being a suggestion and becomes someone's actual
+        // claim, with a reference number they will quote at you. That is the whole point of the task.
 
         throw new TaskNotImplementedException(WorkshopTask.FIRST_AGENT);
     }
