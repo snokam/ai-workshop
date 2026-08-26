@@ -17,6 +17,23 @@ import dev.langchain4j.service.V;
  * <p>The Claimant's own words are the {@link UserMessage}. Nothing else is: the description is
  * untrusted free text, and keeping the catalogue in the system message keeps that text from
  * competing with the instructions for the model's attention.
+ *
+ * <h2>An example</h2>
+ *
+ * Someone types <em>"someone drove into my parked car outside the office"</em>. That sentence is the
+ * user message, the catalogue goes in as {@code {{claimTypes}}}, and the model answers:
+ *
+ * <pre>{@code
+ * new ClaimTypeSuggestion(
+ *         ClaimType.MOTOR,
+ *         MatchConfidence.HIGH,
+ *         "The description involves damage to a motor vehicle.")
+ * }</pre>
+ *
+ * <p>{@code ClaimIntake} then opens a motor claim from that. When nothing in the catalogue fits —
+ * <em>"my crops failed after a drought ruined the harvest"</em> — the type comes back {@code null}
+ * and the rationale is what the person is shown instead of a claim, here <em>"This is not something
+ * we insure."</em> Both of those are real answers from this agent, not invented ones.
  */
 public interface ClaimTypeClassifier {
 
