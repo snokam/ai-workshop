@@ -17,30 +17,29 @@ import java.util.List;
  */
 public record DocumentAnalysis(
 
-        // TODO — task 3, part 1. Write these two.
-        //
-        // A @Description is a prompt: it is the only thing the model is told about a field before it
-        // fills it in. The smallest one that runs:
-        //
-        //   @Description("The kind of document this is.")
-        //
-        // That does fill the field — with a paragraph, where the screen has room for a label. The model
-        // is not being careless; it was never told the field was meant for two words. So the habit is:
-        //
-        //   say what FORM the answer should take, not only what it is about.
-        //
-        // The five fields below these are written for you. Read a couple — they all do the same thing,
-        // and it is the whole of this part.
-        //
-        // Write one, upload assets/receipt.png, and read the card. Then write the other.
-        // DocumentAnalysisTest is red until both are done.
+        @Description("""
+                TODO — task 3, part 1. Write these two, this one first.
 
-        @Description("TODO — the kind of document this is. It goes on a label beside the filename, so"
-                        + " ask for a short noun phrase, e.g. \"invoice\" or \"police report\".")
+                A @Description is a prompt: the only thing the model is told about a field before it
+                fills it in. Say what FORM the answer should take, not only what it is about. The model
+                is not being careless when it writes an essay into a field meant for two words — it was
+                never told.
+
+                The five fields below these are written for you; read a couple. Write one, upload
+                assets/receipt.png and read the card, then write the other. DocumentAnalysisTest is red
+                until both are done.
+
+                This field: the kind of document. It goes on a label beside the filename, so ask for a
+                short noun phrase, e.g. "invoice".
+                """)
                 String category,
-        @Description("TODO — what this document is and what it says. A handler reads it under the label"
-                        + " while skimming a claim, so say how long it should be, and whether it is"
-                        + " about the document or about the claim.")
+        @Description("""
+                TODO — task 3, part 1. The other one.
+
+                What this document is and what it says. A handler reads it under the label while
+                skimming a claim, so say how long it should be, and whether it is about the document or
+                about the claim.
+                """)
                 String summary,
         @Description("The handful of facts a claim handler would care about, as name/value pairs, named"
                         + " in the document's own words rather than translated into ours. There is no"
