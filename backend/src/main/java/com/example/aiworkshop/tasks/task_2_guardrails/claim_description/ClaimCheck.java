@@ -5,21 +5,27 @@ import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 
 /**
- * A model asked one question about the text, before the model that has to act on it.
+ * Asks one yes-or-no question about the text before the classifier ever sees it: is there anything
+ * here to open a claim from?
  *
- * <p>This is an agent guarding an agent, and the shape is worth noticing. The classifier is asked
- * something open — which of these claim types fits? — and it will answer whatever it is given, because
- * that is what it was built to do. Ask it about "hi" and it will pick something, or refuse and say
- * why — either way you have paid for a call to find out there was nothing there.
+ * <p>An agent guarding an agent. The classifier in task 1 is asked an open question — which of these
+ * types fits? — and an open question always gets an answer. This one is asked a single closed
+ * question with no catalogue to choose from, which is a much harder thing to talk round.
  *
- * <p>This one is asked something closed, with one job and no catalogue to choose from: is there
- * anything here to open a claim from? A narrow question is a cheaper question, and it is much harder
- * to talk a model round when there is only one thing to say.
+ * <p>The point is to keep the classifier doing what it is supposed to do. Handed junk, a model still
+ * answers, and it answers confidently — and that answer becomes a claim with a reference number on
+ * it. Stopping it here is what lets everything after this point assume the text it was given was
+ * worth reading.
  *
- * <p>The cost is real and worth saying plainly: this guardrail is not free. A check that counts
- * characters costs nothing when it refuses; this one costs a call to save a call. It is worth it
- * because the call it saves is the more expensive of the two — and because the thing it is judging
- * is a matter of meaning, which nothing cheaper can judge at all.
+ * <h2>An example</h2>
+ *
+ * <pre>{@code
+ * "my kitchen flooded last night" -> new Verdict(true, "")
+ * "hi"                            -> new Verdict(false, "Please tell us more about why you are contacting us.")
+ * }</pre>
+ *
+ * <p>The first goes on to the classifier and comes back a home contents claim. The second never
+ * reaches it, and that sentence is what the person is shown instead.
  */
 public interface ClaimCheck {
 
@@ -28,21 +34,30 @@ public interface ClaimCheck {
             TODO — task 2, part 1. Write the check.
 
             You are writing the system message for a second agent, asked one closed question in front of the
-            first: is there anything here to open a claim from?
+            first: is there anything here to open a claim from? The text itself arrives as the user message,
+            so there is no variable to render — the system message is only the instruction. The smallest one
+            that runs:
 
-              couldOpenAClaimFrom(String description) returns Verdict(boolean couldOpenAClaim, String whatWouldHelp)
+              Decide whether the text is something an insurance company could open a claim from.
+              Answer true or false. When it is false, add one sentence saying what would help.
 
-            Say yes to anything a person might contact an insurer about — a question about a policy, a
-            complaint, something that has gone wrong, something that might become a claim. It does not have to
-            be valid or covered. Deciding what kind of claim it is comes next and is not this agent's job.
+            Start from something like that and it will answer — and it will also turn away anything unusual,
+            because "could open a claim from" reads far stricter than it is meant to. That is the gap the
+            rest of this closes.
 
-            Say no only when there is nothing to work with: an empty box, a greeting, a few characters of
-            nonsense.
+            Yours has to make it:
+              1. say yes to anything a person might contact an insurer about — a question about a policy, a
+                 complaint, something that has gone wrong, something that might become a claim. It does not
+                 have to be valid or covered, and deciding what kind of claim it is comes next
+              2. say no only when there is nothing to work with: an empty box, a greeting, a few characters
+                 of nonsense
+              3. say yes when in doubt. Refusing an unusual claim is far worse than opening one somebody
+                 closes: the second wastes a minute, the first turns a person away
+              4. write whatWouldHelp to the person, in their language — and in English when the text is too
+                 short or garbled to have one. An early version answered "asdf" in Spanish
 
-              - When in doubt, say yes. Refusing an unusual claim is far worse than opening a claim somebody
-                closes: the second wastes a minute, the first turns a person away.
-              - whatWouldHelp is shown to the person, so write it to them, in their language — and in English
-                when the text is too short or garbled to have one. An early version answered "asdf" in Spanish.
+            That is the shape of Verdict, the record it returns. Read it: the @Description on each component
+            is part of the prompt too.
             """)
     @UserMessage("{{it}}")
     Verdict couldOpenAClaimFrom(String description);
