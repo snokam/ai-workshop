@@ -1,4 +1,4 @@
-# Task 3 — Give it a file
+# Task 3 — Reading documents
 
 You write what the model is asked for, and the two lines that hand it the file.
 

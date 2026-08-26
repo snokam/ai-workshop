@@ -1,4 +1,4 @@
-# Task 4 — How would you know?
+# Task 4 — Evaluation
 
 You build the two sets the evaluations run over, then read what they say about the agents you wrote.
 

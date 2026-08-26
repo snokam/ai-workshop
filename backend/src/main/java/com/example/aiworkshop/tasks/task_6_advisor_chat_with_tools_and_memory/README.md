@@ -1,4 +1,4 @@
-# Task 6 — Advisor chat with tools and memory
+# Task 6 — Chat with tools and memory
 
 You write what makes a tool get called, the line that hands the tools over, and the memory that
 makes it a conversation rather than a series of unrelated questions.

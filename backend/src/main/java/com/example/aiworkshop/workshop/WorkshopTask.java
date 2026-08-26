@@ -18,36 +18,36 @@ public enum WorkshopTask {
                     + " and open the claim its answer describes in ClaimIntake."),
     GUARDRAILS(
             2,
-            "Is this even a claim?",
+            "Guardrails",
             "tasks/task_2_guardrails/Guardrails.java",
             "Refuse text nobody could open a claim from, and text that is instructing the system"
                     + " rather than describing a situation, before either reaches the model."),
     DOCUMENT_AGENT(
             3,
-            "Give it a file",
+            "Reading documents",
             "tasks/task_3_document_agent/model/DocumentAnalysis.java",
             "Say what two of the fields mean, then send the file to the model as a file."),
     EVALUATION(
             4,
-            "How would you know?",
+            "Evaluation",
             "tasks/task_4_evaluation/",
             "Build the two sets, then run ./mvnw test -Pevaluate and read what it says about the"
                     + " classifier from task 1 and the guardrails from task 2."),
     CLAIM_SUMMARY_CHOOSING_MODELS(
             5,
-            "Claim summary, and which model each job needs",
+            "Summaries, and choosing a model",
             "tasks/task_5_claim_summary_choosing_models/agent/SummaryConfig.java",
             "Two agents, two jobs of very different difficulty. Decide which model each one needs,"
                     + " and read what the calls cost before you do."),
     ADVISOR_CHAT_WITH_TOOLS_AND_MEMORY(
             6,
-            "Advisor chat with tools and memory",
+            "Chat with tools and memory",
             "tasks/task_6_advisor_chat_with_tools_and_memory/agent/ClaimChatTools.java",
             "Describe two of the tools so the model knows when to reach for them, hand the tools to the"
                     + " agent, and give each claim its own conversation."),
     DYNAMIC_FORM_WITH_STREAMING(
             7,
-            "A dynamic form, and help while you write it",
+            "A form that helps while you write",
             "tasks/task_7_dynamic_form_with_streaming/StreamedHelp.java",
             "Carry a TokenStream to the browser, so somebody filling in the form is helped while they"
                     + " write rather than after they submit.");

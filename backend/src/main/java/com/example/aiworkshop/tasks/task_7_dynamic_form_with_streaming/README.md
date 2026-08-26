@@ -1,4 +1,4 @@
-# Task 7 — A form that asks, and something that reads what you wrote
+# Task 7 — A form that helps while you write
 
 You make feedback arrive beside the box a word at a time, while somebody is still writing in it.
 

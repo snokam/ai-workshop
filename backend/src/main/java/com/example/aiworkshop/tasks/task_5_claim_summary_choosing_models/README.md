@@ -1,4 +1,4 @@
-# Task 5 — Claim summary, and which model each job needs
+# Task 5 — Summaries, and choosing a model
 
 You decide which model does which job, having read what the calls actually cost.
 

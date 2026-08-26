@@ -18,12 +18,12 @@ done yet tells you which file to open.
 | | | what you do |
 |---|---|---|
 | 1 | [Your first agent](./backend/src/main/java/com/example/aiworkshop/tasks/task_1_first_agent/README.md) | Connect to the model, write an agent that reads a sentence, and open the claim it describes. |
-| 2 | [Is this even a claim?](./backend/src/main/java/com/example/aiworkshop/tasks/task_2_guardrails/README.md) | Block text that is not a claim, and text that tries to give the system instructions. |
-| 3 | [Give it a file](./backend/src/main/java/com/example/aiworkshop/tasks/task_3_document_agent/README.md) | Describe the fields you want back, and send the model a PDF or a photo. |
-| 4 | [How would you know?](./backend/src/main/java/com/example/aiworkshop/tasks/task_4_evaluation/README.md) | Build test sets and measure the agents you wrote in tasks 1 and 2. |
-| 5 | [Claim summary, and which model each job needs](./backend/src/main/java/com/example/aiworkshop/tasks/task_5_claim_summary_choosing_models/README.md) | Pick which model each of two agents should use, after seeing what the calls cost. |
-| 6 | [Advisor chat with tools and memory](./backend/src/main/java/com/example/aiworkshop/tasks/task_6_advisor_chat_with_tools_and_memory/README.md) | Describe your tools so the model knows when to use them, and give each claim its own conversation. |
-| 7 | [A dynamic form, and help while you write it](./backend/src/main/java/com/example/aiworkshop/tasks/task_7_dynamic_form_with_streaming/README.md) | Send the model's answer to the browser word by word, while the user is still typing. |
+| 2 | [Guardrails](./backend/src/main/java/com/example/aiworkshop/tasks/task_2_guardrails/README.md) | Block text that is not a claim, and text that tries to give the system instructions. |
+| 3 | [Reading documents](./backend/src/main/java/com/example/aiworkshop/tasks/task_3_document_agent/README.md) | Describe the fields you want back, and send the model a PDF or a photo. |
+| 4 | [Evaluation](./backend/src/main/java/com/example/aiworkshop/tasks/task_4_evaluation/README.md) | Build test sets and measure the agents you wrote in tasks 1 and 2. |
+| 5 | [Summaries, and choosing a model](./backend/src/main/java/com/example/aiworkshop/tasks/task_5_claim_summary_choosing_models/README.md) | Pick which model each of two agents should use, after seeing what the calls cost. |
+| 6 | [Chat with tools and memory](./backend/src/main/java/com/example/aiworkshop/tasks/task_6_advisor_chat_with_tools_and_memory/README.md) | Describe your tools so the model knows when to use them, and give each claim its own conversation. |
+| 7 | [A form that helps while you write](./backend/src/main/java/com/example/aiworkshop/tasks/task_7_dynamic_form_with_streaming/README.md) | Send the model's answer to the browser word by word, while the user is still typing. |
 
 ## Layout
 

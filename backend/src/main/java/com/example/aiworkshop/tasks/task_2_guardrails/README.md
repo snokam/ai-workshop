@@ -1,4 +1,4 @@
-# Task 2 — Is this even a claim?
+# Task 2 — Guardrails
 
 You write two guardrails, and they run before the model does.
 
