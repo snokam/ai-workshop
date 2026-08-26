@@ -30,10 +30,6 @@ frontend/   Vite and React — the two screens
 assets/     files to drag into the app
 ```
 
-The two halves are built and run separately. Maven does not build the frontend and never will:
-Vite proxies `/api` to Spring Boot, so the browser sees a single origin and there is no CORS
-configuration anywhere.
-
 ## Before the day
 
 Four things, and one of them you may already have.
