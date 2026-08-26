@@ -1,6 +1,10 @@
 # Task 5 — Summaries, and choosing a model
 
-You decide which model does which job, having read what the calls actually cost.
+Pick which model each of two agents should use, after seeing what the calls cost.
+
+Not every job needs the same model. You learn to decide by measuring rather than by habit: two
+agents of very different difficulty, two models, and what each call actually costs in time and
+tokens.
 
 ## The part
 

@@ -1,6 +1,10 @@
 # Task 2 — Guardrails
 
-You write two guardrails, and they run before the model does.
+Block text that is not a claim, and text that tries to give the system instructions.
+
+Agents answer whatever they are handed, including things they should refuse. You learn how a
+guardrail stops a call before it reaches the model, and why the check that judges the text is kept
+separate from the guardrail that acts on its verdict.
 
 ## The parts
 

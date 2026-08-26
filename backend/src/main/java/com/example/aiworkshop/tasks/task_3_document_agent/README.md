@@ -1,6 +1,10 @@
 # Task 3 — Reading documents
 
-You write what the model is asked for, and the two lines that hand it the file.
+Describe the fields you want back, and send the model a PDF or a photo.
+
+Models read files, not just text. You learn how to send a PDF or a photograph as itself rather than
+extracting the text first, and how the description on each field of the answer does more work than
+the system message does.
 
 ## The parts
 

@@ -1,6 +1,10 @@
 # Task 4 — Evaluation
 
-You build the two sets the evaluations run over, then read what they say about the agents you wrote.
+Build test sets and measure the agents you wrote in tasks 1 and 2.
+
+A prompt feels right long before it is right. You learn how to tell the difference: a small set of
+examples with known answers, run over the agents you already wrote, and read the rows where the
+agent disagrees with you.
 
 ## The parts
 

@@ -1,7 +1,10 @@
 # Task 6 — Chat with tools and memory
 
-You write what makes a tool get called, the line that hands the tools over, and the memory that
-makes it a conversation rather than a series of unrelated questions.
+Describe your tools so the model knows when to use them, and give each claim its own conversation.
+
+A chat agent that can look things up is worth more than one that can only talk. You learn how a
+tool's description is the thing that makes the model call it, and how memory turns separate
+questions into a conversation.
 
 ## The parts
 

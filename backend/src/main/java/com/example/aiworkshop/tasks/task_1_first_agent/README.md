@@ -1,6 +1,10 @@
 # Task 1 — Your first agent
 
-You write the model itself, an agent that reads a sentence, and the claim its answer opens.
+Connect to the model, write an agent that reads a sentence, and open the claim it describes.
+
+The first time the application talks to a model. You learn how an agent is built in LangChain4j:
+you write an interface and a system message, and the framework generates the implementation. The
+answer comes back as a record, so the rest of the code can branch on it.
 
 ## The parts
 
