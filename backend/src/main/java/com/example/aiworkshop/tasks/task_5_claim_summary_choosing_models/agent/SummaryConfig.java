@@ -28,36 +28,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SummaryConfig {
 
-    // TODO — task 5. Name the model each job runs on.
-    //
-    // Two strings. The whole of the task is which name goes where, and whether you can say why.
-    //
-    //   gemini-2.5-flash-lite   fastest and cheapest. Thinks less, and does not reliably keep a
-    //                           format it was asked for.
-    //   gemini-2.5-flash        what the rest of the workshop runs on. Thinks before it answers.
-    //   gemini-2.5-pro          strongest, slowest, dearest.
-    //
-    // Measured on the status line while this was written:
-    //
-    //   gemini-2.5-flash        2.07s   87 tokens   "The motor claim is awaiting a police report to
-    //                                                proceed."
-    //   gemini-2.5-flash-lite   0.63s   64 tokens   "**Claim:** The motor claim is pending the
-    //                                                arrival of the police report. **Next Move:** ..."
-    //
-    // Three times faster and cheaper, and it ignored "one short sentence" — markdown, two fragments,
-    // in a line that is rendered as plain text. Both halves of that are real: the saving is not
-    // imaginary and neither is the mess. So it is not "use the cheap one where you can". It is: this
-    // job is easy enough for a smaller model IF you can get the format you need out of it. If you
-    // cannot, tighten that agent's prompt until you can, or pay for the better one and know what you
-    // are paying for.
-    //
-    //   cd backend && ./mvnw test -Pevaluate -Dtest=SummaryEvaluation
-    //
-    // prints what each choice cost — in tokens and in money — and scores the summary against a
-    // rubric, so you can tell whether a cheaper model made the answer worse rather than only cheaper.
-    public static final String READING_EVERY_DOCUMENT = "TODO";
+    /**
+     * Reading every document on a claim and holding them against each other is the harder of the two
+     * jobs, so it gets the model that thinks before it answers.
+     */
+    public static final String READING_EVERY_DOCUMENT = "gemini-2.5-flash";
 
-    public static final String WRITING_THE_STATUS_LINE = "TODO";
+    /**
+     * Putting facts somebody else worked out into one sentence is easy enough for the small model —
+     * but only once the prompt is strict enough to hold it there. Left loose it answers in markdown,
+     * in a line that is rendered as plain text.
+     */
+    public static final String WRITING_THE_STATUS_LINE = "gemini-2.5-flash-lite";
+
 
     /**
      * Both agents wait on the one decision, because until it is made there is no model to build them

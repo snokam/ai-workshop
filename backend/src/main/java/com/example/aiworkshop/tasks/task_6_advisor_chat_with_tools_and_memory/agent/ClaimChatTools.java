@@ -44,22 +44,12 @@ public class ClaimChatTools {
         return desk.documentDetail(claimId, filename);
     }
 
-    // TODO — task 6, part 1. Write the two descriptions marked below.
-    //
-    // A @Tool description is a prompt, not documentation. It is the only thing the model reads when it
-    // decides whether to call this method, so it has to answer one question for a reader who has the
-    // claim summary in front of them: when would I need this instead of what I already have?
-    //
-    // The two above are written for you. Notice what they do beyond saying what the tool returns:
-    //
-    //   documentDetail   says when to reach for it ("whenever a question turns on what a document
-    //                    actually says") and what it will not do ("it does not open the file")
-    //   proposeReview    says outright that it performs nothing, because a model that thinks it has
-    //                    acted will tell the handler it has
-    //
-    // For this one: it is the expensive tool. A second agent opens the actual file. Say when that is
-    // worth it and when the cheaper one will do, or it will be called for everything.
-    @Tool("TODO — say what this does, when to use it instead of documentDetail, and what it costs.")
+    @Tool(
+            """
+            Have a second agent open the original file and answer one question about it. Use this when \
+            the extracted facts do not contain what was asked, when the file was judged poor, or when \
+            the claim handler asks you to look again. Slower and dearer than documentDetail, because a \
+            model reads the file — reach for that one first.""")
     String readDocument(
             @ToolMemoryId String claimId,
             @P("The document's filename, exactly as it appears in the claim index.") String filename,
@@ -83,10 +73,11 @@ public class ClaimChatTools {
         return desk.proposeReview(claimId, filename, reason);
     }
 
-    // The second one to write. It reaches a person, eventually — but not by being called. Say what
-    // actually happens when the model calls it, or it will report to the handler that it has already
-    // asked the claimant.
-    @Tool("TODO — say what this does, and be exact about what it does not do.")
+    @Tool(
+            """
+            Suggest asking the claimant for a document. This performs nothing and reaches nobody: it \
+            puts a card in front of the claim handler, and only their click sends it. Do not tell the \
+            handler the claimant has been asked.""")
     ProposalCard proposeDocumentRequest(
             @ToolMemoryId String claimId,
             @P("What to ask the claimant for, in plain language they will understand.") String label,
