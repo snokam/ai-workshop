@@ -1,11 +1,16 @@
 # AI workshop
 
-Upload a document, and an agent reads it: what kind of document it is, the facts worth pulling out
-of it, and whether the file is legible enough to work with.
+Somebody writes, in their own words, what has happened to them. By the end of the day that sentence
+has become an opened insurance claim: sorted into the right kind, its uploaded documents read, its
+summary written, and a claims handler able to ask questions about it and get answers.
 
-**Nothing is finished, and it runs anyway.** The application starts with every agent unwritten:
-each screen works, the controls stay live, and the ones needing a task you have not done say which
-file to open. Seven exercises, in order, each one an agent or the thing that keeps an agent honest.
+You write the agent behind each of those steps, and the things that keep an agent honest — guardrails
+that run before the call, evaluations that tell you whether any of it actually works, a model chosen
+per job rather than by habit, tools, memory, and streaming.
+
+**Nothing is finished, and it runs anyway.** The application starts with every agent unwritten: each
+screen works, the controls stay live, and the ones needing a task you have not done say which file to
+open. Seven exercises, in order.
 
 ## The tasks
 
