@@ -51,7 +51,7 @@ public class SummaryConfig {
     // cannot, tighten that agent's prompt until you can, or pay for the better one and know what you
     // are paying for.
     //
-    //   cd backend && ./mvnw test -Pevaluate
+    //   cd backend && ./mvnw test -Pevaluate -Dtest=SummaryEvaluation
     //
     // prints what each choice cost — in tokens and in money — and scores the summary against a
     // rubric, so you can tell whether a cheaper model made the answer worse rather than only cheaper.

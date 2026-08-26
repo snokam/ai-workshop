@@ -21,8 +21,15 @@ Do them in this order. Each is one file, and the `TODO` at the top of it has the
 cd backend && ./mvnw test -Pevaluate
 ```
 
-That runs both evaluations and nothing else. They are kept out of the ordinary `./mvnw test` because
-they call a real model — a normal test run stays free and needs no credentials.
+That runs every evaluation in the workshop: these two, and task 5's, which says it has nothing to
+judge until task 5 is written. To run one on its own, name it:
+
+```bash
+cd backend && ./mvnw test -Pevaluate -Dtest=GuardrailEvaluation
+```
+
+They are kept out of the ordinary `./mvnw test` because they call a real model — a normal test run
+stays free and needs no credentials.
 
 | Evaluation | Asks about | Set |
 |---|---|---|

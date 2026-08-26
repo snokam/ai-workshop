@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 /**
  * The second evaluation: are the two guardrails you wrote in task 2 any good?
  *
- * <pre>cd backend && ./mvnw test -Pevaluate</pre>
+ * <pre>cd backend && ./mvnw test -Pevaluate -Dtest=GuardrailEvaluation</pre>
  *
  * <p>This runs the real guardrails, in the real order, over {@link GuardrailProbe}. Nothing is
  * mocked: each probe goes to the injection check first and to the claim check second, exactly as an

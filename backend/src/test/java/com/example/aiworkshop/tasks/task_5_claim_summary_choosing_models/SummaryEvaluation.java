@@ -23,7 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * Scoring prose, where there is nothing to compare against — task 5's own evaluation, and a different
  * shape from the two in task 4.
  *
- * <pre>cd backend && ./mvnw test -Pevaluate</pre>
+ * <pre>cd backend && ./mvnw test -Pevaluate -Dtest=SummaryEvaluation</pre>
  *
  * <p>Nobody can write down the correct summary of a claim, so the two techniques before this one are
  * both unavailable. What is left is to write down what a good summary must be true of, and ask each

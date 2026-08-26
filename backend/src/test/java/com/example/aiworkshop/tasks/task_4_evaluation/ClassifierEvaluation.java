@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 /**
  * The first evaluation: is the classifier you wrote in task 1 any good?
  *
- * <pre>cd backend && ./mvnw test -Pevaluate</pre>
+ * <pre>cd backend && ./mvnw test -Pevaluate -Dtest=ClassifierEvaluation</pre>
  *
  * <p>Kept out of the ordinary test run by its tag, because it calls a real model once per row.
  * {@code ./mvnw test} stays free and needs no credentials; this costs about ten calls.

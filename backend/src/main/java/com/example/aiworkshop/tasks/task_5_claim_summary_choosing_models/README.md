@@ -48,12 +48,12 @@ That does not make the cheap one better value. Asked for "one short sentence" it
 markdown, in a line that is rendered as plain text. The saving is real and so is the mess.
 
 ```bash
-cd backend && ./mvnw test -Pevaluate
+cd backend && ./mvnw test -Pevaluate -Dtest=SummaryEvaluation
 ```
 
 scores the summary against the rubric in [`evaluation/`](./evaluation) and prints the cost beside
 the score, which is how you tell whether a cheaper model made the answer worse rather than only
-cheaper.
+cheaper. Drop the `-Dtest` to run every evaluation in the workshop instead.
 
 ## Where everything is
 
