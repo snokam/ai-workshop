@@ -1,12 +1,14 @@
 # AI workshop
 
-Somebody writes, in their own words, what has happened to them. By the end of the day that sentence
-has become an opened insurance claim: sorted into the right kind, its uploaded documents read, its
-summary written, and a claims handler able to ask questions about it and get answers.
+The goal of this workshop is to learn what an LLM feature is made of besides the prompt: how an agent
+is wired up, what keeps it honest, how you find out whether it works at all, and which of the
+decisions are yours rather than the model's. Guardrails, evaluation, choosing a model, tools, memory,
+streaming — one at a time, each with something to show for it on screen.
 
-You write the agent behind each of those steps, and the things that keep an agent honest — guardrails
-that run before the call, evaluations that tell you whether any of it actually works, a model chosen
-per job rather than by habit, tools, memory, and streaming.
+You learn them by building one thing, in Java with LangChain4j. Somebody writes, in their own words,
+what has happened to them, and by the end of the day that sentence has become an opened insurance
+claim: sorted into the right kind, its uploaded documents read, its summary written, and a claims
+handler able to ask questions about it.
 
 **Nothing is finished, and it runs anyway.** The application starts with every agent unwritten: each
 screen works, the controls stay live, and the ones needing a task you have not done say which file to
