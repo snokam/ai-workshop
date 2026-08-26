@@ -2,6 +2,11 @@
 
 Send the model's answer to the browser word by word, while the user is still typing.
 
+The screen does two separate things, and it is worth keeping them apart. **The form is dynamic**: an
+agent reads what the user has written and decides which questions to ask, so the fields are not
+fixed. **The help is streamed**: a second agent judges the description as it is being written and
+answers a word at a time. The first is already built. The second is yours.
+
 ## The part
 
 One file, and the `TODO` in it has the steps.
@@ -17,9 +22,8 @@ own way of going wrong, and the `TODO` names them.
 
 ## What the screen does with it
 
-The form's questions are chosen by an agent that is already written, so there is nothing to do there.
-Your half is the feedback next to the box. It runs 700ms after the user stops typing, and says
-whether the description is good enough yet:
+The feedback runs 700ms after the user stops typing, and says whether the description is good enough
+yet:
 
 > *"my bag is gone"* → It looks like your bag is gone. To help you with your claim, could you please
 > tell me what happened, when it happened, and roughly what it was worth.
