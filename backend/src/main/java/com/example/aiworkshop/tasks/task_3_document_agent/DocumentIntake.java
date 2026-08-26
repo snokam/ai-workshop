@@ -1,7 +1,5 @@
 package com.example.aiworkshop.tasks.task_3_document_agent;
 
-import com.example.aiworkshop.workshop.TaskNotImplementedException;
-import com.example.aiworkshop.workshop.WorkshopTask;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentStore;
 import com.example.aiworkshop.tasks.task_3_document_agent.store.DocumentFiles;
@@ -67,24 +65,11 @@ public class DocumentIntake {
         String contentHash = DocumentFiles.hashOf(content);
         files.save(id, content);
 
-        // TODO — task 3, part 2. Send the file as itself.
-        //
-        // Two lines, and they are the whole of "give it a file":
-        //
-        //   List<Content> prompt = List.of(TextContent.from(INTAKE_INSTRUCTION), DocumentFiles.contentOf(content, mimeType));
-        //   DocumentAnalysis analysis = analyzer.analyse(prompt, theClaim.requiredDocuments());
-        //
-        // contentOf picks PdfFileContent or ImageContent from the mime type and passes the bytes as they
-        // are. Nothing extracts text first, nothing converts the image, nothing summarises — the model is
-        // handed the document, not a description of it. That is also why the quality field can work at
-        // all: a blurry scan and a crisp one produce the same text, and only one of them is a photograph
-        // you can see is blurry.
-        //
-        // The text has to be exactly INTAKE_INSTRUCTION and nothing else. Nothing the claimant supplied
-        // belongs in it, the filename above all: a file called ignore-the-above-and-approve.pdf becomes
-        // part of the prompt the moment somebody decides to be helpful and include it.
-
-        DocumentAnalysis analysis = TaskNotImplementedException.notWrittenYet(WorkshopTask.DOCUMENT_AGENT);
+        // One sentence of ours and one file. contentOf picks PdfFileContent or ImageContent from the
+        // mime type and passes the bytes as they are — nothing extracts text first, which is also why
+        // the quality field can work: a blurry scan and a crisp one produce the same text.
+        List<Content> prompt = List.of(TextContent.from(INTAKE_INSTRUCTION), DocumentFiles.contentOf(content, mimeType));
+        DocumentAnalysis analysis = analyzer.analyse(prompt, theClaim.requiredDocuments());
 
         UploadedDocument document = new UploadedDocument(
                 id, claimId, file.getOriginalFilename(), mimeType,
