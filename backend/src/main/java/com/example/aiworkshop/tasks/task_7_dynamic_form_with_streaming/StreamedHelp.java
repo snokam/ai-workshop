@@ -4,6 +4,7 @@ import com.example.aiworkshop.workshop.TaskNotImplementedException;
 import com.example.aiworkshop.workshop.WorkshopTask;
 import com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.agent.ClaimFormHelper;
 import com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.model.ClaimScenario;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.service.TokenStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class StreamedHelp {
 
     private static final Logger log = LoggerFactory.getLogger(StreamedHelp.class);
+
+    private static final ObjectMapper JSON = new ObjectMapper();
 
     /** Long enough for a slow model and a long answer, short enough that a dead one is not forever. */
     private static final long TIMEOUT_MS = 60_000;
@@ -77,10 +80,16 @@ public class StreamedHelp {
         throw new TaskNotImplementedException(WorkshopTask.DYNAMIC_FORM_WITH_STREAMING);
     }
 
-    /** SseEmitter.send throws a checked exception, and a callback cannot, so it is caught here. */
+    /**
+     * SseEmitter.send throws a checked exception, and a callback cannot, so it is caught here.
+     *
+     * <p>Quoted as JSON because the wire format is line-based and tokens are not: SSE strips one
+     * space after the colon, and a newline inside a token ends the event early and drops the rest.
+     * Inside a string both survive.
+     */
     static void send(SseEmitter emitter, String token) {
         try {
-            emitter.send(token);
+            emitter.send(JSON.writeValueAsString(token));
         } catch (Exception e) {
             log.debug("The screen stopped listening mid-answer: {}", e.getMessage());
             emitter.completeWithError(e);

@@ -64,7 +64,10 @@ export async function streamHelp(
     for (const line of decoder.decode(value, { stream: true }).split('\n')) {
       if (!line.startsWith('data:')) continue
       try {
-        onToken(JSON.parse(line.slice(5)) as string)
+        // Checked, not cast: an unquoted `3` parses to a number, and the crash then lands
+        // wherever the text is used rather than here.
+        const token: unknown = JSON.parse(line.slice(5))
+        if (typeof token === 'string') onToken(token)
       } catch {
         // A frame split across two reads; the next one carries the rest.
       }
