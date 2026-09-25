@@ -7,10 +7,24 @@ import java.util.Map;
 /**
  * What a call costs, so task 5 can print money rather than only tokens.
  *
- * <p>Given. Published prices per million tokens, text input, checked on 26 August 2026 against
- * <a href="https://ai.google.dev/gemini-api/docs/pricing">Google's pricing page</a>. They will go
- * stale — that is why they are in one block with a date on it rather than scattered through the
- * code. If a number here looks wrong, it probably is; go and read the page.
+ * <p>Given. Published prices per million tokens, text input, for the standard global deployment of
+ * each model. They will go stale — that is why they are in one block with a date on it rather than
+ * scattered through the code. If a number here looks wrong, it probably is; go and read the page.
+ *
+ * <p>How firm each number is differs, and it is worth knowing which is which before quoting one:
+ *
+ * <table border="1">
+ *   <caption>where these came from</caption>
+ *   <tr><th>models</th><th>checked</th><th>against</th></tr>
+ *   <tr><td>gemini-*</td><td>26 August 2026</td>
+ *       <td><a href="https://ai.google.dev/gemini-api/docs/pricing">Google's pricing page</a></td></tr>
+ *   <tr><td>gpt-4o, o4-mini</td><td>25 September 2026</td>
+ *       <td>Azure's retail price API, which is the billing meter itself</td></tr>
+ *   <tr><td>gpt-5.6-luna, claude-sonnet-4-6</td><td>25 September 2026</td>
+ *       <td>vendor pricing pages, agreeing with each other</td></tr>
+ *   <tr><td>gpt-5.4-mini</td><td>25 September 2026</td>
+ *       <td>third-party trackers only — Azure publishes no line item. Treat as approximate</td></tr>
+ * </table>
  *
  * <p>The arithmetic in {@link #dollarsFor} is the interesting part, and it is not
  * {@code input + output}. A reasoning model bills its thinking at the <em>output</em> rate, and
@@ -26,7 +40,12 @@ public final class ModelPrices {
     private static final Map<String, Price> PUBLISHED = Map.of(
             "gemini-2.5-flash-lite", new Price(0.10, 0.40),
             "gemini-2.5-flash", new Price(0.30, 2.50),
-            "gemini-2.5-pro", new Price(1.25, 10.00));
+            "gemini-2.5-pro", new Price(1.25, 10.00),
+            "gpt-5.6-luna", new Price(0.20, 1.20),
+            "gpt-5.4-mini", new Price(0.75, 4.50),
+            "o4-mini", new Price(1.10, 4.40),
+            "gpt-4o", new Price(2.50, 10.00),
+            "claude-sonnet-4-6", new Price(3.00, 15.00));
 
     private ModelPrices() {}
 

@@ -3,7 +3,7 @@ package com.example.aiworkshop.workshop;
 import com.example.aiworkshop.tasks.task_1_first_agent.ClaimIntake;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.Claim;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.ClaimTypeClassifier;
-import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiConfig;
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.FoundryConfig;
 import com.example.aiworkshop.tasks.task_3_document_agent.agent.DocumentAnalyzer;
 import com.example.aiworkshop.tasks.task_2_guardrails.Guardrails;
 import com.example.aiworkshop.tasks.task_5_claim_summary_choosing_models.agent.ClaimSummarizer;
@@ -14,7 +14,7 @@ public enum WorkshopTask {
             1,
             "Your first agent",
             "tasks/task_1_first_agent/",
-            "Build the ChatModel in VertexAiConfig, write the @SystemMessage in ClaimTypeClassifier,"
+            "Build the ChatModel in FoundryConfig, write the @SystemMessage in ClaimTypeClassifier,"
                     + " and open the claim its answer describes in ClaimIntake."),
     GUARDRAILS(
             2,

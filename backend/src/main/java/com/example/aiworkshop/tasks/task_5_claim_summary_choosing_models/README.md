@@ -18,13 +18,23 @@ Two agents sit side by side here, and nothing until now has questioned them shar
 | [`ClaimSummarizer`](./agent/ClaimSummarizer.java) | every document on the claim at once | read across them, notice where they disagree, write prose |
 | [`ClaimStatusWriter`](./agent/ClaimStatusWriter.java) | facts already worked out | put them in one sentence |
 
-Both prompts are given. What you write is two strings:
+Both prompts are given. What you write is two strings — the name of a model, one per job.
+
+On **Foundry**, which is what this workshop runs on, five are deployed:
 
 | name | |
 |---|---|
-| `gemini-2.5-flash-lite` | fastest and cheapest. Thinks less, and does not reliably keep a format it was asked for |
-| `gemini-2.5-flash` | what the rest of the workshop runs on. Thinks before it answers |
-| `gemini-2.5-pro` | strongest, slowest, dearest |
+| `gpt-5.4-mini` | fastest and cheapest. Thinks less, and does not reliably keep a format it was asked for |
+| `o4-mini` | small, but reasons before answering — cheap thinking rather than no thinking |
+| `gpt-4o` | no thinking at all, and quick. The one to beat on latency |
+| `gpt-5.6-luna` | what the rest of the workshop runs on |
+| `claude-sonnet-4-6` | a different vendor entirely. Worth trying on the summary, where reading across documents is the job |
+
+On **Vertex**, the three Gemini tiers: `gemini-2.5-flash-lite`, `gemini-2.5-flash`, `gemini-2.5-pro`.
+
+Either vocabulary works on either provider — a name the provider does not serve is resolved to its
+nearest local equivalent. Watch for a `WARN` in the log when that happens: the model that answered
+is not the one you named, and the cost on that line is priced against the name, so it is wrong.
 
 They are built from the name you type, through task 1's
 [`Models`](../task_1_first_agent/agent/Models.java) factory — so trying another is a one-word edit
@@ -43,6 +53,10 @@ status line on gemini-2.5-flash-lite took 574ms, 334 tokens (0 of them thinking)
 
 Fifteen times the cost — and 205 of those tokens are *thinking*: spent, billed at the output rate,
 and invisible in both the prompt and the answer. Any estimate built from what you can see is wrong.
+
+A model with no published price in [`ModelPrices`](./ModelPrices.java) logs `no published price`
+rather than a guess. Time and tokens are measured either way, and the thinking count is the part
+worth looking at.
 
 That does not make the cheap one better value. Asked for "one short sentence" it answers in
 markdown, in a line that is rendered as plain text. The saving is real and so is the mess.

@@ -42,22 +42,17 @@ Four things, and one of them you may already have.
 | Java 25 | `java -version` should say 25. Most machines are still on 17 or 21. |
 | Node 20 or newer | for the frontend |
 | A terminal each | the two halves run separately |
-| Google Cloud credentials | see below — Storebrand developers already have these |
+| An Azure AI Foundry key | handed out at the start of the workshop |
 
-**If you are at Storebrand and use Storecode**, sign in to Claude Code the way you always do. That
-sign-in leaves Application Default Credentials on your machine, which is exactly what this workshop
-authenticates with — so there is nothing else to set up and nothing to paste. Clone, run, and it
-works.
-
-**If you are not**, one command, once:
+The workshop runs on Azure AI Foundry, against the `ai-wshp-p` resource. One environment variable,
+and it is read once at startup — so if you change it, restart the backend:
 
 ```bash
-gcloud auth application-default login
+export AZURE_OPENAI_API_KEY=...        # the key you were given
 ```
 
-Google asks for this again every day or two. When it expires the application says
-`UNAUTHENTICATED: Failed computing credential metadata` — run the command again and **restart the
-backend**, because credentials are read once at startup.
+Nothing else needs setting. The endpoint and the deployment have defaults that point at the right
+resource, and every task picks them up from there.
 
 ## Running it
 
@@ -73,29 +68,32 @@ cd frontend
 npm install && npm run dev
 ```
 
-Then open http://localhost:5173. No environment variables, no API keys: Vertex AI is the default
-and it finds your credentials on its own.
+Then open http://localhost:5173. If the backend starts but every call comes back a 502, the key is
+missing or wrong — that is the only thing that has to be set.
 
 ## Choosing a provider
 
-`aiworkshop.model.provider` picks which `ChatModel` bean is built. Vertex is the default, so the
-only reason to touch this is if you are Snokam staff on Foundry:
+`aiworkshop.model.provider` picks which `ChatModel` bean is built. Foundry is the default and is
+what the tasks are written against. Vertex AI is wired up too, already written, as the demonstration
+that none of the code above the model cares which one it is:
 
 ```bash
 cd backend
-AI_PROVIDER=foundry AZURE_OPENAI_API_KEY=... ./mvnw spring-boot:run
+AI_PROVIDER=vertex ./mvnw spring-boot:run
 ```
 
-Vertex authenticates with Application Default Credentials rather than an API key, and takes the
-project from those same credentials — which is why nothing has to be exported. To bill a different
-project than the one you signed in against, say so:
+Vertex authenticates with Application Default Credentials rather than a key — `gcloud auth
+application-default login` — and takes the project from those same credentials, so nothing has to be
+exported. To bill a different project than the one you signed in against, say so:
 
 ```bash
-GOOGLE_CLOUD_PROJECT=your-project ./mvnw spring-boot:run
+AI_PROVIDER=vertex GOOGLE_CLOUD_PROJECT=your-project ./mvnw spring-boot:run
 ```
 
 Both providers accept PDFs and images as inline data, so uploads are sent to the model as-is —
-nothing extracts text first.
+nothing extracts text first. Model names differ between them, and task 5 is where that shows up:
+a name the running provider does not serve resolves to its nearest local equivalent, with a `WARN`
+in the log saying so.
 
 ## Where everything is
 
@@ -104,7 +102,6 @@ backend/src/main/java/com/example/aiworkshop/
   tasks/task_*/     one folder per task: the agent, the records it answers in, what is kept,
                     and the endpoints the screen calls. The test tree mirrors it.
   workshop/         works out which tasks are done by probing your code, not by reading a flag
-  config/           the Foundry provider, for Snokam staff who use it instead of Vertex
 
 frontend/src/
   pages/            one folder per person: file-claim/ and claim-handler/

@@ -1,15 +1,22 @@
 package com.example.aiworkshop.tasks.task_1_first_agent;
 
-import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiConfig;
-import com.example.aiworkshop.config.FoundryConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.FoundryConfig;
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiConfig;
 import dev.langchain4j.model.chat.ChatModel;
-import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiChatModel;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
+/**
+ * Which provider gets wired, not whether task 1 is written.
+ *
+ * <p>The distinction matters: until {@code FoundryConfig.chatModel} is filled in there is still a
+ * {@code ChatModel} bean, it is just one that refuses to be used. Whether it is a real model is
+ * {@code TaskCompletionTest}'s question. Whether the right config was switched on is this one's.
+ */
 class ProviderSelectionTest {
     private final ApplicationContextRunner runner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(VertexAiConfig.class, FoundryConfig.class))
@@ -22,23 +29,28 @@ class ProviderSelectionTest {
                     "foundry.deployment-name=dummy-deployment");
 
     @Test
-    void foundryProviderContributesOpenAiCompatibleModel() {
-        runner.withPropertyValues("aiworkshop.model.provider=foundry")
+    void foundryIsTheDefaultProvider() {
+        runner.run(context -> assertThat(context)
+                .hasSingleBean(FoundryConfig.class)
+                .doesNotHaveBean(VertexAiConfig.class));
+    }
+
+    @Test
+    void theDefaultProviderStillContributesAChatModel() {
+        runner.run(context -> assertThat(context).hasSingleBean(ChatModel.class));
+    }
+
+    @Test
+    void vertexProviderContributesAGeminiModel() {
+        runner.withPropertyValues("aiworkshop.model.provider=vertex")
                 .run(context -> assertThat(context)
                         .getBean(ChatModel.class)
-                        .isInstanceOf(OpenAiChatModel.class));
+                        .isInstanceOf(VertexAiGeminiChatModel.class));
     }
 
     @Test
-    void foundryProviderExcludesVertexConfig() {
-        runner.withPropertyValues("aiworkshop.model.provider=foundry")
-                .run(context -> assertThat(context).doesNotHaveBean(VertexAiConfig.class));
-    }
-
-    @Test
-    void vertexIsTheDefaultProvider() {
-        runner.run(context -> assertThat(context)
-                .hasSingleBean(VertexAiConfig.class)
-                .doesNotHaveBean(FoundryConfig.class));
+    void vertexProviderExcludesFoundryConfig() {
+        runner.withPropertyValues("aiworkshop.model.provider=vertex")
+                .run(context -> assertThat(context).doesNotHaveBean(FoundryConfig.class));
     }
 }

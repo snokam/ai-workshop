@@ -6,36 +6,65 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiChatModel;
 import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiStreamingChatModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+/**
+ * The other provider, given and already written.
+ *
+ * <p>The workshop runs on Azure AI Foundry, so {@link FoundryConfig} is the one task 1 asks you to
+ * fill in and this is here as the alternative — set {@code aiworkshop.model.provider=vertex} and
+ * everything downstream works unchanged, which is most of the point of building agents against an
+ * interface rather than against a vendor.
+ */
 @Configuration
 @EnableConfigurationProperties(VertexAiProperties.class)
-@ConditionalOnProperty(name = "aiworkshop.model.provider", havingValue = "vertex", matchIfMissing = true)
+@ConditionalOnProperty(name = "aiworkshop.model.provider", havingValue = "vertex")
 public class VertexAiConfig {
+    private static final Logger log = LoggerFactory.getLogger(VertexAiConfig.class);
+
     @Bean(destroyMethod = "close")
     @Primary
     ChatModel chatModel(VertexAiProperties properties) {
-        // TODO — task 1, part 1. Build the model.
-        //
-        // VertexAiGeminiChatModel.builder() is the builder. Every value it needs is already bound in
-        // VertexAiProperties, which is a record beside this file:
-        //
-        //   .project(properties.projectId())        which project to bill and authorise against
-        //   .location(properties.location())        europe-west4 unless something says otherwise
-        //   .modelName(properties.modelName())      gemini-2.5-flash by default
-        //   .temperature(properties.temperature())  .maxOutputTokens(properties.maxOutputTokens())
-        //   .maxRetries(properties.maxRetries())    .logRequests(...) .logResponses(...)
-        //
-        // Use projectId() rather than project(): it falls back to the credentials already on the machine
-        // when GOOGLE_CLOUD_PROJECT is not set, which is why nothing has to be exported.
-        //
-        // Nothing else in the workshop works until this returns a model.
+        return VertexAiGeminiChatModel.builder()
+                .project(properties.projectId())
+                .location(properties.location())
+                .modelName(properties.modelName())
+                .temperature(properties.temperature())
+                .maxOutputTokens(properties.maxOutputTokens())
+                .maxRetries(properties.maxRetries())
+                .logRequests(properties.logRequests())
+                .logResponses(properties.logResponses())
+                .build();
+    }
 
-        return UnfinishedTasks.notWrittenYet(ChatModel.class, WorkshopTask.FIRST_AGENT);
+    /**
+     * The Foundry deployments, each pointed at the closest Gemini tier, so a solution written on
+     * Foundry runs here without being rewritten. The mirror image of {@code FoundryDeployments}.
+     */
+    private static final java.util.Map<String, String> NEAREST_GEMINI = java.util.Map.of(
+            "gpt-5.4-mini", "gemini-2.5-flash-lite",
+            "o4-mini", "gemini-2.5-flash-lite",
+            "gpt-4o", "gemini-2.5-flash",
+            "gpt-5.6-luna", "gemini-2.5-flash",
+            "claude-sonnet-4-6", "gemini-2.5-pro");
+
+    /** The Gemini model to call for this name, warning when it is not the one that was asked for. */
+    private static String geminiFor(String modelName) {
+        String gemini = NEAREST_GEMINI.get(modelName);
+        if (gemini == null) {
+            return modelName;
+        }
+        log.warn(
+                "'{}' is a Foundry deployment, using {} instead — the cost logged for it will be wrong",
+                modelName,
+                gemini);
+        return gemini;
     }
 
     /**
@@ -52,7 +81,7 @@ public class VertexAiConfig {
                 return VertexAiGeminiChatModel.builder()
                         .project(properties.projectId())
                         .location(properties.location())
-                        .modelName(modelName)
+                        .modelName(geminiFor(modelName))
                         .temperature(properties.temperature())
                         .maxOutputTokens(properties.maxOutputTokens())
                         .maxRetries(properties.maxRetries())
@@ -64,7 +93,7 @@ public class VertexAiConfig {
                 return VertexAiGeminiStreamingChatModel.builder()
                         .project(properties.projectId())
                         .location(properties.location())
-                        .modelName(modelName)
+                        .modelName(geminiFor(modelName))
                         .temperature(properties.temperature())
                         .maxOutputTokens(properties.maxOutputTokens())
                         .build();

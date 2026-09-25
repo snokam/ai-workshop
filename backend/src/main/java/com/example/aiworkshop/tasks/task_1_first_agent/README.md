@@ -16,6 +16,6 @@ Do them in this order. Each is one file, and the `TODO` at the top of it has the
 
 | | File | What it is for |
 |---|---|---|
-| 1 | [`agent/VertexAiConfig.java`](./agent/VertexAiConfig.java) | Build the model |
+| 1 | [`agent/FoundryConfig.java`](./agent/FoundryConfig.java) | Build the model |
 | 2 | [`agent/ClaimTypeClassifier.java`](./agent/ClaimTypeClassifier.java) | Write the agent |
 | 3 | [`ClaimIntake.java`](./ClaimIntake.java) | Turn the answer into a claim |

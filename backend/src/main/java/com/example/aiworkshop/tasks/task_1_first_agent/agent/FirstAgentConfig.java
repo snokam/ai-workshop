@@ -13,9 +13,9 @@ import org.springframework.context.annotation.Configuration;
  * Where the SDK is put to work for the first time, and the whole of task 1's wiring.
  *
  * <p>Two halves make an agent. {@link ChatModel} is the connection — which provider, which model,
- * which credentials — and it is built in {@code config/VertexAiConfig} or {@code
- * config/FoundryConfig} from {@code application.properties}, whichever {@code aiworkshop.model
- * .provider} selects. {@link AiServices#create} is the other half: hand it an interface and a
+ * which credentials — and it is built in {@link FoundryConfig} or {@link VertexAiConfig} from
+ * {@code application.properties}, whichever {@code aiworkshop.model.provider} selects.
+ * {@link AiServices#create} is the other half: hand it an interface and a
  * model and it writes the implementation, so nothing in this application ever calls an HTTP API or
  * parses a response.
  *
