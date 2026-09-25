@@ -27,6 +27,12 @@ import org.slf4j.LoggerFactory;
  * <p>The cost of that choice is real: a person wrongly refused here is told nothing that helps them.
  * Which is a reason to keep the check biased towards letting things through, and a reason to read
  * the log.
+ *
+ * <p><b>And it fails closed.</b> The check is a model call, and the input most likely to make it
+ * fail is an attack: Azure's content filter rejects the bluntest injections before {@link
+ * InjectionCheck} sees them, so they arrive here as an exception rather than a verdict. Let that
+ * out and the claimant gets the provider's error JSON, which says their text tripped a jailbreak
+ * filter — the free measurement this class exists to deny them.
  */
 public class PromptInjectionGuardrail implements InputGuardrail {
 
@@ -46,23 +52,30 @@ public class PromptInjectionGuardrail implements InputGuardrail {
 
     @Override
     public InputGuardrailResult validate(UserMessage message) {
-        // TODO — task 2, part 4. Refuse without explaining.
-        //
-        // Steps:
-        //
-        //   1. message.singleText() is what the person typed
-        //   2. InjectionCheck.Verdict verdict = check.looksLikeAnInstruction(...)
-        //   3. if it does not address the system, return success()
-        //   4. otherwise log.warn(...) with verdict.whatItAskedFor(), and return fatal(REFUSAL)
-        //
-        // fatal(...) and success() come from InputGuardrail, which this class implements.
-        //
-        // Return REFUSAL itself, not verdict.whatItAskedFor(). Passing the check's description
-        // through to the screen is the tempting version and it is the wrong one: it turns every
-        // refusal into feedback for whoever is probing, and they are the only person who reads it
-        // carefully. The detail goes to the log instead.
+        String text = message.singleText();
 
-        return success();
+        // An empty box instructs nobody. Let it through to the claim check, which owns "there is
+        // nothing to work with" and says so in words that help.
+        if (text == null || text.isBlank()) {
+            return success();
+        }
+
+        InjectionCheck.Verdict verdict;
+        try {
+            verdict = check.looksLikeAnInstruction(text);
+        } catch (RuntimeException failed) {
+            // The trade: a claimant whose check merely timed out is refused too, and told nothing.
+            // That is the price of not telling an attacker their text is what broke it.
+            log.warn("The injection check could not reach a verdict, so the input was refused", failed);
+            return fatal(REFUSAL);
+        }
+
+        if (!verdict.addressesTheSystem()) {
+            return success();
+        }
+
+        log.warn("Refused an input addressed to the system: {}", verdict.whatItAskedFor());
+        return fatal(REFUSAL);
     }
 
     @Override
