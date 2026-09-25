@@ -2,6 +2,8 @@ package com.example.aiworkshop.tasks.task_1_first_agent.agent;
 
 import com.example.aiworkshop.workshop.UnfinishedTasks;
 import com.example.aiworkshop.workshop.WorkshopTask;
+import dev.langchain4j.model.anthropic.AnthropicChatModel;
+import dev.langchain4j.model.anthropic.AnthropicStreamingChatModel;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import org.springframework.context.annotation.Primary;
@@ -49,18 +51,38 @@ public class FoundryConfig {
     /**
      * Builds a model by name, for the two tasks that need one other than the default.
      *
-     * <p>Several models are deployed here, so task 5's choice is a real one. A name that is not
-     * one of them is an error rather than a near-enough substitute — see {@link FoundryDeployments}.
+     * <p>Several models are deployed here, so task 5's choice is a real one. A name that is not one
+     * of them is an error rather than a near-enough substitute — see {@link FoundryDeployments}.
+     *
+     * <p>And one of them is not served by the endpoint the rest of them are. Foundry puts two APIs on
+     * the one resource: {@code /openai/v1}, which the GPT deployments answer on, and
+     * {@code /anthropic/v1}, which is where the Claude deployment lives. Asking for
+     * {@code claude-sonnet-4-6} over the OpenAI path returns
+     * {@code 404 api_not_supported} — the deployment exists, the protocol does not. So the name
+     * decides the client as well as the model, and everything above this line is unaware of it.
      */
     @Bean
     Models models(FoundryProperties properties) {
         return new Models() {
             @Override
             public ChatModel named(String modelName) {
+                String name = FoundryDeployments.require(modelName);
+                if (FoundryDeployments.speaksAnthropic(name)) {
+                    return AnthropicChatModel.builder()
+                            .baseUrl(properties.anthropicEndpoint())
+                            .apiKey(properties.apiKey())
+                            .modelName(name)
+                            .maxTokens(properties.maxCompletionTokens())
+                            .timeout(properties.timeout())
+                            .maxRetries(properties.maxRetries())
+                            .logRequests(properties.logRequests())
+                            .logResponses(properties.logResponses())
+                            .build();
+                }
                 return OpenAiChatModel.builder()
                         .baseUrl(properties.endpoint())
                         .apiKey(properties.apiKey())
-                        .modelName(FoundryDeployments.require(modelName))
+                        .modelName(name)
                         .maxCompletionTokens(properties.maxCompletionTokens())
                         .timeout(properties.timeout())
                         .maxRetries(properties.maxRetries())
@@ -69,10 +91,22 @@ public class FoundryConfig {
 
             @Override
             public StreamingChatModel streamingNamed(String modelName) {
+                String name = FoundryDeployments.require(modelName);
+                if (FoundryDeployments.speaksAnthropic(name)) {
+                    return AnthropicStreamingChatModel.builder()
+                            .baseUrl(properties.anthropicEndpoint())
+                            .apiKey(properties.apiKey())
+                            .modelName(name)
+                            .maxTokens(properties.maxCompletionTokens())
+                            .timeout(properties.timeout())
+                            .logRequests(properties.logRequests())
+                            .logResponses(properties.logResponses())
+                            .build();
+                }
                 return OpenAiStreamingChatModel.builder()
                         .baseUrl(properties.endpoint())
                         .apiKey(properties.apiKey())
-                        .modelName(FoundryDeployments.require(modelName))
+                        .modelName(name)
                         .timeout(properties.timeout())
                         .logRequests(properties.logRequests())
                         .logResponses(properties.logResponses())

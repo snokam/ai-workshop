@@ -31,4 +31,17 @@ public final class FoundryDeployments {
         throw new IllegalArgumentException("'%s' is not deployed on Foundry. Deployed: %s"
                 .formatted(modelName, DEPLOYED.stream().sorted().toList()));
     }
+
+    /**
+     * Whether this deployment answers on the Anthropic Messages API rather than the OpenAI one.
+     *
+     * <p>Foundry puts both on the one resource and the one key: the GPT deployments are served from
+     * {@code /openai/v1}, the Claude deployment from {@code /anthropic/v1}. Asking for Claude over
+     * the OpenAI path gets {@code 404 api_not_supported}, which reads like a missing deployment and
+     * is not one — the model is there, the protocol is not. {@code FoundryConfig} picks the client
+     * from the name so nothing above it has to know.
+     */
+    public static boolean speaksAnthropic(String modelName) {
+        return modelName.startsWith("claude-");
+    }
 }

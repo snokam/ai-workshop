@@ -30,6 +30,12 @@ On **Foundry**, which is what this workshop runs on, five are deployed:
 | `gpt-5.6-luna` | what the rest of the workshop runs on |
 | `claude-sonnet-4-6` | a different vendor entirely. Worth trying on the summary, where reading across documents is the job |
 
+`claude-sonnet-4-6` is on the same resource and the same key as the other four, and is *not* on the
+same API: Foundry serves the GPT deployments from `/openai/v1` and Claude from `/anthropic/v1`.
+Asking for it through the first returns `404 api_not_supported`, which reads like a missing
+deployment and is not one — the model is there, the protocol is not. Task 1's `FoundryConfig` picks
+the client from the name, so typing it here is all you have to do.
+
 On **Vertex**, the three Gemini tiers: `gemini-2.5-flash-lite`, `gemini-2.5-flash`, `gemini-2.5-pro`.
 
 The two vocabularies are not interchangeable. Naming a Gemini model while running on Foundry fails

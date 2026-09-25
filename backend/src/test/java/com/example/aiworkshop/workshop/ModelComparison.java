@@ -1,6 +1,7 @@
 package com.example.aiworkshop.workshop;
 
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.ClaimTypeClassifier;
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.FoundryDeployments;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.FoundryProperties;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiProperties;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimType;
@@ -194,14 +195,25 @@ class ModelComparison {
                 if (foundry == null) {
                     throw new IllegalStateException("run with AI_PROVIDER=foundry and AZURE_OPENAI_API_KEY set");
                 }
-                yield OpenAiChatModel.builder()
-                        .baseUrl(foundry.endpoint())
-                        .apiKey(foundry.apiKey())
-                        .modelName(candidate.modelName())
-                        .maxCompletionTokens(16384)
-                        .timeout(Duration.ofSeconds(180))
-                        .maxRetries(1)
-                        .build();
+                // Claude is on the same resource and the same key, and not on the same API — see
+                // FoundryDeployments.speaksAnthropic.
+                yield FoundryDeployments.speaksAnthropic(candidate.modelName())
+                        ? AnthropicChatModel.builder()
+                                .baseUrl(foundry.anthropicEndpoint())
+                                .apiKey(foundry.apiKey())
+                                .modelName(candidate.modelName())
+                                .maxTokens(16384)
+                                .timeout(Duration.ofSeconds(180))
+                                .maxRetries(1)
+                                .build()
+                        : OpenAiChatModel.builder()
+                                .baseUrl(foundry.endpoint())
+                                .apiKey(foundry.apiKey())
+                                .modelName(candidate.modelName())
+                                .maxCompletionTokens(16384)
+                                .timeout(Duration.ofSeconds(180))
+                                .maxRetries(1)
+                                .build();
             }
             case VERTEX -> {
                 if (vertex == null) {

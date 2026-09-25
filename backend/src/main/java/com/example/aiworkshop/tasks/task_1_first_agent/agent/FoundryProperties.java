@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 @ConfigurationProperties(prefix = "foundry")
 public record FoundryProperties(
         String endpoint,
+        String anthropicEndpoint,
         String apiKey,
         String deploymentName,
         @DefaultValue("gpt-5.4-mini") String cheaperDeploymentName,

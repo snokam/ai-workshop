@@ -64,16 +64,17 @@
             <artifactId>langchain4j-vertex-ai-gemini</artifactId>
         </dependency>
 
-        <!-- Azure AI Foundry: the /openai/v1 endpoint is OpenAI-compatible -->
+        <!-- Azure AI Foundry, which serves two APIs from the one resource. Its OpenAI-compatible
+             /openai/v1 endpoint covers the GPT deployments; the Claude deployment is only reachable
+             over the native Anthropic Messages API at /anthropic/v1, so both clients are needed. -->
         <dependency>
             <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-anthropic</artifactId>
-            <scope>test</scope>
+            <artifactId>langchain4j-open-ai</artifactId>
         </dependency>
 
         <dependency>
             <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-open-ai</artifactId>
+            <artifactId>langchain4j-anthropic</artifactId>
         </dependency>
 
         <!-- EXIF and friends, for the fraud check that asks where an image came from -->
