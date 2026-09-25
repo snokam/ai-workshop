@@ -32,9 +32,10 @@ On **Foundry**, which is what this workshop runs on, five are deployed:
 
 On **Vertex**, the three Gemini tiers: `gemini-2.5-flash-lite`, `gemini-2.5-flash`, `gemini-2.5-pro`.
 
-Either vocabulary works on either provider — a name the provider does not serve is resolved to its
-nearest local equivalent. Watch for a `WARN` in the log when that happens: the model that answered
-is not the one you named, and the cost on that line is priced against the name, so it is wrong.
+The two vocabularies are not interchangeable. Naming a Gemini model while running on Foundry fails
+at startup with a list of what *is* deployed, rather than quietly running something near enough —
+because the cost printed beside each call is looked up by the name you typed, and a substitution
+would print a real-looking number for a model that never ran.
 
 They are built from the name you type, through task 1's
 [`Models`](../task_1_first_agent/agent/Models.java) factory — so trying another is a one-word edit

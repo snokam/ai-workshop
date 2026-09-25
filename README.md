@@ -92,8 +92,7 @@ AI_PROVIDER=vertex GOOGLE_CLOUD_PROJECT=your-project ./mvnw spring-boot:run
 
 Both providers accept PDFs and images as inline data, so uploads are sent to the model as-is —
 nothing extracts text first. Model names differ between them, and task 5 is where that shows up:
-a name the running provider does not serve resolves to its nearest local equivalent, with a `WARN`
-in the log saying so.
+naming one provider's model while running the other is an error, not a substitution.
 
 ## Where everything is
 

@@ -31,18 +31,25 @@ public class SummaryConfig {
     // TODO — task 5. Name the model each job runs on.
     //
     // Two strings. The whole of the task is which name goes where, and whether you can say why.
+    // These five are deployed on the Foundry resource the workshop runs on:
     //
-    //   gemini-2.5-flash-lite   fastest and cheapest. Thinks less, and does not reliably keep a
-    //                           format it was asked for.
-    //   gemini-2.5-flash        what the rest of the workshop runs on. Thinks before it answers.
-    //   gemini-2.5-pro          strongest, slowest, dearest.
+    //   gpt-5.4-mini       fastest and cheapest. Thinks less, and does not reliably keep a format
+    //                      it was asked for.
+    //   o4-mini            small, but reasons before answering — cheap thinking rather than none.
+    //   gpt-4o             no thinking at all, and quick. The one to beat on latency.
+    //   gpt-5.6-luna       what the rest of the workshop runs on. Thinks before it answers.
+    //   claude-sonnet-4-6  a different vendor entirely. Worth trying on the summary, where reading
+    //                      across documents is the job.
+    //
+    // A name that is not one of those five is an error at startup rather than a substitution, and
+    // Gemini names belong to the other provider — see FoundryDeployments, beside task 1's config.
     //
     // Measured on the status line while this was written:
     //
-    //   gemini-2.5-flash        2.07s   87 tokens   "The motor claim is awaiting a police report to
-    //                                                proceed."
-    //   gemini-2.5-flash-lite   0.63s   64 tokens   "**Claim:** The motor claim is pending the
-    //                                                arrival of the police report. **Next Move:** ..."
+    //   the thinking model     2.07s   87 tokens   "The motor claim is awaiting a police report to
+    //                                               proceed."
+    //   the smallest one       0.63s   64 tokens   "**Claim:** The motor claim is pending the
+    //                                               arrival of the police report. **Next Move:** ..."
     //
     // Three times faster and cheaper, and it ignored "one short sentence" — markdown, two fragments,
     // in a line that is rendered as plain text. Both halves of that are real: the saving is not
@@ -50,6 +57,10 @@ public class SummaryConfig {
     // job is easy enough for a smaller model IF you can get the format you need out of it. If you
     // cannot, tighten that agent's prompt until you can, or pay for the better one and know what you
     // are paying for.
+    //
+    // And check the price rather than assuming it from the name: gpt-4o is the oldest and smallest
+    // sounding of the five and is twelve times the input price of gpt-5.6-luna. ModelPrices, in this
+    // package, has the table.
     //
     //   cd backend && ./mvnw test -Pevaluate -Dtest=SummaryEvaluation
     //

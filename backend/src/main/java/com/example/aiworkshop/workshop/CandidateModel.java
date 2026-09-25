@@ -17,22 +17,41 @@ import java.util.List;
 public record CandidateModel(String label, Provider provider, String modelName, String note) {
 
     public enum Provider {
+        FOUNDRY,
         VERTEX,
         ANTHROPIC
     }
 
+    /**
+     * A candidate needs credentials for its provider to be checked at all. The ones it does not have
+     * are reported as unavailable rather than failing the run, so this is worth running with whatever
+     * is to hand.
+     */
     public static List<CandidateModel> all() {
         return List.of(
+                new CandidateModel(
+                        "gpt-5.6-luna",
+                        Provider.FOUNDRY,
+                        "gpt-5.6-luna",
+                        "What the workshop is written against, and what the room will use."),
+                new CandidateModel(
+                        "gpt-5.4-mini",
+                        Provider.FOUNDRY,
+                        "gpt-5.4-mini",
+                        "The smallest deployment. Task 7 streams from it, so it has to manage the"
+                                + " three capabilities too, not only be quick."),
+                new CandidateModel(
+                        "claude-sonnet-4-6",
+                        Provider.FOUNDRY,
+                        "claude-sonnet-4-6",
+                        "A different family altogether, on the same resource. If the workshop holds on"
+                                + " both, it is the prompts and the records doing the work rather than"
+                                + " one vendor's habits."),
                 new CandidateModel(
                         "gemini-2.5-flash",
                         Provider.VERTEX,
                         "gemini-2.5-flash",
-                        "What the workshop is written against, and what the room will use."),
-                new CandidateModel(
-                        "claude-sonnet-4-5",
-                        Provider.ANTHROPIC,
-                        "claude-sonnet-4-5",
-                        "A different family altogether. If the workshop holds on both, it is the"
-                                + " prompts and the records doing the work rather than one vendor's habits."));
+                        "The other provider entirely, for a room that has Google Cloud rather than"
+                                + " Azure. Needs gcloud credentials."));
     }
 }

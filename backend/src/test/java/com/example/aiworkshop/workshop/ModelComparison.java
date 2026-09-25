@@ -1,6 +1,7 @@
 package com.example.aiworkshop.workshop;
 
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.ClaimTypeClassifier;
+import com.example.aiworkshop.tasks.task_1_first_agent.agent.FoundryProperties;
 import com.example.aiworkshop.tasks.task_1_first_agent.agent.VertexAiProperties;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimType;
 import com.example.aiworkshop.tasks.task_1_first_agent.model.ClaimTypeSuggestion;
@@ -13,6 +14,7 @@ import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
+import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiChatModel;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.SystemMessage;
@@ -61,8 +63,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 @Tag("portability")
 class ModelComparison {
 
-    /** The same settings the application runs on, including how it finds the project. */
-    @Autowired
+    /**
+     * The same settings the application runs on. Only one of the two providers is configured at a
+     * time — the other's properties are never bound — so both are optional and a candidate whose
+     * provider is not the active one reports itself unavailable rather than failing the run.
+     */
+    @Autowired(required = false)
+    private FoundryProperties foundry;
+
+    @Autowired(required = false)
     private VertexAiProperties vertex;
 
     @Test
@@ -181,14 +190,32 @@ class ModelComparison {
 
     private ChatModel build(CandidateModel candidate) {
         return switch (candidate.provider()) {
-            case VERTEX -> VertexAiGeminiChatModel.builder()
-                    .project(vertex.projectId())
-                    .location(vertex.location())
-                    .modelName(candidate.modelName())
-                    .temperature(0.2f)
-                    .maxOutputTokens(16384)
-                    .maxRetries(1)
-                    .build();
+            case FOUNDRY -> {
+                if (foundry == null) {
+                    throw new IllegalStateException("run with AI_PROVIDER=foundry and AZURE_OPENAI_API_KEY set");
+                }
+                yield OpenAiChatModel.builder()
+                        .baseUrl(foundry.endpoint())
+                        .apiKey(foundry.apiKey())
+                        .modelName(candidate.modelName())
+                        .maxCompletionTokens(16384)
+                        .timeout(Duration.ofSeconds(180))
+                        .maxRetries(1)
+                        .build();
+            }
+            case VERTEX -> {
+                if (vertex == null) {
+                    throw new IllegalStateException("run with AI_PROVIDER=vertex and gcloud credentials present");
+                }
+                yield VertexAiGeminiChatModel.builder()
+                        .project(vertex.projectId())
+                        .location(vertex.location())
+                        .modelName(candidate.modelName())
+                        .temperature(0.2f)
+                        .maxOutputTokens(16384)
+                        .maxRetries(1)
+                        .build();
+            }
             case ANTHROPIC -> anthropicOrNull(candidate);
         };
     }

@@ -7,8 +7,6 @@ import dev.langchain4j.model.chat.StreamingChatModel;
 import org.springframework.context.annotation.Primary;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +16,6 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(FoundryProperties.class)
 @ConditionalOnProperty(name = "aiworkshop.model.provider", havingValue = "foundry", matchIfMissing = true)
 public class FoundryConfig {
-    private static final Logger log = LoggerFactory.getLogger(FoundryConfig.class);
-
     @Bean
     @Primary
     ChatModel chatModel(FoundryProperties properties) {
@@ -53,8 +49,8 @@ public class FoundryConfig {
     /**
      * Builds a model by name, for the two tasks that need one other than the default.
      *
-     * <p>Several models are deployed here, so task 5's choice is a real one — see {@link
-     * FoundryDeployments} for the names it can be given.
+     * <p>Several models are deployed here, so task 5's choice is a real one. A name that is not
+     * one of them is an error rather than a near-enough substitute — see {@link FoundryDeployments}.
      */
     @Bean
     Models models(FoundryProperties properties) {
@@ -64,7 +60,7 @@ public class FoundryConfig {
                 return OpenAiChatModel.builder()
                         .baseUrl(properties.endpoint())
                         .apiKey(properties.apiKey())
-                        .modelName(deploymentFor(modelName, properties))
+                        .modelName(FoundryDeployments.require(modelName))
                         .maxCompletionTokens(properties.maxCompletionTokens())
                         .timeout(properties.timeout())
                         .maxRetries(properties.maxRetries())
@@ -76,35 +72,17 @@ public class FoundryConfig {
                 return OpenAiStreamingChatModel.builder()
                         .baseUrl(properties.endpoint())
                         .apiKey(properties.apiKey())
-                        .modelName(deploymentFor(modelName, properties))
+                        .modelName(FoundryDeployments.require(modelName))
                         .timeout(properties.timeout())
                         .logRequests(properties.logRequests())
                         .logResponses(properties.logResponses())
                         .build();
             }
-        };
-    }
 
-    /**
-     * Which deployment a requested name lands on, said out loud whenever it is not the one asked
-     * for — because the cost logged beside the answer is priced against the name, not the
-     * deployment.
-     */
-    private static String deploymentFor(String modelName, FoundryProperties properties) {
-        String deployment = FoundryDeployments.resolve(modelName);
-        if (deployment == null) {
-            log.warn(
-                    "'{}' is not deployed on Foundry, using {} instead — the cost logged for it will be wrong",
-                    modelName,
-                    properties.deploymentName());
-            return properties.deploymentName();
-        }
-        if (!deployment.equals(modelName)) {
-            log.warn(
-                    "'{}' is a Vertex model, using {} instead — the cost logged for it will be wrong",
-                    modelName,
-                    deployment);
-        }
-        return deployment;
+            @Override
+            public String fastest() {
+                return FoundryDeployments.require(properties.cheaperDeploymentName());
+            }
+        };
     }
 }

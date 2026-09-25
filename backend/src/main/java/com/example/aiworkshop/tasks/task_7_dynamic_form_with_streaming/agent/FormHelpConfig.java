@@ -29,19 +29,21 @@ class FormHelpConfig {
     }
 
     /**
-     * The model this task streams from, and the smallest one on purpose.
+     * The other agent streams, and runs on the smallest model the provider has on purpose.
      *
      * <p>A reasoning model thinks before it writes, so it emits nothing for seconds and then the whole
-     * answer at once — measured here, gemini-2.5-flash gave its first token after 4.72s in a single
-     * chunk, and this one started in 0.44s across four. On a stronger model this feature would not be
-     * streaming, it would be arriving late.
+     * answer at once — measured here, a thinking model gave its first token after 4.72s in a single
+     * chunk, and the small one started in 0.44s across four. On a stronger model this feature would
+     * not be streaming, it would be arriving late.
+     *
+     * <p>Hence {@link Models#fastest()} rather than a name typed here: which model that is depends on
+     * the provider, and this task's point is the streaming, not the choice. Task 5 is where you type
+     * the name yourself.
      */
-    static final String FOR_STREAMING = "gemini-2.5-flash-lite";
-
     @Bean
     ClaimFormHelper claimFormHelper(Models models) {
         return AiServices.builder(ClaimFormHelper.class)
-                .streamingChatModel(models.streamingNamed(FOR_STREAMING))
+                .streamingChatModel(models.streamingNamed(models.fastest()))
                 .build();
     }
 }

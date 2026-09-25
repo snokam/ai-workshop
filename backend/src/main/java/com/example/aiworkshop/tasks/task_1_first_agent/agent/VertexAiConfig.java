@@ -6,8 +6,6 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiChatModel;
 import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiStreamingChatModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -26,8 +24,6 @@ import org.springframework.context.annotation.Primary;
 @EnableConfigurationProperties(VertexAiProperties.class)
 @ConditionalOnProperty(name = "aiworkshop.model.provider", havingValue = "vertex")
 public class VertexAiConfig {
-    private static final Logger log = LoggerFactory.getLogger(VertexAiConfig.class);
-
     @Bean(destroyMethod = "close")
     @Primary
     ChatModel chatModel(VertexAiProperties properties) {
@@ -44,30 +40,6 @@ public class VertexAiConfig {
     }
 
     /**
-     * The Foundry deployments, each pointed at the closest Gemini tier, so a solution written on
-     * Foundry runs here without being rewritten. The mirror image of {@code FoundryDeployments}.
-     */
-    private static final java.util.Map<String, String> NEAREST_GEMINI = java.util.Map.of(
-            "gpt-5.4-mini", "gemini-2.5-flash-lite",
-            "o4-mini", "gemini-2.5-flash-lite",
-            "gpt-4o", "gemini-2.5-flash",
-            "gpt-5.6-luna", "gemini-2.5-flash",
-            "claude-sonnet-4-6", "gemini-2.5-pro");
-
-    /** The Gemini model to call for this name, warning when it is not the one that was asked for. */
-    private static String geminiFor(String modelName) {
-        String gemini = NEAREST_GEMINI.get(modelName);
-        if (gemini == null) {
-            return modelName;
-        }
-        log.warn(
-                "'{}' is a Foundry deployment, using {} instead — the cost logged for it will be wrong",
-                modelName,
-                gemini);
-        return gemini;
-    }
-
-    /**
      * Builds a model by name for the two tasks that need one other than the default.
      *
      * <p>Given, and deliberately thin: it is the same builder as above with the name passed in. Task
@@ -81,7 +53,7 @@ public class VertexAiConfig {
                 return VertexAiGeminiChatModel.builder()
                         .project(properties.projectId())
                         .location(properties.location())
-                        .modelName(geminiFor(modelName))
+                        .modelName(modelName)
                         .temperature(properties.temperature())
                         .maxOutputTokens(properties.maxOutputTokens())
                         .maxRetries(properties.maxRetries())
@@ -93,10 +65,15 @@ public class VertexAiConfig {
                 return VertexAiGeminiStreamingChatModel.builder()
                         .project(properties.projectId())
                         .location(properties.location())
-                        .modelName(geminiFor(modelName))
+                        .modelName(modelName)
                         .temperature(properties.temperature())
                         .maxOutputTokens(properties.maxOutputTokens())
                         .build();
+            }
+
+            @Override
+            public String fastest() {
+                return properties.cheaperModelName();
             }
         };
     }

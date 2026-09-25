@@ -11,10 +11,12 @@ import dev.langchain4j.model.chat.StreamingChatModel;
  * which needs a streaming model rather than a stronger one.
  *
  * <p>It is an interface because there are two providers, each with its own model names — Gemini
- * tiers on Vertex, deployment names on Foundry. Either vocabulary works on either provider: a name
- * the provider does not serve is resolved to its nearest local equivalent, and the substitution is
- * logged as a warning, because the cost printed beside the answer is priced against the name that
- * was asked for.
+ * tiers on Vertex, deployment names on Foundry. The names are not interchangeable, and asking one
+ * provider for the other's model is an error rather than a near-enough substitution.
+ *
+ * <p>Which is why {@link #fastest()} is here at all. Task 5 asks you to type a model name, so it
+ * has to know which provider it is running on. Task 7 does not care what the model is called, only
+ * that it is small enough to stream usefully, so it asks the provider instead of naming one.
  */
 public interface Models {
 
@@ -23,4 +25,7 @@ public interface Models {
 
     /** The same, for an agent whose method returns a {@code TokenStream}. */
     StreamingChatModel streamingNamed(String modelName);
+
+    /** The name of the smallest model this provider serves. What task 7 streams from. */
+    String fastest();
 }
