@@ -1,7 +1,5 @@
 package com.example.aiworkshop.tasks.task_1_first_agent.agent;
 
-import com.example.aiworkshop.workshop.UnfinishedTasks;
-import com.example.aiworkshop.workshop.WorkshopTask;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
 import dev.langchain4j.model.anthropic.AnthropicStreamingChatModel;
 import dev.langchain4j.model.chat.ChatModel;
@@ -21,31 +19,25 @@ public class FoundryConfig {
     @Bean
     @Primary
     ChatModel chatModel(FoundryProperties properties) {
-        // TODO — task 1, part 1. Build the model.
-        //
-        // Foundry speaks the OpenAI API, so the builder is OpenAiChatModel.builder() rather than
-        // anything Azure-branded. Every value it needs is already bound in FoundryProperties, which
-        // is a record beside this file:
-        //
-        //   .baseUrl(properties.endpoint())          the /openai/v1 endpoint on the resource
-        //   .apiKey(properties.apiKey())             from AZURE_OPENAI_API_KEY
-        //   .modelName(properties.deploymentName())  the deployment, not the model family
-        //   .maxCompletionTokens(properties.maxCompletionTokens())
-        //   .timeout(properties.timeout())           .maxRetries(properties.maxRetries())
-        //   .logRequests(...)                        .logResponses(...)
-        //
-        // modelName is the deployment name, which is the one that trips people up: on Foundry you
-        // deploy a model under a name of your choosing, and that name is what the API wants. Ours
-        // happen to match the model they serve, which hides the distinction until it bites.
-        //
-        // Leave temperature alone unless properties.temperature() is set — a reasoning model
-        // rejects the request outright if it is given one, so it is null by default:
-        //
-        //   if (properties.temperature() != null) { builder.temperature(properties.temperature()); }
-        //
-        // Nothing else in the workshop works until this returns a model.
+        OpenAiChatModel.OpenAiChatModelBuilder builder = OpenAiChatModel.builder()
+                .baseUrl(properties.endpoint())
+                .apiKey(properties.apiKey())
+                // The deployment name, not the model family. On Foundry you deploy a model under a
+                // name of your choosing and that name is what the API wants; ours happen to match
+                // the model they serve, which hides the distinction until it bites.
+                .modelName(properties.deploymentName())
+                .maxCompletionTokens(properties.maxCompletionTokens())
+                .timeout(properties.timeout())
+                .maxRetries(properties.maxRetries())
+                .logRequests(properties.logRequests())
+                .logResponses(properties.logResponses());
 
-        return UnfinishedTasks.notWrittenYet(ChatModel.class, WorkshopTask.FIRST_AGENT);
+        // Only when one is configured. A reasoning model rejects the request outright if it is
+        // given a temperature, so the default is to say nothing about it at all.
+        if (properties.temperature() != null) {
+            builder.temperature(properties.temperature());
+        }
+        return builder.build();
     }
 
     /**
