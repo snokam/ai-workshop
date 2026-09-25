@@ -54,19 +54,25 @@ sentence at the top, the summary the prose below it. Both are written on first o
 after, so watch the backend log:
 
 ```
-summary on gemini-2.5-flash took 1907ms, 497 tokens (205 of them thinking), $0.000635
-status line on gemini-2.5-flash-lite took 574ms, 334 tokens (0 of them thinking), $0.000042
+summary on claude-sonnet-4-6 took 6422ms, 640 tokens (0 of them thinking), $0.004392
+status line on gpt-5.6-luna took 2071ms, 403 tokens (0 of them thinking), $0.000178
 ```
 
-Fifteen times the cost — and 205 of those tokens are *thinking*: spent, billed at the output rate,
-and invisible in both the prompt and the answer. Any estimate built from what you can see is wrong.
+Twenty-five times the cost for three times the wait, on the same claim. Whether that is worth it is
+the question the task is about — and it is answerable here, because the summary is written once and
+cached while the status line is a sentence anybody could have written.
+
+Then ask the cheap-looking ones for the same sentence and watch the third column. `o4-mini` reasons
+before it answers, and produced that one-line status in 285 output tokens — **256 of them thinking**.
+Spent, billed at the output rate, and invisible in both the prompt and the answer. Any estimate
+built from what you can see is wrong.
 
 A model with no published price in [`ModelPrices`](./ModelPrices.java) logs `no published price`
 rather than a guess. Time and tokens are measured either way, and the thinking count is the part
 worth looking at.
 
-That does not make the cheap one better value. Asked for "one short sentence" it answers in
-markdown, in a line that is rendered as plain text. The saving is real and so is the mess.
+Cheapest is not automatically best value either. Asked for "one short sentence", `gpt-5.4-mini` will
+answer in markdown, in a line that is rendered as plain text. The saving is real and so is the mess.
 
 ```bash
 cd backend && ./mvnw test -Pevaluate -Dtest=SummaryEvaluation
