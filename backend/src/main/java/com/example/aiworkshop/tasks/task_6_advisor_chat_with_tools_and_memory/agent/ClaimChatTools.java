@@ -44,22 +44,15 @@ public class ClaimChatTools {
         return desk.documentDetail(claimId, filename);
     }
 
-    // TODO — task 6, part 1. Write the two descriptions marked below.
-    //
-    // A @Tool description is a prompt, not documentation. It is the only thing the model reads when it
-    // decides whether to call this method, so it has to answer one question for a reader who has the
-    // claim summary in front of them: when would I need this instead of what I already have?
-    //
-    // The two above are written for you. Notice what they do beyond saying what the tool returns:
-    //
-    //   documentDetail   says when to reach for it ("whenever a question turns on what a document
-    //                    actually says") and what it will not do ("it does not open the file")
-    //   proposeReview    says outright that it performs nothing, because a model that thinks it has
-    //                    acted will tell the handler it has
-    //
-    // For this one: it is the expensive tool. A second agent opens the actual file. Say when that is
-    // worth it and when the cheaper one will do, or it will be called for everything.
-    @Tool("TODO — say what this does, when to use it instead of documentDetail, and what it costs.")
+    @Tool(
+            """
+            Open the actual file — the PDF or the photograph — and answer one specific question \
+            from what is on the page. This is the expensive tool: it sends the whole document to a \
+            second model and takes several seconds, so do not reach for it by default. Use \
+            documentDetail first. Only come here when documentDetail has already been consulted and \
+            does not carry the answer: a figure, date, name, clause or serial number nobody \
+            extracted, something in the small print, or a question about what the image itself \
+            shows. Ask one narrow question per call, not "tell me about this document".""")
     String readDocument(
             @ToolMemoryId String claimId,
             @P("The document's filename, exactly as it appears in the claim index.") String filename,
@@ -83,10 +76,14 @@ public class ClaimChatTools {
         return desk.proposeReview(claimId, filename, reason);
     }
 
-    // The second one to write. It reaches a person, eventually — but not by being called. Say what
-    // actually happens when the model calls it, or it will report to the handler that it has already
-    // asked the claimant.
-    @Tool("TODO — say what this does, and be exact about what it does not do.")
+    @Tool(
+            """
+            Suggest asking the claimant for something the claim is missing. This sends nothing and \
+            contacts nobody. It puts a card in front of the claim handler with your wording on it, \
+            and the request only leaves the building if they click it. So do not tell the handler \
+            the claimant has been asked, or that anything is on its way — say you have put a \
+            suggested request in front of them. Use it when a document that is needed is absent or \
+            unusable and the only way forward is for the claimant to send something new.""")
     ProposalCard proposeDocumentRequest(
             @ToolMemoryId String claimId,
             @P("What to ask the claimant for, in plain language they will understand.") String label,

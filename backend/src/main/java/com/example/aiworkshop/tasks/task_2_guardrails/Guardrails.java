@@ -4,8 +4,6 @@ import com.example.aiworkshop.tasks.task_2_guardrails.claim_description.ClaimChe
 import com.example.aiworkshop.tasks.task_2_guardrails.claim_description.ClaimDescriptionGuardrail;
 import com.example.aiworkshop.tasks.task_2_guardrails.prompt_injection.InjectionCheck;
 import com.example.aiworkshop.tasks.task_2_guardrails.prompt_injection.PromptInjectionGuardrail;
-import com.example.aiworkshop.workshop.TaskNotImplementedException;
-import com.example.aiworkshop.workshop.WorkshopTask;
 import dev.langchain4j.guardrail.InputGuardrail;
 
 /**
@@ -45,27 +43,11 @@ public final class Guardrails {
 
     /** Runs first. Refuses text that is instructing the system rather than describing a situation. */
     public static InputGuardrail againstPromptInjection(InjectionCheck check) {
-        // TODO — task 2, part 5. Hand back the injection guardrail.
-        //
-        // Return new PromptInjectionGuardrail(check).
-        //
-        // Until this returns one, text addressed to the system reaches the model like any other.
-
-        throw new TaskNotImplementedException(WorkshopTask.GUARDRAILS);
+        return new PromptInjectionGuardrail(check);
     }
 
     /** Runs second. Refuses text there is nothing to open a claim from. */
     public static InputGuardrail againstWastedCalls(ClaimCheck check) {
-        // TODO — task 2, part 5. Hand back the claim guardrail.
-        //
-        // Return new ClaimDescriptionGuardrail(check).
-        //
-        // GuardrailConfig calls both of these and publishes each as a bean. Task 1's agent takes whichever
-        // InputGuardrails exist and knows nothing about who wrote them, which is why task 1 can be finished
-        // and run before this task is started.
-        //
-        // Until this returns one, anything typed into the box reaches the model, including an empty one.
-
-        throw new TaskNotImplementedException(WorkshopTask.GUARDRAILS);
+        return new ClaimDescriptionGuardrail(check);
     }
 }

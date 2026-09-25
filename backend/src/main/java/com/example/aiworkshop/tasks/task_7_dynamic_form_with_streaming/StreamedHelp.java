@@ -1,7 +1,5 @@
 package com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming;
 
-import com.example.aiworkshop.workshop.TaskNotImplementedException;
-import com.example.aiworkshop.workshop.WorkshopTask;
 import com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.agent.ClaimFormHelper;
 import com.example.aiworkshop.tasks.task_7_dynamic_form_with_streaming.model.ClaimScenario;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,34 +48,21 @@ public class StreamedHelp {
         SseEmitter emitter = new SseEmitter(TIMEOUT_MS);
         TokenStream tokens = helper.helpWith(ClaimScenario.catalog(), soFar);
 
-        // TODO — task 7. Carry the tokens to the browser.
-        //
-        // TokenStream is push, not pull: nothing arrives until you say what to do with it, and nothing
-        // starts until you say to start. Four calls, and it reads as one chain:
-        //
-        //   tokens.onPartialResponse(token -> send(emitter, token))
-        //         .onCompleteResponse(response -> emitter.complete())
-        //         .onError(failed -> { log.warn("The help stream failed", failed);
-        //                              emitter.completeWithError(failed); })
-        //         .start();
-        //
-        // send(...) is written for you below, because SseEmitter.send throws a checked IOException and
-        // a lambda cannot.
-        //
-        // Three ways this goes wrong, and each fails differently:
-        //
-        //   no .start()            you registered callbacks for a stream nobody asked to run. The
-        //                          method returns, the browser holds an open connection, and nothing
-        //                          ever arrives — it looks exactly like a slow model.
-        //   no .onError(...)       the model fails and nobody completes the emitter. The browser waits
-        //                          the full timeout for a request that was over in a second.
-        //   no .onCompleteResponse the tokens all arrive and the connection stays open anyway, so the
-        //                          screen never knows the answer finished.
-        //
-        // Return the emitter. Do not wait for the stream — returning is what lets the response start,
-        // and blocking here would undo the whole point: somebody is typing while this runs.
+        // All three callbacks, then start. Each missing one fails differently and none of them
+        // throws: no onCompleteResponse and the answer arrives but the connection never closes; no
+        // onError and a model that died in a second keeps the browser waiting the full minute; no
+        // start() and nothing happens at all, which looks exactly like a slow model.
+        tokens.onPartialResponse(token -> send(emitter, token))
+                .onCompleteResponse(response -> emitter.complete())
+                .onError(failed -> {
+                    log.warn("The help stream failed", failed);
+                    emitter.completeWithError(failed);
+                })
+                .start();
 
-        throw new TaskNotImplementedException(WorkshopTask.DYNAMIC_FORM_WITH_STREAMING);
+        // Returned before a single token exists. Waiting here would hold the response closed until
+        // the answer was finished, which is the one thing streaming is for.
+        return emitter;
     }
 
     /**

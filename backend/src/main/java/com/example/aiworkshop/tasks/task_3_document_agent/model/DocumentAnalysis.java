@@ -18,27 +18,21 @@ import java.util.List;
 public record DocumentAnalysis(
 
         @Description("""
-                TODO — task 3, part 1. Write these two, this one first.
-
-                A @Description is a prompt: the only thing the model is told about a field before it
-                fills it in. Say what FORM the answer should take, not only what it is about. The model
-                is not being careless when it writes an essay into a field meant for two words — it was
-                never told.
-
-                The five fields below these are written for you; read a couple. Write one, upload
-                assets/receipt.png and read the card, then write the other. DocumentAnalysisTest is red
-                until both are done.
-
-                This field: the kind of document. It goes on a label beside the filename, so ask for a
-                short noun phrase, e.g. "invoice".
+                What kind of document this is, as a short noun phrase of one to three words — for
+                example "invoice", "police report", "photo of damage", "medical certificate". It is
+                rendered as a label beside the filename, so no sentence, no verb, no trailing full
+                stop, and nothing about the claim. Use the document's own vocabulary where it names
+                itself. When you cannot tell what it is, say "unidentified document" rather than
+                guessing at a type.
                 """)
                 String category,
         @Description("""
-                TODO — task 3, part 1. The other one.
-
-                What this document is and what it says. A handler reads it under the label while
-                skimming a claim, so say how long it should be, and whether it is about the document or
-                about the claim.
+                What this document is and what it says, in one or two sentences, read by a claims
+                handler skimming the claim under the label above. Describe the document — who issued
+                it, what it covers, the date and the amount if it has them — not the claim it was
+                uploaded to, and not whether it should be accepted. Plain prose, no bullet points,
+                and no repetition of the category. When the file is too unclear to read, say that
+                instead of describing what it might have said.
                 """)
                 String summary,
         @Description("""
