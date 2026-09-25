@@ -19,8 +19,16 @@ import dev.langchain4j.guardrail.InputGuardrailResult;
  * more expensive of the two, and because nothing cheaper can answer the question at all — but "put a
  * guardrail in front of it" is not the same as "make it free", and the difference shows up on the
  * bill.
+ *
+ * <p>With one exception: an empty box has no meaning to read, so there is no judgement to buy — and
+ * LangChain4j rejects a blank prompt before it builds the request anyway. Note how narrow that test
+ * is. It is emptiness, not shortness; "asdf asdf asdf asdf" is longer than a real claim and still
+ * says nothing, and only the model tells those two apart.
  */
 public class ClaimDescriptionGuardrail implements InputGuardrail {
+
+    /** In English, because a text with no words in it names no language to answer in. */
+    public static final String NOTHING_THERE = "Please tell us what happened, in a sentence or two.";
 
     private final ClaimCheck check;
 
@@ -30,22 +38,14 @@ public class ClaimDescriptionGuardrail implements InputGuardrail {
 
     @Override
     public InputGuardrailResult validate(UserMessage message) {
-        // TODO — task 2, part 2. Ask it, and refuse.
-        //
-        // Steps:
-        //
-        //   1. message.singleText() is what the person typed
-        //   2. ClaimCheck.Verdict verdict = check.couldOpenAClaimFrom(...)
-        //   3. verdict.couldOpenAClaim() ? success() : fatal(verdict.whatWouldHelp())
-        //
-        // fatal(...) and success() come from InputGuardrail, which this class implements.
-        //
-        // Resist adding a length rule or a list of greetings underneath. A rule about length refuses
-        // "Bilen ble stjalet" and lets "asdf asdf asdf asdf" through — both mistakes at once, and no
-        // tuning fixes it, because whether there is a situation in a piece of text is a question about
-        // meaning.
+        String description = message.singleText();
+        if (description == null || description.isBlank()) {
+            return fatal(NOTHING_THERE);
+        }
 
-        return success();
+        ClaimCheck.Verdict verdict = check.couldOpenAClaimFrom(description);
+
+        return verdict.couldOpenAClaim() ? success() : fatal(verdict.whatWouldHelp());
     }
 
     @Override
