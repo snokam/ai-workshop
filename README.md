@@ -65,7 +65,7 @@ cd backend
 
 # terminal 2 — frontend on :5173
 cd frontend
-npm install && npm run dev
+pnpm install && pnpm dev
 ```
 
 Then open http://localhost:5173. If the backend starts but every call comes back a 502, the key is

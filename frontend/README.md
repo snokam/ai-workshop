@@ -46,8 +46,8 @@ watching the thing you tried come back empty.
 ## Running it
 
 ```
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
-It expects the backend on port 8080. `npm run build` typechecks and bundles.
+It expects the backend on port 8080. `pnpm build` typechecks and bundles.
