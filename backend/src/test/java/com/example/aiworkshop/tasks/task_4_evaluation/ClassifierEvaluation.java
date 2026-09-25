@@ -37,7 +37,10 @@ class ClassifierEvaluation {
     @Test
     void scoreTheClassifier() {
         try {
-            classifier.classify(ClaimType.catalog(), "a warm-up call, to fail early if task 1 is not written");
+            // A warm-up call, to fail early if task 1 is not written. It has to read like a real
+            // description: the classifier sits behind task 2's guardrails, and a refusal here ends
+            // the evaluation before a single row is scored.
+            classifier.classify(ClaimType.catalog(), "A pipe burst under the kitchen sink and the floor is ruined.");
         } catch (TaskNotImplementedException notYet) {
             System.out.println("\nThere is nothing to evaluate yet — task 1's classifier is not written.\n");
             return;

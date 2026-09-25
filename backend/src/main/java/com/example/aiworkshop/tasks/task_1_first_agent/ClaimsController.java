@@ -45,6 +45,13 @@ class ClaimsController {
 
     @PostMapping
     ResponseEntity<CreatedClaim> create(@RequestBody NewClaimRequest request) {
+        // An empty box never reaches a guardrail: LangChain4j builds the user message first, and a
+        // template that renders to nothing throws there — a 502 reading "the method 'classify' does
+        // not have a user message defined". So blank is answered before any agent is entered.
+        if (request.description() == null || request.description().isBlank()) {
+            throw new InputGuardrailException("Please tell us what happened, in a sentence or two.");
+        }
+
         CreatedClaim created = intake.open(request.description());
         log.info("Opened claim {} as '{}' ({})", created.reference(), created.typeLabel(), created.confidence());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
